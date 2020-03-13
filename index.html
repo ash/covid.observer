@@ -1,0 +1,26 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>COVID-19 Observer</title>
+    <script src="./Chart.min.js"></script>
+</head>
+<body>
+    <canvas id="Chart1"></canvas>
+    <script>
+        var ctx = document.getElementById('Chart1').getContext('2d');
+        var myDoughnutChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                "labels": ["Active", "Failed to recover", "Recovered"],
+                "datasets": [
+                    {
+                        "label": "COVID-19",
+                        "data": [140875 - 70174 - 5359, 5359, 70174],
+                        "backgroundColor": ['orange', 'red', 'green']
+                    }
+                ]
+            }            
+        });
+    </script>
+</body>
+</html>
