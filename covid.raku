@@ -343,7 +343,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
         <div id="block3">
             <h2>Daily Flow</h2>
             <canvas id="Chart2"></canvas>
-            <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name}. It includes three parts: those who could or could not recover and those who are currently in the active phase of the desease.</p>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name}. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
                 var myDoughnutChart2 = new Chart(ctx2, $chart2data);
