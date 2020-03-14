@@ -584,12 +584,25 @@ sub html_template($path, $title, $content) {
 
         CSS
 
+    my $ga = q:to/GA/;
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160707541-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-160707541-1');
+        </script>
+        GA
+
     my $template = qq:to/HTML/;
         <html>
-        <head>
+        <head>            
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>$title | Coronavirus COVID-19 Observer</title>
+
+            $ga
+
             <script src="/Chart.min.js"></script>
             <style>
                 $style
