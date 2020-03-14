@@ -156,6 +156,7 @@ sub extract-covid-data($data) {
         my $country = @data[1] || '';
         $country ~~ s:g/\"//; #"
         my $cc = countryToCode($country) || '';
+        $cc = 'US' if $country eq 'US';
 
         next unless $cc;
 
