@@ -100,6 +100,7 @@ sub parse-population() {
 
         $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
         $country = 'South Korea' if $country eq 'Republic of Korea';
+        $country = 'Czech Republic' if $country eq 'Czechia';
 
         my $cc = countryToCode($country);
         next unless $cc;
@@ -150,6 +151,7 @@ sub extract-covid-data($data) {
         $line ~~ s/'Korea, South'/South Korea/;
         $line ~~ s/Russia/Russian Federation/;
         $line ~~ s:g/'*'//;
+        $line ~~ s/Czechia/Czech Republic/;
 
         my @data = $line.split(',');
 
@@ -316,7 +318,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
         !! sprintf('%i million', $population.round);
 
     my $proper-country-name = $country-name;
-    $proper-country-name = "the $country-name" if $cc ~~ /US|GB|NL|DO/;
+    $proper-country-name = "the $country-name" if $cc ~~ /US|GB|NL|DO|CZ/;
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus in {$proper-country-name}</h1>
