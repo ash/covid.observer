@@ -81,6 +81,10 @@ multi sub MAIN('generate') {
     my %daily-totals = get-daily-totals-stats();
 
     generate-world-stats(%countries, %per-day, %totals, %daily-totals);
+
+    for get-known-countries() -> $cc {
+        generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals);
+    }
 }
 
 sub parse-population() {
@@ -178,6 +182,18 @@ sub get-countries() {
     return %countries;
 }
 
+sub get-known-countries() {
+    my $sth = dbh.prepare('select distinct countries.cc, countries.country from totals join countries on countries.cc = totals.cc order by countries.country');
+    $sth.execute();
+
+    my @countries;
+    for $sth.allrows() -> @row {
+        @countries.push(@row[0]);
+    }
+
+    return @countries;    
+}
+
 sub get-total-stats() {
     my $sth = dbh.prepare('select cc, confirmed, failed, recovered from totals');
     $sth.execute();
@@ -238,7 +254,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
         <div id="block2">
             <h2>Affected World Population</h2>
             <div id="percent">$chart3&thinsp;%</div>
-            <p>This is the part of infected people against the total 7.8 billon of the world population.</p>
+            <p>This is the part of infected people against the total 7.8 billion of the world population.</p>
         </div>
 
         <div id="block1">
@@ -273,20 +289,84 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
     html_template('/', 'World statistics', $content);
 }
 
-sub country-list(%countries) {
-    my $html = '';
+sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
+    say "Generating $cc...";
 
-    for %countries.sort(*.value) -> %info {
-        $html ~= '<p><a href="/' ~ %info.key ~ '">' ~ %info.value[0]<country> ~ '</a></p>';
+    my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, $cc);
+    my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, $cc);
+    my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, $cc);
+
+    my $country-list = country-list(%countries, $cc);
+
+    my $country-name = %countries{$cc}[0]<country>;
+    my $population = +%countries{$cc}[1]<population>;
+    my $population-str = $population <= 1
+        ?? sprintf('%i thousand', 1000 * $population.round)
+        !! sprintf('%i million', $population.round);
+
+    my $proper-country-name = $country-name;
+    $proper-country-name = "the $country-name" if $cc ~~ /US|GB|NL|DO/;
+
+    my $content = qq:to/HTML/;
+        <h1>Coronavirus in {$proper-country-name}</h1>
+
+        <div id="block2">
+            <h2>Affected Population</h2>
+            <div id="percent">$chart3&thinsp;%</div>
+            <p>This is the part of infected people against the total $population-str of its population.</p>
+        </div>
+
+        <div id="block1">
+            <h2>Recovery Pie</h2>
+            <canvas id="Chart1"></canvas>
+            <p>The whole pie reflects the total number of people infected by coronavirus in {$proper-country-name}.</p>
+            <script>
+                var ctx1 = document.getElementById('Chart1').getContext('2d');
+                var myDoughnutChart1 = new Chart(ctx1, $chart1data);
+            </script>
+        </div>
+
+        <div id="block3">
+            <h2>Daily Flow</h2>
+            <canvas id="Chart2"></canvas>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name}. It includes three parts: those who could or could not recover and those who are currently in the active phase of the desease.</p>
+            <script>
+                var ctx2 = document.getElementById('Chart2').getContext('2d');
+                var myDoughnutChart2 = new Chart(ctx2, $chart2data);
+            </script>
+        </div>
+
+        <div id="countries">
+            <h2>Statistics per Country</h2>
+            <div id="countries-list">
+                $country-list
+            </div>
+        </div>
+
+        HTML
+
+    html_template('/' ~ $cc.lc, "Coronavirus in {$proper-country-name}", $content);
+}
+
+sub country-list(%countries, $current?) {
+    my $is_current = !$current ?? ' class="current"' !! '';
+    my $html = qq{<p$is_current><a href="/">Whole world</a></p>};
+
+    for get-known-countries() -> $cc {
+        next unless %countries{$cc};
+
+        my $path = $cc.lc;
+        my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
+        $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc}[0]<country> ~ '</a></p>';
     }
 
     return $html;
 }
 
-sub chart-pie(%countries, %per-day, %totals, %daily-totals) {
-    my $confirmed = [+] %totals.values.map: *<confirmed>;
-    my $failed = [+] %totals.values.map: *<failed>;
-    my $recovered = [+] %totals.values.map: *<recovered>;
+sub chart-pie(%countries, %per-day, %totals, %daily-totals, $cc?) {    
+    my $confirmed = $cc ?? %totals{$cc}<confirmed> !! [+] %totals.values.map: *<confirmed>;
+    my $failed    = $cc ?? %totals{$cc}<failed>    !! [+] %totals.values.map: *<failed>;
+    my $recovered = $cc ?? %totals{$cc}<recovered> !! [+] %totals.values.map: *<recovered>;
 
     my $active = $confirmed - $failed - $recovered;
 
@@ -296,7 +376,7 @@ sub chart-pie(%countries, %per-day, %totals, %daily-totals) {
     my $labels1 = qq{"Recovered $recovered-percent", "Failed to recover $failed-percent", "Active cases $active-percent"};
 
     my %dataset =
-        label => 'World statistics',
+        label => 'Recovery statistics',
         data => [$recovered, $failed, $active],
         backgroundColor => ['green', 'red', 'orange'];
     my $dataset1 = to-json(%dataset);
@@ -323,7 +403,7 @@ sub chart-pie(%countries, %per-day, %totals, %daily-totals) {
     return $json;
 }
 
-sub chart-daily(%countries, %per-day, %totals, %daily-totals) {
+sub chart-daily(%countries, %per-day, %totals, %daily-totals, $cc?) {
     my @dates;
     my @recovered;
     my @failed;
@@ -332,7 +412,7 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals) {
     for %daily-totals.keys.sort(*[0]) -> $date {
         @dates.push($date);
 
-        my %data = %daily-totals{$date};
+        my %data = $cc ?? %per-day{$cc}{$date} !! %daily-totals{$date};        
 
         @failed.push(%data<failed>);
         @recovered.push(%data<recovered>);
@@ -371,8 +451,9 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals) {
                     DATASET1
                 ]
             },
+            "responsive": true,
             "options": {
-                "animation": true,
+                "animation": false,
                 "scales": {
                     "xAxes": [{
                         "stacked": true,
@@ -393,10 +474,24 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals) {
     return $json;
 }
 
-sub number-percent(%countries, %per-day, %totals, %daily-totals) {
+multi sub number-percent(%countries, %per-day, %totals, %daily-totals) {
     my $confirmed = [+] %totals.values.map: *<confirmed>;
 
     my $percent = '%.2g'.sprintf(100 * $confirmed / 7_800_000_000);
+
+    return $percent;
+}
+
+multi sub number-percent(%countries, %per-day, %totals, %daily-totals, $cc) {
+    my $confirmed = %totals{$cc}<confirmed>;
+
+    my $population = %countries{$cc}[1]<population>; # omg, should be fixed in sub get-countries
+    return 0 unless $population;
+
+    $population *= 1_000_000;
+    my $percent = '%.2g'.sprintf(100 * $confirmed / $population);
+
+    return '<&thinsp;0.0001&thinsp;' if $percent ~~ /e/;
 
     return $percent;
 }
@@ -454,6 +549,9 @@ sub html_template($path, $title, $content) {
             color: #333333;
             text-decoration: underline;
         }
+        #countries-list p.current {
+            font-weight: bold;
+        }
         #about {
             border-top: 1px solid lightgray;
         }
@@ -465,7 +563,7 @@ sub html_template($path, $title, $content) {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>$title | Coronavirus COVID-19 Observer</title>
-            <script src="./Chart.min.js"></script>
+            <script src="/Chart.min.js"></script>
             <style>
                 $style
             </style>
@@ -476,14 +574,14 @@ sub html_template($path, $title, $content) {
             <div id="about">
                 <p>Bases on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
                 <p>Updated daily around midnight European time.</p>
-                <p>Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>.</p>
+                <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>.</p>
             </div>
         </body>
         </html>
         HTML    
 
-    mkdir('html');
-    my $filepath = "./html$path/index.html";
+    mkdir("www$path");
+    my $filepath = "./www$path/index.html";
     given $filepath.IO.open(:w) {
         .say: $template
     }
