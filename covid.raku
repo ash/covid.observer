@@ -148,6 +148,8 @@ sub extract-covid-data($data) {
 
     for @lines -> $line is rw {
         $line ~~ s/'Korea, South'/South Korea/;
+        $line ~~ s/Russia/Russian Federation/;
+        $line ~~ s:g/'*'//;
 
         my @data = $line.split(',');
 
@@ -499,7 +501,7 @@ multi sub number-percent(%countries, %per-day, %totals, %daily-totals, $cc) {
     $population *= 1_000_000;
     my $percent = '%.2g'.sprintf(100 * $confirmed / $population);
 
-    return '<&thinsp;0.0001' if $percent ~~ /e/;
+    return '<&thinsp;0.001' if $percent ~~ /e/;
 
     return $percent;
 }
