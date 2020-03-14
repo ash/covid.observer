@@ -128,7 +128,8 @@ sub fetch-covid-data(%sources) {
         if $response.is-success {
             say "Processing '$type'...";
             %stats{$type} = extract-covid-data($response.content);
-        } else {
+        }
+        else {
             die $response.status-line;
         }
     }
