@@ -499,7 +499,7 @@ multi sub number-percent(%countries, %per-day, %totals, %daily-totals, $cc) {
     $population *= 1_000_000;
     my $percent = '%.2g'.sprintf(100 * $confirmed / $population);
 
-    return '<&thinsp;0.0001&thinsp;' if $percent ~~ /e/;
+    return '<&thinsp;0.0001' if $percent ~~ /e/;
 
     return $percent;
 }
@@ -524,9 +524,9 @@ sub html_template($path, $title, $content) {
             margin-bottom: 10%;
         }
         #block3 {
-            margin-bottom: 10%;    
+            margin-bottom: 10%;
             padding-left: 2%;
-            padding-right: 2%;            
+            padding-right: 2%;
         }
         h1 {
             font-weight: normal;
@@ -547,7 +547,7 @@ sub html_template($path, $title, $content) {
             column-count: 4;
             text-align: left;
             padding-left: 3%;
-            padding-right: 3%;            
+            padding-right: 3%;
         }
         #countries-list a {
             color: #333333;
@@ -563,6 +563,19 @@ sub html_template($path, $title, $content) {
         #about {
             border-top: 1px solid lightgray;
         }
+
+        @media screen and (max-width: 850px) {
+            h1 {
+                font-size: 300%;
+            }
+            #percent {
+                font-size: 450%;
+            }
+            #countries-list {
+                column-count: 2;
+            }
+        }
+
         CSS
 
     my $template = qq:to/HTML/;
@@ -581,8 +594,8 @@ sub html_template($path, $title, $content) {
 
             <div id="about">
                 <p>Bases on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
-                <p>Updated daily around midnight European time.</p>
-                <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>.</p>
+                <p>This website presents the very same data but from a less-panic perspective. Updated daily around midnight European time.</p>
+                <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
             </div>
         </body>
         </html>
