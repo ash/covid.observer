@@ -1,0 +1,23 @@
+{
+  "auth" : "cpan:ANDY",
+  "authors" : [
+    "Andrew Shitov"
+  ],
+  "build-depends" : [ ],
+  "depends" : [
+    "HTTP::UserAgent",
+    "Locale::Codes::Country",
+    "DBIish",
+    "JSON::Tiny"
+  ],
+  "description" : "COVID-19 Observer website",
+  "license" : "",
+  "name" : "covid.observer",
+  "perl" : "6.c",
+  "provides" : { },
+  "resources" : [ ],
+  "source-url" : "https://github.com/ash/covid.observer.git",
+  "tags" : [ ],
+  "test-depends" : [ ],
+  "version" : "0.0.1"
+}
