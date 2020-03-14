@@ -98,6 +98,9 @@ sub parse-population() {
         my ($n, $country, $year, $type, $value) = $line.split(',');
         next unless $type eq 'Population mid-year estimates (millions)';        
 
+        $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
+        $country = 'South Korea' if $country eq 'Republic of Korea';
+
         my $cc = countryToCode($country);
         next unless $cc;
 
@@ -143,10 +146,15 @@ sub extract-covid-data($data) {
     my %daily-per-country;
     my %daily-total;
 
-    for @lines -> $line {
-        my @data = $line.split(',');           
-     
-        my $cc = countryToCode(@data[1]) || '';
+    for @lines -> $line is rw {
+        $line ~~ s/'Korea, South'/South Korea/;
+
+        my @data = $line.split(',');
+
+        my $country = @data[1] || '';
+        $country ~~ s:g/\"//; #"
+        my $cc = countryToCode($country) || '';
+
         next unless $cc;
 
         for @dates Z @data[4..*] -> ($date, $n) {
@@ -270,7 +278,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
         <div id="block3">
             <h2>Daily Flow</h2>
             <canvas id="Chart2"></canvas>
-            <p>The height of a single bar is the total number of people suffered from Coronavirus. It includes three parts: those who could or could not recover and those who are currently in the active phase of the desease.</p>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
                 var myDoughnutChart2 = new Chart(ctx2, $chart2data);
