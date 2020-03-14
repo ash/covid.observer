@@ -3,6 +3,7 @@
 use HTTP::UserAgent;
 use Locale::Codes::Country;
 use DBIish;
+use JSON::Tiny;
 
 constant %covid_sources = 
     confirmed => 'https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv',
@@ -226,15 +227,103 @@ sub get-daily-totals-stats() {
 }
 
 sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
-    my $total_confirmed = [+] %totals.values.map: *<confirmed>;
-    my $total_failed = [+] %totals.values.map: *<failed>;
-    my $total_recovered = [+] %totals.values.map: *<recovered>;
+    my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals);
+    my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals);
+    my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals);
 
-    say "$total_confirmed/$total_failed/$total_recovered";
+    my $country-list = country-list(%countries);
 
-    my $percent = '%.2g'.sprintf(100 * $total_confirmed / 7_800_000_000;);
-    say $percent;
+    my $content = qq:to/HTML/;
+        <h1>COVID-19 World Statistics</h1>
+        <div id="block2">
+            <h2>Affected World Population</h2>
+            <div id="percent">$chart3&thinsp;%</div>
+            <p>This is the part of infected people against the total 7.8 billon of the world population.</p>
+        </div>
 
+        <div id="block1">
+            <h2>Recovery Pie</h2>
+            <canvas id="Chart1"></canvas>
+            <p>The whole pie reflects the total number of people infected by coronavirus in the whole world.</p>
+            <script>
+                var ctx1 = document.getElementById('Chart1').getContext('2d');
+                var myDoughnutChart1 = new Chart(ctx1, $chart1data);
+            </script>
+        </div>
+
+        <div id="block3">
+            <h2>Daily Flow</h2>
+            <canvas id="Chart2"></canvas>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus. It includes three parts: those who could or could not recover and those who are currently in the active phase of the desease.</p>
+            <script>
+                var ctx2 = document.getElementById('Chart2').getContext('2d');
+                var myDoughnutChart2 = new Chart(ctx2, $chart2data);
+            </script>
+        </div>
+
+        <div id="countries">
+            <h2>Statistics per Country</h2>
+            <div id="countries-list">
+                $country-list
+            </div>
+        </div>
+
+        HTML
+
+    html_template('/', 'World statistics', $content);
+}
+
+sub country-list(%countries) {
+    my $html = '';
+
+    for %countries.sort(*.value) -> %info {
+        $html ~= '<p><a href="/' ~ %info.key ~ '">' ~ %info.value[0]<country> ~ '</a></p>';
+    }
+
+    return $html;
+}
+
+sub chart-pie(%countries, %per-day, %totals, %daily-totals) {
+    my $confirmed = [+] %totals.values.map: *<confirmed>;
+    my $failed = [+] %totals.values.map: *<failed>;
+    my $recovered = [+] %totals.values.map: *<recovered>;
+
+    my $active = $confirmed - $failed - $recovered;
+
+    my $active-percent = $confirmed ?? sprintf('%i%%', (100 * $active / $confirmed).round) !! '';
+    my $failed-percent = $confirmed ?? sprintf('%i%%', (100 * $failed / $confirmed).round) !! '';
+    my $recovered-percent = $confirmed ?? sprintf('%i%%', (100 * $recovered / $confirmed).round) !! '';
+    my $labels1 = qq{"Recovered $recovered-percent", "Failed to recover $failed-percent", "Active cases $active-percent"};
+
+    my %dataset =
+        label => 'World statistics',
+        data => [$recovered, $failed, $active],
+        backgroundColor => ['green', 'red', 'orange'];
+    my $dataset1 = to-json(%dataset);
+
+    # JSON::Tiny refuses to put nested hashes as a single hash.
+    my $json = q:to/JSON/;
+        {
+            "type": "pie",
+            "data": {
+                "labels": [LABELS1],
+                "datasets": [
+                    DATASET1
+                ]
+            },
+            "options": {
+                "animation": false
+            }
+        }
+        JSON
+
+    $json ~~ s/DATASET1/$dataset1/;
+    $json ~~ s/LABELS1/$labels1/;
+
+    return $json;
+}
+
+sub chart-daily(%countries, %per-day, %totals, %daily-totals) {
     my @dates;
     my @recovered;
     my @failed;
@@ -244,13 +333,158 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
         @dates.push($date);
 
         my %data = %daily-totals{$date};
+
         @failed.push(%data<failed>);
         @recovered.push(%data<recovered>);
-        @active.push(%data<confirmed> - %data<recovered> - %data<failed>);
+
+        @active.push([-] %data<confirmed recovered failed>);
     }
 
-    say @dates;
-    say @recovered;
-    say @failed;
-    say @active;
+    my $labels = to-json(@dates);
+
+    my %dataset1 =
+        label => 'Recovered',
+        data => @recovered,
+        backgroundColor => 'green';
+    my $dataset1 = to-json(%dataset1);
+
+    my %dataset2 =
+        label => 'Failed to recover',
+        data => @failed,
+        backgroundColor => 'red';
+    my $dataset2 = to-json(%dataset2);
+
+    my %dataset3 =
+        label => 'Active cases',
+        data => @active,
+        backgroundColor => 'orange';
+    my $dataset3 = to-json(%dataset3);
+
+    my $json = q:to/JSON/;
+        {
+            "type": "bar",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET2,
+                    DATASET3,
+                    DATASET1
+                ]
+            },
+            "options": {
+                "animation": true,
+                "scales": {
+                    "xAxes": [{
+                        "stacked": true,
+                    }],
+                    "yAxes": [{
+                        "stacked": true
+                    }]
+                }
+            }
+        }
+        JSON
+
+    $json ~~ s/DATASET1/$dataset1/;
+    $json ~~ s/DATASET2/$dataset2/;
+    $json ~~ s/DATASET3/$dataset3/;
+    $json ~~ s/LABELS/$labels/;
+
+    return $json;
+}
+
+sub number-percent(%countries, %per-day, %totals, %daily-totals) {
+    my $confirmed = [+] %totals.values.map: *<confirmed>;
+
+    my $percent = '%.2g'.sprintf(100 * $confirmed / 7_800_000_000);
+
+    return $percent;
+}
+
+sub html_template($path, $title, $content) {
+    my $style = q:to/CSS/;
+        body, html {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+            font-family: Helvetica, Arial, sans-serif;
+            color: #333333;
+        }
+        #block2 {
+            padding-top: 10%;
+            background: #f5f5ea;
+            padding-bottom: 10%;
+            margin-bottom: 10%;
+        }
+        #block1 {
+            margin-bottom: 10%;
+        }
+        #block3 {
+            margin-bottom: 10%;    
+            padding-left: 2%;
+            padding-right: 2%;            
+        }
+        h1 {
+            font-weight: normal;
+            font-size: 400%;
+            padding-top: 0.7em;
+        }
+        h2 {
+            font-weight: normal;
+            font-size: 300%;
+        }
+        #percent {
+            font-size: 900%;
+        }
+        #countries {
+            padding-bottom: 10%;
+        }
+        #countries-list {
+            column-count: 4;
+            text-align: left;
+            padding-left: 3%;
+            padding-right: 3%;            
+        }
+        #countries-list a {
+            color: #333333;
+            text-decoration: none;
+        }
+        #countries-list a:hover {
+            color: #333333;
+            text-decoration: underline;
+        }
+        #about {
+            border-top: 1px solid lightgray;
+        }
+        CSS
+
+    my $template = qq:to/HTML/;
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>$title | Coronavirus COVID-19 Observer</title>
+            <script src="./Chart.min.js"></script>
+            <style>
+                $style
+            </style>
+        </head>
+        <body>
+            $content
+
+            <div id="about">
+                <p>Bases on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
+                <p>Updated daily around midnight European time.</p>
+                <p>Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>.</p>
+            </div>
+        </body>
+        </html>
+        HTML    
+
+    mkdir('html');
+    my $filepath = "./html$path/index.html";
+    given $filepath.IO.open(:w) {
+        .say: $template
+    }
 }
