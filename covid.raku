@@ -5,10 +5,12 @@ use Locale::Codes::Country;
 use DBIish;
 use JSON::Tiny;
 
-constant %covid_sources = 
+constant %covid-sources =
     confirmed => 'https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv',
     failed    => 'https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv',
     recovered => 'https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv';
+
+constant $world-population = 7_800_000_000;
 
 sub dbh() {
     state $dbh = DBIish.connect('mysql', :host<localhost>, :user<covid>, :password<covid>, :database<covid>);
@@ -31,7 +33,7 @@ multi sub MAIN('population') {
 }
 
 multi sub MAIN('fetch') {
-    my %stats = fetch-covid-data(%covid_sources);
+    my %stats = fetch-covid-data(%covid-sources);
     
     say "Updating database...";
 
@@ -257,14 +259,28 @@ sub get-daily-totals-stats() {
 }
 
 sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
+    say 'Generating world data...';
+
     my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals);
     my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals);
     my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals);
+
+    # my $chart4data = number-percent-graph(%countries, %per-day, %totals, %daily-totals);
+        # <div id="block4">
+        #     <h3>Affected population timeline</h3>
+        #     <canvas id="Chart4"></canvas>
+        #     <p>This is how the above-show number changes over time. The vertical axis’ unit is % of the total world population.</p>
+        #     <script>
+        #         var ctx4 = document.getElementById('Chart4').getContext('2d');
+        #         var chart4 = new Chart(ctx4, $chart4data);
+        #     </script>
+        # </div>
 
     my $country-list = country-list(%countries);
 
     my $content = qq:to/HTML/;
         <h1>COVID-19 World Statistics</h1>
+
         <div id="block2">
             <h2>Affected World Population</h2>
             <div id="percent">$chart3&thinsp;%</div>
@@ -277,7 +293,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
             <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world.</p>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
-                var myDoughnutChart1 = new Chart(ctx1, $chart1data);
+                var chart1 = new Chart(ctx1, $chart1data);
             </script>
         </div>
 
@@ -287,7 +303,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
             <p>The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the world. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
-                var myDoughnutChart2 = new Chart(ctx2, $chart2data);
+                var chart2 = new Chart(ctx2, $chart2data);
             </script>
         </div>
 
@@ -300,7 +316,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
 
         HTML
 
-    html_template('/', 'World statistics', $content);
+    html-template('/', 'World statistics', $content);
 }
 
 sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
@@ -309,6 +325,17 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
     my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, $cc);
     my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, $cc);
     my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, $cc);
+
+    # my $chart4data = number-percent-graph(%countries, %per-day, %totals, %daily-totals, $cc);
+        # <div id="block4">
+        #     <h3>Affected population timeline</h3>
+        #     <canvas id="Chart4"></canvas>
+        #     <p>This is how the above-show number changes over time. The vertical axis’ unit is % of the total world population in {$proper-country-name}.</p>
+        #     <script>
+        #         var ctx4 = document.getElementById('Chart4').getContext('2d');
+        #         var chart4 = new Chart(ctx4, $chart4data);
+        #     </script>
+        # </div>
 
     my $country-list = country-list(%countries, $cc);
 
@@ -336,7 +363,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
             <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$proper-country-name}.</p>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
-                var myDoughnutChart1 = new Chart(ctx1, $chart1data);
+                var chart1 = new Chart(ctx1, $chart1data);
             </script>
         </div>
 
@@ -346,7 +373,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
             <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name} and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
-                var myDoughnutChart2 = new Chart(ctx2, $chart2data);
+                var chart2 = new Chart(ctx2, $chart2data);
             </script>
         </div>
 
@@ -359,7 +386,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
 
         HTML
 
-    html_template('/' ~ $cc.lc, "Coronavirus in {$proper-country-name}", $content);
+    html-template('/' ~ $cc.lc, "Coronavirus in {$proper-country-name}", $content);
 }
 
 sub country-list(%countries, $current?) {
@@ -491,7 +518,7 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, $cc?) {
 multi sub number-percent(%countries, %per-day, %totals, %daily-totals) {
     my $confirmed = [+] %totals.values.map: *<confirmed>;
 
-    my $percent = '%.2g'.sprintf(100 * $confirmed / 7_800_000_000);
+    my $percent = '%.2g'.sprintf(100 * $confirmed / $world-population);
 
     return $percent;
 }
@@ -510,7 +537,93 @@ multi sub number-percent(%countries, %per-day, %totals, %daily-totals, $cc) {
     return $percent;
 }
 
-sub html_template($path, $title, $content) {
+# sub number-percent-graph(%countries, %per-day, %totals, %daily-totals, $cc?) {
+#     my %data;
+
+#     my @dates;
+#     my @confirmed;
+#     my @active;
+#     my @failed;
+#     my @recovered;
+
+#     my $population = $cc ?? (1_000_000 * %countries{$cc}[1]<population>).round !! $world-population;
+
+#     for %daily-totals.keys.sort -> $date {
+#         @dates.push($date);
+
+#         my %data = $cc ?? %per-day{$cc}{$date} !! %daily-totals{$date};
+
+#         my $confirmed = 100 * %data<confirmed> / $population;
+#         my $failed = 100 * %data<failed> / $population;
+#         my $recovered = 100 * %data<recovered> / $population;
+
+#         my $active = $confirmed - $failed - $recovered;
+
+#         @confirmed.push($confirmed);
+#         @failed.push($failed);
+#         @recovered.push($recovered);
+#         @active.push($active);
+#     }
+
+#     my $labels = to-json(@dates);
+
+#     my %dataset1 =
+#         label => 'Recovered',
+#         data => @recovered,
+#         fill => False,
+#         borderColor => 'green';
+#     my $dataset1 = to-json(%dataset1);
+
+#     my %dataset2 =
+#         label => 'Failed to recover',
+#         data => @failed,
+#         fill => False,
+#         borderColor => 'red';
+#     my $dataset2 = to-json(%dataset2);
+
+#     my %dataset3 =
+#         label => 'Active cases',
+#         data => @active,
+#         fill => False,
+#         borderColor => 'orange';
+#     my $dataset3 = to-json(%dataset3);
+
+#     my %dataset4 =
+#         label => 'Total confirmed',
+#         data => @confirmed,
+#         fill => False,
+#         borderColor => 'lightblue';
+#     my $dataset4 = to-json(%dataset4);
+
+#     my $json = q:to/JSON/;
+#         {
+#             "type": "line",
+#             "data": {
+#                 "labels": LABELS,
+#                 "datasets": [
+#                     DATASET4,
+#                     DATASET2,
+#                     DATASET3,
+#                     DATASET1
+#                 ]
+#             },
+#             "responsive": true,
+#             "options": {
+#                 "animation": false,
+#             }
+#         }
+#         JSON
+
+#     $json ~~ s/DATASET1/$dataset1/;
+#     $json ~~ s/DATASET2/$dataset2/;
+#     $json ~~ s/DATASET3/$dataset3/;
+#     $json ~~ s/DATASET4/$dataset4/;
+#     $json ~~ s/LABELS/$labels/;
+
+#     return $json;
+# }
+
+sub html-template($path, $title, $content) {
     my $style = q:to/CSS/;
         body, html {
             width: 100%;
@@ -519,12 +632,20 @@ sub html_template($path, $title, $content) {
             text-align: center;
             font-family: Helvetica, Arial, sans-serif;
             color: #333333;
+            background: white;
         }
         #block2 {
             padding-top: 10%;
             background: #f5f5ea;
             padding-bottom: 10%;
+        }
+        #block4 {
+            padding-top: 5%;
+            background: #f5f5ea;
+            padding-bottom: 10%;
             margin-bottom: 10%;
+            padding-left: 2%;
+            padding-right: 2%;
         }
         #block1 {
             margin-bottom: 10%;
@@ -542,6 +663,10 @@ sub html_template($path, $title, $content) {
         h2 {
             font-weight: normal;
             font-size: 300%;
+        }
+        h3 {
+            font-weight: normal;
+            font-size: 200%;
         }
         #percent {
             font-size: 900%;
