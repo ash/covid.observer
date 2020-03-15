@@ -315,7 +315,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
     my $country-name = %countries{$cc}[0]<country>;
     my $population = +%countries{$cc}[1]<population>;
     my $population-str = $population <= 1
-        ?? sprintf('%i thousand', 1000 * $population.round)
+        ?? sprintf('%i thousand', (1000 * $population).round)
         !! sprintf('%i million', $population.round);
 
     my $proper-country-name = $country-name;
