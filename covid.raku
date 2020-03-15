@@ -596,7 +596,7 @@ sub html_template($path, $title, $content) {
 
     my $template = qq:to/HTML/;
         <html>
-        <head>            
+        <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>$title | Coronavirus COVID-19 Observer</title>
