@@ -265,6 +265,8 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
     my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals);
     my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals);
 
+    my $chart4data = countries-per-capita(%countries, %per-day, %totals, %daily-totals);
+
     # my $chart4data = number-percent-graph(%countries, %per-day, %totals, %daily-totals);
         # <div id="block4">
         #     <h3>Affected population timeline</h3>
@@ -304,6 +306,16 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
                 var chart2 = new Chart(ctx2, $chart2data);
+            </script>
+        </div>
+
+        <div id="block4">
+            <h2>Top 30 Affected per Million</h2>
+            <canvas style="height: 400px" id="Chart4"></canvas>
+            <p>This graph shows the number of affected people per each million of the population. Countries with more than one million are shown only.</p>
+            <script>
+                var ctx4 = document.getElementById('Chart4').getContext('2d');
+                var chart4 = new Chart(ctx4, $chart4data);
             </script>
         </div>
 
@@ -492,7 +504,6 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, $cc?) {
                     DATASET1
                 ]
             },
-            "responsive": true,
             "options": {
                 "animation": false,
                 "scales": {
@@ -607,7 +618,6 @@ multi sub number-percent(%countries, %per-day, %totals, %daily-totals, $cc) {
 #                     DATASET1
 #                 ]
 #             },
-#             "responsive": true,
 #             "options": {
 #                 "animation": false,
 #             }
@@ -622,6 +632,99 @@ multi sub number-percent(%countries, %per-day, %totals, %daily-totals, $cc) {
 
 #     return $json;
 # }
+
+sub countries-per-capita(%countries, %per-day, %totals, %daily-totals) {
+    my %per-mln;
+    for get-known-countries() -> $cc {
+        my $population-mln = %countries{$cc}[1]<population>;
+
+        next if $population-mln < 1;
+        
+        %per-mln{$cc} = sprintf('%.2f', %totals{$cc}<confirmed> / $population-mln);
+    }
+
+    my @labels;
+    my @recovered;
+    my @failed;
+    my @active;
+
+    my $count = 0;
+    for %per-mln.sort(+*.value).reverse -> $item {
+        last if ++$count > 30;
+
+        my $cc = $item.key;
+        my $population-mln = %countries{$cc}[1]<population>;
+
+        @labels.push(%countries{$cc}[0]<country>);
+
+        my $per-capita-confirmed = $item.value;
+        
+        my $per-capita-failed = %totals{$cc}<failed> / $population-mln;
+        $per-capita-failed = 0 if $per-capita-failed < 0;
+        @failed.push('%.2f'.sprintf($per-capita-failed));
+
+        my $per-capita-recovered = %totals{$cc}<recovered> / $population-mln;
+        $per-capita-recovered = 0 if $per-capita-recovered < 0;
+        @recovered.push('%.2f'.sprintf($per-capita-recovered));
+
+        @active.push('%.2f'.sprintf(($per-capita-confirmed - $per-capita-failed - $per-capita-recovered)));
+    }
+
+    my $labels = to-json(@labels);
+
+    my %dataset1 =
+        label => 'Recovered',
+        data => @recovered,
+        backgroundColor => 'green';
+    my $dataset1 = to-json(%dataset1);
+
+    my %dataset2 =
+        label => 'Failed to recover',
+        data => @failed,
+        backgroundColor => 'red';
+    my $dataset2 = to-json(%dataset2);
+
+    my %dataset3 =
+        label => 'Active cases',
+        data => @active,
+        backgroundColor => 'orange';
+    my $dataset3 = to-json(%dataset3);
+
+    my $json = q:to/JSON/;
+        {
+            "type": "horizontalBar",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET2,
+                    DATASET3,
+                    DATASET1
+                ]
+            },
+            "options": {
+                "animation": false,
+                "scales": {
+                    "xAxes": [{
+                        "stacked": true,
+                    }],
+                    "yAxes": [{
+                        "stacked": true,
+                        "ticks": {
+                            "autoSkip": false
+                        }
+                    }],                   
+                }
+            }
+        }
+        JSON
+
+    $json ~~ s/DATASET1/$dataset1/;
+    $json ~~ s/DATASET2/$dataset2/;
+    $json ~~ s/DATASET3/$dataset3/;
+    $json ~~ s/LABELS/$labels/;
+    
+    return $json;
+}
 
 sub html-template($path, $title, $content) {
     my $style = q:to/CSS/;
