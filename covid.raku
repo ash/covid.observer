@@ -268,13 +268,13 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
         <div id="block2">
             <h2>Affected World Population</h2>
             <div id="percent">$chart3&thinsp;%</div>
-            <p>This is the part of infected people against the total 7.8 billion of the world population.</p>
+            <p>This is the part of confirmed infection cases against the total 7.8 billion of the world population.</p>
         </div>
 
         <div id="block1">
             <h2>Recovery Pie</h2>
             <canvas id="Chart1"></canvas>
-            <p>The whole pie reflects the total number of people infected by coronavirus in the whole world.</p>
+            <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world.</p>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
                 var myDoughnutChart1 = new Chart(ctx1, $chart1data);
@@ -284,7 +284,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
         <div id="block3">
             <h2>Daily Flow</h2>
             <canvas id="Chart2"></canvas>
-            <p>The height of a single bar is the total number of people suffered from Coronavirus. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the world. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
                 var myDoughnutChart2 = new Chart(ctx2, $chart2data);
@@ -327,13 +327,13 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
         <div id="block2">
             <h2>Affected Population</h2>
             <div id="percent">$chart3&thinsp;%</div>
-            <p>This is the part of infected people against the total $population-str of its population.</p>
+            <p>This is the part of confirmed infection cases against the total $population-str of its population.</p>
         </div>
 
         <div id="block1">
             <h2>Recovery Pie</h2>
             <canvas id="Chart1"></canvas>
-            <p>The whole pie reflects the total number of people infected by coronavirus in {$proper-country-name}.</p>
+            <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$proper-country-name}.</p>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
                 var myDoughnutChart1 = new Chart(ctx1, $chart1data);
@@ -343,7 +343,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
         <div id="block3">
             <h2>Daily Flow</h2>
             <canvas id="Chart2"></canvas>
-            <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name}. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name} and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
                 var myDoughnutChart2 = new Chart(ctx2, $chart2data);
