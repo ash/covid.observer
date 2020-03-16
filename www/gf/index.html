@@ -22,12 +22,20 @@
     text-align: center;
     font-family: Helvetica, Arial, sans-serif;
     color: #333333;
+    background: white;
 }
 #block2 {
     padding-top: 10%;
     background: #f5f5ea;
     padding-bottom: 10%;
+}
+#block4 {
+    padding-top: 5%;
+    background: #f5f5ea;
+    padding-bottom: 10%;
     margin-bottom: 10%;
+    padding-left: 2%;
+    padding-right: 2%;
 }
 #block1 {
     margin-bottom: 10%;
@@ -45,6 +53,10 @@ h1 {
 h2 {
     font-weight: normal;
     font-size: 300%;
+}
+h3 {
+    font-weight: normal;
+    font-size: 200%;
 }
 #percent {
     font-size: 900%;
@@ -83,6 +95,9 @@ h2 {
     #countries-list {
         column-count: 2;
     }
+    #block4 {
+        display: none;
+    }
 }
 
 
@@ -94,21 +109,21 @@ h2 {
 <div id="block2">
     <h2>Affected Population</h2>
     <div id="percent">0.0017&thinsp;%</div>
-    <p>This is the part of infected people against the total 0 thousand of its population.</p>
+    <p>This is the part of confirmed infection cases against the total 291 thousand of its population.</p>
 </div>
 
 <div id="block1">
     <h2>Recovery Pie</h2>
     <canvas id="Chart1"></canvas>
-    <p>The whole pie reflects the total number of people infected by coronavirus in French Guiana.</p>
+    <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in French Guiana.</p>
     <script>
         var ctx1 = document.getElementById('Chart1').getContext('2d');
-        var myDoughnutChart1 = new Chart(ctx1, {
+        var chart1 = new Chart(ctx1, {
     "type": "pie",
     "data": {
         "labels": ["Recovered 0%", "Failed to recover 0%", "Active cases 100%"],
         "datasets": [
-            { "backgroundColor" : [ "green", "red", "orange" ], "data" : [ 0, 0, 5 ], "label" : "Recovery statistics" }
+            { "data" : [ 0, 0, 5 ], "label" : "Recovery statistics", "backgroundColor" : [ "green", "red", "orange" ] }
         ]
     },
     "options": {
@@ -122,20 +137,19 @@ h2 {
 <div id="block3">
     <h2>Daily Flow</h2>
     <canvas id="Chart2"></canvas>
-    <p>The height of a single bar is the total number of people suffered from Coronavirus in French Guiana. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
+    <p>The height of a single bar is the total number of people suffered from Coronavirus in French Guiana and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
     <script>
         var ctx2 = document.getElementById('Chart2').getContext('2d');
-        var myDoughnutChart2 = new Chart(ctx2, {
+        var chart2 = new Chart(ctx2, {
     "type": "bar",
     "data": {
         "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14" ],
         "datasets": [
-            { "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], "backgroundColor" : "red", "label" : "Failed to recover" },
-            { "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5 ], "backgroundColor" : "orange", "label" : "Active cases" },
+            { "backgroundColor" : "red", "label" : "Failed to recover", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] },
+            { "backgroundColor" : "orange", "label" : "Active cases", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5 ] },
             { "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], "backgroundColor" : "green", "label" : "Recovered" }
         ]
     },
-    "responsive": true,
     "options": {
         "animation": false,
         "scales": {
