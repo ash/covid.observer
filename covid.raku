@@ -5,10 +5,12 @@ use Locale::Codes::Country;
 use DBIish;
 use JSON::Tiny;
 
-constant %covid_sources = 
+constant %covid-sources =
     confirmed => 'https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv',
     failed    => 'https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv',
     recovered => 'https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv';
+
+constant $world-population = 7_800_000_000;
 
 sub dbh() {
     state $dbh = DBIish.connect('mysql', :host<localhost>, :user<covid>, :password<covid>, :database<covid>);
@@ -31,7 +33,7 @@ multi sub MAIN('population') {
 }
 
 multi sub MAIN('fetch') {
-    my %stats = fetch-covid-data(%covid_sources);
+    my %stats = fetch-covid-data(%covid-sources);
     
     say "Updating database...";
 
@@ -82,6 +84,8 @@ multi sub MAIN('generate') {
 
     generate-world-stats(%countries, %per-day, %totals, %daily-totals);
 
+    generate-countries-stats(%countries, %per-day, %totals, %daily-totals);
+
     for get-known-countries() -> $cc {
         generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals);
     }
@@ -100,6 +104,7 @@ sub parse-population() {
 
         $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
         $country = 'South Korea' if $country eq 'Republic of Korea';
+        $country = 'Czech Republic' if $country eq 'Czechia';
 
         my $cc = countryToCode($country);
         next unless $cc;
@@ -127,7 +132,8 @@ sub fetch-covid-data(%sources) {
         if $response.is-success {
             say "Processing '$type'...";
             %stats{$type} = extract-covid-data($response.content);
-        } else {
+        }
+        else {
             die $response.status-line;
         }
     }
@@ -150,6 +156,7 @@ sub extract-covid-data($data) {
         $line ~~ s/'Korea, South'/South Korea/;
         $line ~~ s/Russia/Russian Federation/;
         $line ~~ s:g/'*'//;
+        $line ~~ s/Czechia/Czech Republic/;
 
         my @data = $line.split(',');
 
@@ -254,37 +261,102 @@ sub get-daily-totals-stats() {
 }
 
 sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
+    say 'Generating world data...';
+
     my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals);
     my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals);
     my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals);
+
+    # my $chart4data = number-percent-graph(%countries, %per-day, %totals, %daily-totals);
+        # <div id="block4">
+        #     <h3>Affected population timeline</h3>
+        #     <canvas id="Chart4"></canvas>
+        #     <p>This is how the above-show number changes over time. The vertical axis’ unit is % of the total world population.</p>
+        #     <script>
+        #         var ctx4 = document.getElementById('Chart4').getContext('2d');
+        #         var chart4 = new Chart(ctx4, $chart4data);
+        #     </script>
+        # </div>
 
     my $country-list = country-list(%countries);
 
     my $content = qq:to/HTML/;
         <h1>COVID-19 World Statistics</h1>
+
         <div id="block2">
             <h2>Affected World Population</h2>
             <div id="percent">$chart3&thinsp;%</div>
-            <p>This is the part of infected people against the total 7.8 billion of the world population.</p>
+            <p>This is the part of confirmed infection cases against the total 7.8 billion of the world population.</p>
         </div>
 
         <div id="block1">
             <h2>Recovery Pie</h2>
             <canvas id="Chart1"></canvas>
-            <p>The whole pie reflects the total number of people infected by coronavirus in the whole world.</p>
+            <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world.</p>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
-                var myDoughnutChart1 = new Chart(ctx1, $chart1data);
+                var chart1 = new Chart(ctx1, $chart1data);
             </script>
         </div>
 
         <div id="block3">
             <h2>Daily Flow</h2>
             <canvas id="Chart2"></canvas>
-            <p>The height of a single bar is the total number of people suffered from Coronavirus. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the world. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
-                var myDoughnutChart2 = new Chart(ctx2, $chart2data);
+                var chart2 = new Chart(ctx2, $chart2data);
+            </script>
+        </div>
+
+        <div id="countries">
+            <h2>Statistics per Country</h2>
+            <p><a href="/countries">More statistics on countries</a></p>
+            <div id="countries-list">
+                $country-list
+            </div>
+        </div>
+
+        HTML
+
+    html-template('/', 'World statistics', $content);
+}
+
+sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) {
+    say 'Generating countries data...';
+
+    my $chart5data = countries-first-appeared(%countries, %per-day, %totals, %daily-totals);
+    my $chart4data = countries-per-capita(%countries, %per-day, %totals, %daily-totals);
+    my $countries-appeared = countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals);
+
+    my $country-list = country-list(%countries);
+
+    my $content = qq:to/HTML/;
+        <h1>Coronavirus in different countries</h1>
+
+        <div id="block5">
+            <h2>Number of Countires Affected</h2>
+            <canvas style="height: 400px" id="Chart5"></canvas>
+            <p>On this graph, you can see how many countries did have data about confirmed coronavirus invection for a given date over the last months.</p>
+            <script>
+                var ctx5 = document.getElementById('Chart5').getContext('2d');
+                var chart5 = new Chart(ctx5, $chart5data);
+            </script>
+        </div>
+
+        <div id="block6">
+            <h2>Countries Appeared This Day</h2>
+            <p>This list gives you the overview of when the first confirmed case was reported in the given country. Or, you can see here, which countries entered the chart in the recent days. The number in parentheses is the number of confirmed cases in that country on that date.</p>
+            $countries-appeared
+        </div>
+
+        <div id="block4">
+            <h2>Top 30 Affected per Million</h2>
+            <canvas style="height: 400px" id="Chart4"></canvas>
+            <p>This graph shows the number of affected people per each million of the population. Countries with more than one million are shown only.</p>
+            <script>
+                var ctx4 = document.getElementById('Chart4').getContext('2d');
+                var chart4 = new Chart(ctx4, $chart4data);
             </script>
         </div>
 
@@ -297,7 +369,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
 
         HTML
 
-    html_template('/', 'World statistics', $content);
+    html-template('/countries', 'Coronavirus in different countries', $content);
 }
 
 sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
@@ -307,16 +379,27 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
     my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, $cc);
     my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, $cc);
 
+    # my $chart4data = number-percent-graph(%countries, %per-day, %totals, %daily-totals, $cc);
+        # <div id="block4">
+        #     <h3>Affected population timeline</h3>
+        #     <canvas id="Chart4"></canvas>
+        #     <p>This is how the above-show number changes over time. The vertical axis’ unit is % of the total world population in {$proper-country-name}.</p>
+        #     <script>
+        #         var ctx4 = document.getElementById('Chart4').getContext('2d');
+        #         var chart4 = new Chart(ctx4, $chart4data);
+        #     </script>
+        # </div>
+
     my $country-list = country-list(%countries, $cc);
 
     my $country-name = %countries{$cc}[0]<country>;
     my $population = +%countries{$cc}[1]<population>;
     my $population-str = $population <= 1
-        ?? sprintf('%i thousand', 1000 * $population.round)
+        ?? sprintf('%i thousand', (1000 * $population).round)
         !! sprintf('%i million', $population.round);
 
     my $proper-country-name = $country-name;
-    $proper-country-name = "the $country-name" if $cc ~~ /US|GB|NL|DO/;
+    $proper-country-name = "the $country-name" if $cc ~~ /US|GB|NL|DO|CZ/;
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus in {$proper-country-name}</h1>
@@ -324,31 +407,32 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
         <div id="block2">
             <h2>Affected Population</h2>
             <div id="percent">$chart3&thinsp;%</div>
-            <p>This is the part of infected people against the total $population-str of its population.</p>
+            <p>This is the part of confirmed infection cases against the total $population-str of its population.</p>
         </div>
 
         <div id="block1">
             <h2>Recovery Pie</h2>
             <canvas id="Chart1"></canvas>
-            <p>The whole pie reflects the total number of people infected by coronavirus in {$proper-country-name}.</p>
+            <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$proper-country-name}.</p>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
-                var myDoughnutChart1 = new Chart(ctx1, $chart1data);
+                var chart1 = new Chart(ctx1, $chart1data);
             </script>
         </div>
 
         <div id="block3">
             <h2>Daily Flow</h2>
             <canvas id="Chart2"></canvas>
-            <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name}. It includes three parts: those who could or could not recover and those who are currently in the active phase of the desease.</p>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name} and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
-                var myDoughnutChart2 = new Chart(ctx2, $chart2data);
+                var chart2 = new Chart(ctx2, $chart2data);
             </script>
         </div>
 
         <div id="countries">
             <h2>Statistics per Country</h2>
+            <p><a href="/countries">More statistics on countries</a></p>
             <div id="countries-list">
                 $country-list
             </div>
@@ -356,7 +440,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
 
         HTML
 
-    html_template('/' ~ $cc.lc, "Coronavirus in {$proper-country-name}", $content);
+    html-template('/' ~ $cc.lc, "Coronavirus in {$proper-country-name}", $content);
 }
 
 sub country-list(%countries, $current?) {
@@ -369,6 +453,83 @@ sub country-list(%countries, $current?) {
         my $path = $cc.lc;
         my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
         $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc}[0]<country> ~ '</a></p>';
+    }
+
+    return $html;
+}
+
+sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
+    my $sth = dbh.prepare('select confirmed, cc, date from per_day where confirmed != 0 order by date');
+    $sth.execute();
+
+    my %data;
+    for $sth.allrows(:array-of-hash) -> %row {
+        %data{%row<date>}++;        
+    }
+
+    my @dates;
+    my @n;
+    for %data.keys.sort -> $date {
+        @dates.push($date);
+        @n.push(%data{$date});
+    }
+    
+    my $labels = to-json(@dates);
+
+    my %dataset1 =
+        label => 'Affected countries',
+        data => @n,
+        backgroundColor => 'lightblue';
+    my $dataset1 = to-json(%dataset1);
+
+    my $json = q:to/JSON/;
+        {
+            "type": "bar",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET1
+                ]
+            },
+            "options": {
+                "animation": false,
+            }
+        }
+        JSON
+
+    $json ~~ s/DATASET1/$dataset1/;
+    $json ~~ s/LABELS/$labels/;
+
+    return $json;
+}
+
+sub countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals) {
+    my $sth = dbh.prepare('select confirmed, cc, date from per_day where confirmed != 0 order by date');
+    $sth.execute();
+
+    my %cc;
+    my %data;
+    for $sth.allrows(:array-of-hash) -> %row {
+        my $cc = %row<cc>;
+        next if %cc{$cc};
+        %cc{$cc} = 1; # "Bag" datatype should be used here
+
+        %data{%row<date>}{$cc} = 1; # and here
+    }
+
+    my $html;    
+    for %data.keys.sort.reverse -> $date {        
+        $html ~= "<h4>{$date}</h4><p>";
+
+        my @countries;
+        for %data{$date}.keys.sort -> $cc {
+            next unless %countries{$cc}; # TW is skipped here
+            my $confirmed = %per-day{$cc}{$date}<confirmed>;
+            @countries.push('<a href="/' ~ $cc.lc ~ '">' ~ %countries{$cc}[0]<country> ~ "</a> ($confirmed)");
+        }
+
+        $html ~= @countries.join(', ');
+        $html ~= '</p>';
     }
 
     return $html;
@@ -462,7 +623,6 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, $cc?) {
                     DATASET1
                 ]
             },
-            "responsive": true,
             "options": {
                 "animation": false,
                 "scales": {
@@ -488,7 +648,7 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, $cc?) {
 multi sub number-percent(%countries, %per-day, %totals, %daily-totals) {
     my $confirmed = [+] %totals.values.map: *<confirmed>;
 
-    my $percent = '%.2g'.sprintf(100 * $confirmed / 7_800_000_000);
+    my $percent = '%.2g'.sprintf(100 * $confirmed / $world-population);
 
     return $percent;
 }
@@ -507,7 +667,185 @@ multi sub number-percent(%countries, %per-day, %totals, %daily-totals, $cc) {
     return $percent;
 }
 
-sub html_template($path, $title, $content) {
+# sub number-percent-graph(%countries, %per-day, %totals, %daily-totals, $cc?) {
+#     my %data;
+
+#     my @dates;
+#     my @confirmed;
+#     my @active;
+#     my @failed;
+#     my @recovered;
+
+#     my $population = $cc ?? (1_000_000 * %countries{$cc}[1]<population>).round !! $world-population;
+
+#     for %daily-totals.keys.sort -> $date {
+#         @dates.push($date);
+
+#         my %data = $cc ?? %per-day{$cc}{$date} !! %daily-totals{$date};
+
+#         my $confirmed = 100 * %data<confirmed> / $population;
+#         my $failed = 100 * %data<failed> / $population;
+#         my $recovered = 100 * %data<recovered> / $population;
+
+#         my $active = $confirmed - $failed - $recovered;
+
+#         @confirmed.push($confirmed);
+#         @failed.push($failed);
+#         @recovered.push($recovered);
+#         @active.push($active);
+#     }
+
+#     my $labels = to-json(@dates);
+
+#     my %dataset1 =
+#         label => 'Recovered',
+#         data => @recovered,
+#         fill => False,
+#         borderColor => 'green';
+#     my $dataset1 = to-json(%dataset1);
+
+#     my %dataset2 =
+#         label => 'Failed to recover',
+#         data => @failed,
+#         fill => False,
+#         borderColor => 'red';
+#     my $dataset2 = to-json(%dataset2);
+
+#     my %dataset3 =
+#         label => 'Active cases',
+#         data => @active,
+#         fill => False,
+#         borderColor => 'orange';
+#     my $dataset3 = to-json(%dataset3);
+
+#     my %dataset4 =
+#         label => 'Total confirmed',
+#         data => @confirmed,
+#         fill => False,
+#         borderColor => 'lightblue';
+#     my $dataset4 = to-json(%dataset4);
+
+#     my $json = q:to/JSON/;
+#         {
+#             "type": "line",
+#             "data": {
+#                 "labels": LABELS,
+#                 "datasets": [
+#                     DATASET4,
+#                     DATASET2,
+#                     DATASET3,
+#                     DATASET1
+#                 ]
+#             },
+#             "options": {
+#                 "animation": false,
+#             }
+#         }
+#         JSON
+
+#     $json ~~ s/DATASET1/$dataset1/;
+#     $json ~~ s/DATASET2/$dataset2/;
+#     $json ~~ s/DATASET3/$dataset3/;
+#     $json ~~ s/DATASET4/$dataset4/;
+#     $json ~~ s/LABELS/$labels/;
+
+#     return $json;
+# }
+
+sub countries-per-capita(%countries, %per-day, %totals, %daily-totals) {
+    my %per-mln;
+    for get-known-countries() -> $cc {
+        my $population-mln = %countries{$cc}[1]<population>;
+
+        next if $population-mln < 1;
+        
+        %per-mln{$cc} = sprintf('%.2f', %totals{$cc}<confirmed> / $population-mln);
+    }
+
+    my @labels;
+    my @recovered;
+    my @failed;
+    my @active;
+
+    my $count = 0;
+    for %per-mln.sort(+*.value).reverse -> $item {
+        last if ++$count > 30;
+
+        my $cc = $item.key;
+        my $population-mln = %countries{$cc}[1]<population>;
+
+        @labels.push(%countries{$cc}[0]<country>);
+
+        my $per-capita-confirmed = $item.value;
+        
+        my $per-capita-failed = %totals{$cc}<failed> / $population-mln;
+        $per-capita-failed = 0 if $per-capita-failed < 0;
+        @failed.push('%.2f'.sprintf($per-capita-failed));
+
+        my $per-capita-recovered = %totals{$cc}<recovered> / $population-mln;
+        $per-capita-recovered = 0 if $per-capita-recovered < 0;
+        @recovered.push('%.2f'.sprintf($per-capita-recovered));
+
+        @active.push('%.2f'.sprintf(($per-capita-confirmed - $per-capita-failed - $per-capita-recovered)));
+    }
+
+    my $labels = to-json(@labels);
+
+    my %dataset1 =
+        label => 'Recovered',
+        data => @recovered,
+        backgroundColor => 'green';
+    my $dataset1 = to-json(%dataset1);
+
+    my %dataset2 =
+        label => 'Failed to recover',
+        data => @failed,
+        backgroundColor => 'red';
+    my $dataset2 = to-json(%dataset2);
+
+    my %dataset3 =
+        label => 'Active cases',
+        data => @active,
+        backgroundColor => 'orange';
+    my $dataset3 = to-json(%dataset3);
+
+    my $json = q:to/JSON/;
+        {
+            "type": "horizontalBar",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET2,
+                    DATASET3,
+                    DATASET1
+                ]
+            },
+            "options": {
+                "animation": false,
+                "scales": {
+                    "xAxes": [{
+                        "stacked": true,
+                    }],
+                    "yAxes": [{
+                        "stacked": true,
+                        "ticks": {
+                            "autoSkip": false
+                        }
+                    }],                   
+                }
+            }
+        }
+        JSON
+
+    $json ~~ s/DATASET1/$dataset1/;
+    $json ~~ s/DATASET2/$dataset2/;
+    $json ~~ s/DATASET3/$dataset3/;
+    $json ~~ s/LABELS/$labels/;
+    
+    return $json;
+}
+
+sub html-template($path, $title, $content) {
     my $style = q:to/CSS/;
         body, html {
             width: 100%;
@@ -516,12 +854,33 @@ sub html_template($path, $title, $content) {
             text-align: center;
             font-family: Helvetica, Arial, sans-serif;
             color: #333333;
+            background: white;
         }
         #block2 {
             padding-top: 10%;
             background: #f5f5ea;
             padding-bottom: 10%;
+        }
+        #block4 {
+            padding-top: 5%;
+            background: #f5f5ea;
+            padding-bottom: 10%;
             margin-bottom: 10%;
+            padding-left: 2%;
+            padding-right: 2%;
+        }
+        #block5 {
+            padding-top: 5%;
+            padding-bottom: 5%;
+            margin-bottom: 5%;
+            padding-left: 2%;
+            padding-right: 2%;
+        }
+        #block6 {
+            padding-bottom: 10%;
+            margin-bottom: 5%;
+            padding-left: 2%;
+            padding-right: 2%;
         }
         #block1 {
             margin-bottom: 10%;
@@ -540,6 +899,16 @@ sub html_template($path, $title, $content) {
             font-weight: normal;
             font-size: 300%;
         }
+        h3 {
+            font-weight: normal;
+            font-size: 200%;
+        }
+        h4 {
+            font-weight: bold;
+            padding-bottom: 0;
+            margin-bottom: 0;
+            font-size: 120%;
+        }
         #percent {
             font-size: 900%;
         }
@@ -552,11 +921,11 @@ sub html_template($path, $title, $content) {
             padding-left: 3%;
             padding-right: 3%;
         }
-        #countries-list a {
+        a {
             color: #333333;
             text-decoration: none;
         }
-        #countries-list a:hover {
+        a:hover {
             color: #333333;
             text-decoration: underline;
         }
@@ -577,9 +946,22 @@ sub html_template($path, $title, $content) {
             #countries-list {
                 column-count: 2;
             }
+            #block4 {
+                display: none;
+            }
         }
 
         CSS
+
+    my $ga = q:to/GA/;
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160707541-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-160707541-1');
+        </script>
+        GA
 
     my $template = qq:to/HTML/;
         <html>
@@ -587,6 +969,9 @@ sub html_template($path, $title, $content) {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>$title | Coronavirus COVID-19 Observer</title>
+
+            $ga
+
             <script src="/Chart.min.js"></script>
             <style>
                 $style

@@ -3,6 +3,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>World statistics | Coronavirus COVID-19 Observer</title>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160707541-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-160707541-1');
+</script>
+
+
     <script src="/Chart.min.js"></script>
     <style>
         body, html {
@@ -12,12 +22,20 @@
     text-align: center;
     font-family: Helvetica, Arial, sans-serif;
     color: #333333;
+    background: white;
 }
 #block2 {
     padding-top: 10%;
     background: #f5f5ea;
     padding-bottom: 10%;
+}
+#block4 {
+    padding-top: 5%;
+    background: #f5f5ea;
+    padding-bottom: 10%;
     margin-bottom: 10%;
+    padding-left: 2%;
+    padding-right: 2%;
 }
 #block1 {
     margin-bottom: 10%;
@@ -35,6 +53,10 @@ h1 {
 h2 {
     font-weight: normal;
     font-size: 300%;
+}
+h3 {
+    font-weight: normal;
+    font-size: 200%;
 }
 #percent {
     font-size: 900%;
@@ -73,6 +95,9 @@ h2 {
     #countries-list {
         column-count: 2;
     }
+    #block4 {
+        display: none;
+    }
 }
 
 
@@ -80,24 +105,25 @@ h2 {
 </head>
 <body>
     <h1>COVID-19 World Statistics</h1>
+
 <div id="block2">
     <h2>Affected World Population</h2>
-    <div id="percent">0.0018&thinsp;%</div>
-    <p>This is the part of infected people against the total 7.8 billion of the world population.</p>
+    <div id="percent">0.0021&thinsp;%</div>
+    <p>This is the part of confirmed infection cases against the total 7.8 billion of the world population.</p>
 </div>
 
 <div id="block1">
     <h2>Recovery Pie</h2>
     <canvas id="Chart1"></canvas>
-    <p>The whole pie reflects the total number of people infected by coronavirus in the whole world.</p>
+    <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world.</p>
     <script>
         var ctx1 = document.getElementById('Chart1').getContext('2d');
-        var myDoughnutChart1 = new Chart(ctx1, {
+        var chart1 = new Chart(ctx1, {
     "type": "pie",
     "data": {
-        "labels": ["Recovered 49%", "Failed to recover 4%", "Active cases 47%"],
+        "labels": ["Recovered 45%", "Failed to recover 4%", "Active cases 51%"],
         "datasets": [
-            { "label" : "Recovery statistics", "data" : [ 69858, 5349, 66690 ], "backgroundColor" : [ "green", "red", "orange" ] }
+            { "backgroundColor" : [ "green", "red", "orange" ], "data" : [ 75675, 6433, 84410 ], "label" : "Recovery statistics" }
         ]
     },
     "options": {
@@ -111,20 +137,19 @@ h2 {
 <div id="block3">
     <h2>Daily Flow</h2>
     <canvas id="Chart2"></canvas>
-    <p>The height of a single bar is the total number of people suffered from Coronavirus. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
+    <p>The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the world. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
     <script>
         var ctx2 = document.getElementById('Chart2').getContext('2d');
-        var myDoughnutChart2 = new Chart(ctx2, {
+        var chart2 = new Chart(ctx2, {
     "type": "bar",
     "data": {
-        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13" ],
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15" ],
         "datasets": [
-            { "backgroundColor" : "red", "label" : "Failed to recover", "data" : [ 17, 18, 26, 42, 56, 82, 131, 133, 171, 213, 259, 362, 426, 492, 564, 634, 719, 806, 906, 1013, 1113, 1118, 1371, 1523, 1666, 1769, 1867, 2006, 2121, 2244, 2248, 2455, 2465, 2625, 2704, 2765, 2809, 2865, 2933, 2988, 3072, 3146, 3236, 3329, 3439, 3534, 3774, 3959, 4227, 4571, 4672, 5349 ] },
-            { "backgroundColor" : "orange", "data" : [ 508, 601, 872, 1346, 1999, 2772, 5325, 5888, 7900, 9467, 11466, 15923, 18797, 22512, 25911, 28654, 31558, 33589, 35890, 37620, 38826, 38736, 52484, 57044, 57644, 58193, 58310, 58192, 56732, 55097, 55011, 52560, 52368, 50943, 49033, 47463, 45884, 43753, 42493, 41852, 40796, 40600, 39814, 39780, 41480, 42772, 44028, 45745, 48181, 52408, 53065, 66685 ], "label" : "Active cases" },
-            { "data" : [ 28, 30, 36, 39, 52, 61, 107, 126, 143, 222, 283, 471, 622, 851, 1123, 1485, 2009, 2614, 3239, 3941, 4673, 5137, 6281, 8043, 9378, 10847, 12565, 14334, 16102, 18158, 18862, 22858, 23367, 25197, 27872, 30341, 33234, 36665, 39733, 42667, 45550, 48176, 51118, 53744, 55783, 58274, 60608, 62406, 64308, 66617, 67931, 69857 ], "label" : "Recovered", "backgroundColor" : "green" }
+            { "backgroundColor" : "red", "data" : [ 17, 18, 26, 42, 56, 82, 131, 133, 171, 213, 259, 362, 426, 492, 564, 634, 719, 806, 906, 1013, 1113, 1118, 1371, 1523, 1666, 1770, 1868, 2007, 2122, 2245, 2249, 2456, 2466, 2626, 2705, 2766, 2810, 2866, 2934, 2989, 3073, 3147, 3237, 3330, 3440, 3535, 3775, 3960, 4256, 4608, 4713, 5397, 5812, 6433 ], "label" : "Failed to recover" },
+            { "label" : "Active cases", "backgroundColor" : "orange", "data" : [ 509, 602, 875, 1349, 2003, 2777, 5333, 5896, 7909, 9479, 11478, 15935, 18809, 22525, 25924, 28671, 31575, 33607, 35909, 37639, 38845, 38753, 52501, 57060, 57660, 58210, 58329, 58211, 56752, 55118, 55034, 52583, 52393, 51003, 49094, 47531, 45952, 43824, 42566, 41929, 40873, 40680, 39897, 39870, 41586, 42900, 44170, 45885, 49191, 53783, 54823, 69017, 77119, 84416 ] },
+            { "data" : [ 28, 30, 36, 39, 52, 61, 107, 126, 143, 222, 283, 471, 622, 851, 1123, 1486, 2010, 2615, 3240, 3942, 4674, 5140, 6284, 8047, 9382, 10851, 12569, 14338, 16106, 18162, 18866, 22862, 23371, 25204, 27879, 30348, 33241, 36673, 39744, 42678, 45564, 48190, 51132, 53758, 55797, 58288, 60624, 62424, 64336, 66645, 67966, 69892, 72265, 75669 ], "backgroundColor" : "green", "label" : "Recovered" }
         ]
     },
-    "responsive": true,
     "options": {
         "animation": false,
         "scales": {
@@ -141,10 +166,45 @@ h2 {
     </script>
 </div>
 
+<div id="block4">
+    <h2>Top 30 Affected per Million</h2>
+    <canvas style="height: 400px" id="Chart4"></canvas>
+    <p>This graph shows the number of affected people per each million of the population. Countries with more than one million are shown only.</p>
+    <script>
+        var ctx4 = document.getElementById('Chart4').getContext('2d');
+        var chart4 = new Chart(ctx4, {
+    "type": "horizontalBar",
+    "data": {
+        "labels": [ "Italy", "Switzerland", "Norway", "Iran", "Spain", "South Korea", "Denmark", "Qatar", "Bahrain", "Estonia", "Slovenia", "Sweden", "Austria", "Belgium", "Germany", "France", "Netherlands", "China", "Finland", "Singapore", "Greece", "Israel", "Kuwait", "Ireland", "Portugal", "Czech Republic", "Cyprus", "United Kingdom", "Lebanon", "Latvia" ],
+        "datasets": [
+            { "data" : [ "29.88", "1.63", "0.56", "8.73", "6.18", "1.46", "0.35", "0.00", "0.00", "0.00", "0.48", "0.30", "0.11", "0.35", "0.13", "1.40", "1.17", "2.23", "0.00", "0.00", "0.38", "0.00", "0.00", "0.41", "0.00", "0.00", "0.00", "0.31", "0.44", "0.00" ], "backgroundColor" : "red", "label" : "Failed to recover" },
+            { "data" : [ "340.26", "253.97", "226.26", "104.01", "149.60", "147.92", "151.08", "140.18", "93.83", "128.25", "104.87", "101.43", "95.25", "76.35", "68.71", "67.71", "65.10", "7.52", "42.30", "20.85", "30.45", "28.99", "25.43", "26.01", "23.76", "23.67", "21.69", "16.35", "15.47", "15.21" ], "backgroundColor" : "orange", "label" : "Active cases" },
+            { "data" : [ "38.56", "0.47", "0.19", "55.36", "11.06", "9.96", "0.17", "1.41", "36.56", "0.75", "0.00", "0.10", "0.67", "0.09", "0.55", "0.18", "0.12", "46.74", "1.81", "18.09", "0.76", "0.47", "1.19", "0.00", "0.20", "0.00", "0.00", "0.28", "0.15", "0.52" ], "backgroundColor" : "green", "label" : "Recovered" }
+        ]
+    },
+    "options": {
+        "animation": false,
+        "scales": {
+            "xAxes": [{
+                "stacked": true,
+            }],
+            "yAxes": [{
+                "stacked": true,
+                "ticks": {
+                    "autoSkip": false
+                }
+            }],                   
+        }
+    }
+}
+);
+    </script>
+</div>
+
 <div id="countries">
     <h2>Statistics per Country</h2>
     <div id="countries-list">
-        <p class="current"><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p><a href="/am">Armenia</a></p><p><a href="/aw">Aruba</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p><a href="/az">Azerbaijan</a></p><p><a href="/bh">Bahrain</a></p><p><a href="/bd">Bangladesh</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bt">Bhutan</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/br">Brazil</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/ky">Cayman Islands</a></p><p><a href="/cl">Chile</a></p><p><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p><a href="/cy">Cyprus</a></p><p><a href="/dk">Denmark</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/ee">Estonia</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/gf">French Guiana</a></p><p><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gr">Greece</a></p><p><a href="/gp">Guadeloupe</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gy">Guyana</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p><a href="/in">India</a></p><p><a href="/id">Indonesia</a></p><p><a href="/ir">Iran</a></p><p><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p><a href="/jp">Japan</a></p><p><a href="/jo">Jordan</a></p><p><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/kw">Kuwait</a></p><p><a href="/lv">Latvia</a></p><p><a href="/lb">Lebanon</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/my">Malaysia</a></p><p><a href="/mv">Maldives</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mx">Mexico</a></p><p><a href="/mc">Monaco</a></p><p><a href="/mn">Mongolia</a></p><p><a href="/ma">Morocco</a></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/no">Norway</a></p><p><a href="/om">Oman</a></p><p><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p><a href="/qa">Qatar</a></p><p><a href="/ro">Romania</a></p><p><a href="/sm">San Marino</a></p><p><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sg">Singapore</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/za">South Africa</a></p><p><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p><a href="/lk">Sri Lanka</a></p><p><a href="/sd">Sudan</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p><a href="/th">Thailand</a></p><p><a href="/tg">Togo</a></p><p><a href="/tn">Tunisia</a></p><p><a href="/tr">Turkey</a></p><p><a href="/ua">Ukraine</a></p><p><a href="/gb">United Kingdom</a></p>
+        <p class="current"><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p><a href="/am">Armenia</a></p><p><a href="/aw">Aruba</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p><a href="/az">Azerbaijan</a></p><p><a href="/bh">Bahrain</a></p><p><a href="/bd">Bangladesh</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bt">Bhutan</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/br">Brazil</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/ky">Cayman Islands</a></p><p><a href="/cf">Central African Republic</a></p><p><a href="/cl">Chile</a></p><p><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p><a href="/cy">Cyprus</a></p><p><a href="/cz">Czech Republic</a></p><p><a href="/dk">Denmark</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/ee">Estonia</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/ga">Gabon</a></p><p><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gh">Ghana</a></p><p><a href="/gr">Greece</a></p><p><a href="/gp">Guadeloupe</a></p><p><a href="/gt">Guatemala</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gy">Guyana</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p><a href="/in">India</a></p><p><a href="/id">Indonesia</a></p><p><a href="/ir">Iran</a></p><p><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p><a href="/jp">Japan</a></p><p><a href="/jo">Jordan</a></p><p><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/kw">Kuwait</a></p><p><a href="/lv">Latvia</a></p><p><a href="/lb">Lebanon</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/my">Malaysia</a></p><p><a href="/mv">Maldives</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mr">Mauritania</a></p><p><a href="/mx">Mexico</a></p><p><a href="/mc">Monaco</a></p><p><a href="/mn">Mongolia</a></p><p><a href="/ma">Morocco</a></p><p><a href="/na">Namibia</a></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/no">Norway</a></p><p><a href="/om">Oman</a></p><p><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p><a href="/qa">Qatar</a></p><p><a href="/ro">Romania</a></p><p><a href="/ru">Russian Federation</a></p><p><a href="/rw">Rwanda</a></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a></p><p><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sc">Seychelles</a></p><p><a href="/sg">Singapore</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/za">South Africa</a></p><p><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p><a href="/lk">Sri Lanka</a></p><p><a href="/sd">Sudan</a></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p><a href="/th">Thailand</a></p><p><a href="/tg">Togo</a></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a></p><p><a href="/tr">Turkey</a></p><p><a href="/ua">Ukraine</a></p><p><a href="/gb">United Kingdom</a></p><p><a href="/us">United States of America</a></p><p><a href="/uy">Uruguay</a></p><p><a href="/uz">Uzbekistan</a></p>
     </div>
 </div>
 
