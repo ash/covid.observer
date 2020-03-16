@@ -84,6 +84,8 @@ multi sub MAIN('generate') {
 
     generate-world-stats(%countries, %per-day, %totals, %daily-totals);
 
+    generate-countries-stats(%countries, %per-day, %totals, %daily-totals);
+
     for get-known-countries() -> $cc {
         generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals);
     }
@@ -265,8 +267,6 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
     my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals);
     my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals);
 
-    my $chart4data = countries-per-capita(%countries, %per-day, %totals, %daily-totals);
-
     # my $chart4data = number-percent-graph(%countries, %per-day, %totals, %daily-totals);
         # <div id="block4">
         #     <h3>Affected population timeline</h3>
@@ -309,6 +309,47 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
             </script>
         </div>
 
+        <div id="countries">
+            <h2>Statistics per Country</h2>
+            <p><a href="/countries">More statistics on countries</a></p>
+            <div id="countries-list">
+                $country-list
+            </div>
+        </div>
+
+        HTML
+
+    html-template('/', 'World statistics', $content);
+}
+
+sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) {
+    say 'Generating countries data...';
+
+    my $chart5data = countries-first-appeared(%countries, %per-day, %totals, %daily-totals);
+    my $chart4data = countries-per-capita(%countries, %per-day, %totals, %daily-totals);
+    my $countries-appeared = countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals);
+
+    my $country-list = country-list(%countries);
+
+    my $content = qq:to/HTML/;
+        <h1>Coronavirus in different countries</h1>
+
+        <div id="block5">
+            <h2>Number of Countires Affected</h2>
+            <canvas style="height: 400px" id="Chart5"></canvas>
+            <p>On this graph, you can see how many countries did have data about confirmed coronavirus invection for a given date over the last months.</p>
+            <script>
+                var ctx5 = document.getElementById('Chart5').getContext('2d');
+                var chart5 = new Chart(ctx5, $chart5data);
+            </script>
+        </div>
+
+        <div id="block6">
+            <h2>Countries Appeared This Day</h2>
+            <p>This list gives you the overview of when the first confirmed case was reported in the given country. Or, you can see here, which countries entered the chart in the recent days. The number in parentheses is the number of confirmed cases in that country on that date.</p>
+            $countries-appeared
+        </div>
+
         <div id="block4">
             <h2>Top 30 Affected per Million</h2>
             <canvas style="height: 400px" id="Chart4"></canvas>
@@ -328,7 +369,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
 
         HTML
 
-    html-template('/', 'World statistics', $content);
+    html-template('/countries', 'Coronavirus in different countries', $content);
 }
 
 sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
@@ -391,6 +432,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
 
         <div id="countries">
             <h2>Statistics per Country</h2>
+            <p><a href="/countries">More statistics on countries</a></p>
             <div id="countries-list">
                 $country-list
             </div>
@@ -411,6 +453,83 @@ sub country-list(%countries, $current?) {
         my $path = $cc.lc;
         my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
         $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc}[0]<country> ~ '</a></p>';
+    }
+
+    return $html;
+}
+
+sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
+    my $sth = dbh.prepare('select confirmed, cc, date from per_day where confirmed != 0 order by date');
+    $sth.execute();
+
+    my %data;
+    for $sth.allrows(:array-of-hash) -> %row {
+        %data{%row<date>}++;        
+    }
+
+    my @dates;
+    my @n;
+    for %data.keys.sort -> $date {
+        @dates.push($date);
+        @n.push(%data{$date});
+    }
+    
+    my $labels = to-json(@dates);
+
+    my %dataset1 =
+        label => 'Affected countries',
+        data => @n,
+        backgroundColor => 'lightblue';
+    my $dataset1 = to-json(%dataset1);
+
+    my $json = q:to/JSON/;
+        {
+            "type": "bar",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET1
+                ]
+            },
+            "options": {
+                "animation": false,
+            }
+        }
+        JSON
+
+    $json ~~ s/DATASET1/$dataset1/;
+    $json ~~ s/LABELS/$labels/;
+
+    return $json;
+}
+
+sub countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals) {
+    my $sth = dbh.prepare('select confirmed, cc, date from per_day where confirmed != 0 order by date');
+    $sth.execute();
+
+    my %cc;
+    my %data;
+    for $sth.allrows(:array-of-hash) -> %row {
+        my $cc = %row<cc>;
+        next if %cc{$cc};
+        %cc{$cc} = 1; # "Bag" datatype should be used here
+
+        %data{%row<date>}{$cc} = 1; # and here
+    }
+
+    my $html;    
+    for %data.keys.sort.reverse -> $date {        
+        $html ~= "<h4>{$date}</h4><p>";
+
+        my @countries;
+        for %data{$date}.keys.sort -> $cc {
+            next unless %countries{$cc}; # TW is skipped here
+            my $confirmed = %per-day{$cc}{$date}<confirmed>;
+            @countries.push('<a href="/' ~ $cc.lc ~ '">' ~ %countries{$cc}[0]<country> ~ "</a> ($confirmed)");
+        }
+
+        $html ~= @countries.join(', ');
+        $html ~= '</p>';
     }
 
     return $html;
@@ -750,6 +869,19 @@ sub html-template($path, $title, $content) {
             padding-left: 2%;
             padding-right: 2%;
         }
+        #block5 {
+            padding-top: 5%;
+            padding-bottom: 5%;
+            margin-bottom: 5%;
+            padding-left: 2%;
+            padding-right: 2%;
+        }
+        #block6 {
+            padding-bottom: 10%;
+            margin-bottom: 5%;
+            padding-left: 2%;
+            padding-right: 2%;
+        }
         #block1 {
             margin-bottom: 10%;
         }
@@ -771,6 +903,12 @@ sub html-template($path, $title, $content) {
             font-weight: normal;
             font-size: 200%;
         }
+        h4 {
+            font-weight: bold;
+            padding-bottom: 0;
+            margin-bottom: 0;
+            font-size: 120%;
+        }
         #percent {
             font-size: 900%;
         }
@@ -783,11 +921,11 @@ sub html-template($path, $title, $content) {
             padding-left: 3%;
             padding-right: 3%;
         }
-        #countries-list a {
+        a {
             color: #333333;
             text-decoration: none;
         }
-        #countries-list a:hover {
+        a:hover {
             color: #333333;
             text-decoration: underline;
         }
@@ -807,6 +945,9 @@ sub html-template($path, $title, $content) {
             }
             #countries-list {
                 column-count: 2;
+            }
+            #block4 {
+                display: none;
             }
         }
 
