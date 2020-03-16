@@ -922,10 +922,18 @@ sub html-template($path, $title, $content) {
             padding-right: 3%;
         }
         a {
-            color: #333333;
+            color: #1e2aa1;
             text-decoration: none;
         }
         a:hover {
+            color: #1e2aa1;
+            text-decoration: underline;
+        }
+        #countries-list a {
+            color: #333333;
+            text-decoration: none;
+        }
+        #countries-list a:hover {
             color: #333333;
             text-decoration: underline;
         }
@@ -982,7 +990,7 @@ sub html-template($path, $title, $content) {
 
             <div id="about">
                 <p>Bases on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
-                <p>This website presents the very same data but from a less-panic perspective. Updated daily around midnight European time.</p>
+                <p>This website presents the very same data but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
                 <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
             </div>
         </body>
