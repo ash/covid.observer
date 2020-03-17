@@ -2,6 +2,7 @@
 
 use HTTP::UserAgent;
 use Locale::Codes::Country;
+use Locale::US;
 use DBIish;
 use JSON::Tiny;
 
@@ -114,6 +115,17 @@ sub parse-population() {
         %population{$cc} = +$value;
     }
 
+    # US population
+    # https://www2.census.gov/programs-surveys/popest/tables/2010-2019/state/totals/nst-est2019-01.xlsx from
+    # https://www.census.gov/data/datasets/time-series/demo/popest/2010s-state-total.html
+    for 'us-population.csv'.IO.lines() -> $line {
+        my ($state, $value) = split ',', $line;
+        my $state-cc = 'US/' ~ state-to-code($state);
+
+        %countries{$state-cc} = $state;
+        %population{$state-cc} = +$value / 1_000_000;
+    }
+
     return
         population => %population,
         countries => %countries;
@@ -174,6 +186,22 @@ sub extract-covid-data($data) {
 
             my $uptodate = %per-day{$cc}{$date};
             %total{$cc} = $uptodate if !%total{$cc} or $uptodate > %total{$cc};
+        }
+
+        if ($cc eq 'US') {
+            my $state = @data[0];
+
+            if ($state && $state !~~ /Princess/) {
+                my $state-cc = 'US/' ~ state-to-code($state);
+
+                for @dates Z @data[4..*] -> ($date, $n) {
+                    %per-day{$state-cc}{$date} += $n;
+                    %daily-per-country{$date}{$state-cc} += $n;
+
+                    my $uptodate = %per-day{$state-cc}{$date};
+                    %total{$state-cc} = $uptodate if !%total{$state-cc} or $uptodate > %total{$state-cc};
+                }
+            }
         }
     }
 
@@ -395,7 +423,7 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) {
 
         <div id="block6">
             <h2>Confirmed population timeline</h2>
-            <p>On this graph, you see how the fraction of confirmed infected population changes over time in different countries.</p>
+            <p>On this graph, you see how the fraction (in %) of confirmed infected population changes over time in different countries.</p>
             <p>The almost horizontal red line displays China. The number of confirmed infections in China alsmost stopped growing.</p>
             <br/>
             <canvas style="height: 400px" id="Chart6"></canvas>
