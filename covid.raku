@@ -325,22 +325,25 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
 sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) {
     say 'Generating countries data...';
 
-    my $chart5data = countries-first-appeared(%countries, %per-day, %totals, %daily-totals);
+    my %chart5data = countries-first-appeared(%countries, %per-day, %totals, %daily-totals);
     my $chart4data = countries-per-capita(%countries, %per-day, %totals, %daily-totals);
     my $countries-appeared = countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals);
 
     my $country-list = country-list(%countries);
+
+    my $percent = sprintf('%.1f', 100 * %chart5data<current-n> / %chart5data<total-countries>);
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus in different countries</h1>
 
         <div id="block5">
             <h2>Number of Countires Affected</h2>
+            <p>%chart5data<current-n> countires are affected, which is {$percent}&thinsp;\% from the total %chart5data<total-countries> countries.</p>
             <canvas style="height: 400px" id="Chart5"></canvas>
             <p>On this graph, you can see how many countries did have data about confirmed coronavirus invection for a given date over the last months.</p>
             <script>
                 var ctx5 = document.getElementById('Chart5').getContext('2d');
-                var chart5 = new Chart(ctx5, $chart5data);
+                var chart5 = new Chart(ctx5, %chart5data<json>);
             </script>
         </div>
 
@@ -460,7 +463,7 @@ sub country-list(%countries, $current?) {
 
 sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
     my $sth = dbh.prepare('select confirmed, cc, date from per_day where confirmed != 0 order by date');
-    $sth.execute();
+    $sth.execute();    
 
     my %data;
     for $sth.allrows(:array-of-hash) -> %row {
@@ -469,17 +472,19 @@ sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
 
     my @dates;
     my @n;
+    my @percent;
     for %data.keys.sort -> $date {
         @dates.push($date);
-        @n.push(%data{$date});
+        @n.push(%data{$date}); 
     }
     
     my $labels = to-json(@dates);
 
     my %dataset1 =
-        label => 'Affected countries',
+        label => 'The number of affected countries',
         data => @n,
-        backgroundColor => 'lightblue';
+        backgroundColor => 'lightblue',
+        yAxisID => "axis1";
     my $dataset1 = to-json(%dataset1);
 
     my $json = q:to/JSON/;
@@ -493,6 +498,43 @@ sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
             },
             "options": {
                 "animation": false,
+                scales: {
+                    yAxes: [
+                        {
+                            type: "linear",
+                            display: true,
+                            position: "left",
+                            id: "axis1",
+                            ticks: {
+                                min: 0,
+                                max: 208,
+                                stepSize: 10
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: "The number of affected countries"
+                            }
+                        },
+                        {
+                            type: "linear",
+                            display: true,
+                            position: "right",
+                            id: "axis2",
+                            gridLines: {
+                                drawOnChartArea: false
+                            },
+                            ticks: {
+                                min: 0,
+                                max: 100,
+                                stepSize: 10
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: "Part of the total number of countries, in %"
+                            }
+                        }
+                    ]
+                }
             }
         }
         JSON
@@ -500,7 +542,13 @@ sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
     $json ~~ s/DATASET1/$dataset1/;
     $json ~~ s/LABELS/$labels/;
 
-    return $json;
+    my $total-countries = +%countries.keys;
+    my $current-n = @n[*-1];
+
+    return 
+        json => $json,
+        total-countries => $total-countries,
+        current-n => $current-n;
 }
 
 sub countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals) {
