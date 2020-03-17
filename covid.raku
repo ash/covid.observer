@@ -582,7 +582,7 @@ sub country-list(%countries, $current?) {
         next unless %countries{$cc};
 
         if $cc ~~ /US'/'/ {
-            if $current ~~ 'US' {
+            if $current && $current ~~ /US/ {
                 my $path = $cc.lc;
                 my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
                 $us_html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc}[0]<country> ~ '</a></p>';
@@ -595,10 +595,11 @@ sub country-list(%countries, $current?) {
         }
     }
 
-    if $current ~~ 'US' {
+    if $current && $current ~~ /US/ {
         $us_html = qq:to/USHTML/;
             <a name="states"></a>
             <h2>Statistics per US States</h2>
+            <p><a href="/us">Cumulative USA statistics</a></p>
             <div id="countries-list">
                 $us_html
             </div>
@@ -609,6 +610,7 @@ sub country-list(%countries, $current?) {
         <div id="countries">
             $us_html
             <h2>Statistics per Country</h2>
+            <p><a href="/">Whole world</a></p>
             <p><a href="/countries">More statistics on countries</a></p>
             <p><a href="/vs-china">Countries vs China</a></p>
             <div id="countries-list">
@@ -619,7 +621,7 @@ sub country-list(%countries, $current?) {
 }
 
 sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
-    my $sth = dbh.prepare('select confirmed, cc, date from per_day where confirmed != 0 order by date');
+    my $sth = dbh.prepare('select confirmed, cc, date from per_day where confirmed != 0 and cc not like "%/%" order by date');
     $sth.execute();    
 
     my %data;
@@ -699,7 +701,7 @@ sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
     $json ~~ s/DATASET1/$dataset1/;
     $json ~~ s/LABELS/$labels/;
 
-    my $total-countries = +%countries.keys;
+    my $total-countries = +%countries.keys.grep(* !~~ /'/'/);
     my $current-n = @n[*-1];
 
     return 
@@ -1171,7 +1173,7 @@ sub html-template($path, $title, $content) {
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
+            gtag('js', new Date());get
             gtag('config', 'UA-160707541-1');
         </script>
         GA
@@ -1192,7 +1194,10 @@ sub html-template($path, $title, $content) {
             </style>
         </head>
         <body>
-            <p>New:
+            <p>
+                <a href="/">Home</a>
+                |
+                New:
                 <a href="/countries">Affected countries</a>
                 |
                 <a href="/vs-china">Countries vs China</a>
@@ -1203,7 +1208,7 @@ sub html-template($path, $title, $content) {
             $content
 
             <div id="about">
-                <p>Bases on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
+                <p>Based on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
                 <p>This website presents the very same data but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
                 <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
             </div>
