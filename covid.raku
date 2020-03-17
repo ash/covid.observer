@@ -972,7 +972,8 @@ sub html-template($path, $title, $content) {
         GA
 
     my $template = qq:to/HTML/;
-        <html>
+        <!DOCTYPE html>
+        <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
