@@ -399,7 +399,7 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) {
             <p>The almost horizontal red line displays China. The number of confirmed infections in China alsmost stopped growing.</p>
             <br/>
             <canvas style="height: 400px" id="Chart6"></canvas>
-            <p>1. Note that only countries with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San-Marino</a> would have shown too high nimbers due to their small population.</p>
+            <p>1. Note that only countries with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
             <p>2. The line for the country is drawn only if it reaches at least 80% of the corresponding maximum parameter in China.</p>
             <script>
                 var ctx6 = document.getElementById('Chart6').getContext('2d');
@@ -469,7 +469,8 @@ sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) {
             label => %countries{$cc}[0]<country>,
             data => %dataset{$cc},
             fill => False,
-            borderColor => $color;
+            borderColor => $color,
+            lineTension => 0;
         push @ds, to-json(%ds);
     }
 
