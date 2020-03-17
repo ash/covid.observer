@@ -411,11 +411,12 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) {
 
         <div id="block6">
             <h2>Confirmed population timeline</h2>
-            <p>On this graph, you see how the fraction (in %) of confirmed infected population changes over time in different countries.</p>
+            <p>On this graph, you see how the fraction (in %) of confirmed infected population changes over time in different countries or US states.</p>
             <p>The almost horizontal red line displays China. The number of confirmed infections in China alsmost stopped growing.</p>
+            <p>Click on the bar in the legend to turn the line off and on.</p>
             <br/>
             <canvas style="height: 400px" id="Chart6"></canvas>
-            <p>1. Note that only countries with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
+            <p>1. Note that only countries and US states with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
             <p>2. The line for the country is drawn only if it reaches at least 80% of the corresponding maximum parameter in China.</p>
             <script>
                 var ctx6 = document.getElementById('Chart6').getContext('2d');
