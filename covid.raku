@@ -1173,7 +1173,7 @@ sub html-template($path, $title, $content) {
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());get
+            gtag('js', new Date());
             gtag('config', 'UA-160707541-1');
         </script>
         GA
