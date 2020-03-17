@@ -188,10 +188,10 @@ sub extract-covid-data($data) {
             %total{$cc} = $uptodate if !%total{$cc} or $uptodate > %total{$cc};
         }
 
-        if ($cc eq 'US') {
+        if $cc eq 'US' {
             my $state = @data[0];
 
-            if ($state && $state !~~ /Princess/) {
+            if $state && $state !~~ /Princess/ {
                 my $state-cc = 'US/' ~ state-to-code($state);
 
                 for @dates Z @data[4..*] -> ($date, $n) {
@@ -338,14 +338,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
             </script>
         </div>
 
-        <div id="countries">
-            <h2>Statistics per Country</h2>
-            <p><a href="/countries">More statistics on countries</a></p>
-            <p><a href="/vs-china">Countries vs China</a></p>
-            <div id="countries-list">
-                $country-list
-            </div>
-        </div>
+        $country-list
 
         HTML
 
@@ -393,12 +386,7 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) {
             </script>
         </div>
 
-        <div id="countries">
-            <h2>Statistics per Country</h2>
-            <div id="countries-list">
-                $country-list
-            </div>
-        </div>
+        $country-list
 
         HTML
 
@@ -435,14 +423,7 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) {
             </script>
         </div>
 
-        <div id="countries">
-            <h2>Statistics per Country</h2>
-            <p><a href="/countries">More statistics on countries</a></p>
-            <p><a href="/vs-china">Countries vs China</a></p>
-            <div id="countries-list">
-                $country-list
-            </div>
-        </div>
+        $country-list
 
         HTML
 
@@ -522,7 +503,7 @@ sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) {
 
     $json ~~ s/DATASETS/$datasets/;
     $json ~~ s/LABELS/$labels/;
-    $json ~~ s:g/\"RANDOMCOLOR\"/randomColorGenerator()/;
+    $json ~~ s:g/\"RANDOMCOLOR\"/randomColorGenerator()/; #"
 
     return $json;
 }
@@ -554,7 +535,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
         !! sprintf('%i million', $population.round);
 
     my $proper-country-name = $country-name;
-    $proper-country-name = "the $country-name" if $cc ~~ /US|GB|NL|DO|CZ/;
+    $proper-country-name = "the $country-name" if $cc ~~ /[US|GB|NL|DO|CZ]$/;
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus in {$proper-country-name}</h1>
@@ -585,14 +566,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
             </script>
         </div>
 
-        <div id="countries">
-            <h2>Statistics per Country</h2>
-            <p><a href="/countries">More statistics on countries</a></p>
-            <p><a href="/vs-china">Countries vs China</a></p>
-            <div id="countries-list">
-                $country-list
-            </div>
-        </div>
+        $country-list
 
         HTML
 
@@ -603,15 +577,45 @@ sub country-list(%countries, $current?) {
     my $is_current = !$current ?? ' class="current"' !! '';
     my $html = qq{<p$is_current><a href="/">Whole world</a></p>};
 
+    my $us_html = '';
     for get-known-countries() -> $cc {
         next unless %countries{$cc};
 
-        my $path = $cc.lc;
-        my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
-        $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc}[0]<country> ~ '</a></p>';
+        if $cc ~~ /US'/'/ {
+            if $current ~~ 'US' {
+                my $path = $cc.lc;
+                my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
+                $us_html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc}[0]<country> ~ '</a></p>';
+            }
+        }
+        else {
+            my $path = $cc.lc;
+            my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
+            $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc}[0]<country> ~ '</a></p>';
+        }
     }
 
-    return $html;
+    if $current ~~ 'US' {
+        $us_html = qq:to/USHTML/;
+            <a name="states"></a>
+            <h2>Statistics per US States</h2>
+            <div id="countries-list">
+                $us_html
+            </div>
+        USHTML
+    }
+
+    return qq:to/HTML/;
+        <div id="countries">
+            $us_html
+            <h2>Statistics per Country</h2>
+            <p><a href="/countries">More statistics on countries</a></p>
+            <p><a href="/vs-china">Countries vs China</a></p>
+            <div id="countries-list">
+                $html
+            </div>
+        </div>
+        HTML
 }
 
 sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
@@ -1189,9 +1193,11 @@ sub html-template($path, $title, $content) {
         </head>
         <body>
             <p>New:
-                <a href="/countries">More statistics on countries</a>
+                <a href="/countries">Affected countries</a>
                 |
                 <a href="/vs-china">Countries vs China</a>
+                |
+                <a href="/us#states">US states</a>
             </p>
 
             $content
