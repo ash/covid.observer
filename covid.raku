@@ -604,7 +604,7 @@ sub country-list(%countries, $current?) {
         $us_html = qq:to/USHTML/;
             <a name="states"></a>
             <h2>Statistics per US States</h2>
-            <p><a href="/us">Cumulative USA statistics</a></p>
+            <p><a href="/us/#">Cumulative USA statistics</a></p>
             <div id="countries-list">
                 $us_html
             </div>
@@ -1064,7 +1064,7 @@ sub html-template($path, $title, $content) {
             padding: 0;
             margin: 0;
             text-align: center;
-            font-family: Helvetica, Arial, sans-serif;
+            font-family: 'Nanum Gothic', Helvetica, Arial, sans-serif;
             color: #333333;
             background: white;
         }
@@ -1197,6 +1197,7 @@ sub html-template($path, $title, $content) {
             $ga
 
             <script src="/Chart.min.js"></script>
+            <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
             <style>
                 $style
             </style>
