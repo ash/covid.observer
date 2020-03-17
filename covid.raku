@@ -85,6 +85,7 @@ multi sub MAIN('generate') {
     generate-world-stats(%countries, %per-day, %totals, %daily-totals);
 
     generate-countries-stats(%countries, %per-day, %totals, %daily-totals);
+    generate-china-level-stats(%countries, %per-day, %totals, %daily-totals);
 
     for get-known-countries() -> $cc {
         generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals);
@@ -312,6 +313,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
         <div id="countries">
             <h2>Statistics per Country</h2>
             <p><a href="/countries">More statistics on countries</a></p>
+            <p><a href="/vs-china">Countries vs China</a></p>
             <div id="countries-list">
                 $country-list
             </div>
@@ -375,6 +377,127 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) {
     html-template('/countries', 'Coronavirus in different countries', $content);
 }
 
+sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) {
+    say 'Generating stats vs China...';
+
+    my $chart6data = countries-vs-china(%countries, %per-day, %totals, %daily-totals);
+
+    my $country-list = country-list(%countries);
+
+    my $content = qq:to/HTML/;
+        <h1>Countries vs China</h1>
+
+        <script>
+            var randomColorGenerator = function () \{
+                return '#' + (Math.random().toString(16) + '0000000').slice(2, 8);
+            \};
+        </script>
+
+        <div id="block6">
+            <h2>Confirmed population timeline</h2>
+            <p>On this graph, you see how the fraction of confirmed infected population changes over time in different countries.</p>
+            <p>The almost horizontal red line displays China. The number of confirmed infections in China alsmost stopped growing.</p>
+            <br/>
+            <canvas style="height: 400px" id="Chart6"></canvas>
+            <p>1. Note that only countries with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San-Marino</a> would have shown too high nimbers due to their small population.</p>
+            <p>2. The line for the country is drawn only if it reaches at least 80% of the corresponding maximum parameter in China.</p>
+            <script>
+                var ctx6 = document.getElementById('Chart6').getContext('2d');
+                var chart6 = new Chart(ctx6, $chart6data);
+            </script>
+        </div>
+
+        <div id="countries">
+            <h2>Statistics per Country</h2>
+            <p><a href="/countries">More statistics on countries</a></p>
+            <p><a href="/vs-china">Countries vs China</a></p>
+            <div id="countries-list">
+                $country-list
+            </div>
+        </div>
+
+        HTML
+
+    html-template('/vs-china', 'Countries vs China', $content);
+}
+
+sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) {
+    my %date-cc;
+    for %per-day.keys -> $cc {
+        for %per-day{$cc}.keys -> $date {
+            %date-cc{$date}{$cc} = %per-day{$cc}{$date}<confirmed>;
+        }
+    }
+
+    my %max-cc;
+    # my $max = 0;
+
+    my %data;
+    for %date-cc.keys.sort -> $date {
+        for %date-cc{$date}.keys -> $cc {
+            next unless %countries{$cc};
+            my $confirmed = %date-cc{$date}{$cc} || 0;
+            %data{$cc}{$date} = sprintf('%.6f', 100 * $confirmed / (1_000_000 * +%countries{$cc}[1]<population>));
+
+            %max-cc{$cc} = %data{$cc}{$date};# if %max-cc{$cc} < %data{$cc}{$date};
+            # $max = %max-cc{$cc} if $max < %max-cc{$cc};
+        }
+    }
+
+    my @labels;
+    my %dataset;
+
+    for %date-cc.keys.sort -> $date {
+        next if $date le '2020-02-20';
+        @labels.push($date);
+
+        for %date-cc{$date}.keys.sort -> $cc {
+            next unless %max-cc{$cc};
+            next if %countries{$cc}[1]<population> < 1;
+
+            next if %max-cc{$cc} < 0.8 * %max-cc<CN>;
+
+            %dataset{$cc} = [] unless %dataset{$cc};
+            %dataset{$cc}.push(%data{$cc}{$date});
+        }
+    }
+
+    my @ds;
+    for %dataset.keys.sort -> $cc {
+        my $color = $cc eq 'CN' ?? 'red' !! 'RANDOMCOLOR';
+        my %ds =
+            label => %countries{$cc}[0]<country>,
+            data => %dataset{$cc},
+            fill => False,
+            borderColor => $color;
+        push @ds, to-json(%ds);
+    }
+
+    my $json = q:to/JSON/;
+        {
+            "type": "line",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASETS
+                ]
+            },
+            "options": {
+                "animation": false,
+            }
+        }
+        JSON
+
+    my $datasets = @ds.join(",\n");
+    my $labels = to-json(@labels);
+
+    $json ~~ s/DATASETS/$datasets/;
+    $json ~~ s/LABELS/$labels/;
+    $json ~~ s:g/\"RANDOMCOLOR\"/randomColorGenerator()/;
+
+    return $json;
+}
+
 sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
     say "Generating $cc...";
 
@@ -436,6 +559,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
         <div id="countries">
             <h2>Statistics per Country</h2>
             <p><a href="/countries">More statistics on countries</a></p>
+            <p><a href="/vs-china">Countries vs China</a></p>
             <div id="countries-list">
                 $country-list
             </div>
@@ -970,11 +1094,11 @@ sub html-template($path, $title, $content) {
             padding-right: 3%;
         }
         a {
-            color: #1e2aa1;
+            color: #1d7cf8;
             text-decoration: none;
         }
         a:hover {
-            color: #1e2aa1;
+            color: #1d7cf8;
             text-decoration: underline;
         }
         #countries-list a {
@@ -1035,6 +1159,12 @@ sub html-template($path, $title, $content) {
             </style>
         </head>
         <body>
+            <p>New:
+                <a href="/countries">More statistics on countries</a>
+                |
+                <a href="/vs-china">Countries vs China</a>
+            </p>
+
             $content
 
             <div id="about">
