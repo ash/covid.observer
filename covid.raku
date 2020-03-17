@@ -2,6 +2,7 @@
 
 use HTTP::UserAgent;
 use Locale::Codes::Country;
+use Locale::US;
 use DBIish;
 use JSON::Tiny;
 
@@ -161,9 +162,27 @@ multi sub MAIN('generate') {
     generate-world-stats(%countries, %per-day, %totals, %daily-totals);
 
     generate-countries-stats(%countries, %per-day, %totals, %daily-totals);
+    generate-china-level-stats(%countries, %per-day, %totals, %daily-totals);
 
     for get-known-countries() -> $cc {
         generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals);
+    }
+
+    geo-sanity();
+}
+
+multi sub MAIN('sanity') {
+    geo-sanity();
+}
+
+sub geo-sanity() {
+    my $sth = dbh.prepare('select per_day.cc from per_day left join countries using (cc) where countries.cc is null group by 1');
+    $sth.execute();
+
+    for $sth.allrows() -> $cc {
+        my $variant = '';
+        $variant = codeToCountry(~$cc) if $cc.chars == 2;
+        say "Missing country information $cc $variant";
     }
 }
 
@@ -181,12 +200,27 @@ sub parse-population() {
         $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
         $country = 'South Korea' if $country eq 'Republic of Korea';
         $country = 'Czech Republic' if $country eq 'Czechia';
+        $country = 'Venezuela' if $country eq 'Venezuela (Boliv. Rep. of)';
+        $country = 'Moldova' if $country eq 'Republic of Moldova';
+        $country = 'Bolivia' if $country eq 'Bolivia (Plurin. State of)';
+        $country = 'Tanzania' if $country eq 'United Rep. of Tanzania';
 
         my $cc = countryToCode($country);
         next unless $cc;
 
         %countries{$cc} = $country;
         %population{$cc} = +$value;
+    }
+
+    # US population
+    # https://www2.census.gov/programs-surveys/popest/tables/2010-2019/state/totals/nst-est2019-01.xlsx from
+    # https://www.census.gov/data/datasets/time-series/demo/popest/2010s-state-total.html
+    for 'us-population.csv'.IO.lines() -> $line {
+        my ($state, $value) = split ',', $line;
+        my $state-cc = 'US/' ~ state-to-code($state);
+
+        %countries{$state-cc} = $state;
+        %population{$state-cc} = +$value / 1_000_000;
     }
 
     return
@@ -250,6 +284,22 @@ sub extract-covid-data($data) {
             my $uptodate = %per-day{$cc}{$date};
             %total{$cc} = $uptodate if !%total{$cc} or $uptodate > %total{$cc};
         }
+
+        if $cc eq 'US' {
+            my $state = @data[0];
+
+            if $state && $state !~~ /Princess/ {
+                my $state-cc = 'US/' ~ state-to-code($state);
+
+                for @dates Z @data[4..*] -> ($date, $n) {
+                    %per-day{$state-cc}{$date} += $n;
+                    %daily-per-country{$date}{$state-cc} += $n;
+
+                    my $uptodate = %per-day{$state-cc}{$date};
+                    %total{$state-cc} = $uptodate if !%total{$state-cc} or $uptodate > %total{$state-cc};
+                }
+            }
+        }
     }
 
     for %daily-per-country.kv -> $date, %per-country {
@@ -268,8 +318,10 @@ sub get-countries() {
 
     my %countries;
     for $sth.allrows(:array-of-hash) -> %row {
+        my $country = %row<country>;
+        $country = "US/$country" if %row<cc> ~~ /US'/'/;
         %countries{%row<cc>} = 
-            country => %row<country>,
+            country => $country,
             population => %row<population>;        
     }
 
@@ -385,13 +437,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
             </script>
         </div>
 
-        <div id="countries">
-            <h2>Statistics per Country</h2>
-            <p><a href="/countries">More statistics on countries</a></p>
-            <div id="countries-list">
-                $country-list
-            </div>
-        </div>
+        $country-list
 
         HTML
 
@@ -401,22 +447,25 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
 sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) {
     say 'Generating countries data...';
 
-    my $chart5data = countries-first-appeared(%countries, %per-day, %totals, %daily-totals);
+    my %chart5data = countries-first-appeared(%countries, %per-day, %totals, %daily-totals);
     my $chart4data = countries-per-capita(%countries, %per-day, %totals, %daily-totals);
     my $countries-appeared = countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals);
 
     my $country-list = country-list(%countries);
+
+    my $percent = sprintf('%.1f', 100 * %chart5data<current-n> / %chart5data<total-countries>);
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus in different countries</h1>
 
         <div id="block5">
             <h2>Number of Countires Affected</h2>
+            <p>%chart5data<current-n> countires are affected, which is {$percent}&thinsp;\% from the total %chart5data<total-countries> countries.</p>
             <canvas style="height: 400px" id="Chart5"></canvas>
             <p>On this graph, you can see how many countries did have data about confirmed coronavirus invection for a given date over the last months.</p>
             <script>
                 var ctx5 = document.getElementById('Chart5').getContext('2d');
-                var chart5 = new Chart(ctx5, $chart5data);
+                var chart5 = new Chart(ctx5, %chart5data<json>);
             </script>
         </div>
 
@@ -436,16 +485,127 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) {
             </script>
         </div>
 
-        <div id="countries">
-            <h2>Statistics per Country</h2>
-            <div id="countries-list">
-                $country-list
-            </div>
-        </div>
+        $country-list
 
         HTML
 
     html-template('/countries', 'Coronavirus in different countries', $content);
+}
+
+sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) {
+    say 'Generating stats vs China...';
+
+    my $chart6data = countries-vs-china(%countries, %per-day, %totals, %daily-totals);
+
+    my $country-list = country-list(%countries);
+
+    my $content = qq:to/HTML/;
+        <h1>Countries vs China</h1>
+
+        <script>
+            var randomColorGenerator = function () \{
+                return '#' + (Math.random().toString(16) + '0000000').slice(2, 8);
+            \};
+        </script>
+
+        <div id="block6">
+            <h2>Confirmed population timeline</h2>
+            <p>On this graph, you see how the fraction (in %) of the confirmed infection cases changes over time in different countries or the US states.</p>
+            <p>The almost-horizontal red line displays China. The number of confirmed infections in China almost stopped growing.</p>
+            <p>Click on the bar in the legend to turn the line off and on.</p>
+            <br/>
+            <canvas style="height: 400px" id="Chart6"></canvas>
+            <p>1. Note that only countries and US states with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
+            <p>2. The line for the country is drawn only if it reaches at least 80% of the corresponding maximum parameter in China.</p>
+            <script>
+                var ctx6 = document.getElementById('Chart6').getContext('2d');
+                var chart6 = new Chart(ctx6, $chart6data);
+            </script>
+        </div>
+
+        $country-list
+
+        HTML
+
+    html-template('/vs-china', 'Countries vs China', $content);
+}
+
+sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) {
+    my %date-cc;
+    for %per-day.keys -> $cc {
+        for %per-day{$cc}.keys -> $date {
+            %date-cc{$date}{$cc} = %per-day{$cc}{$date}<confirmed>;
+        }
+    }
+
+    my %max-cc;
+    # my $max = 0;
+
+    my %data;
+    for %date-cc.keys.sort -> $date {
+        for %date-cc{$date}.keys -> $cc {
+            next unless %countries{$cc};
+            my $confirmed = %date-cc{$date}{$cc} || 0;
+            %data{$cc}{$date} = sprintf('%.6f', 100 * $confirmed / (1_000_000 * +%countries{$cc}[1]<population>));
+
+            %max-cc{$cc} = %data{$cc}{$date};# if %max-cc{$cc} < %data{$cc}{$date};
+            # $max = %max-cc{$cc} if $max < %max-cc{$cc};
+        }
+    }
+
+    my @labels;
+    my %dataset;
+
+    for %date-cc.keys.sort -> $date {
+        next if $date le '2020-02-20';
+        @labels.push($date);
+
+        for %date-cc{$date}.keys.sort -> $cc {
+            next unless %max-cc{$cc};
+            next if %countries{$cc}[1]<population> < 1;
+
+            next if %max-cc{$cc} < 0.8 * %max-cc<CN>;
+
+            %dataset{$cc} = [] unless %dataset{$cc};
+            %dataset{$cc}.push(%data{$cc}{$date});
+        }
+    }
+
+    my @ds;
+    for %dataset.keys.sort -> $cc {
+        my $color = $cc eq 'CN' ?? 'red' !! 'RANDOMCOLOR';
+        my %ds =
+            label => %countries{$cc}[0]<country>,
+            data => %dataset{$cc},
+            fill => False,
+            borderColor => $color,
+            lineTension => 0;
+        push @ds, to-json(%ds);
+    }
+
+    my $json = q:to/JSON/;
+        {
+            "type": "line",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASETS
+                ]
+            },
+            "options": {
+                "animation": false,
+            }
+        }
+        JSON
+
+    my $datasets = @ds.join(",\n");
+    my $labels = to-json(@labels);
+
+    $json ~~ s/DATASETS/$datasets/;
+    $json ~~ s/LABELS/$labels/;
+    $json ~~ s:g/\"RANDOMCOLOR\"/randomColorGenerator()/; #"
+
+    return $json;
 }
 
 sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
@@ -475,7 +635,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
         !! sprintf('%i million', $population.round);
 
     my $proper-country-name = $country-name;
-    $proper-country-name = "the $country-name" if $cc ~~ /US|GB|NL|DO|CZ/;
+    $proper-country-name = "the $country-name" if $cc ~~ /[US|GB|NL|DO|CZ]$/;
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus in {$proper-country-name}</h1>
@@ -506,13 +666,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
             </script>
         </div>
 
-        <div id="countries">
-            <h2>Statistics per Country</h2>
-            <p><a href="/countries">More statistics on countries</a></p>
-            <div id="countries-list">
-                $country-list
-            </div>
-        </div>
+        $country-list
 
         HTML
 
@@ -523,20 +677,54 @@ sub country-list(%countries, $current?) {
     my $is_current = !$current ?? ' class="current"' !! '';
     my $html = qq{<p$is_current><a href="/">Whole world</a></p>};
 
+    my $us_html = '';
     for get-known-countries() -> $cc {
         next unless %countries{$cc};
 
-        my $path = $cc.lc;
-        my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
-        $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc}[0]<country> ~ '</a></p>';
+        if $cc ~~ /US'/'/ {
+            if $current && $current ~~ /US/ {
+                my $path = $cc.lc;
+                my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
+                my $state = %countries{$cc}[0]<country>;
+                $state ~~ s/US'/'//;
+                $us_html ~= qq{<p$is_current><a href="/$path">} ~ $state ~ '</a></p>';
+            }
+        }
+        else {
+            my $path = $cc.lc;
+            my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
+            $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc}[0]<country> ~ '</a></p>';
+        }
     }
 
-    return $html;
+    if $current && $current ~~ /US/ {
+        $us_html = qq:to/USHTML/;
+            <a name="states"></a>
+            <h2>Coronavirus in the USA</h2>
+            <p><a href="/us/#">Cumulative USA statistics</a></p>
+            <div id="countries-list">
+                $us_html
+            </div>
+        USHTML
+    }
+
+    return qq:to/HTML/;
+        <div id="countries">
+            $us_html
+            <h2>Statistics per Country</h2>
+            <p><a href="/">Whole world</a></p>
+            <p><a href="/countries">More statistics on countries</a></p>
+            <p><a href="/vs-china">Countries vs China</a></p>
+            <div id="countries-list">
+                $html
+            </div>
+        </div>
+        HTML
 }
 
 sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
-    my $sth = dbh.prepare('select confirmed, cc, date from per_day where confirmed != 0 order by date');
-    $sth.execute();
+    my $sth = dbh.prepare('select confirmed, cc, date from per_day where confirmed != 0 and cc not like "%/%" order by date');
+    $sth.execute();    
 
     my %data;
     for $sth.allrows(:array-of-hash) -> %row {
@@ -545,17 +733,19 @@ sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
 
     my @dates;
     my @n;
+    my @percent;
     for %data.keys.sort -> $date {
         @dates.push($date);
-        @n.push(%data{$date});
+        @n.push(%data{$date}); 
     }
     
     my $labels = to-json(@dates);
 
     my %dataset1 =
-        label => 'Affected countries',
+        label => 'The number of affected countries',
         data => @n,
-        backgroundColor => 'lightblue';
+        backgroundColor => 'lightblue',
+        yAxisID => "axis1";
     my $dataset1 = to-json(%dataset1);
 
     my $json = q:to/JSON/;
@@ -569,6 +759,43 @@ sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
             },
             "options": {
                 "animation": false,
+                scales: {
+                    yAxes: [
+                        {
+                            type: "linear",
+                            display: true,
+                            position: "left",
+                            id: "axis1",
+                            ticks: {
+                                min: 0,
+                                max: 208,
+                                stepSize: 10
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: "The number of affected countries"
+                            }
+                        },
+                        {
+                            type: "linear",
+                            display: true,
+                            position: "right",
+                            id: "axis2",
+                            gridLines: {
+                                drawOnChartArea: false
+                            },
+                            ticks: {
+                                min: 0,
+                                max: 100,
+                                stepSize: 10
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: "Part of the total number of countries, in %"
+                            }
+                        }
+                    ]
+                }
             }
         }
         JSON
@@ -576,7 +803,13 @@ sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
     $json ~~ s/DATASET1/$dataset1/;
     $json ~~ s/LABELS/$labels/;
 
-    return $json;
+    my $total-countries = +%countries.keys.grep(* !~~ /'/'/);
+    my $current-n = @n[*-1];
+
+    return 
+        json => $json,
+        total-countries => $total-countries,
+        current-n => $current-n;
 }
 
 sub countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals) {
@@ -928,7 +1161,7 @@ sub html-template($path, $title, $content) {
             padding: 0;
             margin: 0;
             text-align: center;
-            font-family: Helvetica, Arial, sans-serif;
+            font-family: 'Nanum Gothic', Helvetica, Arial, sans-serif;
             color: #333333;
             background: white;
         }
@@ -985,6 +1218,9 @@ sub html-template($path, $title, $content) {
             margin-bottom: 0;
             font-size: 120%;
         }
+        p {
+            line-height: 140%;
+        }
         #percent {
             font-size: 900%;
         }
@@ -998,10 +1234,18 @@ sub html-template($path, $title, $content) {
             padding-right: 3%;
         }
         a {
-            color: #333333;
+            color: #1d7cf8;
             text-decoration: none;
         }
         a:hover {
+            color: #1d7cf8;
+            text-decoration: underline;
+        }
+        #countries-list a {
+            color: #333333;
+            text-decoration: none;
+        }
+        #countries-list a:hover {
             color: #333333;
             text-decoration: underline;
         }
@@ -1040,7 +1284,8 @@ sub html-template($path, $title, $content) {
         GA
 
     my $template = qq:to/HTML/;
-        <html>
+        <!DOCTYPE html>
+        <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -1049,16 +1294,28 @@ sub html-template($path, $title, $content) {
             $ga
 
             <script src="/Chart.min.js"></script>
+            <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
             <style>
                 $style
             </style>
         </head>
         <body>
+            <p>
+                <a href="/">Home</a>
+                |
+                New:
+                <a href="/countries">Affected countries</a>
+                |
+                <a href="/vs-china">Countries vs China</a>
+                |
+                <a href="/us#states">US states</a>
+            </p>
+
             $content
 
             <div id="about">
-                <p>Bases on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
-                <p>This website presents the very same data but from a less-panic perspective. Updated daily around midnight European time.</p>
+                <p>Based on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
+                <p>This website presents the very same data but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
                 <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
             </div>
         </body>
