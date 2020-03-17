@@ -91,6 +91,23 @@ multi sub MAIN('generate') {
     for get-known-countries() -> $cc {
         generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals);
     }
+
+    geo-sanity();
+}
+
+multi sub MAIN('sanity') {
+    geo-sanity();
+}
+
+sub geo-sanity() {
+    my $sth = dbh.prepare('select per_day.cc from per_day left join countries using (cc) where countries.cc is null group by 1');
+    $sth.execute();
+
+    for $sth.allrows() -> $cc {
+        my $variant = '';
+        $variant = codeToCountry(~$cc) if $cc.chars == 2;
+        say "Missing country information $cc $variant";
+    }
 }
 
 sub parse-population() {
@@ -107,6 +124,10 @@ sub parse-population() {
         $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
         $country = 'South Korea' if $country eq 'Republic of Korea';
         $country = 'Czech Republic' if $country eq 'Czechia';
+        $country = 'Venezuela' if $country eq 'Venezuela (Boliv. Rep. of)';
+        $country = 'Moldova' if $country eq 'Republic of Moldova';
+        $country = 'Bolivia' if $country eq 'Bolivia (Plurin. State of)';
+        $country = 'Tanzania' if $country eq 'United Rep. of Tanzania';
 
         my $cc = countryToCode($country);
         next unless $cc;
@@ -603,7 +624,7 @@ sub country-list(%countries, $current?) {
     if $current && $current ~~ /US/ {
         $us_html = qq:to/USHTML/;
             <a name="states"></a>
-            <h2>Statistics per US States</h2>
+            <h2>Coronavirus in the USA</h2>
             <p><a href="/us/#">Cumulative USA statistics</a></p>
             <div id="countries-list">
                 $us_html
