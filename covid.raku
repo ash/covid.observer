@@ -221,8 +221,10 @@ sub get-countries() {
 
     my %countries;
     for $sth.allrows(:array-of-hash) -> %row {
+        my $country = %row<country>;
+        $country = "US/$country" if %row<cc> ~~ /US'/'/;
         %countries{%row<cc>} = 
-            country => %row<country>,
+            country => $country,
             population => %row<population>;        
     }
 
@@ -586,7 +588,9 @@ sub country-list(%countries, $current?) {
             if $current && $current ~~ /US/ {
                 my $path = $cc.lc;
                 my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
-                $us_html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc}[0]<country> ~ '</a></p>';
+                my $state = %countries{$cc}[0]<country>;
+                $state ~~ s/US'/'//;
+                $us_html ~= qq{<p$is_current><a href="/$path">} ~ $state ~ '</a></p>';
             }
         }
         else {
@@ -1116,6 +1120,9 @@ sub html-template($path, $title, $content) {
             padding-bottom: 0;
             margin-bottom: 0;
             font-size: 120%;
+        }
+        p {
+            line-height: 140%;
         }
         #percent {
             font-size: 900%;
