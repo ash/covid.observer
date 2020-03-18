@@ -99,6 +99,12 @@ multi sub MAIN('sanity') {
     geo-sanity();
 }
 
+multi sub MAIN('404') {
+    html-template('/404', '404 Virus Not Found', q:to/HTML/);
+        <h1 style="margin-top: 2em; margin-bottom: 3em">Error 404<br/>Virus Not Found</h1>
+    HTML
+}
+
 sub geo-sanity() {
     my $sth = dbh.prepare('select per_day.cc from per_day left join countries using (cc) where countries.cc is null group by 1');
     $sth.execute();
@@ -1381,7 +1387,7 @@ sub html-template($path, $title, $content) {
         </script>
         GA
 
-    my $speed-url = $path ~~ / 'vs-china' | countries / ?? '/#speed' !! '#speed';
+    my $speed-url = $path ~~ / 'vs-china' | countries | 404 / ?? '/#speed' !! '#speed';
 
     my $template = qq:to/HTML/;
         <!DOCTYPE html>
