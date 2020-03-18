@@ -372,7 +372,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
                 var chart7 = new Chart(ctx7, $chart7data);
             </script>
-            <p>Note 1. In calculations, the 5-day moving average is used.</p>
+            <p>Note 1. In calculations, the 3-day moving average is used.</p>
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
@@ -616,7 +616,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
                 var chart7 = new Chart(ctx7, $chart7data);
             </script>
-            <p>Note 1. In calculations, the 5-day moving average is used.</p>
+            <p>Note 1. In calculations, the 3-day moving average is used.</p>
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
@@ -1120,7 +1120,7 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
     my %data = $cc ?? %per-day{$cc} !! %daily-totals;
     my @dates = %data.keys.sort;
 
-    my $skip-days = $cc ?? 3 !! 0;
+    my $skip-days = $cc ?? 0 !! 0;
     my $skip-days-confirmed = $skip-days;
     my $skip-days-failed    = $skip-days;
     my $skip-days-recovered = $skip-days;
@@ -1142,28 +1142,26 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
         $skip-days-recovered-- if %data{$day0}<recovered> && $skip-days-recovered;
         $skip-days-active--    if [-] %data{$day0}<confirmed failed recovered> && $skip-days-active;
 
-        my $r = (%data{$day0}<confirmed> + %data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed> + %data{$day4}<confirmed>) / 5;
-        my $l = (%data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed> + %data{$day4}<confirmed> + %data{$day5}<confirmed>) / 5;
+        my $r = (%data{$day0}<confirmed> + %data{$day1}<confirmed> + %data{$day2}<confirmed>) / 3;
+        my $l = (%data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed>) / 3;
         my $delta = $r - $l;
         my $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
         @confirmed.push($skip-days-confirmed ?? 0 !! $speed);
 
-        $r = (%data{$day0}<failed> + %data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed> + %data{$day4}<failed>) / 5;
-        $l = (%data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed> + %data{$day4}<failed> + %data{$day5}<failed>) / 5;
+        $r = (%data{$day0}<failed> + %data{$day1}<failed> + %data{$day2}<failed>) / 3;
+        $l = (%data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed>) / 3;
         $delta = $r - $l;
         $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
         @failed.push($skip-days-failed ?? 0 !! $speed);
 
-        $r = (%data{$day0}<recovered> + %data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered> + %data{$day4}<recovered>) / 5;
-        $l = (%data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered> + %data{$day4}<recovered> + %data{$day5}<recovered>) / 5;
+        $r = (%data{$day0}<recovered> + %data{$day1}<recovered> + %data{$day2}<recovered>) / 3;
+        $l = (%data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered>) / 3;
         $delta = $r - $l;
         $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
         @recovered.push($skip-days-recovered ?? 0 !! $speed);
 
-        $r = ([-] %data{$day0}<confirmed failed recovered> + [-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> +
-              [-] %data{$day3}<confirmed failed recovered> + [-] %data{$day4}<confirmed failed recovered>) / 5;
-        $l = ([-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> + [-] %data{$day3}<confirmed failed recovered> +
-              [-] %data{$day4}<confirmed failed recovered> + [-] %data{$day5}<confirmed failed recovered>) / 5;
+        $r = ([-] %data{$day0}<confirmed failed recovered> + [-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered>) / 3;
+        $l = ([-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> + [-] %data{$day3}<confirmed failed recovered>) / 3;
         $delta = $r - $l;
         $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
         @active.push($skip-days-active ?? 0 !! $speed);
@@ -1173,7 +1171,7 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
 
     my %dataset0 =
         label => 'Confirmed total',
-        data => @confirmed,
+        data => moving-average(@confirmed, 3),
         fill => False,
         lineTension => 0,
         borderColor => 'lightblue';
@@ -1181,7 +1179,7 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
 
     my %dataset1 =
         label => 'Recovered',
-        data => @recovered,
+        data => moving-average(@recovered, 3),
         fill => False,
         lineTension => 0,
         borderColor => 'green';
@@ -1189,7 +1187,7 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
 
     my %dataset2 =
         label => 'Failed to recover',
-        data => @failed,
+        data => moving-average(@failed, 3),
         fill => False,
         lineTension => 0,
         borderColor => 'red';
@@ -1197,7 +1195,7 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
 
     my %dataset3 =
         label => 'Active cases',
-        data => @active,
+        data => moving-average(@active, 3),
         fill => False,
         lineTension => 0,
         borderColor => 'orange';
@@ -1233,6 +1231,18 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
     $json ~~ s/LABELS/$labels/;
 
     return $json;
+}
+
+sub moving-average(@in, $width = 3) {
+    my @out;
+
+    @out.push(0) for ^$width;
+    for $width ..^ @in -> $index {
+        my $avg = [+] @in[$index - $width .. $index];
+        @out.push($avg / $width);
+    }
+
+    return @out;
 }
 
 sub html-template($path, $title, $content) {
