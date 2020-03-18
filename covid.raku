@@ -455,7 +455,7 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) {
             <br/>
             <canvas style="height: 400px" id="Chart6"></canvas>
             <p>1. Note that only countries and US states with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
-            <p>2. The line for the country is drawn only if it reaches at least 80% of the corresponding maximum parameter in China.</p>
+            <p>2. The line for the country is drawn only if it reaches at least 75% of the corresponding maximum parameter in China.</p>
             <script>
                 var ctx6 = document.getElementById('Chart6').getContext('2d');
                 var chart6 = new Chart(ctx6, $chart6data);
@@ -503,7 +503,7 @@ sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) {
             next unless %max-cc{$cc};
             next if %countries{$cc}[1]<population> < 1;
 
-            next if %max-cc{$cc} < 0.8 * %max-cc<CN>;
+            next if %max-cc{$cc} < 0.75 * %max-cc<CN>;
 
             %dataset{$cc} = [] unless %dataset{$cc};
             %dataset{$cc}.push(%data{$cc}{$date});
@@ -511,11 +511,12 @@ sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) {
     }
 
     my @ds;
-    for %dataset.keys.sort -> $cc {
+    for %dataset.sort: -*.value[*-1] -> $data {
+        my $cc = $data.key;
         my $color = $cc eq 'CN' ?? 'red' !! 'RANDOMCOLOR';
         my %ds =
             label => %countries{$cc}[0]<country>,
-            data => %dataset{$cc},
+            data => $data.value,
             fill => False,
             borderColor => $color,
             lineTension => 0;
