@@ -1129,25 +1129,24 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
         my $day3 = @dates[$index - 3];
 
         my $r = (%data{$day0}<confirmed> + %data{$day1}<confirmed> + %data{$day2}<confirmed>) / 3;
-        my $l-confirmed = (%data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed>) / 3;
-        my $l = $l-confirmed;
+        my $l = (%data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed>) / 3;
         my $delta = $r - $l;
         @confirmed.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
 
         $r = (%data{$day0}<failed> + %data{$day1}<failed> + %data{$day2}<failed>) / 3;
         $l = (%data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed>) / 3;
         $delta = $r - $l;
-        @failed.push($l ?? sprintf('%.2f', 100 * $delta / $l-confirmed) !! 0);
+        @failed.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
 
         $r = (%data{$day0}<recovered> + %data{$day1}<recovered> + %data{$day2}<recovered>) / 3;
         $l = (%data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered>) / 3;
         $delta = $r - $l;
-        @recovered.push($l ?? sprintf('%.2f', 100 * $delta / $l-confirmed) !! 0);
+        @recovered.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
 
         $r = ([-] %data{$day0}<confirmed failed recovered> + [-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered>) / 3;
         $l = ([-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> + [-] %data{$day3}<confirmed failed recovered>) / 3;
         $delta = $r - $l;
-        @active.push($l ?? sprintf('%.2f', 100 * $delta / $l-confirmed) !! 0);
+        @active.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
     }
 
     my $labels = to-json(@labels);
