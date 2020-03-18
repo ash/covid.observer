@@ -372,7 +372,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
                 var chart7 = new Chart(ctx7, $chart7data);
             </script>
-            <p>Note 1. In calculations, a moving 3-day average values it used.</p>
+            <p>Note 1. In calculations, the 3-day moving average values it used.</p>
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
@@ -616,7 +616,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
                 var chart7 = new Chart(ctx7, $chart7data);
             </script>
-            <p>Note 1. In calculations, a moving 3-day average values it used.</p>
+            <p>Note 1. In calculations, the 3-day moving average values it used.</p>
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
@@ -1351,6 +1351,8 @@ sub html-template($path, $title, $content) {
         </script>
         GA
 
+    my $speed-url = $path ~~ / 'vs-china' | countries / ?? '/#speed' !! '#speed';
+
     my $template = qq:to/HTML/;
         <!DOCTYPE html>
         <html lang="en">
@@ -1378,7 +1380,7 @@ sub html-template($path, $title, $content) {
                 |
                 <a href="/us#states">US states</a>
                 |
-                <a href="#speed">Daily speed</a>
+                <a href="$speed-url">Daily speed</a>
             </p>
 
             $content
