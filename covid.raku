@@ -1120,6 +1120,12 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
     my %data = $cc ?? %per-day{$cc} !! %daily-totals;
     my @dates = %data.keys.sort;
 
+    my $skip-days = $cc ?? 3 !! 0;
+    my $skip-days-confirmed = $skip-days;
+    my $skip-days-failed    = $skip-days;
+    my $skip-days-recovered = $skip-days;
+    my $skip-days-active    = $skip-days;
+
     for 5 ..^ @dates -> $index {
         @labels.push(@dates[$index]);
 
@@ -1130,27 +1136,37 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
         my $day4 = @dates[$index - 4];
         my $day5 = @dates[$index - 5];
 
+        # Skip the first days in the graph to avoid a huge peak after first data appeared;
+        $skip-days-confirmed-- if %data{$day0}<confirmed> && $skip-days-confirmed;
+        $skip-days-failed--    if %data{$day0}<failed> && $skip-days-failed;
+        $skip-days-recovered-- if %data{$day0}<recovered> && $skip-days-recovered;
+        $skip-days-active--    if [-] %data{$day0}<confirmed failed recovered> && $skip-days-active;
+
         my $r = (%data{$day0}<confirmed> + %data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed> + %data{$day4}<confirmed>) / 5;
         my $l = (%data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed> + %data{$day4}<confirmed> + %data{$day5}<confirmed>) / 5;
         my $delta = $r - $l;
-        @confirmed.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
+        my $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
+        @confirmed.push($skip-days-confirmed ?? 0 !! $speed);
 
         $r = (%data{$day0}<failed> + %data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed> + %data{$day4}<failed>) / 5;
         $l = (%data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed> + %data{$day4}<failed> + %data{$day5}<failed>) / 5;
         $delta = $r - $l;
-        @failed.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
+        $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
+        @failed.push($skip-days-failed ?? 0 !! $speed);
 
         $r = (%data{$day0}<recovered> + %data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered> + %data{$day4}<recovered>) / 5;
         $l = (%data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered> + %data{$day4}<recovered> + %data{$day5}<recovered>) / 5;
         $delta = $r - $l;
-        @recovered.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
+        $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
+        @recovered.push($skip-days-recovered ?? 0 !! $speed);
 
         $r = ([-] %data{$day0}<confirmed failed recovered> + [-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> +
               [-] %data{$day3}<confirmed failed recovered> + [-] %data{$day4}<confirmed failed recovered>) / 5;
         $l = ([-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> + [-] %data{$day3}<confirmed failed recovered> +
               [-] %data{$day4}<confirmed failed recovered> + [-] %data{$day5}<confirmed failed recovered>) / 5;
         $delta = $r - $l;
-        @active.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
+        $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
+        @active.push($skip-days-active ?? 0 !! $speed);
     }
 
     my $labels = to-json(@labels);
