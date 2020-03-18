@@ -319,6 +319,8 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
     my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals);
     my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals);
 
+    my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals);
+
     # my $chart4data = number-percent-graph(%countries, %per-day, %totals, %daily-totals);
         # <div id="block4">
         #     <h3>Affected population timeline</h3>
@@ -359,6 +361,19 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
                 var chart2 = new Chart(ctx2, $chart2data);
             </script>
+        </div>
+
+        <div id="block7">
+            <a name="speed"></a>
+            <h2>Daily Speed</h2>
+            <p>This graph shows the speed of growth (in %) over time. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
+            <canvas id="Chart7"></canvas>
+            <script>
+                var ctx7 = document.getElementById('Chart7').getContext('2d');
+                var chart7 = new Chart(ctx7, $chart7data);
+            </script>
+            <p>Note 1. In calculations, a moving 3-day average values it used.</p>
+            <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
         $country-list
@@ -539,6 +554,8 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
     my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, $cc);
     my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, $cc);
 
+    my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, $cc);
+
     # my $chart4data = number-percent-graph(%countries, %per-day, %totals, %daily-totals, $cc);
         # <div id="block4">
         #     <h3>Affected population timeline</h3>
@@ -588,6 +605,19 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
                 var chart2 = new Chart(ctx2, $chart2data);
             </script>
+        </div>
+
+        <div id="block7">
+            <a name="speed"></a>
+            <h2>Daily Speed</h2>
+            <p>This graph shows the speed of growth (in %) over time in {$proper-country-name}. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
+            <canvas id="Chart7"></canvas>
+            <script>
+                var ctx7 = document.getElementById('Chart7').getContext('2d');
+                var chart7 = new Chart(ctx7, $chart7data);
+            </script>
+            <p>Note 1. In calculations, a moving 3-day average values it used.</p>
+            <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
         $country-list
@@ -692,7 +722,7 @@ sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
                             id: "axis1",
                             ticks: {
                                 min: 0,
-                                max: 208,
+                                max: TOTALCOUNTRIES,
                                 stepSize: 10
                             },
                             scaleLabel: {
@@ -729,6 +759,8 @@ sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) {
 
     my $total-countries = +%countries.keys.grep(* !~~ /'/'/);
     my $current-n = @n[*-1];
+
+    $json ~~ s/TOTALCOUNTRIES/$total-countries/;
 
     return 
         json => $json,
@@ -1064,7 +1096,7 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals) {
                         "ticks": {
                             "autoSkip": false
                         }
-                    }],                   
+                    }],
                 }
             }
         }
@@ -1075,6 +1107,112 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals) {
     $json ~~ s/DATASET3/$dataset3/;
     $json ~~ s/LABELS/$labels/;
     
+    return $json;
+}
+
+sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
+    my @labels;
+    my @confirmed;
+    my @failed;
+    my @recovered;
+    my @active;
+
+    my %data = $cc ?? %per-day{$cc} !! %daily-totals;
+    my @dates = %data.keys.sort;
+
+    for 3 ..^ @dates -> $index {
+        @labels.push(@dates[$index]);
+
+        my $day0 = @dates[$index];
+        my $day1 = @dates[$index - 1];
+        my $day2 = @dates[$index - 2];
+        my $day3 = @dates[$index - 3];
+
+        my $r = (%data{$day0}<confirmed> + %data{$day1}<confirmed> + %data{$day2}<confirmed>) / 3;
+        my $l-confirmed = (%data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed>) / 3;
+        my $l = $l-confirmed;
+        my $delta = $r - $l;
+        @confirmed.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
+
+        $r = (%data{$day0}<failed> + %data{$day1}<failed> + %data{$day2}<failed>) / 3;
+        $l = (%data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed>) / 3;
+        $delta = $r - $l;
+        @failed.push($l ?? sprintf('%.2f', 100 * $delta / $l-confirmed) !! 0);
+
+        $r = (%data{$day0}<recovered> + %data{$day1}<recovered> + %data{$day2}<recovered>) / 3;
+        $l = (%data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered>) / 3;
+        $delta = $r - $l;
+        @recovered.push($l ?? sprintf('%.2f', 100 * $delta / $l-confirmed) !! 0);
+
+        $r = ([-] %data{$day0}<confirmed failed recovered> + [-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered>) / 3;
+        $l = ([-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> + [-] %data{$day3}<confirmed failed recovered>) / 3;
+        $delta = $r - $l;
+        @active.push($l ?? sprintf('%.2f', 100 * $delta / $l-confirmed) !! 0);
+    }
+
+    my $labels = to-json(@labels);
+
+    my %dataset0 =
+        label => 'Confirmed total',
+        data => @confirmed,
+        fill => False,
+        lineTension => 0,
+        borderColor => 'lightblue';
+    my $dataset0 = to-json(%dataset0);
+
+    my %dataset1 =
+        label => 'Recovered',
+        data => @recovered,
+        fill => False,
+        lineTension => 0,
+        borderColor => 'green';
+    my $dataset1 = to-json(%dataset1);
+
+    my %dataset2 =
+        label => 'Failed to recover',
+        data => @failed,
+        fill => False,
+        lineTension => 0,
+        borderColor => 'red';
+    my $dataset2 = to-json(%dataset2);
+
+    my %dataset3 =
+        label => 'Active cases',
+        data => @active,
+        fill => False,
+        lineTension => 0,
+        borderColor => 'orange';
+    my $dataset3 = to-json(%dataset3);
+
+    my $json = q:to/JSON/;
+        {
+            "type": "line",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET0,
+                    DATASET2,
+                    DATASET3,
+                    DATASET1
+                ]
+            },
+            "options": {
+                "animation": false,
+                "scales": {
+                    "yAxes": [{
+                        "type": "linear",
+                    }],
+                }
+            }
+        }
+        JSON
+
+    $json ~~ s/DATASET0/$dataset0/;
+    $json ~~ s/DATASET1/$dataset1/;
+    $json ~~ s/DATASET2/$dataset2/;
+    $json ~~ s/DATASET3/$dataset3/;
+    $json ~~ s/LABELS/$labels/;
+
     return $json;
 }
 
@@ -1110,6 +1248,12 @@ sub html-template($path, $title, $content) {
             padding-right: 2%;
         }
         #block6 {
+            padding-bottom: 10%;
+            margin-bottom: 5%;
+            padding-left: 2%;
+            padding-right: 2%;
+        }
+        #block7 {
             padding-bottom: 10%;
             margin-bottom: 5%;
             padding-left: 2%;
@@ -1233,6 +1377,8 @@ sub html-template($path, $title, $content) {
                 <a href="/vs-china">Countries vs China</a>
                 |
                 <a href="/us#states">US states</a>
+                |
+                <a href="#speed">Daily speed</a>
             </p>
 
             $content
