@@ -372,7 +372,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
                 var chart7 = new Chart(ctx7, $chart7data);
             </script>
-            <p>Note 1. In calculations, the 3-day moving average values it used.</p>
+            <p>Note 1. In calculations, the 5-day moving average values it used.</p>
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
@@ -616,7 +616,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
                 var chart7 = new Chart(ctx7, $chart7data);
             </script>
-            <p>Note 1. In calculations, the 3-day moving average values it used.</p>
+            <p>Note 1. In calculations, the 5-day moving average values it used.</p>
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
@@ -1120,31 +1120,35 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
     my %data = $cc ?? %per-day{$cc} !! %daily-totals;
     my @dates = %data.keys.sort;
 
-    for 3 ..^ @dates -> $index {
+    for 5 ..^ @dates -> $index {
         @labels.push(@dates[$index]);
 
         my $day0 = @dates[$index];
         my $day1 = @dates[$index - 1];
         my $day2 = @dates[$index - 2];
         my $day3 = @dates[$index - 3];
+        my $day4 = @dates[$index - 4];
+        my $day5 = @dates[$index - 5];
 
-        my $r = (%data{$day0}<confirmed> + %data{$day1}<confirmed> + %data{$day2}<confirmed>) / 3;
-        my $l = (%data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed>) / 3;
+        my $r = (%data{$day0}<confirmed> + %data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed> + %data{$day4}<confirmed>) / 5;
+        my $l = (%data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed> + %data{$day4}<confirmed> + %data{$day5}<confirmed>) / 5;
         my $delta = $r - $l;
         @confirmed.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
 
-        $r = (%data{$day0}<failed> + %data{$day1}<failed> + %data{$day2}<failed>) / 3;
-        $l = (%data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed>) / 3;
+        $r = (%data{$day0}<failed> + %data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed> + %data{$day4}<failed>) / 5;
+        $l = (%data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed> + %data{$day4}<failed> + %data{$day5}<failed>) / 5;
         $delta = $r - $l;
         @failed.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
 
-        $r = (%data{$day0}<recovered> + %data{$day1}<recovered> + %data{$day2}<recovered>) / 3;
-        $l = (%data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered>) / 3;
+        $r = (%data{$day0}<recovered> + %data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered> + %data{$day4}<recovered>) / 5;
+        $l = (%data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered> + %data{$day4}<recovered> + %data{$day5}<recovered>) / 5;
         $delta = $r - $l;
         @recovered.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
 
-        $r = ([-] %data{$day0}<confirmed failed recovered> + [-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered>) / 3;
-        $l = ([-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> + [-] %data{$day3}<confirmed failed recovered>) / 3;
+        $r = ([-] %data{$day0}<confirmed failed recovered> + [-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> +
+              [-] %data{$day3}<confirmed failed recovered> + [-] %data{$day4}<confirmed failed recovered>) / 5;
+        $l = ([-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> + [-] %data{$day3}<confirmed failed recovered> +
+              [-] %data{$day4}<confirmed failed recovered> + [-] %data{$day5}<confirmed failed recovered>) / 5;
         $delta = $r - $l;
         @active.push($l ?? sprintf('%.2f', 100 * $delta / $l) !! 0);
     }
