@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Coronavirus in US/New Hampshire | Coronavirus COVID-19 Observer</title>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160707541-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-160707541-1');
+</script>
+
+
+    <script src="/Chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-family: 'Nanum Gothic', Helvetica, Arial, sans-serif;
+    color: #333333;
+    background: white;
+}
+#block2 {
+    padding-top: 10%;
+    background: #f5f5ea;
+    padding-bottom: 10%;
+}
+#block4 {
+    padding-top: 5%;
+    background: #f5f5ea;
+    padding-bottom: 10%;
+    margin-bottom: 10%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+#block5 {
+    padding-top: 5%;
+    padding-bottom: 5%;
+    margin-bottom: 5%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+#block6 {
+    padding-bottom: 10%;
+    margin-bottom: 5%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+#block7 {
+    padding-bottom: 10%;
+    margin-bottom: 5%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+#block1 {
+    margin-bottom: 10%;
+}
+#block3 {
+    margin-bottom: 10%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+h1 {
+    font-weight: normal;
+    font-size: 400%;
+    padding-top: 0.7em;
+}
+h2 {
+    font-weight: normal;
+    font-size: 300%;
+}
+h3 {
+    font-weight: normal;
+    font-size: 200%;
+}
+h4 {
+    font-weight: bold;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    font-size: 120%;
+}
+p {
+    line-height: 140%;
+}
+#percent {
+    font-size: 900%;
+}
+#countries {
+    padding-bottom: 10%;
+}
+#countries-list {
+    column-count: 4;
+    text-align: left;
+    padding-left: 3%;
+    padding-right: 3%;
+}
+a {
+    color: #1d7cf8;
+    text-decoration: none;
+}
+a:hover {
+    color: #1d7cf8;
+    text-decoration: underline;
+}
+#countries-list a {
+    color: #333333;
+    text-decoration: none;
+}
+#countries-list a:hover {
+    color: #333333;
+    text-decoration: underline;
+}
+#countries-list p.current {
+    font-weight: bold;
+}
+#about {
+    border-top: 1px solid lightgray;
+}
+
+@media screen and (max-width: 850px) {
+    h1 {
+        font-size: 300%;
+    }
+    #percent {
+        font-size: 450%;
+    }
+    #countries-list {
+        column-count: 2;
+    }
+    #block4 {
+        display: none;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    <p>
+        <a href="/">Home</a>
+        |
+        New:
+        <a href="/countries">Affected countries</a>
+        |
+        <a href="/vs-china">Countries vs China</a>
+        |
+        <a href="/us#states">US states</a>
+        |
+        <a href="#speed">Daily speed</a>
+    </p>
+
+    <h1>Coronavirus in US/New Hampshire</h1>
+
+<div id="block2">
+    <h2>Affected Population</h2>
+    <div id="percent">0.002&thinsp;%</div>
+    <p>This is the part of confirmed infection cases against the total 1 million of its population.</p>
+</div>
+
+<div id="block1">
+    <h2>Recovery Pie</h2>
+    <canvas id="Chart1"></canvas>
+    <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in US/New Hampshire.</p>
+    <script>
+        var ctx1 = document.getElementById('Chart1').getContext('2d');
+        var chart1 = new Chart(ctx1, {
+    "type": "pie",
+    "data": {
+        "labels": ["Recovered 0%", "Failed to recover 0%", "Active cases 100%"],
+        "datasets": [
+            { "data" : [ 0, 0, 26 ], "backgroundColor" : [ "green", "red", "orange" ], "label" : "Recovery statistics" }
+        ]
+    },
+    "options": {
+        "animation": false
+    }
+}
+);
+    </script>
+</div>
+
+<div id="block3">
+    <h2>Daily Flow</h2>
+    <canvas id="Chart2"></canvas>
+    <p>The height of a single bar is the total number of people suffered from Coronavirus in US/New Hampshire and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
+    <script>
+        var ctx2 = document.getElementById('Chart2').getContext('2d');
+        var chart2 = new Chart(ctx2, {
+    "type": "bar",
+    "data": {
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17" ],
+        "datasets": [
+            { "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], "backgroundColor" : "red", "label" : "Failed to recover" },
+            { "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 5, 6, 6, 7, 13, 17, 26 ], "backgroundColor" : "orange", "label" : "Active cases" },
+            { "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], "backgroundColor" : "green", "label" : "Recovered" }
+        ]
+    },
+    "options": {
+        "animation": false,
+        "scales": {
+            "xAxes": [{
+                "stacked": true,
+            }],
+            "yAxes": [{
+                "stacked": true
+            }]
+        }
+    }
+}
+);
+    </script>
+</div>
+
+<div id="block7">
+    <a name="speed"></a>
+    <h2>Daily Speed</h2>
+    <p>This graph shows the speed of growth (in %) over time in US/New Hampshire. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
+    <canvas id="Chart7"></canvas>
+    <script>
+        var ctx7 = document.getElementById('Chart7').getContext('2d');
+        var chart7 = new Chart(ctx7, {
+    "type": "line",
+    "data": {
+        "labels": [ "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17" ],
+        "datasets": [
+            { "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "125.00", "66.67", "13.33", "11.76", "36.84", "42.31", "51.35" ], "borderColor" : "lightblue", "fill" : false, "label" : "Confirmed total", "lineTension" : 0 },
+            { "label" : "Failed to recover", "fill" : false, "lineTension" : 0, "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], "borderColor" : "red" },
+            { "lineTension" : 0, "label" : "Active cases", "fill" : false, "borderColor" : "orange", "data" : [ "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "0.00", "44.44", "6.67", "5.88", "0.00", "3.85", "16.22" ] },
+            { "borderColor" : "green", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], "lineTension" : 0, "label" : "Recovered", "fill" : false }
+        ]
+    },
+    "options": {
+        "animation": false,
+        "scales": {
+            "yAxes": [{
+                "type": "linear",
+            }],
+        }         
+    }
+}
+);
+    </script>
+    <p>Note 1. In calculations, a moving 3-day average values it used.</p>
+    <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+</div>
+
+<div id="countries">
+        <a name="states"></a>
+    <h2>Coronavirus in the USA</h2>
+    <p><a href="/us/#">Cumulative USA statistics</a></p>
+    <div id="countries-list">
+        <p><a href="/us/al">Alabama</a></p><p><a href="/us/ak">Alaska</a></p><p><a href="/us/az">Arizona</a></p><p><a href="/us/ar">Arkansas</a></p><p><a href="/us/ca">California</a></p><p><a href="/us/co">Colorado</a></p><p><a href="/us/ct">Connecticut</a></p><p><a href="/us/de">Delaware</a></p><p><a href="/us/dc">District of Columbia</a></p><p><a href="/us/fl">Florida</a></p><p><a href="/us/ga">Georgia</a></p><p><a href="/us/gu">Guam</a></p><p><a href="/us/hi">Hawaii</a></p><p><a href="/us/id">Idaho</a></p><p><a href="/us/il">Illinois</a></p><p><a href="/us/in">Indiana</a></p><p><a href="/us/ia">Iowa</a></p><p><a href="/us/ks">Kansas</a></p><p><a href="/us/ky">Kentucky</a></p><p><a href="/us/la">Louisiana</a></p><p><a href="/us/me">Maine</a></p><p><a href="/us/md">Maryland</a></p><p><a href="/us/ma">Massachusetts</a></p><p><a href="/us/mi">Michigan</a></p><p><a href="/us/mn">Minnesota</a></p><p><a href="/us/ms">Mississippi</a></p><p><a href="/us/mo">Missouri</a></p><p><a href="/us/mt">Montana</a></p><p><a href="/us/ne">Nebraska</a></p><p><a href="/us/nv">Nevada</a></p><p class="current"><a href="/us/nh">New Hampshire</a></p><p><a href="/us/nj">New Jersey</a></p><p><a href="/us/nm">New Mexico</a></p><p><a href="/us/ny">New York</a></p><p><a href="/us/nc">North Carolina</a></p><p><a href="/us/nd">North Dakota</a></p><p><a href="/us/oh">Ohio</a></p><p><a href="/us/ok">Oklahoma</a></p><p><a href="/us/or">Oregon</a></p><p><a href="/us/pa">Pennsylvania</a></p><p><a href="/us/pr">Puerto Rico</a></p><p><a href="/us/ri">Rhode Island</a></p><p><a href="/us/sc">South Carolina</a></p><p><a href="/us/sd">South Dakota</a></p><p><a href="/us/tn">Tennessee</a></p><p><a href="/us/tx">Texas</a></p><p><a href="/us/ut">Utah</a></p><p><a href="/us/vt">Vermont</a></p><p><a href="/us/vi">Virgin Islands</a></p><p><a href="/us/va">Virginia</a></p><p><a href="/us/wa">Washington</a></p><p><a href="/us/wv">West Virginia</a></p><p><a href="/us/wi">Wisconsin</a></p><p><a href="/us/wy">Wyoming</a></p>
+    </div>
+
+    <h2>Statistics per Country</h2>
+    <p><a href="/">Whole world</a></p>
+    <p><a href="/countries">More statistics on countries</a></p>
+    <p><a href="/vs-china">Countries vs China</a></p>
+    <div id="countries-list">
+        <p><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p><a href="/am">Armenia</a></p><p><a href="/aw">Aruba</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p><a href="/az">Azerbaijan</a></p><p><a href="/bh">Bahrain</a></p><p><a href="/bd">Bangladesh</a></p><p><a href="/bb">Barbados</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bj">Benin</a></p><p><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/br">Brazil</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/cf">Central African Republic</a></p><p><a href="/cl">Chile</a></p><p><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p><a href="/cy">Cyprus</a></p><p><a href="/cz">Czech Republic</a></p><p><a href="/dk">Denmark</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/ee">Estonia</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/ga">Gabon</a></p><p><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gh">Ghana</a></p><p><a href="/gr">Greece</a></p><p><a href="/gl">Greenland</a></p><p><a href="/gt">Guatemala</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gy">Guyana</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p><a href="/in">India</a></p><p><a href="/id">Indonesia</a></p><p><a href="/ir">Iran</a></p><p><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p><a href="/jp">Japan</a></p><p><a href="/jo">Jordan</a></p><p><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/kw">Kuwait</a></p><p><a href="/lv">Latvia</a></p><p><a href="/lb">Lebanon</a></p><p><a href="/lr">Liberia</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/my">Malaysia</a></p><p><a href="/mv">Maldives</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mr">Mauritania</a></p><p><a href="/mx">Mexico</a></p><p><a href="/md">Moldova</a></p><p><a href="/mc">Monaco</a></p><p><a href="/mn">Mongolia</a></p><p><a href="/me">Montenegro</a></p><p><a href="/ma">Morocco</a></p><p><a href="/na">Namibia</a></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/no">Norway</a></p><p><a href="/om">Oman</a></p><p><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p><a href="/qa">Qatar</a></p><p><a href="/ro">Romania</a></p><p><a href="/ru">Russian Federation</a></p><p><a href="/rw">Rwanda</a></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a></p><p><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sc">Seychelles</a></p><p><a href="/sg">Singapore</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a></p><p><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p><a href="/lk">Sri Lanka</a></p><p><a href="/sd">Sudan</a></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p><a href="/tz">Tanzania</a></p><p><a href="/th">Thailand</a></p><p><a href="/tg">Togo</a></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a></p><p><a href="/tr">Turkey</a></p><p><a href="/ua">Ukraine</a></p><p><a href="/gb">United Kingdom</a></p><p><a href="/us">United States of America</a></p><p><a href="/uy">Uruguay</a></p><p><a href="/uz">Uzbekistan</a></p><p><a href="/ve">Venezuela</a></p>
+    </div>
+</div>
+
+
+
+
+    <div id="about">
+        <p>Based on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
+        <p>This website presents the very same data but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
+        <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
+    </div>
+</body>
+</html>
+
