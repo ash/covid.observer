@@ -4,6 +4,7 @@ use HTTP::UserAgent;
 use Locale::Codes::Country;
 use Locale::US;
 use DBIish;
+use Text::CSV;
 use JSON::Tiny;
 
 constant %covid-sources =
@@ -12,6 +13,10 @@ constant %covid-sources =
     recovered => 'https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv';
 
 constant $world-population = 7_800_000_000;
+
+constant %continents =
+    AF => 'Africa', AN => 'Antarctica', AS => 'Asia', EU => 'Europe',
+    NA => 'North America', OC => 'Oceania', SA => 'South America';
 
 sub dbh() {
     state $dbh = DBIish.connect('mysql', :host<localhost>, :user<covid>, :password<covid>, :database<covid>);
@@ -24,12 +29,14 @@ multi sub MAIN('population') {
     say "Updating database...";
 
     dbh.execute('delete from countries');
-
     for %population<countries>.kv -> $cc, $country {
         my $n = %population<population>{$cc};
-        say "$cc, $country, $n";
-        my $sth = dbh.prepare('insert into countries (cc, country, population) values (?, ?, ?)');
-        $sth.execute($cc, $country, $n);
+
+        my $continent = $cc ~~ /'/'/ ?? '' !! %population<continent>{$cc};
+        say "$cc, $continent, $country, $n";
+
+        my $sth = dbh.prepare('insert into countries (cc, continent, country, population) values (?, ?, ?, ?)');
+        $sth.execute($cc, $continent, $country, $n);
     }
 }
 
@@ -120,11 +127,12 @@ sub parse-population() {
     my %population;
     my %countries;
 
-    #constant $population_source = 'https://data.un.org/_Docs/SYB/CSV/SYB62_1_201907_Population,%20Surface%20Area%20and%20Density.csv';
-
-    my $io = 'SYB62_1_201907_Population, Surface Area and Density.csv'.IO;
-    for $io.lines -> $line {
-        my ($n, $country, $year, $type, $value) = $line.split(',');
+    # Population per country
+    # constant $population_source = 'https://data.un.org/_Docs/SYB/CSV/SYB62_1_201907_Population,%20Surface%20Area%20and%20Density.csv';
+    my $csv = Text::CSV.new;
+    my $io = open 'SYB62_1_201907_Population, Surface Area and Density.csv';
+    while my $row = $csv.getline($io) {
+        my ($n, $country, $year, $type, $value) = @$row;
         next unless $type eq 'Population mid-year estimates (millions)';        
 
         $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
@@ -145,17 +153,22 @@ sub parse-population() {
     # US population
     # https://www2.census.gov/programs-surveys/popest/tables/2010-2019/state/totals/nst-est2019-01.xlsx from
     # https://www.census.gov/data/datasets/time-series/demo/popest/2010s-state-total.html
-    for 'us-population.csv'.IO.lines() -> $line {
-        my ($state, $value) = split ',', $line;
+    my @us-population = csv(in => 'us-population.csv');
+    for @us-population -> ($state, $population) {
         my $state-cc = 'US/' ~ state-to-code($state);
-
         %countries{$state-cc} = $state;
-        %population{$state-cc} = +$value / 1_000_000;
+        %population{$state-cc} = +$population / 1_000_000;
     }
+
+    # Continents
+    # constant $continents = 'https://pkgstore.datahub.io/JohnSnowLabs/country-and-continent-codes-list/country-and-continent-codes-list-csv_csv/data/b7876b7f496677669644f3d1069d3121/country-and-continent-codes-list-csv_csv.csv'
+    my @continent-info = csv(in => 'country-and-continent-codes-list-csv_csv.csv');
+    my %continent = @continent-info.map: {$_[3] => $_[1]};
 
     return
         population => %population,
-        countries => %countries;
+        countries  => %countries,
+        continent  => %continent;
 }
 
 sub fetch-covid-data(%sources) {
@@ -1133,15 +1146,17 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
     my $skip-days-recovered = $skip-days;
     my $skip-days-active    = $skip-days;
 
-    for 5 ..^ @dates -> $index {
+    my $avg-width = 3;
+
+    for $avg-width ..^ @dates -> $index {
         @labels.push(@dates[$index]);
 
         my $day0 = @dates[$index];
         my $day1 = @dates[$index - 1];
         my $day2 = @dates[$index - 2];
         my $day3 = @dates[$index - 3];
-        my $day4 = @dates[$index - 4];
-        my $day5 = @dates[$index - 5];
+        # my $day4 = @dates[$index - 4];
+        # my $day5 = @dates[$index - 5];
 
         # Skip the first days in the graph to avoid a huge peak after first data appeared;
         $skip-days-confirmed-- if %data{$day0}<confirmed> && $skip-days-confirmed;
@@ -1174,11 +1189,13 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
         @active.push($skip-days-active ?? 0 !! $speed);
     }
 
-    my $labels = to-json(@labels);
+    my $trim-left = 3;
+
+    my $labels = to-json(trim-data(@labels, $trim-left));
 
     my %dataset0 =
         label => 'Confirmed total',
-        data => moving-average(@confirmed, 3),
+        data => trim-data(moving-average(@confirmed, $avg-width), $trim-left),
         fill => False,
         lineTension => 0,
         borderColor => 'lightblue';
@@ -1186,7 +1203,7 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
 
     my %dataset1 =
         label => 'Recovered',
-        data => moving-average(@recovered, 3),
+        data => trim-data(moving-average(@recovered, $avg-width), $trim-left),
         fill => False,
         lineTension => 0,
         borderColor => 'green';
@@ -1194,7 +1211,7 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
 
     my %dataset2 =
         label => 'Failed to recover',
-        data => moving-average(@failed, 3),
+        data => trim-data(moving-average(@failed, $avg-width), $trim-left),
         fill => False,
         lineTension => 0,
         borderColor => 'red';
@@ -1202,7 +1219,7 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
 
     my %dataset3 =
         label => 'Active cases',
-        data => moving-average(@active, 3),
+        data => trim-data(moving-average(@active, $avg-width), $trim-left),
         fill => False,
         lineTension => 0,
         borderColor => 'orange';
@@ -1250,6 +1267,10 @@ sub moving-average(@in, $width = 3) {
     }
 
     return @out;
+}
+
+sub trim-data(@data, $trim-length) {
+    return @data[$trim-length .. *];
 }
 
 sub html-template($path, $title, $content) {
