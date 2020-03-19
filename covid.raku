@@ -1288,14 +1288,6 @@ sub continent-joint-graph(%countries, %per-day, %totals, %daily-totals) {
             },
             "options": {
                 "animation": false,
-                "scales": {
-                    "xAxes": [{
-                        "stacked": true
-                    }],
-                    "yAxes": [{
-                        "stacked": true
-                    }],
-                }
             }
         }
         JSON
