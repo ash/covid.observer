@@ -833,6 +833,7 @@ sub country-list(%countries, :$cc?, :$cont?) {
     return qq:to/HTML/;
         <div id="countries">
             $us_html
+            <a name="countries"></a>
             <h2>Statistics per Country</h2>
             <p><a href="/">Whole world</a></p>
             <p><a href="/countries">More statistics on countries</a></p>
@@ -1290,6 +1291,15 @@ sub generate-continent-graph(%countries, %per-day, %totals, %daily-totals) {
             <h2>Active Cases Timeline</h2>
             <p>This bar chart displays the timeline of the number of active cases (thus, confirmed minus failed to recovered minus recovered). The gold bars are those reflecting <a href="/asia">Asia</a> (mostly, <a href="/cn">China</a>). The blue bars correspond to the number of active cases in <a href="/europe">Europe</a>.</p>
             <canvas id="Chart8"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale8" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale8" onclick="log_scale(this, 8)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale8"> Logarithmic scale</label>
+            </p>
             <script>
                 var ctx8 = document.getElementById('Chart8').getContext('2d');
                 chart[8] = new Chart(ctx8, $chart8data);
@@ -1591,6 +1601,8 @@ sub html-template($path, $title, $content) {
                 <a href="/continents">Spread over continents</a>
             </p>
             <p>
+                <a href="#countries">Countries</a>
+                |
                 <a href="/countries">Affected countries</a>
                 |
                 <a href="/vs-china">Countries vs China</a>
