@@ -15,7 +15,8 @@ constant %covid-sources =
 constant $world-population = 7_800_000_000;
 
 constant %continents =
-    AF => 'Africa', AN => 'Antarctica', AS => 'Asia', EU => 'Europe',
+    # AN => 'Antarctica',
+    AF => 'Africa', AS => 'Asia', EU => 'Europe',
     NA => 'North America', OC => 'Oceania', SA => 'South America';
 
 sub dbh() {
@@ -97,6 +98,10 @@ multi sub MAIN('generate') {
 
     for get-known-countries() -> $cc {
         generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals);
+    }
+
+    for %continents.keys -> $cont {
+        generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals);
     }
 
     geo-sanity();
@@ -255,16 +260,18 @@ sub extract-covid-data($data) {
 }
 
 sub get-countries() {
-    my $sth = dbh.prepare('select cc, country, population from countries');
+    my $sth = dbh.prepare('select cc, country, continent, population from countries');
     $sth.execute();
 
     my %countries;
     for $sth.allrows(:array-of-hash) -> %row {
         my $country = %row<country>;
         $country = "US/$country" if %row<cc> ~~ /US'/'/;
-        %countries{%row<cc>} = 
+        my %data =
             country => $country,
-            population => %row<population>;        
+            population => %row<population>,
+            continent => %row<continent>;
+        %countries{%row<cc>} = %data;
     }
 
     return %countries;
@@ -339,18 +346,8 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
 
     my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals);
 
-    # my $chart4data = number-percent-graph(%countries, %per-day, %totals, %daily-totals);
-        # <div id="block4">
-        #     <h3>Affected population timeline</h3>
-        #     <canvas id="Chart4"></canvas>
-        #     <p>This is how the above-show number changes over time. The vertical axis’ unit is % of the total world population.</p>
-        #     <script>
-        #         var ctx4 = document.getElementById('Chart4').getContext('2d');
-        #         var chart4 = new Chart(ctx4, $chart4data);
-        #     </script>
-        # </div>
-
     my $country-list = country-list(%countries);
+    my $continent-list = continent-list();
 
     my $content = qq:to/HTML/;
         <h1>COVID-19 World Statistics</h1>
@@ -394,6 +391,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
+        $continent-list
         $country-list
 
         HTML
@@ -409,6 +407,7 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) {
     my $countries-appeared = countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals);
 
     my $country-list = country-list(%countries);
+    my $continent-list = continent-list();
 
     my $percent = sprintf('%.1f', 100 * %chart5data<current-n> / %chart5data<total-countries>);
 
@@ -442,11 +441,80 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) {
             </script>
         </div>
 
+        $continent-list
         $country-list
 
         HTML
 
     html-template('/countries', 'Coronavirus in different countries', $content);
+}
+
+sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals) {
+    say "Generating continent $cont...";
+
+    my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$cont);
+    my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, :$cont);
+    my %chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$cont);
+
+    my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$cont);
+
+    my $country-list = country-list(%countries, :$cont);
+    my $continent-list = continent-list($cont);
+
+    my $percent-str = %chart3<percent> ~ '&thinsp;%';
+    my $population-str = %chart3<population>.round() ~ ' million';
+
+    my $continent-name = %continents{$cont};
+    my $continent-url = $continent-name.lc.subst(' ', '-');
+
+    my $content = qq:to/HTML/;
+        <h1>Coronavirus in {$continent-name}</h1>
+
+        <div id="block2">
+            <h2>Affected Population</h2>
+            <div id="percent">{$percent-str}</div>
+            <p>This is the part of confirmed infection cases against the total $population-str of its population.</p>
+        </div>
+
+        <div id="block1">
+            <h2>Recovery Pie</h2>
+            <canvas id="Chart1"></canvas>
+            <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$continent-name}.</p>
+            <script>
+                var ctx1 = document.getElementById('Chart1').getContext('2d');
+                var chart1 = new Chart(ctx1, $chart1data);
+            </script>
+        </div>
+
+        <div id="block3">
+            <h2>Daily Flow</h2>
+            <canvas id="Chart2"></canvas>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus in $continent-name and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
+            <script>
+                var ctx2 = document.getElementById('Chart2').getContext('2d');
+                var chart2 = new Chart(ctx2, $chart2data);
+            </script>
+        </div>
+
+        <div id="block7">
+            <a name="speed"></a>
+            <h2>Daily Speed</h2>
+            <p>This graph shows the speed of growth (in %) over time in {$continent-name}. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
+            <canvas id="Chart7"></canvas>
+            <script>
+                var ctx7 = document.getElementById('Chart7').getContext('2d');
+                var chart7 = new Chart(ctx7, $chart7data);
+            </script>
+            <p>Note 1. In calculations, the 3-day moving average is used.</p>
+            <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+        </div>
+
+        $continent-list
+        $country-list
+
+        HTML
+
+    html-template("/$continent-url", "Coronavirus in $continent-name", $content);
 }
 
 sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) {
@@ -455,6 +523,7 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) {
     my $chart6data = countries-vs-china(%countries, %per-day, %totals, %daily-totals);
 
     my $country-list = country-list(%countries);
+    my $continent-list = continent-list();
 
     my $content = qq:to/HTML/;
         <h1>Countries vs China</h1>
@@ -480,6 +549,7 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) {
             </script>
         </div>
 
+        $continent-list
         $country-list
 
         HTML
@@ -503,7 +573,7 @@ sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) {
         for %date-cc{$date}.keys -> $cc {
             next unless %countries{$cc};
             my $confirmed = %date-cc{$date}{$cc} || 0;
-            %data{$cc}{$date} = sprintf('%.6f', 100 * $confirmed / (1_000_000 * +%countries{$cc}[1]<population>));
+            %data{$cc}{$date} = sprintf('%.6f', 100 * $confirmed / (1_000_000 * +%countries{$cc}<population>));
 
             %max-cc{$cc} = %data{$cc}{$date};# if %max-cc{$cc} < %data{$cc}{$date};
             # $max = %max-cc{$cc} if $max < %max-cc{$cc};
@@ -519,7 +589,7 @@ sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) {
 
         for %date-cc{$date}.keys.sort -> $cc {
             next unless %max-cc{$cc};
-            next if %countries{$cc}[1]<population> < 1;
+            next if %countries{$cc}<population> < 1;
 
             next if %max-cc{$cc} < 0.75 * %max-cc<CN>;
 
@@ -533,7 +603,7 @@ sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) {
         my $cc = $data.key;
         my $color = $cc eq 'CN' ?? 'red' !! 'RANDOMCOLOR';
         my %ds =
-            label => %countries{$cc}[0]<country>,
+            label => %countries{$cc}<country>,
             data => $data.value,
             fill => False,
             borderColor => $color,
@@ -569,27 +639,17 @@ sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) {
 sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
     say "Generating $cc...";
 
-    my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, $cc);
-    my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, $cc);
-    my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, $cc);
+    my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc);
+    my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc);
+    my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$cc);
 
-    my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, $cc);
+    my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc);
 
-    # my $chart4data = number-percent-graph(%countries, %per-day, %totals, %daily-totals, $cc);
-        # <div id="block4">
-        #     <h3>Affected population timeline</h3>
-        #     <canvas id="Chart4"></canvas>
-        #     <p>This is how the above-show number changes over time. The vertical axis’ unit is % of the total world population in {$proper-country-name}.</p>
-        #     <script>
-        #         var ctx4 = document.getElementById('Chart4').getContext('2d');
-        #         var chart4 = new Chart(ctx4, $chart4data);
-        #     </script>
-        # </div>
+    my $country-list = country-list(%countries, :$cc);
+    my $continent-list = continent-list(%countries{$cc}<continent>);
 
-    my $country-list = country-list(%countries, $cc);
-
-    my $country-name = %countries{$cc}[0]<country>;
-    my $population = +%countries{$cc}[1]<population>;
+    my $country-name = %countries{$cc}<country>;
+    my $population = +%countries{$cc}<population>;
     my $population-str = $population <= 1
         ?? sprintf('%i thousand', (1000 * $population).round)
         !! sprintf('%i million', $population.round);
@@ -639,6 +699,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
+        $continent-list
         $country-list
 
         HTML
@@ -646,31 +707,45 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
     html-template('/' ~ $cc.lc, "Coronavirus in {$proper-country-name}", $content);
 }
 
-sub country-list(%countries, $current?) {
-    my $is_current = !$current ?? ' class="current"' !! '';
+sub country-list(%countries, :$cc?, :$cont?) {
+    my $is_current = !$cc && !$cont ?? ' class="current"' !! '';
     my $html = qq{<p$is_current><a href="/">Whole world</a></p>};
 
-    my $us_html = '';
-    for get-known-countries() -> $cc {
-        next unless %countries{$cc};
+    sub current-country($cc-code) {
+        if $cc {
+            return True if $cc ~~ /US/ && $cc-code eq 'US';
+            return $cc eq $cc-code;
+        }
+        if $cont {
+            return %countries{$cc-code}<continent> eq $cont;
+        }
 
-        if $cc ~~ /US'/'/ {
-            if $current && $current ~~ /US/ {
-                my $path = $cc.lc;
-                my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
-                my $state = %countries{$cc}[0]<country>;
+        return False;
+    }
+
+    my $us_html = '';
+    for get-known-countries() -> $cc-code {
+        next unless %countries{$cc-code};
+
+        if $cc-code ~~ /US'/'/ {
+            if $cc && $cc ~~ /US/ {
+                my $path = $cc-code.lc;
+
+                my $is_current = current-country($cc-code) ??  ' class="current"' !! '';
+
+                my $state = %countries{$cc-code}<country>;
                 $state ~~ s/US'/'//;
                 $us_html ~= qq{<p$is_current><a href="/$path">} ~ $state ~ '</a></p>';
             }
         }
         else {
-            my $path = $cc.lc;
-            my $is_current = $current && $current eq $cc ??  ' class="current"' !! '';
-            $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc}[0]<country> ~ '</a></p>';
+            my $path = $cc-code.lc;
+            my $is_current = current-country($cc-code) ??  ' class="current"' !! '';
+            $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc-code}<country> ~ '</a></p>';
         }
     }
 
-    if $current && $current ~~ /US/ {
+    if $cc && $cc ~~ /US/ {
         $us_html = qq:to/USHTML/;
             <a name="states"></a>
             <h2>Coronavirus in the USA</h2>
@@ -688,6 +763,31 @@ sub country-list(%countries, $current?) {
             <p><a href="/">Whole world</a></p>
             <p><a href="/countries">More statistics on countries</a></p>
             <p><a href="/vs-china">Countries vs China</a></p>
+            <div id="countries-list">
+                $html
+            </div>
+        </div>
+        HTML
+}
+
+sub continent-list($cont?) {
+    my $is_current = !$cont ?? ' class="current"' !! '';
+    my $html = qq{<p$is_current><a href="/">Whole world</a></p>};
+
+    my $us_html = '';
+    for %continents.keys.sort -> $cont-code {
+        my $continent-name = %continents{$cont-code};
+        my $continent-url = $continent-name.lc.subst(' ', '-');
+
+        my $is_current = $cont && $cont-code eq $cont ??  ' class="current"' !! '';
+        $html ~= qq{<p$is_current><a href="/$continent-url">} ~ $continent-name ~ '</a></p>';
+    }
+
+    return qq:to/HTML/;
+        <div id="countries">
+            <a name="continents"></a>
+            <h2>Statistics per Continent</h2>
+
             <div id="countries-list">
                 $html
             </div>
@@ -809,7 +909,7 @@ sub countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals) {
         for %data{$date}.keys.sort -> $cc {
             next unless %countries{$cc}; # TW is skipped here
             my $confirmed = %per-day{$cc}{$date}<confirmed>;
-            @countries.push('<a href="/' ~ $cc.lc ~ '">' ~ %countries{$cc}[0]<country> ~ "</a> ($confirmed)");
+            @countries.push('<a href="/' ~ $cc.lc ~ '">' ~ %countries{$cc}<country> ~ "</a> ($confirmed)");
         }
 
         $html ~= @countries.join(', ');
@@ -819,10 +919,30 @@ sub countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals) {
     return $html;
 }
 
-sub chart-pie(%countries, %per-day, %totals, %daily-totals, $cc?) {    
-    my $confirmed = $cc ?? %totals{$cc}<confirmed> !! [+] %totals.values.map: *<confirmed>;
-    my $failed    = $cc ?? %totals{$cc}<failed>    !! [+] %totals.values.map: *<failed>;
-    my $recovered = $cc ?? %totals{$cc}<recovered> !! [+] %totals.values.map: *<recovered>;
+sub chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) {
+    my $confirmed = 0;
+    my $failed = 0;
+    my $recovered = 0;
+
+    if $cc {
+        $confirmed = %totals{$cc}<confirmed>;
+        $failed    = %totals{$cc}<failed>;
+        $recovered = %totals{$cc}<recovered>;
+    }
+    elsif $cont {
+        for %totals.keys -> $cc-code {
+            next unless %countries{$cc-code} && %countries{$cc-code}<continent> eq $cont;
+
+            $confirmed += %totals{$cc-code}<confirmed>;
+            $failed    += %totals{$cc-code}<failed>;
+            $recovered += %totals{$cc-code}<recovered>;
+        }
+    }
+    else {
+        $confirmed = [+] %totals.values.map: *<confirmed>;
+        $failed    = [+] %totals.values.map: *<failed>;
+        $recovered = [+] %totals.values.map: *<recovered>;
+    }
 
     my $active = $confirmed - $failed - $recovered;
 
@@ -859,7 +979,7 @@ sub chart-pie(%countries, %per-day, %totals, %daily-totals, $cc?) {
     return $json;
 }
 
-sub chart-daily(%countries, %per-day, %totals, %daily-totals, $cc?) {
+sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) {
     my @dates;
     my @recovered;
     my @failed;
@@ -868,7 +988,22 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, $cc?) {
     for %daily-totals.keys.sort(*[0]) -> $date {
         @dates.push($date);
 
-        my %data = $cc ?? %per-day{$cc}{$date} !! %daily-totals{$date};        
+        my %data;
+        if $cc {
+            %data = %per-day{$cc}{$date};
+        }
+        elsif $cont {
+            for %totals.keys -> $cc-code {
+                next unless %countries{$cc-code} && %countries{$cc-code}<continent> eq $cont;
+
+                %data<confirmed> += %per-day{$cc-code}{$date}<confirmed>;
+                %data<failed>    += %per-day{$cc-code}{$date}<failed>;
+                %data<recovered> += %per-day{$cc-code}{$date}<recovered>;
+            }
+        }
+        else {
+            %data = %daily-totals{$date};
+        }
 
         @failed.push(%data<failed>);
         @recovered.push(%data<recovered>);
@@ -937,10 +1072,10 @@ multi sub number-percent(%countries, %per-day, %totals, %daily-totals) {
     return $percent;
 }
 
-multi sub number-percent(%countries, %per-day, %totals, %daily-totals, $cc) {
+multi sub number-percent(%countries, %per-day, %totals, %daily-totals, :$cc!) {
     my $confirmed = %totals{$cc}<confirmed>;
 
-    my $population = %countries{$cc}[1]<population>; # omg, should be fixed in sub get-countries
+    my $population = %countries{$cc}<population>;
     return 0 unless $population;
 
     $population *= 1_000_000;
@@ -951,95 +1086,33 @@ multi sub number-percent(%countries, %per-day, %totals, %daily-totals, $cc) {
     return $percent;
 }
 
-# sub number-percent-graph(%countries, %per-day, %totals, %daily-totals, $cc?) {
-#     my %data;
+multi sub number-percent(%countries, %per-day, %totals, %daily-totals, :$cont!) {
+    my $confirmed = 0;
+    my $population = 0;
 
-#     my @dates;
-#     my @confirmed;
-#     my @active;
-#     my @failed;
-#     my @recovered;
+    for %countries.keys -> $cc {
+        next unless %countries{$cc}<continent>;
+        next unless %countries{$cc}<continent> eq $cont;
 
-#     my $population = $cc ?? (1_000_000 * %countries{$cc}[1]<population>).round !! $world-population;
+        $population += %countries{$cc}<population>;
 
-#     for %daily-totals.keys.sort -> $date {
-#         @dates.push($date);
+        next unless %totals{$cc};
+        $confirmed += %totals{$cc}<confirmed>;
+    }
 
-#         my %data = $cc ?? %per-day{$cc}{$date} !! %daily-totals{$date};
+    my $percent = '%.2g'.sprintf(100 * $confirmed / (1_000_000 * $population));
 
-#         my $confirmed = 100 * %data<confirmed> / $population;
-#         my $failed = 100 * %data<failed> / $population;
-#         my $recovered = 100 * %data<recovered> / $population;
+    $percent = '<&thinsp;0.001' if $percent ~~ /e/;
 
-#         my $active = $confirmed - $failed - $recovered;
-
-#         @confirmed.push($confirmed);
-#         @failed.push($failed);
-#         @recovered.push($recovered);
-#         @active.push($active);
-#     }
-
-#     my $labels = to-json(@dates);
-
-#     my %dataset1 =
-#         label => 'Recovered',
-#         data => @recovered,
-#         fill => False,
-#         borderColor => 'green';
-#     my $dataset1 = to-json(%dataset1);
-
-#     my %dataset2 =
-#         label => 'Failed to recover',
-#         data => @failed,
-#         fill => False,
-#         borderColor => 'red';
-#     my $dataset2 = to-json(%dataset2);
-
-#     my %dataset3 =
-#         label => 'Active cases',
-#         data => @active,
-#         fill => False,
-#         borderColor => 'orange';
-#     my $dataset3 = to-json(%dataset3);
-
-#     my %dataset4 =
-#         label => 'Total confirmed',
-#         data => @confirmed,
-#         fill => False,
-#         borderColor => 'lightblue';
-#     my $dataset4 = to-json(%dataset4);
-
-#     my $json = q:to/JSON/;
-#         {
-#             "type": "line",
-#             "data": {
-#                 "labels": LABELS,
-#                 "datasets": [
-#                     DATASET4,
-#                     DATASET2,
-#                     DATASET3,
-#                     DATASET1
-#                 ]
-#             },
-#             "options": {
-#                 "animation": false,
-#             }
-#         }
-#         JSON
-
-#     $json ~~ s/DATASET1/$dataset1/;
-#     $json ~~ s/DATASET2/$dataset2/;
-#     $json ~~ s/DATASET3/$dataset3/;
-#     $json ~~ s/DATASET4/$dataset4/;
-#     $json ~~ s/LABELS/$labels/;
-
-#     return $json;
-# }
+    return
+        percent => $percent,
+        population => $population;
+}
 
 sub countries-per-capita(%countries, %per-day, %totals, %daily-totals) {
     my %per-mln;
     for get-known-countries() -> $cc {
-        my $population-mln = %countries{$cc}[1]<population>;
+        my $population-mln = %countries{$cc}<population>;
 
         next if $population-mln < 1;
         
@@ -1056,9 +1129,9 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals) {
         last if ++$count > 30;
 
         my $cc = $item.key;
-        my $population-mln = %countries{$cc}[1]<population>;
+        my $population-mln = %countries{$cc}<population>;
 
-        @labels.push(%countries{$cc}[0]<country>);
+        @labels.push(%countries{$cc}<country>);
 
         my $per-capita-confirmed = $item.value;
         
@@ -1129,14 +1202,35 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals) {
     return $json;
 }
 
-sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
+sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) {
     my @labels;
     my @confirmed;
     my @failed;
     my @recovered;
     my @active;
 
-    my %data = $cc ?? %per-day{$cc} !! %daily-totals;
+    my %data;
+
+    if $cc {
+        %data = %per-day{$cc};
+    }
+    elsif $cont {
+        for %per-day.keys -> $cc-code {
+            next unless %countries{$cc-code} && %countries{$cc-code}<continent> eq $cont;
+
+            for %per-day{$cc-code}.keys -> $date {
+                %data{$date} = Hash.new unless %data{$date};
+
+                %data{$date}<confirmed> += %per-day{$cc-code}{$date}<confirmed>;
+                %data{$date}<failed>    += %per-day{$cc-code}{$date}<failed>;
+                %data{$date}<recovered> += %per-day{$cc-code}{$date}<recovered>;
+            }
+        }
+    }
+    else {
+        %data = %daily-totals;
+    }
+
     my @dates = %data.keys.sort;
 
     my $skip-days = $cc ?? 0 !! 0;
@@ -1154,8 +1248,6 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, $cc?) {
         my $day1 = @dates[$index - 1];
         my $day2 = @dates[$index - 2];
         my $day3 = @dates[$index - 3];
-        # my $day4 = @dates[$index - 4];
-        # my $day5 = @dates[$index - 5];
 
         # Skip the first days in the graph to avoid a huge peak after first data appeared;
         $skip-days-confirmed-- if %data{$day0}<confirmed> && $skip-days-confirmed;
@@ -1300,7 +1392,7 @@ sub html-template($path, $title, $content) {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=2">
             <style>
                 $style
             </style>
@@ -1317,6 +1409,8 @@ sub html-template($path, $title, $content) {
                 <a href="/us#states">US states</a>
                 |
                 <a href="$speed-url">Daily speed</a>
+                |
+                <a href="/#continents">Continents</a>
             </p>
 
             $content
@@ -1324,7 +1418,7 @@ sub html-template($path, $title, $content) {
             <div id="about">
                 <p>Based on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
                 <p>This website presents the very same data but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
-                <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
+                <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Twitter: <a href="https://twitter.com/andrewshitov">\@andrewshitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
             </div>
         </body>
         </html>
