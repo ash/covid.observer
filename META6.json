@@ -7,8 +7,10 @@
   "depends" : [
     "HTTP::UserAgent",
     "Locale::Codes::Country",
+    "Locale::US",
     "DBIish",
-    "JSON::Tiny"
+    "JSON::Tiny",
+    "Text::CSV"
   ],
   "description" : "COVID-19 Observer website",
   "license" : "",
