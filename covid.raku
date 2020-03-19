@@ -163,7 +163,7 @@ sub parse-population() {
     # Continents
     # constant $continents = 'https://pkgstore.datahub.io/JohnSnowLabs/country-and-continent-codes-list/country-and-continent-codes-list-csv_csv/data/b7876b7f496677669644f3d1069d3121/country-and-continent-codes-list-csv_csv.csv'
     my @continent-info = csv(in => 'country-and-continent-codes-list-csv_csv.csv');
-    my %continent = @continent-info.map: {$_[3] => $_[1]};
+    my %continent = @continent-info[1..*].map: {$_[3] => $_[1]};
 
     return
         population => %population,
@@ -195,9 +195,10 @@ sub fetch-covid-data(%sources) {
 }
 
 sub extract-covid-data($data) {
-    my @lines = $data.lines;
+    my $csv = Text::CSV.new;
+    my $fh = IO::String.new($data);
 
-    my @headers = @lines.shift.split(',');
+    my @headers = $csv.getline($fh);
     my @dates = @headers[4..*];
 
     my %per-day;
@@ -205,22 +206,20 @@ sub extract-covid-data($data) {
     my %daily-per-country;
     my %daily-total;
 
-    for @lines -> $line is rw {
-        $line ~~ s/'Korea, South'/South Korea/;
-        $line ~~ s/Russia/Russian Federation/;
-        $line ~~ s:g/'*'//;
-        $line ~~ s/Czechia/Czech Republic/;
-
-        my @data = $line.split(',');
-
-        my $country = @data[1] || '';
+    while my @row = $csv.getline($fh) {
+        my $country = @row[1] || '';
+        $country ~~ s/'Korea, South'/South Korea/;
+        $country ~~ s/Russia/Russian Federation/;
+        $country ~~ s:g/'*'//;
+        $country ~~ s/Czechia/Czech Republic/;
         $country ~~ s:g/\"//; #"
+
         my $cc = countryToCode($country) || '';
         $cc = 'US' if $country eq 'US';
 
         next unless $cc;
 
-        for @dates Z @data[4..*] -> ($date, $n) {
+        for @dates Z @row[4..*] -> ($date, $n) {
             %per-day{$cc}{$date} += $n;
             %daily-per-country{$date}{$cc} += $n;
 
@@ -229,12 +228,12 @@ sub extract-covid-data($data) {
         }
 
         if $cc eq 'US' {
-            my $state = @data[0];
+            my $state = @row[0];
 
-            if $state && $state !~~ /Princess/ {
+            if $state && $state !~~ /Princess/ && $state !~~ /','/ {
                 my $state-cc = 'US/' ~ state-to-code($state);
 
-                for @dates Z @data[4..*] -> ($date, $n) {
+                for @dates Z @row[4..*] -> ($date, $n) {
                     %per-day{$state-cc}{$date} += $n;
                     %daily-per-country{$date}{$state-cc} += $n;
 
