@@ -16,129 +16,9 @@
 
     <script src="/Chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/main.css">
     <style>
-        body, html {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    text-align: center;
-    font-family: 'Nanum Gothic', Helvetica, Arial, sans-serif;
-    color: #333333;
-    background: white;
-}
-#block2 {
-    padding-top: 10%;
-    background: #f5f5ea;
-    padding-bottom: 10%;
-}
-#block4 {
-    padding-top: 5%;
-    background: #f5f5ea;
-    padding-bottom: 10%;
-    margin-bottom: 10%;
-    padding-left: 2%;
-    padding-right: 2%;
-}
-#block5 {
-    padding-top: 5%;
-    padding-bottom: 5%;
-    margin-bottom: 5%;
-    padding-left: 2%;
-    padding-right: 2%;
-}
-#block6 {
-    padding-bottom: 10%;
-    margin-bottom: 5%;
-    padding-left: 2%;
-    padding-right: 2%;
-}
-#block7 {
-    padding-bottom: 10%;
-    margin-bottom: 5%;
-    padding-left: 2%;
-    padding-right: 2%;
-}
-#block1 {
-    margin-bottom: 10%;
-}
-#block3 {
-    margin-bottom: 10%;
-    padding-left: 2%;
-    padding-right: 2%;
-}
-h1 {
-    font-weight: normal;
-    font-size: 400%;
-    padding-top: 0.7em;
-}
-h2 {
-    font-weight: normal;
-    font-size: 300%;
-}
-h3 {
-    font-weight: normal;
-    font-size: 200%;
-}
-h4 {
-    font-weight: bold;
-    padding-bottom: 0;
-    margin-bottom: 0;
-    font-size: 120%;
-}
-p {
-    line-height: 140%;
-}
-#percent {
-    font-size: 900%;
-}
-#countries {
-    padding-bottom: 10%;
-}
-#countries-list {
-    column-count: 4;
-    text-align: left;
-    padding-left: 3%;
-    padding-right: 3%;
-}
-a {
-    color: #1d7cf8;
-    text-decoration: none;
-}
-a:hover {
-    color: #1d7cf8;
-    text-decoration: underline;
-}
-#countries-list a {
-    color: #333333;
-    text-decoration: none;
-}
-#countries-list a:hover {
-    color: #333333;
-    text-decoration: underline;
-}
-#countries-list p.current {
-    font-weight: bold;
-}
-#about {
-    border-top: 1px solid lightgray;
-}
-
-@media screen and (max-width: 850px) {
-    h1 {
-        font-size: 300%;
-    }
-    #percent {
-        font-size: 450%;
-    }
-    #countries-list {
-        column-count: 2;
-    }
-    #block4 {
-        display: none;
-    }
-}
-
-
+        
     </style>
 </head>
 <body>
@@ -152,14 +32,14 @@ a:hover {
         |
         <a href="/us#states">US states</a>
         |
-        <a href="#speed">Daily speed</a>
+        <a href="/#speed">Daily speed</a>
     </p>
 
     <h1>Coronavirus in different countries</h1>
 
 <div id="block5">
     <h2>Number of Countires Affected</h2>
-    <p>138 countires are affected, which is 65.1&thinsp;% from the total 212 countries.</p>
+    <p>140 countires are affected, which is 66.0&thinsp;% from the total 212 countries.</p>
     <canvas style="height: 400px" id="Chart5"></canvas>
     <p>On this graph, you can see how many countries did have data about confirmed coronavirus invection for a given date over the last months.</p>
     <script>
@@ -167,9 +47,9 @@ a:hover {
         var chart5 = new Chart(ctx5, {
     "type": "bar",
     "data": {
-        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17" ],
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18" ],
         "datasets": [
-            { "yAxisID" : "axis1", "data" : [ 5, 6, 7, 9, 11, 14, 14, 15, 17, 21, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 25, 25, 27, 27, 27, 33, 37, 43, 47, 53, 57, 62, 69, 73, 77, 80, 89, 91, 96, 98, 101, 105, 107, 114, 128, 131, 136, 138 ], "label" : "The number of affected countries", "backgroundColor" : "lightblue" }
+            { "label" : "The number of affected countries", "yAxisID" : "axis1", "backgroundColor" : "lightblue", "data" : [ 6, 6, 7, 9, 11, 14, 14, 15, 17, 21, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 25, 25, 27, 27, 27, 33, 37, 43, 47, 53, 57, 62, 69, 73, 77, 80, 89, 91, 96, 98, 101, 105, 107, 113, 125, 128, 133, 135, 140 ] }
         ]
     },
     "options": {
@@ -220,7 +100,7 @@ a:hover {
 <div id="block6">
     <h2>Countries Appeared This Day</h2>
     <p>This list gives you the overview of when the first confirmed case was reported in the given country. Or, you can see here, which countries entered the chart in the recent days. The number in parentheses is the number of confirmed cases in that country on that date.</p>
-    <h4>2020-03-17</h4><p><a href="/bb">Barbados</a> (2), <a href="/me">Montenegro</a> (2), <a href="/us/wv">US/West Virginia</a> (1)</p><h4>2020-03-16</h4><p><a href="/bj">Benin</a> (1), <a href="/gl">Greenland</a> (1), <a href="/lr">Liberia</a> (1), <a href="/so">Somalia</a> (1), <a href="/tz">Tanzania</a> (1)</p><h4>2020-03-15</h4><p><a href="/cf">Central African Republic</a> (1), <a href="/gq">Equatorial Guinea</a> (1), <a href="/us/gu">US/Guam</a> (3), <a href="/uz">Uzbekistan</a> (1)</p><h4>2020-03-14</h4><p><a href="/ga">Gabon</a> (1), <a href="/gh">Ghana</a> (3), <a href="/gt">Guatemala</a> (1), <a href="/lc">Saint Lucia</a> (1), <a href="/mr">Mauritania</a> (1), <a href="/na">Namibia</a> (2), <a href="/rw">Rwanda</a> (1), <a href="/sc">Seychelles</a> (2), <a href="/sr">Suriname</a> (1), <a href="/tt">Trinidad and Tobago</a> (2), <a href="/us/pr">US/Puerto Rico</a> (3), <a href="/us/vi">US/Virgin Islands</a> (1), <a href="/uy">Uruguay</a> (4), <a href="/ve">Venezuela</a> (2)</p><h4>2020-03-13</h4><p><a href="/ag">Antigua and Barbuda</a> (1), <a href="/aw">Aruba</a> (2), <a href="/et">Ethiopia</a> (1), <a href="/gn">Guinea</a> (1), <a href="/ke">Kenya</a> (1), <a href="/kz">Kazakhstan</a> (4), <a href="/sd">Sudan</a> (1), <a href="/us/ak">US/Alaska</a> (1), <a href="/us/al">US/Alabama</a> (5), <a href="/us/id">US/Idaho</a> (1), <a href="/us/me">US/Maine</a> (1)</p><h4>2020-03-12</h4><p><a href="/cu">Cuba</a> (3), <a href="/gy">Guyana</a> (1), <a href="/us/ms">US/Mississippi</a> (1), <a href="/us/nd">US/North Dakota</a> (1), <a href="/us/wy">US/Wyoming</a> (1)</p><h4>2020-03-11</h4><p><a href="/bo">Bolivia</a> (2), <a href="/hn">Honduras</a> (2), <a href="/jm">Jamaica</a> (1), <a href="/tr">Turkey</a> (1), <a href="/us/ar">US/Arkansas</a> (1), <a href="/us/de">US/Delaware</a> (1), <a href="/us/mi">US/Michigan</a> (2), <a href="/us/mt">US/Montana</a> (1), <a href="/us/nm">US/New Mexico</a> (3), <a href="/us/sd">US/South Dakota</a> (8)</p><h4>2020-03-10</h4><p><a href="/bf">Burkina Faso</a> (1), <a href="/mn">Mongolia</a> (1), <a href="/pa">Panama</a> (1), <a href="/us/az">US/Arizona</a> (6), <a href="/us/ca">US/California</a> (144), <a href="/us/co">US/Colorado</a> (15), <a href="/us/ct">US/Connecticut</a> (2), <a href="/us/dc">US/District of Columbia</a> (5), <a href="/us/fl">US/Florida</a> (15), <a href="/us/ga">US/Georgia</a> (17), <a href="/us/hi">US/Hawaii</a> (2), <a href="/us/ia">US/Iowa</a> (8), <a href="/us/il">US/Illinois</a> (12), <a href="/us/in">US/Indiana</a> (6), <a href="/us/ks">US/Kansas</a> (1), <a href="/us/ky">US/Kentucky</a> (6), <a href="/us/la">US/Louisiana</a> (1), <a href="/us/ma">US/Massachusetts</a> (92), <a href="/us/md">US/Maryland</a> (8), <a href="/us/mn">US/Minnesota</a> (3), <a href="/us/mo">US/Missouri</a> (1), <a href="/us/nc">US/North Carolina</a> (7), <a href="/us/ne">US/Nebraska</a> (3), <a href="/us/nh">US/New Hampshire</a> (4), <a href="/us/nj">US/New Jersey</a> (15), <a href="/us/nv">US/Nevada</a> (4), <a href="/us/ny">US/New York</a> (173), <a href="/us/oh">US/Ohio</a> (3), <a href="/us/ok">US/Oklahoma</a> (2), <a href="/us/or">US/Oregon</a> (15), <a href="/us/pa">US/Pennsylvania</a> (12), <a href="/us/ri">US/Rhode Island</a> (3), <a href="/us/sc">US/South Carolina</a> (7), <a href="/us/tn">US/Tennessee</a> (7), <a href="/us/tx">US/Texas</a> (13), <a href="/us/ut">US/Utah</a> (2), <a href="/us/va">US/Virginia</a> (7), <a href="/us/vt">US/Vermont</a> (1), <a href="/us/wa">US/Washington</a> (267), <a href="/us/wi">US/Wisconsin</a> (3)</p><h4>2020-03-09</h4><p><a href="/al">Albania</a> (2), <a href="/cy">Cyprus</a> (2)</p><h4>2020-03-08</h4><p><a href="/bd">Bangladesh</a> (3), <a href="/bg">Bulgaria</a> (4), <a href="/md">Moldova</a> (1), <a href="/mv">Maldives</a> (4), <a href="/py">Paraguay</a> (1)</p><h4>2020-03-07</h4><p><a href="/mq">Martinique</a> (2), <a href="/mt">Malta</a> (3)</p><h4>2020-03-06</h4><p><a href="/bt">Bhutan</a> (1), <a href="/cm">Cameroon</a> (1), <a href="/co">Colombia</a> (1), <a href="/cr">Costa Rica</a> (1), <a href="/pe">Peru</a> (1), <a href="/rs">Serbia</a> (1), <a href="/sk">Slovakia</a> (1), <a href="/tg">Togo</a> (1), <a href="/va">Holy See</a> (1)</p><h4>2020-03-05</h4><p><a href="/ba">Bosnia and Herzegovina</a> (2), <a href="/si">Slovenia</a> (2), <a href="/za">South Africa</a> (1)</p><h4>2020-03-04</h4><p><a href="/hu">Hungary</a> (2), <a href="/li">Liechtenstein</a> (1), <a href="/pl">Poland</a> (1), <a href="/tn">Tunisia</a> (1)</p><h4>2020-03-03</h4><p><a href="/ar">Argentina</a> (1), <a href="/cl">Chile</a> (1), <a href="/jo">Jordan</a> (1), <a href="/ua">Ukraine</a> (1)</p><h4>2020-03-02</h4><p><a href="/ad">Andorra</a> (1), <a href="/id">Indonesia</a> (2), <a href="/lv">Latvia</a> (1), <a href="/ma">Morocco</a> (1), <a href="/pt">Portugal</a> (2), <a href="/sa">Saudi Arabia</a> (1), <a href="/sn">Senegal</a> (1)</p><h4>2020-03-01</h4><p><a href="/am">Armenia</a> (1), <a href="/az">Azerbaijan</a> (3), <a href="/cz">Czech Republic</a> (3), <a href="/do">Dominican Republic</a> (1), <a href="/ec">Ecuador</a> (6)</p><h4>2020-02-29</h4><p><a href="/ie">Ireland</a> (1), <a href="/lu">Luxembourg</a> (1), <a href="/mc">Monaco</a> (1), <a href="/qa">Qatar</a> (1)</p><h4>2020-02-28</h4><p><a href="/by">Belarus</a> (1), <a href="/is">Iceland</a> (1), <a href="/lt">Lithuania</a> (1), <a href="/mx">Mexico</a> (1), <a href="/ng">Nigeria</a> (1), <a href="/nz">New Zealand</a> (1)</p><h4>2020-02-27</h4><p><a href="/dk">Denmark</a> (1), <a href="/ee">Estonia</a> (1), <a href="/nl">Netherlands</a> (1), <a href="/sm">San Marino</a> (1)</p><h4>2020-02-26</h4><p><a href="/br">Brazil</a> (1), <a href="/ge">Georgia</a> (1), <a href="/gr">Greece</a> (1), <a href="/no">Norway</a> (1), <a href="/pk">Pakistan</a> (2), <a href="/ro">Romania</a> (1)</p><h4>2020-02-25</h4><p><a href="/at">Austria</a> (2), <a href="/ch">Switzerland</a> (1), <a href="/dz">Algeria</a> (1), <a href="/hr">Croatia</a> (1)</p><h4>2020-02-24</h4><p><a href="/af">Afghanistan</a> (1), <a href="/bh">Bahrain</a> (1), <a href="/iq">Iraq</a> (1), <a href="/kw">Kuwait</a> (1), <a href="/om">Oman</a> (2), <a href="/us">United States of America</a> (36)</p><h4>2020-02-21</h4><p><a href="/il">Israel</a> (1), <a href="/lb">Lebanon</a> (1)</p><h4>2020-02-19</h4><p><a href="/ir">Iran</a> (2)</p><h4>2020-02-14</h4><p><a href="/eg">Egypt</a> (1)</p><h4>2020-02-04</h4><p><a href="/be">Belgium</a> (1)</p><h4>2020-02-01</h4><p><a href="/es">Spain</a> (1)</p><h4>2020-01-31</h4><p><a href="/gb">United Kingdom</a> (2), <a href="/it">Italy</a> (2), <a href="/ru">Russian Federation</a> (2), <a href="/se">Sweden</a> (1)</p><h4>2020-01-30</h4><p><a href="/in">India</a> (1), <a href="/ph">Philippines</a> (1)</p><h4>2020-01-29</h4><p><a href="/fi">Finland</a> (1)</p><h4>2020-01-27</h4><p><a href="/de">Germany</a> (1), <a href="/kh">Cambodia</a> (1), <a href="/lk">Sri Lanka</a> (1)</p><h4>2020-01-26</h4><p><a href="/au">Australia</a> (4), <a href="/ca">Canada</a> (1)</p><h4>2020-01-25</h4><p><a href="/my">Malaysia</a> (3), <a href="/np">Nepal</a> (1)</p><h4>2020-01-24</h4><p><a href="/fr">France</a> (2)</p><h4>2020-01-23</h4><p><a href="/sg">Singapore</a> (1)</p><h4>2020-01-22</h4><p><a href="/cn">China</a> (548), <a href="/jp">Japan</a> (2), <a href="/kr">South Korea</a> (1), <a href="/th">Thailand</a> (2)</p>
+    <h4>2020-03-18</h4><p><a href="/dj">Djibouti</a> (1), <a href="/kg">Kyrgyzstan</a> (3), <a href="/mu">Mauritius</a> (3), <a href="/zm">Zambia</a> (2)</p><h4>2020-03-17</h4><p><a href="/bb">Barbados</a> (2), <a href="/me">Montenegro</a> (2), <a href="/us/wv">US/West Virginia</a> (1)</p><h4>2020-03-16</h4><p><a href="/bj">Benin</a> (1), <a href="/gl">Greenland</a> (1), <a href="/lr">Liberia</a> (1), <a href="/so">Somalia</a> (1), <a href="/tz">Tanzania</a> (1)</p><h4>2020-03-15</h4><p><a href="/cf">Central African Republic</a> (1), <a href="/gq">Equatorial Guinea</a> (1), <a href="/us/gu">US/Guam</a> (3), <a href="/uz">Uzbekistan</a> (1)</p><h4>2020-03-14</h4><p><a href="/ga">Gabon</a> (1), <a href="/gh">Ghana</a> (3), <a href="/gt">Guatemala</a> (1), <a href="/lc">Saint Lucia</a> (1), <a href="/mr">Mauritania</a> (1), <a href="/na">Namibia</a> (2), <a href="/rw">Rwanda</a> (1), <a href="/sc">Seychelles</a> (2), <a href="/sr">Suriname</a> (1), <a href="/tt">Trinidad and Tobago</a> (2), <a href="/us/pr">US/Puerto Rico</a> (3), <a href="/us/vi">US/Virgin Islands</a> (1), <a href="/uy">Uruguay</a> (4), <a href="/ve">Venezuela</a> (2)</p><h4>2020-03-13</h4><p><a href="/ag">Antigua and Barbuda</a> (1), <a href="/et">Ethiopia</a> (1), <a href="/gn">Guinea</a> (1), <a href="/ke">Kenya</a> (1), <a href="/kz">Kazakhstan</a> (4), <a href="/sd">Sudan</a> (1), <a href="/us/ak">US/Alaska</a> (1), <a href="/us/al">US/Alabama</a> (5), <a href="/us/id">US/Idaho</a> (1), <a href="/us/me">US/Maine</a> (1)</p><h4>2020-03-12</h4><p><a href="/cu">Cuba</a> (3), <a href="/gy">Guyana</a> (1), <a href="/us/ms">US/Mississippi</a> (1), <a href="/us/nd">US/North Dakota</a> (1), <a href="/us/wy">US/Wyoming</a> (1)</p><h4>2020-03-11</h4><p><a href="/bo">Bolivia</a> (2), <a href="/hn">Honduras</a> (2), <a href="/jm">Jamaica</a> (1), <a href="/tr">Turkey</a> (1), <a href="/us/ar">US/Arkansas</a> (1), <a href="/us/de">US/Delaware</a> (1), <a href="/us/mi">US/Michigan</a> (2), <a href="/us/mt">US/Montana</a> (1), <a href="/us/nm">US/New Mexico</a> (3), <a href="/us/sd">US/South Dakota</a> (8)</p><h4>2020-03-10</h4><p><a href="/bf">Burkina Faso</a> (1), <a href="/mn">Mongolia</a> (1), <a href="/pa">Panama</a> (1), <a href="/us/az">US/Arizona</a> (6), <a href="/us/ca">US/California</a> (144), <a href="/us/co">US/Colorado</a> (15), <a href="/us/ct">US/Connecticut</a> (2), <a href="/us/dc">US/District of Columbia</a> (5), <a href="/us/fl">US/Florida</a> (15), <a href="/us/ga">US/Georgia</a> (17), <a href="/us/hi">US/Hawaii</a> (2), <a href="/us/ia">US/Iowa</a> (8), <a href="/us/il">US/Illinois</a> (12), <a href="/us/in">US/Indiana</a> (6), <a href="/us/ks">US/Kansas</a> (1), <a href="/us/ky">US/Kentucky</a> (6), <a href="/us/la">US/Louisiana</a> (1), <a href="/us/ma">US/Massachusetts</a> (92), <a href="/us/md">US/Maryland</a> (8), <a href="/us/mn">US/Minnesota</a> (3), <a href="/us/mo">US/Missouri</a> (1), <a href="/us/nc">US/North Carolina</a> (7), <a href="/us/ne">US/Nebraska</a> (3), <a href="/us/nh">US/New Hampshire</a> (4), <a href="/us/nj">US/New Jersey</a> (15), <a href="/us/nv">US/Nevada</a> (4), <a href="/us/ny">US/New York</a> (173), <a href="/us/oh">US/Ohio</a> (3), <a href="/us/ok">US/Oklahoma</a> (2), <a href="/us/or">US/Oregon</a> (15), <a href="/us/pa">US/Pennsylvania</a> (12), <a href="/us/ri">US/Rhode Island</a> (3), <a href="/us/sc">US/South Carolina</a> (7), <a href="/us/tn">US/Tennessee</a> (7), <a href="/us/tx">US/Texas</a> (13), <a href="/us/ut">US/Utah</a> (2), <a href="/us/va">US/Virginia</a> (7), <a href="/us/vt">US/Vermont</a> (1), <a href="/us/wa">US/Washington</a> (267), <a href="/us/wi">US/Wisconsin</a> (3)</p><h4>2020-03-09</h4><p><a href="/al">Albania</a> (2), <a href="/cy">Cyprus</a> (2)</p><h4>2020-03-08</h4><p><a href="/bd">Bangladesh</a> (3), <a href="/bg">Bulgaria</a> (4), <a href="/md">Moldova</a> (1), <a href="/mv">Maldives</a> (4), <a href="/py">Paraguay</a> (1)</p><h4>2020-03-07</h4><p><a href="/mq">Martinique</a> (2), <a href="/mt">Malta</a> (3)</p><h4>2020-03-06</h4><p><a href="/bt">Bhutan</a> (1), <a href="/cm">Cameroon</a> (1), <a href="/co">Colombia</a> (1), <a href="/cr">Costa Rica</a> (1), <a href="/pe">Peru</a> (1), <a href="/rs">Serbia</a> (1), <a href="/sk">Slovakia</a> (1), <a href="/tg">Togo</a> (1), <a href="/va">Holy See</a> (1)</p><h4>2020-03-05</h4><p><a href="/ba">Bosnia and Herzegovina</a> (2), <a href="/si">Slovenia</a> (2), <a href="/za">South Africa</a> (1)</p><h4>2020-03-04</h4><p><a href="/hu">Hungary</a> (2), <a href="/li">Liechtenstein</a> (1), <a href="/pl">Poland</a> (1), <a href="/tn">Tunisia</a> (1)</p><h4>2020-03-03</h4><p><a href="/ar">Argentina</a> (1), <a href="/cl">Chile</a> (1), <a href="/jo">Jordan</a> (1), <a href="/ua">Ukraine</a> (1)</p><h4>2020-03-02</h4><p><a href="/ad">Andorra</a> (1), <a href="/id">Indonesia</a> (2), <a href="/lv">Latvia</a> (1), <a href="/ma">Morocco</a> (1), <a href="/pt">Portugal</a> (2), <a href="/sa">Saudi Arabia</a> (1), <a href="/sn">Senegal</a> (1)</p><h4>2020-03-01</h4><p><a href="/am">Armenia</a> (1), <a href="/az">Azerbaijan</a> (3), <a href="/cz">Czech Republic</a> (3), <a href="/do">Dominican Republic</a> (1), <a href="/ec">Ecuador</a> (6)</p><h4>2020-02-29</h4><p><a href="/ie">Ireland</a> (1), <a href="/lu">Luxembourg</a> (1), <a href="/mc">Monaco</a> (1), <a href="/qa">Qatar</a> (1)</p><h4>2020-02-28</h4><p><a href="/by">Belarus</a> (1), <a href="/is">Iceland</a> (1), <a href="/lt">Lithuania</a> (1), <a href="/mx">Mexico</a> (1), <a href="/ng">Nigeria</a> (1), <a href="/nz">New Zealand</a> (1)</p><h4>2020-02-27</h4><p><a href="/dk">Denmark</a> (1), <a href="/ee">Estonia</a> (1), <a href="/nl">Netherlands</a> (1), <a href="/sm">San Marino</a> (1)</p><h4>2020-02-26</h4><p><a href="/br">Brazil</a> (1), <a href="/ge">Georgia</a> (1), <a href="/gr">Greece</a> (1), <a href="/no">Norway</a> (1), <a href="/pk">Pakistan</a> (2), <a href="/ro">Romania</a> (1)</p><h4>2020-02-25</h4><p><a href="/at">Austria</a> (2), <a href="/ch">Switzerland</a> (1), <a href="/dz">Algeria</a> (1), <a href="/hr">Croatia</a> (1)</p><h4>2020-02-24</h4><p><a href="/af">Afghanistan</a> (1), <a href="/bh">Bahrain</a> (1), <a href="/iq">Iraq</a> (1), <a href="/kw">Kuwait</a> (1), <a href="/om">Oman</a> (2), <a href="/us">United States of America</a> (36)</p><h4>2020-02-21</h4><p><a href="/il">Israel</a> (1), <a href="/lb">Lebanon</a> (1)</p><h4>2020-02-19</h4><p><a href="/ir">Iran</a> (2)</p><h4>2020-02-14</h4><p><a href="/eg">Egypt</a> (1)</p><h4>2020-02-04</h4><p><a href="/be">Belgium</a> (1)</p><h4>2020-02-01</h4><p><a href="/es">Spain</a> (1)</p><h4>2020-01-31</h4><p><a href="/gb">United Kingdom</a> (2), <a href="/it">Italy</a> (2), <a href="/ru">Russian Federation</a> (2), <a href="/se">Sweden</a> (1)</p><h4>2020-01-30</h4><p><a href="/in">India</a> (1), <a href="/ph">Philippines</a> (1)</p><h4>2020-01-29</h4><p><a href="/fi">Finland</a> (1)</p><h4>2020-01-27</h4><p><a href="/de">Germany</a> (1), <a href="/kh">Cambodia</a> (1), <a href="/lk">Sri Lanka</a> (1)</p><h4>2020-01-26</h4><p><a href="/au">Australia</a> (4), <a href="/ca">Canada</a> (1)</p><h4>2020-01-25</h4><p><a href="/my">Malaysia</a> (3), <a href="/np">Nepal</a> (1)</p><h4>2020-01-24</h4><p><a href="/fr">France</a> (2)</p><h4>2020-01-23</h4><p><a href="/sg">Singapore</a> (1)</p><h4>2020-01-22</h4><p><a href="/cn">China</a> (548), <a href="/gm">Gambia</a> (-15), <a href="/jp">Japan</a> (2), <a href="/kr">South Korea</a> (1), <a href="/th">Thailand</a> (2)</p>
 </div>
 
 <div id="block4">
@@ -232,11 +112,11 @@ a:hover {
         var chart4 = new Chart(ctx4, {
     "type": "horizontalBar",
     "data": {
-        "labels": [ "Italy", "Switzerland", "Norway", "Spain", "Iran", "Denmark", "Estonia", "South Korea", "US/Washington", "Qatar", "Austria", "Bahrain", "Slovenia", "Sweden", "France", "Germany", "Belgium", "Netherlands", "US/New York", "Finland", "China", "Singapore", "Ireland", "Portugal", "US/Louisiana", "Israel", "Cyprus", "Czech Republic", "Greece", "US/Massachusetts" ],
+        "labels": [ "Italy", "Switzerland", "Spain", "Norway", "Iran", "Estonia", "Denmark", "Austria", "South Korea", "US/Washington", "Qatar", "Bahrain", "Germany", "France", "Slovenia", "Belgium", "US/New York", "Sweden", "Netherlands", "Finland", "Ireland", "US/Louisiana", "China", "Singapore", "Israel", "Portugal", "Czech Republic", "Cyprus", "Greece", "United Kingdom" ],
         "datasets": [
-            { "backgroundColor" : "red", "label" : "Failed to recover", "data" : [ "41.34", "3.14", "0.56", "11.40", "11.92", "0.69", "0.00", "1.58", "8.18", "0.00", "0.34", "0.61", "0.48", "0.70", "2.27", "0.29", "0.87", "2.52", "0.67", "0.00", "2.25", "0.00", "0.41", "0.10", "0.88", "0.00", "0.00", "0.00", "0.48", "0.00" ] },
-            { "label" : "Active cases", "backgroundColor" : "orange", "data" : [ "430.42", "310.66", "271.25", "217.97", "118.10", "176.54", "168.98", "133.37", "151.68", "153.60", "147.73", "88.96", "131.81", "117.77", "115.75", "109.75", "106.77", "97.27", "87.37", "56.21", "6.29", "26.19", "44.24", "43.42", "42.35", "38.27", "38.38", "36.77", "35.71", "33.14" ] },
-            { "label" : "Recovered", "backgroundColor" : "green", "data" : [ "48.57", "0.47", "0.19", "22.00", "65.00", "0.17", "0.75", "27.47", "0.15", "1.41", "0.67", "49.35", "0.00", "0.10", "0.18", "0.80", "0.09", "0.12", "0.00", "1.81", "47.98", "19.64", "1.02", "0.29", "0.00", "1.29", "0.00", "0.28", "0.76", "0.15" ] }
+            { "data" : [ "49.18", "3.26", "13.33", "1.12", "13.69", "0.00", "0.69", "0.45", "1.64", "8.18", "0.00", "0.61", "0.34", "2.27", "0.48", "1.21", "0.83", "1.00", "3.39", "0.00", "0.41", "0.88", "2.26", "0.00", "0.00", "0.20", "0.00", "0.00", "0.48", "1.07" ], "backgroundColor" : "red", "label" : "Failed to recover" },
+            { "backgroundColor" : "orange", "data" : [ "474.15", "347.44", "261.16", "286.86", "130.71", "193.88", "192.31", "182.36", "132.54", "151.68", "158.19", "101.75", "146.01", "137.34", "131.81", "124.88", "127.92", "126.34", "116.86", "58.93", "58.38", "55.81", "5.66", "34.29", "49.54", "43.32", "43.13", "40.88", "38.67", "37.06" ], "label" : "Active cases" },
+            { "data" : [ "66.47", "1.75", "23.13", "0.19", "65.00", "0.75", "0.17", "1.01", "30.06", "0.15", "1.41", "53.62", "1.26", "0.18", "0.00", "2.69", "0.00", "0.10", "0.12", "1.81", "1.02", "0.00", "48.65", "19.64", "1.29", "0.29", "0.28", "0.00", "0.76", "0.99" ], "backgroundColor" : "green", "label" : "Recovered" }
         ]
     },
     "options": {
@@ -265,7 +145,7 @@ a:hover {
     <p><a href="/countries">More statistics on countries</a></p>
     <p><a href="/vs-china">Countries vs China</a></p>
     <div id="countries-list">
-        <p class="current"><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p><a href="/am">Armenia</a></p><p><a href="/aw">Aruba</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p><a href="/az">Azerbaijan</a></p><p><a href="/bh">Bahrain</a></p><p><a href="/bd">Bangladesh</a></p><p><a href="/bb">Barbados</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bj">Benin</a></p><p><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/br">Brazil</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/cf">Central African Republic</a></p><p><a href="/cl">Chile</a></p><p><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p><a href="/cy">Cyprus</a></p><p><a href="/cz">Czech Republic</a></p><p><a href="/dk">Denmark</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/ee">Estonia</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/ga">Gabon</a></p><p><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gh">Ghana</a></p><p><a href="/gr">Greece</a></p><p><a href="/gl">Greenland</a></p><p><a href="/gt">Guatemala</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gy">Guyana</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p><a href="/in">India</a></p><p><a href="/id">Indonesia</a></p><p><a href="/ir">Iran</a></p><p><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p><a href="/jp">Japan</a></p><p><a href="/jo">Jordan</a></p><p><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/kw">Kuwait</a></p><p><a href="/lv">Latvia</a></p><p><a href="/lb">Lebanon</a></p><p><a href="/lr">Liberia</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/my">Malaysia</a></p><p><a href="/mv">Maldives</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mr">Mauritania</a></p><p><a href="/mx">Mexico</a></p><p><a href="/md">Moldova</a></p><p><a href="/mc">Monaco</a></p><p><a href="/mn">Mongolia</a></p><p><a href="/me">Montenegro</a></p><p><a href="/ma">Morocco</a></p><p><a href="/na">Namibia</a></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/no">Norway</a></p><p><a href="/om">Oman</a></p><p><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p><a href="/qa">Qatar</a></p><p><a href="/ro">Romania</a></p><p><a href="/ru">Russian Federation</a></p><p><a href="/rw">Rwanda</a></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a></p><p><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sc">Seychelles</a></p><p><a href="/sg">Singapore</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a></p><p><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p><a href="/lk">Sri Lanka</a></p><p><a href="/sd">Sudan</a></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p><a href="/tz">Tanzania</a></p><p><a href="/th">Thailand</a></p><p><a href="/tg">Togo</a></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a></p><p><a href="/tr">Turkey</a></p><p><a href="/ua">Ukraine</a></p><p><a href="/gb">United Kingdom</a></p><p><a href="/us">United States of America</a></p><p><a href="/uy">Uruguay</a></p><p><a href="/uz">Uzbekistan</a></p><p><a href="/ve">Venezuela</a></p>
+        <p class="current"><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p><a href="/am">Armenia</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p><a href="/az">Azerbaijan</a></p><p><a href="/bh">Bahrain</a></p><p><a href="/bd">Bangladesh</a></p><p><a href="/bb">Barbados</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bj">Benin</a></p><p><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/br">Brazil</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/cf">Central African Republic</a></p><p><a href="/cl">Chile</a></p><p><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p><a href="/cy">Cyprus</a></p><p><a href="/cz">Czech Republic</a></p><p><a href="/dk">Denmark</a></p><p><a href="/dj">Djibouti</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/ee">Estonia</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/ga">Gabon</a></p><p><a href="/gm">Gambia</a></p><p><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gh">Ghana</a></p><p><a href="/gr">Greece</a></p><p><a href="/gl">Greenland</a></p><p><a href="/gt">Guatemala</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gy">Guyana</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p><a href="/in">India</a></p><p><a href="/id">Indonesia</a></p><p><a href="/ir">Iran</a></p><p><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p><a href="/jp">Japan</a></p><p><a href="/jo">Jordan</a></p><p><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/kw">Kuwait</a></p><p><a href="/kg">Kyrgyzstan</a></p><p><a href="/lv">Latvia</a></p><p><a href="/lb">Lebanon</a></p><p><a href="/lr">Liberia</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/my">Malaysia</a></p><p><a href="/mv">Maldives</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mr">Mauritania</a></p><p><a href="/mu">Mauritius</a></p><p><a href="/mx">Mexico</a></p><p><a href="/md">Moldova</a></p><p><a href="/mc">Monaco</a></p><p><a href="/mn">Mongolia</a></p><p><a href="/me">Montenegro</a></p><p><a href="/ma">Morocco</a></p><p><a href="/na">Namibia</a></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/no">Norway</a></p><p><a href="/om">Oman</a></p><p><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p><a href="/qa">Qatar</a></p><p><a href="/ro">Romania</a></p><p><a href="/ru">Russian Federation</a></p><p><a href="/rw">Rwanda</a></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a></p><p><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sc">Seychelles</a></p><p><a href="/sg">Singapore</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a></p><p><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p><a href="/lk">Sri Lanka</a></p><p><a href="/sd">Sudan</a></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p><a href="/tz">Tanzania</a></p><p><a href="/th">Thailand</a></p><p><a href="/tg">Togo</a></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a></p><p><a href="/tr">Turkey</a></p><p><a href="/ua">Ukraine</a></p><p><a href="/gb">United Kingdom</a></p><p><a href="/us">United States of America</a></p><p><a href="/uy">Uruguay</a></p><p><a href="/uz">Uzbekistan</a></p><p><a href="/ve">Venezuela</a></p><p><a href="/zm">Zambia</a></p>
     </div>
 </div>
 
