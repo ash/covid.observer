@@ -104,6 +104,8 @@ multi sub MAIN('generate') {
         generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals);
     }
 
+    generate-continent-graph(%countries, %per-day, %totals, %daily-totals);
+
     geo-sanity();
 }
 
@@ -787,6 +789,7 @@ sub continent-list($cont?) {
         <div id="countries">
             <a name="continents"></a>
             <h2>Statistics per Continent</h2>
+            <p><a href="/continents">Spread over the continents timeline</a></p>
 
             <div id="countries-list">
                 $html
@@ -1202,6 +1205,110 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals) {
     return $json;
 }
 
+sub generate-continent-graph(%countries, %per-day, %totals, %daily-totals) {
+    my $chart8data = continent-joint-graph(%countries, %per-day, %totals, %daily-totals);
+
+    my $country-list = country-list(%countries);
+    my $continent-list = continent-list();
+
+    my $content = qq:to/HTML/;
+        <h1>Coronavirus Spread over the Continents</h1>
+
+        <div id="block3">
+            <h2>Active Cases Timeline</h2>
+            <p>This bar chart displays the timeline of the number of active cases (thus, confirmed minus failed to recovered minus recovered). The gold bars are those reflecting <a href="/asia">Asia</a> (mostly, <a href="/cn">China</a>). The blue bars correspond to the number of active cases in <a href="/europe">Europe</a>.</p>
+            <canvas id="Chart8"></canvas>
+            <script>
+                var ctx8 = document.getElementById('Chart8').getContext('2d');
+                var chart8 = new Chart(ctx8, $chart8data);
+            </script>
+        </div>
+
+        $continent-list
+        $country-list
+
+        HTML
+
+    html-template('/continents', 'Coronavirus over the Continents', $content);
+}
+
+sub continent-joint-graph(%countries, %per-day, %totals, %daily-totals) {
+    my @labels;
+    my %datasets;
+    for %daily-totals.keys.sort -> $date {
+        push @labels, $date;
+
+        my %day-data;
+        for %per-day.keys -> $cc {
+            next unless %countries{$cc} && %countries{$cc}<continent>;
+
+            my $continent = %countries{$cc}<continent>;
+
+            my $confirmed = %per-day{$cc}{$date}<confirmed> || 0;
+            my $failed = %per-day{$cc}{$date}<failed> || 0;
+            my $recovered = %per-day{$cc}{$date}<recovered> || 0;
+
+            %day-data{$continent} += $confirmed - $failed - $recovered;
+        }
+
+        for %day-data.keys -> $cont {
+            %datasets{$cont} = [] unless %datasets{$cont};
+            %datasets{$cont}.push(%day-data{$cont});
+        }
+    }
+
+    my $labels = to-json(@labels);
+
+    my %continent-color =
+        AF => '#f5494d', AS => '#c7b53e', EU => '#477ccc',
+        NA => '#d256d7', OC => '#40d8d3', SA => '#35ad38';
+
+    my %json;
+    for %datasets.keys -> $cont {
+        my %ds =
+            label => %continents{$cont},
+            data => %datasets{$cont},
+            backgroundColor => %continent-color{$cont};
+        %json{$cont} = to-json(%ds);
+    }
+
+    my $json = q:to/JSON/;
+        {
+            "type": "bar",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASETAF,
+                    DATASETAS,
+                    DATASETEU,
+                    DATASETNA,
+                    DATASETSA,
+                    DATASETOC
+                ]
+            },
+            "options": {
+                "animation": false,
+                "scales": {
+                    "xAxes": [{
+                        "stacked": true
+                    }],
+                    "yAxes": [{
+                        "stacked": true
+                    }],
+                }
+            }
+        }
+        JSON
+
+    $json ~~ s/LABELS/$labels/;
+
+    for %continents.keys -> $cont {
+        $json ~~ s/DATASET$cont/%json{$cont}/;
+    }
+
+    return $json;
+}
+
 sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) {
     my @labels;
     my @confirmed;
@@ -1402,6 +1509,11 @@ sub html-template($path, $title, $content) {
                 <a href="/">Home</a>
                 |
                 New:
+                <a href="/#continents">Continents</a>
+                |
+                <a href="/continents">Spread over continents</a>
+            </p>
+            <p>
                 <a href="/countries">Affected countries</a>
                 |
                 <a href="/vs-china">Countries vs China</a>
@@ -1409,8 +1521,6 @@ sub html-template($path, $title, $content) {
                 <a href="/us#states">US states</a>
                 |
                 <a href="$speed-url">Daily speed</a>
-                |
-                <a href="/#continents">Continents</a>
             </p>
 
             $content
