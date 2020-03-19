@@ -366,17 +366,26 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
             <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world.</p>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
-                var chart1 = new Chart(ctx1, $chart1data);
+                chart[1] = new Chart(ctx1, $chart1data);
             </script>
         </div>
 
         <div id="block3">
             <h2>Daily Flow</h2>
             <canvas id="Chart2"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale2" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale2" onclick="log_scale(this, 2)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale2"> Logarithmic scale</label>
+            </p>
             <p>The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the world. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
-                var chart2 = new Chart(ctx2, $chart2data);
+                chart[2] = new Chart(ctx2, $chart2data);
             </script>
         </div>
 
@@ -385,9 +394,18 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) {
             <h2>Daily Speed</h2>
             <p>This graph shows the speed of growth (in %) over time. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
             <canvas id="Chart7"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale7" onclick="log_scale(this, 7)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale7"> Logarithmic scale</label>
+            </p>
             <script>
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
-                var chart7 = new Chart(ctx7, $chart7data);
+                chart[7] = new Chart(ctx7, $chart7data);
             </script>
             <p>Note 1. In calculations, the 3-day moving average is used.</p>
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
@@ -419,11 +437,20 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) {
         <div id="block5">
             <h2>Number of Countires Affected</h2>
             <p>%chart5data<current-n> countires are affected, which is {$percent}&thinsp;\% from the total %chart5data<total-countries> countries.</p>
-            <canvas style="height: 400px" id="Chart5"></canvas>
+            <canvas id="Chart5"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale5" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale5" onclick="log_scale(this, 5)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale5"> Logarithmic scale</label>
+            </p>
             <p>On this graph, you can see how many countries did have data about confirmed coronavirus invection for a given date over the last months.</p>
             <script>
                 var ctx5 = document.getElementById('Chart5').getContext('2d');
-                var chart5 = new Chart(ctx5, %chart5data<json>);
+                chart[5] = new Chart(ctx5, %chart5data<json>);
             </script>
         </div>
 
@@ -435,11 +462,11 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) {
 
         <div id="block4">
             <h2>Top 30 Affected per Million</h2>
-            <canvas style="height: 400px" id="Chart4"></canvas>
+            <canvas id="Chart4"></canvas>
             <p>This graph shows the number of affected people per each million of the population. Countries with more than one million are shown only.</p>
             <script>
                 var ctx4 = document.getElementById('Chart4').getContext('2d');
-                var chart4 = new Chart(ctx4, $chart4data);
+                chart[4] = new Chart(ctx4, $chart4data);
             </script>
         </div>
 
@@ -484,17 +511,26 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$continent-name}.</p>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
-                var chart1 = new Chart(ctx1, $chart1data);
+                chart[1] = new Chart(ctx1, $chart1data);
             </script>
         </div>
 
         <div id="block3">
             <h2>Daily Flow</h2>
             <canvas id="Chart2"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale2" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale2" onclick="log_scale(this, 2)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale2"> Logarithmic scale</label>
+            </p>
             <p>The height of a single bar is the total number of people suffered from Coronavirus in $continent-name and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
-                var chart2 = new Chart(ctx2, $chart2data);
+                chart[2] = new Chart(ctx2, $chart2data);
             </script>
         </div>
 
@@ -503,9 +539,18 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             <h2>Daily Speed</h2>
             <p>This graph shows the speed of growth (in %) over time in {$continent-name}. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
             <canvas id="Chart7"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale7" onclick="log_scale(this, 7)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale7"> Logarithmic scale</label>
+            </p>
             <script>
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
-                var chart7 = new Chart(ctx7, $chart7data);
+                chart[7] = new Chart(ctx7, $chart7data);
             </script>
             <p>Note 1. In calculations, the 3-day moving average is used.</p>
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
@@ -542,12 +587,21 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) {
             <p>The almost-horizontal red line displays China. The number of confirmed infections in China almost stopped growing.</p>
             <p>Click on the bar in the legend to turn the line off and on.</p>
             <br/>
-            <canvas style="height: 400px" id="Chart6"></canvas>
+            <canvas id="Chart6"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale6" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale6" onclick="log_scale(this, 6)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale6"> Logarithmic scale</label>
+            </p>
             <p>1. Note that only countries and US states with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
             <p>2. The line for the country is drawn only if it reaches at least 75% of the corresponding maximum parameter in China.</p>
             <script>
                 var ctx6 = document.getElementById('Chart6').getContext('2d');
-                var chart6 = new Chart(ctx6, $chart6data);
+                chart[6] = new Chart(ctx6, $chart6data);
             </script>
         </div>
 
@@ -674,17 +728,26 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
             <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$proper-country-name}.</p>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
-                var chart1 = new Chart(ctx1, $chart1data);
+                chart[1] = new Chart(ctx1, $chart1data);
             </script>
         </div>
 
         <div id="block3">
             <h2>Daily Flow</h2>
             <canvas id="Chart2"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale2" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale2" onclick="log_scale(this, 2)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale2"> Logarithmic scale</label>
+            </p>
             <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name} and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
-                var chart2 = new Chart(ctx2, $chart2data);
+                chart[2] = new Chart(ctx2, $chart2data);
             </script>
         </div>
 
@@ -693,9 +756,18 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) {
             <h2>Daily Speed</h2>
             <p>This graph shows the speed of growth (in %) over time in {$proper-country-name}. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
             <canvas id="Chart7"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale7" onclick="log_scale(this, 7)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale7"> Logarithmic scale</label>
+            </p>
             <script>
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
-                var chart7 = new Chart(ctx7, $chart7data);
+                chart[7] = new Chart(ctx7, $chart7data);
             </script>
             <p>Note 1. In calculations, the 3-day moving average is used.</p>
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
@@ -1220,7 +1292,7 @@ sub generate-continent-graph(%countries, %per-day, %totals, %daily-totals) {
             <canvas id="Chart8"></canvas>
             <script>
                 var ctx8 = document.getElementById('Chart8').getContext('2d');
-                var chart8 = new Chart(ctx8, $chart8data);
+                chart[8] = new Chart(ctx8, $chart8data);
             </script>
         </div>
 
@@ -1467,6 +1539,15 @@ sub html-template($path, $title, $content) {
     my $style = q:to/CSS/;
         CSS
 
+    my $script = q:to/JS/;
+        var chart = new Array();
+        function log_scale(input, n) {
+            chart[n].options.scales.yAxes[0].type = input.checked ? 'logarithmic' : 'linear';
+            chart[n].update();
+            input.blur();
+        }
+        JS
+
     my $ga = q:to/GA/;
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160707541-1"></script>
         <script>
@@ -1491,10 +1572,14 @@ sub html-template($path, $title, $content) {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=2">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=3">
             <style>
                 $style
             </style>
+
+            <script>
+                $script
+            </script>
         </head>
         <body>
             <p>
