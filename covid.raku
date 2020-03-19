@@ -24,6 +24,81 @@ sub dbh() {
     return $dbh;
 }
 
+
+#| Show SQL to set up database, tables and permissions.
+multi sub MAIN('setup', Bool :$force=False, Bool :$verbose=False) {
+
+    my $schema = q:to<EOSQL>;
+        DROP DATABASE IF EXISTS covid;
+        CREATE DATABASE IF NOT EXISTS covid;
+        CREATE USER IF NOT EXISTS 'covid'@'localhost' IDENTIFIED BY 'covid';
+        GRANT CREATE      ON covid.* TO 'covid'@'localhost';
+        GRANT DROP        ON covid.* TO 'covid'@'localhost';
+        GRANT INSERT      ON covid.* TO 'covid'@'localhost';
+        GRANT DELETE      ON covid.* TO 'covid'@'localhost';
+        GRANT LOCK TABLES ON covid.* TO 'covid'@'localhost';
+        GRANT SELECT      ON covid.* TO 'covid'@'localhost';
+
+        USE covid;
+
+        DROP TABLE IF EXISTS countries;
+        CREATE TABLE countries (
+          cc char(2) DEFAULT NULL,
+          country varchar(50) DEFAULT NULL,
+          continent char(2) DEFAULT '',
+          population double DEFAULT 0
+        );
+
+        DROP TABLE IF EXISTS daily_totals;
+        CREATE TABLE daily_totals (
+          date date DEFAULT NULL,
+          confirmed int DEFAULT 0,
+          failed int DEFAULT 0,
+          recovered int DEFAULT 0
+        );
+
+        DROP TABLE IF EXISTS per_day;
+        CREATE TABLE per_day (
+          cc char(2) DEFAULT NULL,
+          date date DEFAULT NULL,
+          confirmed int DEFAULT 0,
+          failed int DEFAULT 0,
+          recovered int DEFAULT 0
+        );
+
+        DROP TABLE IF EXISTS totals;
+        CREATE TABLE totals (
+          cc char(2) DEFAULT NULL,
+          confirmed int DEFAULT 0,
+          failed int DEFAULT 0,
+          recovered int DEFAULT 0
+        );
+
+    EOSQL
+
+    if $force {
+        # This can be piped to sh/bash for fast teardown & setup
+        say "sudo -u root mysql <<SETUPSQL";
+        say $schema;
+        say "SETUPSQL";
+        exit;
+    }
+
+    with try dbh() {
+        note "Application database 'covid' found. No setup needed";
+        note $schema if $verbose;
+    }
+    else {
+        note "Application database 'covid' NOT found. Please run this:";
+        # This can be piped to sh/bash for fast teardown & setup
+        say "sudo -u root mysql <<SETUPSQL";
+        say $schema;
+        say "SETUPSQL";
+    }
+}
+
+
+#| Update database with latest population data
 multi sub MAIN('population') {
     my %population = parse-population();
 
@@ -41,6 +116,7 @@ multi sub MAIN('population') {
     }
 }
 
+#| Fetch latest COVID-19 data and rebuild database
 multi sub MAIN('fetch') {
     my %stats = fetch-covid-data(%covid-sources);
     
@@ -84,6 +160,7 @@ sub date2yyyymmdd($date) {
     return $yyyymmdd;
 }
 
+#| Generate web pages based on current database
 multi sub MAIN('generate') {
     my %countries = get-countries();
 
@@ -1629,3 +1706,5 @@ sub html-template($path, $title, $content) {
         .say: $template
     }
 }
+
+# vim: et ts=4
