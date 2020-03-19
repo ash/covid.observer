@@ -24,8 +24,7 @@ sub dbh() {
     return $dbh;
 }
 
-
-#| Show SQL to set up database, tables and permissions.
+#| Print SQL instructions to set up the database, tables and permissions.
 multi sub MAIN('setup', Bool :$force=False, Bool :$verbose=False) {
 
     my $schema = q:to<EOSQL>;
@@ -43,7 +42,7 @@ multi sub MAIN('setup', Bool :$force=False, Bool :$verbose=False) {
 
         DROP TABLE IF EXISTS countries;
         CREATE TABLE countries (
-          cc char(2) DEFAULT NULL,
+          cc varchar(5) DEFAULT NULL,
           country varchar(50) DEFAULT NULL,
           continent char(2) DEFAULT '',
           population double DEFAULT 0
@@ -59,7 +58,7 @@ multi sub MAIN('setup', Bool :$force=False, Bool :$verbose=False) {
 
         DROP TABLE IF EXISTS per_day;
         CREATE TABLE per_day (
-          cc char(2) DEFAULT NULL,
+          cc varchar(5) DEFAULT NULL,
           date date DEFAULT NULL,
           confirmed int DEFAULT 0,
           failed int DEFAULT 0,
@@ -68,7 +67,7 @@ multi sub MAIN('setup', Bool :$force=False, Bool :$verbose=False) {
 
         DROP TABLE IF EXISTS totals;
         CREATE TABLE totals (
-          cc char(2) DEFAULT NULL,
+          cc varchar(5) DEFAULT NULL,
           confirmed int DEFAULT 0,
           failed int DEFAULT 0,
           recovered int DEFAULT 0
@@ -85,7 +84,7 @@ multi sub MAIN('setup', Bool :$force=False, Bool :$verbose=False) {
     }
 
     with try dbh() {
-        note "Application database 'covid' found. No setup needed";
+        note "Application database 'covid' already exists. No setup needed.";
         note $schema if $verbose;
     }
     else {
@@ -97,8 +96,7 @@ multi sub MAIN('setup', Bool :$force=False, Bool :$verbose=False) {
     }
 }
 
-
-#| Update database with latest population data
+#| Update the database with the population data from the CSV files
 multi sub MAIN('population') {
     my %population = parse-population();
 
@@ -116,7 +114,7 @@ multi sub MAIN('population') {
     }
 }
 
-#| Fetch latest COVID-19 data and rebuild database
+#| Fetch the latest COVID-19 data from JHU and rebuild the database
 multi sub MAIN('fetch') {
     my %stats = fetch-covid-data(%covid-sources);
     
@@ -160,7 +158,7 @@ sub date2yyyymmdd($date) {
     return $yyyymmdd;
 }
 
-#| Generate web pages based on current database
+#| Generate web pages based on the current data from the database
 multi sub MAIN('generate') {
     my %countries = get-countries();
 
@@ -186,10 +184,12 @@ multi sub MAIN('generate') {
     geo-sanity();
 }
 
+#| Check if there are country mismatches
 multi sub MAIN('sanity') {
     geo-sanity();
 }
 
+#| Generate the 404 page
 multi sub MAIN('404') {
     html-template('/404', '404 Virus Not Found', q:to/HTML/);
         <h1 style="margin-top: 2em; margin-bottom: 3em">Error 404<br/>Virus Not Found</h1>
@@ -1706,5 +1706,3 @@ sub html-template($path, $title, $content) {
         .say: $template
     }
 }
-
-# vim: et ts=4
