@@ -45,6 +45,7 @@ multi sub MAIN('setup', Bool :$force=False, Bool :$verbose=False) {
         CREATE TABLE countries (
           cc char(2) DEFAULT NULL,
           country varchar(50) DEFAULT NULL,
+          continent char(2) DEFAULT '',
           population double DEFAULT 0
         );
 
