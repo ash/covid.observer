@@ -202,7 +202,7 @@ sub geo-sanity() {
 
     for $sth.allrows() -> $cc {
         my $variant = '';
-        $variant = codeToCountry(~$cc) if $cc.chars == 2;
+        $variant = cc2country(~$cc) if $cc.chars == 2;
         say "Missing country information $cc $variant";
     }
 }
@@ -219,15 +219,7 @@ sub parse-population() {
         my ($n, $country, $year, $type, $value) = @$row;
         next unless $type eq 'Population mid-year estimates (millions)';        
 
-        $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
-        $country = 'South Korea' if $country eq 'Republic of Korea';
-        $country = 'Czech Republic' if $country eq 'Czechia';
-        $country = 'Venezuela' if $country eq 'Venezuela (Boliv. Rep. of)';
-        $country = 'Moldova' if $country eq 'Republic of Moldova';
-        $country = 'Bolivia' if $country eq 'Bolivia (Plurin. State of)';
-        $country = 'Tanzania' if $country eq 'United Rep. of Tanzania';
-
-        my $cc = countryToCode($country);
+        my $cc = country2cc($country, silent => True);
         next unless $cc;
 
         %countries{$cc} = $country;
@@ -248,6 +240,14 @@ sub parse-population() {
     # constant $continents = 'https://pkgstore.datahub.io/JohnSnowLabs/country-and-continent-codes-list/country-and-continent-codes-list-csv_csv/data/b7876b7f496677669644f3d1069d3121/country-and-continent-codes-list-csv_csv.csv'
     my @continent-info = csv(in => 'country-and-continent-codes-list-csv_csv.csv');
     my %continent = @continent-info[1..*].map: {$_[3] => $_[1]};
+
+    # Missing countries
+    my @more-population = csv(in => 'more-population.csv');
+    for @more-population -> ($cc, $continent, $country, $population) {
+        %countries{$cc} = $country;
+        %population{$cc} = +$population / 1_000_000;
+        %continent{$cc} = $continent;
+    }
 
     return
         population => %population,
@@ -292,15 +292,8 @@ sub extract-covid-data($data) {
 
     while my @row = $csv.getline($fh) {
         my $country = @row[1] || '';
-        $country ~~ s/'Korea, South'/South Korea/;
-        $country ~~ s/Russia/Russian Federation/;
-        $country ~~ s:g/'*'//;
-        $country ~~ s/Czechia/Czech Republic/;
-        $country ~~ s:g/\"//; #"
 
-        my $cc = countryToCode($country) || '';
-        $cc = 'US' if $country eq 'US';
-
+        my $cc = country2cc($country);
         next unless $cc;
 
         for @dates Z @row[4..*] -> ($date, $n) {
@@ -1705,4 +1698,75 @@ sub html-template($path, $title, $content) {
     given $filepath.IO.open(:w) {
         .say: $template
     }
+}
+
+sub country2cc($country is copy, :$silent = False) {
+    state %force =
+        'United Arab Emirates' => 'AE',
+        'North Macedonia' => 'MK',
+        'Brunei' => 'BN',
+        'Vietnam' => 'VN',
+        'Congo (Kinshasa)' => 'CD',
+        'Cote d\'Ivoire' => 'CI',
+        'Eswatini' => 'SZ',
+        'Saint Vincent and the Grenadines' => 'VC',
+        'Kosovo' => 'XK',
+        'Congo (Brazzaville)' => 'CG',
+        'Gambia, The' => 'GM',
+        'Bahamas, The' => 'BS',
+        'Russian Federation' => 'RU',
+        'Russia' => 'RU';
+
+    $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
+    $country = 'South Korea' if $country eq 'Republic of Korea';
+    $country = 'Czech Republic' if $country eq 'Czechia';
+    $country = 'Venezuela' if $country eq 'Venezuela (Boliv. Rep. of)';
+    $country = 'Moldova' if $country eq 'Republic of Moldova';
+    $country = 'Bolivia' if $country eq 'Bolivia (Plurin. State of)';
+    $country = 'Tanzania' if $country eq 'United Rep. of Tanzania';
+
+    $country ~~ s/'Korea, South'/South Korea/;
+    $country ~~ s:g/'*'//;
+    $country ~~ s/Czechia/Czech Republic/;
+
+    my $cc;
+    given $country {
+        when %force{$country}:exists {$cc = %force{$country}}
+        when 'US'                    {$cc = 'US'}
+        default                      {$cc = countryToCode($country)}
+    }
+
+    unless $cc {
+        note "WARNING: Country code not found for $country" unless $silent;
+    }
+
+    return $cc;
+}
+
+sub cc2country($cc) {
+    my $country;
+
+    state %force =
+        'AE' => 'United Arab Emirates',
+        'MK' => 'North Macedonia',
+        'BN' => 'Brunei',
+        'VN' => 'Vietnam',
+        'CD' => 'Congo (Kinshasa)',
+        'CI' => 'Cote d\'Ivoire',
+        'SZ' => 'Eswatini',
+        'VC' => 'Saint Vincent and the Grenadines',
+        'XK' => 'Kosovo',
+        'CG' => 'Congo (Brazzaville)',
+        'GM' => 'Gambia, The',
+        'BS' => 'Bahamas, The',
+        'RU' => 'Russian Federation';
+
+    given $cc {
+        when %force{$cc}:exists {$country = %force{$cc}}
+        default                 {$country = codeToCountry($cc)}
+    }
+
+    # $country = 'United Arab Emirates' if $country eq 'United Arab Empirates'; # OMG - what a bug in Locale::Codes::Country!
+
+    return $country;
 }
