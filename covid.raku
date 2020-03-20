@@ -222,6 +222,13 @@ sub parse-population() {
         my $cc = country2cc($country, silent => True);
         next unless $cc;
 
+        $country = 'Iran' if $country ~~ /Iran/;
+        $country = 'Venezuela' if $country ~~ /Venezuela/;
+        $country = 'Bolivia' if $country ~~ /Bolivia/;
+        $country = 'Tanzania' if $country ~~ /Tanzania/;
+        $country = 'Moldova' if $country ~~ /Moldova/;
+        $country = 'South Korea' if $country ~~ /Korea/;
+
         %countries{$cc} = $country;
         %population{$cc} = +$value;
     }
@@ -1759,7 +1766,13 @@ sub cc2country($cc) {
         'CG' => 'Congo (Brazzaville)',
         'GM' => 'Gambia, The',
         'BS' => 'Bahamas, The',
-        'RU' => 'Russian Federation';
+        'RU' => 'Russian Federation',
+        'VE' => 'Venezuela',
+        'IR' => 'Iran',
+        'BO' => 'Bolivia',
+        'TZ' => 'Tanzania',
+        'MD' => 'Moldova',
+        'KR' => 'South Korea';
 
     given $cc {
         when %force{$cc}:exists {$country = %force{$cc}}
