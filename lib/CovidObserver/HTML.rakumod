@@ -62,6 +62,7 @@ sub html-template($path, $title, $content) is export {
                 |
                 <a href="{$anchor-prefix}#new">New daily cases</a>
                 |
+                <a href="/cn#regions">China provinces</a>
             </p>
             <p>
                 <a href="#countries">Countries</a>
@@ -106,6 +107,7 @@ sub country-list(%countries, :$cc?, :$cont?) is export {
     sub current-country($cc-code) {
         if $cc {
             return True if $cc ~~ /US/ && $cc-code eq 'US';
+            return True if $cc ~~ /CN/ && $cc-code eq 'CN';
             return $cc eq $cc-code;
         }
         if $cont {
@@ -162,7 +164,7 @@ sub country-list(%countries, :$cc?, :$cont?) is export {
 
     if $cc && $cc ~~ /CN/ {
         $cn_html = qq:to/CNHTML/;
-            <a name="states"></a>
+            <a name="regions"></a>
             <h2>Coronavirus in China</h2>
             <p><a href="/cn/#">Cumulative China statistics</a></p>
             <div id="countries-list">
@@ -174,6 +176,7 @@ sub country-list(%countries, :$cc?, :$cont?) is export {
     return qq:to/HTML/;
         <div id="countries">
             $us_html
+            $cn_html
             <a name="countries"></a>
             <h2>Statistics per Country</h2>
             <p><a href="/">Whole world</a></p>
