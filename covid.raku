@@ -28,7 +28,8 @@ multi sub MAIN('setup', Bool :$force=False, Bool :$verbose=False) {
           cc varchar(5) DEFAULT NULL,
           country varchar(50) DEFAULT NULL,
           continent char(2) DEFAULT '',
-          population double DEFAULT 0
+          population double DEFAULT 0,
+          life_expectancy double DEFAULT 0
         );
 
         DROP TABLE IF EXISTS daily_totals;
@@ -88,12 +89,13 @@ multi sub MAIN('population') {
     dbh.execute('delete from countries');
     for %population<countries>.kv -> $cc, $country {
         my $n = %population<population>{$cc};
+        my $age = %population<age>{$cc} || 0;
 
         my $continent = $cc ~~ /'/'/ ?? '' !! %population<continent>{$cc};
         say "$cc, $continent, $country, $n";
 
-        my $sth = dbh.prepare('insert into countries (cc, continent, country, population) values (?, ?, ?, ?)');
-        $sth.execute($cc, $continent, $country, $n);
+        my $sth = dbh.prepare('insert into countries (cc, continent, country, population, life_expectancy) values (?, ?, ?, ?, ?)');
+        $sth.execute($cc, $continent, $country, $n, $age);
     }
 }
 
@@ -163,6 +165,8 @@ multi sub MAIN('generate') {
     }
 
     generate-continent-graph(%countries, %per-day, %totals, %daily-totals);
+
+    generate-scattered-age(%countries, %per-day, %totals, %daily-totals);
 
     geo-sanity();
 }

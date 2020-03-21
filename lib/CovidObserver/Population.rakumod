@@ -14,6 +14,7 @@ constant %continents is export =
 sub parse-population() is export {
     my %population;
     my %countries;
+    my %age;
 
     # Population per country
     # constant $population_source = 'https://data.un.org/_Docs/SYB/CSV/SYB62_1_201907_Population,%20Surface%20Area%20and%20Density.csv';
@@ -60,10 +61,19 @@ sub parse-population() is export {
         %continent{$cc} = $continent;
     }
 
+    # Life expectancy (by birth)
+    # From http://apps.who.int/gho/data/view.main.SDG2016LEXv?lang=en
+    my @life-expectancy = csv(in => 'data/life-expectancy.csv');
+    for @life-expectancy[2..*] -> ($country, $year, $age) {
+        my $cc = country2cc($country);
+        %age{$cc} = $age;
+    }
+
     return
         population => %population,
         countries  => %countries,
-        continent  => %continent;
+        continent  => %continent,
+        age        => %age;
 }
 
 sub country2cc($country is copy, :$silent = False) is export {
@@ -73,6 +83,7 @@ sub country2cc($country is copy, :$silent = False) is export {
         'Brunei' => 'BN',
         'Vietnam' => 'VN',
         'Congo (Kinshasa)' => 'CD',
+        'Democratic Republic of the Congo' => 'CD',
         'Cote d\'Ivoire' => 'CI',
         'Eswatini' => 'SZ',
         'Saint Vincent and the Grenadines' => 'VC',
@@ -82,15 +93,21 @@ sub country2cc($country is copy, :$silent = False) is export {
         'Bahamas, The' => 'BS',
         'Russian Federation' => 'RU',
         'Russia' => 'RU',
-        'Cabo Verde' => 'CV';
+        'Cabo Verde' => 'CV',
+        'Sierra Leone' => 'SL',
+        'Syrian Arab Republic' => 'SY';
 
     $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
     $country = 'South Korea' if $country eq 'Republic of Korea';
     $country = 'Czech Republic' if $country eq 'Czechia';
-    $country = 'Venezuela' if $country eq 'Venezuela (Boliv. Rep. of)';
+    $country = 'Venezuela' if $country ~~ /Venezuela/;
     $country = 'Moldova' if $country eq 'Republic of Moldova';
-    $country = 'Bolivia' if $country eq 'Bolivia (Plurin. State of)';
+    $country = 'Bolivia' if $country ~~ /Bolivia/;
     $country = 'Tanzania' if $country eq 'United Rep. of Tanzania';
+    $country = 'Micronesia' if $country ~~ /Micronesia/;
+
+    $country = 'North Macedonia' if $country ~~ /'North Macedonia'/;
+    $country = 'United Kingdom' if $country ~~ /'United Kingdom of Great Britain'/;
 
     $country ~~ s/'Korea, South'/South Korea/;
     $country ~~ s:g/'*'//;
@@ -133,7 +150,8 @@ sub cc2country($cc) is export {
         'TZ' => 'Tanzania',
         'MD' => 'Moldova',
         'KR' => 'South Korea',
-        'CV' => 'Cabo Verde';
+        'CV' => 'Cabo Verde',
+        'SL' => 'Sierra Leone';
 
     given $cc {
         when %force{$cc}:exists {$country = %force{$cc}}

@@ -492,3 +492,29 @@ sub generate-continent-graph(%countries, %per-day, %totals, %daily-totals) is ex
 
     html-template('/continents', 'Coronavirus over the Continents', $content);
 }
+
+sub generate-scattered-age(%countries, %per-day, %totals, %daily-totals) is export {
+    my $chart11data = scattered-age-graph(%countries, %per-day, %totals, %daily-totals);
+
+    my $country-list = country-list(%countries);
+    my $continent-list = continent-list();
+
+    my $content = qq:to/HTML/;
+        <h1>Coronavirus vs Life Expectancy</h1>
+
+        <div id="block3">            
+            <p>Each point on this graph reflects a single country. The blue dots are the number of confirmed cases of Coronavirus, the red ones are the number of people faield to recover. Move the cursor over the dot to see the name of the country.</p>
+            <canvas id="Chart11"></canvas>
+            <script>
+                var ctx11 = document.getElementById('Chart11').getContext('2d');
+                chart[11] = Chart.Scatter(ctx11, $chart11data);
+            </script>
+        </div>
+
+        $continent-list
+        $country-list
+
+        HTML
+
+    html-template('/vs-age', 'Coronavirus vs Life Expectancy', $content);
+}

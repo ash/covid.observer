@@ -17,7 +17,7 @@ sub geo-sanity() is export {
 }
 
 sub get-countries() is export {
-    my $sth = dbh.prepare('select cc, country, continent, population from countries');
+    my $sth = dbh.prepare('select cc, country, continent, population, life_expectancy from countries');
     $sth.execute();
 
     my %countries;
@@ -27,7 +27,8 @@ sub get-countries() is export {
         my %data =
             country => $country,
             population => %row<population>,
-            continent => %row<continent>;
+            continent => %row<continent>,
+            age => %row<life_expectancy>;
         %countries{%row<cc>} = %data;
     }
 
@@ -887,4 +888,109 @@ sub moving-average(@in, $width = 3) {
 
 sub trim-data(@data, $trim-length) {
     return @data[$trim-length .. *];
+}
+
+sub scattered-age-graph(%countries, %per-day, %totals, %daily-totals) is export {
+    my @labels;
+    my @dataset-confirmed;
+    my @dataset-failed;
+
+    my $max = 0;
+    for %countries.keys -> $cc {
+        my $confirmed = %totals{$cc}<confirmed>;
+        next unless $confirmed;
+
+        my $age = %countries{$cc}<age>;
+        next unless $age;
+
+        my $failed = %totals{$cc}<failed>;
+
+        my $country = %countries{$cc}<country>;
+
+        $max = $confirmed if $max < $confirmed;
+
+        @labels.push($country);
+
+        my %point-confirmed =
+            x => $age,
+            y => $confirmed;
+        push @dataset-confirmed, %point-confirmed;
+
+        my %point-failed =
+            x => $age,
+            y => $failed;
+        push @dataset-failed, %point-failed;
+    }
+
+    my $labels = to-json(@labels);
+
+    my %dataset1 =
+        label => 'Life expectancy vs Confirmed cases',
+        data => @dataset-confirmed,
+        backgroundColor => '#3671e9';
+    my $dataset1 = to-json(%dataset1);
+
+    my %dataset2 =
+        label => 'Life expectancy vs Failed cases',
+        data => @dataset-failed,
+        backgroundColor => 'red';
+    my $dataset2 = to-json(%dataset2);
+
+    my $json = q:to/JSON/;
+        {
+            "type": "scatter",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET1,
+                    DATASET2
+                ]
+            },
+            "options": {
+                "animation": false,
+                "tooltips": {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            var label = data.labels[tooltipItem.index];
+                            return label + ': life expectancy: ' + tooltipItem.xLabel + ' years, cases: ' + tooltipItem.yLabel;
+                        }
+                    }
+                },
+                "scales": {
+                    xAxes: [
+                        {
+                            type: "linear",
+                            scaleLabel: {
+                                display: true,
+                                labelString: "Life expextancy, in years"
+                            }
+                        }
+                    ],
+                    yAxes: [
+                        {
+                            type: "logarithmic",
+                            ticks: {
+                                min: 0,
+                                max: MAX,
+                                callback: function(value, index, values) {
+                                    return Number(value.toString());
+                                }
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: "The number of confirmed (blue) or failed (red) cases"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+        JSON
+
+    $json ~~ s/MAX/$max/;
+    $json ~~ s/LABELS/$labels/;
+    $json ~~ s/DATASET1/$dataset1/;
+    $json ~~ s/DATASET2/$dataset2/;
+
+    return $json;
 }

@@ -28,7 +28,7 @@ sub html-template($path, $title, $content) is export {
         </script>
         GA
 
-    my $anchor-prefix = $path ~~ / 'vs-china' | countries | 404 / ?? '/' !! '';
+    my $anchor-prefix = $path ~~ / 'vs-' | countries | 404 / ?? '/' !! '';
 
     my $template = qq:to/HTML/;
         <!DOCTYPE html>
@@ -56,13 +56,12 @@ sub html-template($path, $title, $content) is export {
                 <a href="/">Home</a>
                 |
                 New:
+                <a href="/vs-age">Cases vs life expectancy</a>
+                |
                 <a href="{$anchor-prefix}#raw">Raw numbers</a>
                 |
                 <a href="{$anchor-prefix}#new">New daily cases</a>
                 |
-                <a href="/#continents">Continents</a>
-                |
-                <a href="/continents">Spread over continents</a>
             </p>
             <p>
                 <a href="#countries">Countries</a>
@@ -74,6 +73,11 @@ sub html-template($path, $title, $content) is export {
                 <a href="/us#states">US states</a>
                 |
                 <a href="{$anchor-prefix}#speed">Daily speed</a>
+            </p>
+            <p>
+                <a href="/#continents">Continents</a>
+                |
+                <a href="/continents">Spread over the continents</a>
             </p>
 
             $content
