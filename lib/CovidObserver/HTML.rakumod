@@ -1,5 +1,7 @@
 unit module CovidObserver::HTML;
 
+use DateTime::Format;
+
 use CovidObserver::Population;
 use CovidObserver::Statistics;
 
@@ -26,7 +28,9 @@ sub html-template($path, $title, $content) is export {
         </script>
         GA
 
-    my $speed-url = $path ~~ / 'vs-china' | countries | 404 / ?? '/#speed' !! '#speed';
+    my $std-page = $path !~~ / 'vs-china' | countries | 404 /;
+    my $raw-url = $std-page ?? '#raw' !! '/#raw';
+    my $speed-url = $std-page ?? '#speed' !! '/#speed';
 
     my $template = qq:to/HTML/;
         <!DOCTYPE html>
@@ -54,6 +58,8 @@ sub html-template($path, $title, $content) is export {
                 <a href="/">Home</a>
                 |
                 New:
+                <a href="$raw-url">Raw numbers</a>
+                |
                 <a href="/#continents">Continents</a>
                 |
                 <a href="/continents">Spread over continents</a>
@@ -176,4 +182,26 @@ sub continent-list($cont?) is export {
             </div>
         </div>
         HTML
+}
+
+sub fmtdate($date) is export {
+    my ($year, $month, $day) = $date.split('-');
+
+    my $dt = DateTime.new(:$year, :$month, :$day);
+    my $ending;
+    given $day {
+        when 1 {$ending = 'st'}
+        when 2 {$ending = 'nd'}
+        when 3 {$ending = 'rd'}
+        default {$ending = 'th'}
+    }
+
+    return strftime("%B {$day}<sup>th</sup>, %Y", $dt);
+}
+
+sub fmtnum($n is copy) is export {
+    $n ~~ s/ (\d) (\d ** 6) $/$0,$1/;
+    $n ~~ s/ (\d) (\d ** 3) $/$0,$1/;
+
+    return $n;
 }

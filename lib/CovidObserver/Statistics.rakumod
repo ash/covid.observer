@@ -359,6 +359,7 @@ sub chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is e
 
 sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is export {
     my @dates;
+    my @confirmed;
     my @recovered;
     my @failed;
     my @active;
@@ -383,6 +384,7 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is
             %data = %daily-totals{$date};
         }
 
+        @confirmed.push(%data<confirmed>);
         @failed.push(%data<failed>);
         @recovered.push(%data<recovered>);
 
@@ -439,7 +441,17 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is
     $json ~~ s/DATASET3/$dataset3/;
     $json ~~ s/LABELS/$labels/;
 
-    return $json;
+    my %return =
+        json => $json,
+
+        date => @dates[*-1],
+
+        confirmed => @confirmed[*-1],
+        failed => @failed[*-1],
+        recovered => @recovered[*-1],
+        active => @active[*-1];
+
+    return %return;
 }
 
 multi sub number-percent(%countries, %per-day, %totals, %daily-totals) is export {

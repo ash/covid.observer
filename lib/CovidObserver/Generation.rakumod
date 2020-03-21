@@ -27,6 +27,15 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) is export
             <p>This is the part of confirmed infection cases against the total 7.8 billion of the world population.</p>
         </div>
 
+        <div id="block9">
+            <a name="raw"></a>
+            <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
+            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><sup>confirmed</sup></p>
+            <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><sup>recovered</sup></p>
+            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><sup>failed</sup></p>
+            <p class="active"><span>{fmtnum($chart2data<active>)}</span><sup>active</sup></p>
+        </div>
+
         <div id="block1">
             <h2>Recovery Pie</h2>
             <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world.</p>
@@ -52,7 +61,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) is export
             <p>The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the world. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
-                chart[2] = new Chart(ctx2, $chart2data);
+                chart[2] = new Chart(ctx2, $chart2data<json>);
             </script>
         </div>
 
@@ -126,6 +135,15 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) is
             </script>
         </div>
 
+        <div id="block9">
+            <a name="raw"></a>
+            <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
+            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><sup>confirmed</sup></p>
+            <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><sup>recovered</sup></p>
+            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><sup>failed</sup></p>
+            <p class="active"><span>{fmtnum($chart2data<active>)}</span><sup>active</sup></p>
+        </div>
+
         <div id="block3">
             <h2>Daily Flow</h2>
             <canvas id="Chart2"></canvas>
@@ -141,7 +159,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) is
             <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name} and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
-                chart[2] = new Chart(ctx2, $chart2data);
+                chart[2] = new Chart(ctx2, $chart2data<json>);
             </script>
         </div>
 
@@ -271,6 +289,15 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             </script>
         </div>
 
+        <div id="block9">
+            <a name="raw"></a>
+            <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
+            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><sup>confirmed</sup></p>
+            <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><sup>recovered</sup></p>
+            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><sup>failed</sup></p>
+            <p class="active"><span>{fmtnum($chart2data<active>)}</span><sup>active</sup></p>
+        </div>
+
         <div id="block3">
             <h2>Daily Flow</h2>
             <canvas id="Chart2"></canvas>
@@ -286,7 +313,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             <p>The height of a single bar is the total number of people suffered from Coronavirus in $continent-name and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <script>
                 var ctx2 = document.getElementById('Chart2').getContext('2d');
-                chart[2] = new Chart(ctx2, $chart2data);
+                chart[2] = new Chart(ctx2, $chart2data<json>);
             </script>
         </div>
 
