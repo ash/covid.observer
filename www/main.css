@@ -39,6 +39,40 @@ body, html {
     padding-left: 2%;
     padding-right: 2%;
 }
+#block9 {
+    padding-top: 5%;
+    padding-bottom: 5%;
+    margin-bottom: 5%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+#block9 p {
+    padding: 5em 0 2em 0;
+    position: relative;
+}
+#block9 p.recovered {
+    color: green;
+}
+#block9 p.failed {
+    color: red;
+}
+#block9 p.active {
+    color: orange;
+}
+#block9 span {
+    font-size: 600%;
+}
+#block9 p sup {
+    font-size: 100%;
+    position: absolute;
+    top: 30%;
+}
+#block10 {
+    padding-bottom: 10%;
+    margin-bottom: 5%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
 #block1 {
     margin-bottom: 10%;
 }
