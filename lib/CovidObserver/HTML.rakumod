@@ -42,7 +42,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=5">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=6">
             <style>
                 $style
             </style>
@@ -93,9 +93,10 @@ sub html-template($path, $title, $content) is export {
 
     mkdir("www$path");
     my $filepath = "./www$path/index.html";
-    given $filepath.IO.open(:w) {
-        .say: $template
-    }
+    my $io = $filepath.IO;
+    my $fh = $io.open(:w);
+    $fh.say: $template;
+    $fh.close;
 }
 
 sub country-list(%countries, :$cc?, :$cont?) is export {
@@ -115,6 +116,7 @@ sub country-list(%countries, :$cc?, :$cont?) is export {
     }
 
     my $us_html = '';
+    my $cn_html = '';
     for get-known-countries() -> $cc-code {
         next unless %countries{$cc-code};
 
@@ -127,6 +129,17 @@ sub country-list(%countries, :$cc?, :$cont?) is export {
                 my $state = %countries{$cc-code}<country>;
                 $state ~~ s/US'/'//;
                 $us_html ~= qq{<p$is_current><a href="/$path">} ~ $state ~ '</a></p>';
+            }
+        }
+        elsif $cc-code ~~ /CN'/'/ {
+            if $cc && $cc ~~ /CN/ {
+                my $path = $cc-code.lc;
+
+                my $is_current = current-country($cc-code) ??  ' class="current"' !! '';
+
+                my $region = %countries{$cc-code}<country>;
+                $region ~~ s/CN'/'//;
+                $cn_html ~= qq{<p$is_current><a href="/$path">} ~ $region ~ '</a></p>';
             }
         }
         else {
@@ -145,6 +158,17 @@ sub country-list(%countries, :$cc?, :$cont?) is export {
                 $us_html
             </div>
         USHTML
+    }
+
+    if $cc && $cc ~~ /CN/ {
+        $cn_html = qq:to/CNHTML/;
+            <a name="states"></a>
+            <h2>Coronavirus in China</h2>
+            <p><a href="/cn/#">Cumulative China statistics</a></p>
+            <div id="countries-list">
+                $cn_html
+            </div>
+        CNHTML
     }
 
     return qq:to/HTML/;
