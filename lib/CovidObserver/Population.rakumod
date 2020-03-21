@@ -4,6 +4,8 @@ use Locale::Codes::Country;
 use Locale::US;
 use Text::CSV;
 
+use CovidObserver::DB;
+
 constant $world-population is export = 7_800_000_000;
 
 constant %continents is export =
@@ -67,6 +69,15 @@ sub parse-population() is export {
     for @life-expectancy[2..*] -> ($country, $year, $age) {
         my $cc = country2cc($country);
         %age{$cc} = $age;
+    }
+
+    # China population
+    # From https://en.wikipedia.org/wiki/ISO_3166-2:CN
+    my @china-population = csv(in => 'data/china-regions.csv');
+    for @china-population -> ($code, $region, $population) {
+        my $cc = "CN/$code";
+        %countries{$cc} = $region;
+        %population{$cc} = +$population / 1_000_000;
     }
 
     return
@@ -158,7 +169,30 @@ sub cc2country($cc) is export {
         default                 {$country = codeToCountry($cc)}
     }
 
-    # $country = 'United Arab Emirates' if $country eq 'United Arab Empirates'; # OMG - what a bug in Locale::Codes::Country!
-
     return $country;
+}
+
+sub chinese-region-to-code($code) is export {
+    state %provinces;
+
+    unless %provinces.keys {
+        my $sth = dbh.prepare('select cc, country from countries where cc like "CN/%"');
+        $sth.execute();
+
+        for $sth.allrows(:array-of-hash) -> %row {
+            my $code = %row<cc>;
+            $code ~~ s/'CN/'//;
+            %provinces{%row<country>} = $code;
+        }
+
+        # different names
+        %provinces{'Guangxi'} = 'GX';
+        %provinces{'Xinjiang'} = 'XJ';
+        %provinces{'Inner Mongolia'} = 'NM';
+        %provinces{'Ningxia'} = 'NX';
+        %provinces{'Macau'} = 'MO';
+        %provinces{'Tibet'} = 'XZ';
+    }
+
+    return %provinces{$code};
 }

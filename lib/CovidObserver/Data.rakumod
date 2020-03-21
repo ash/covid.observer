@@ -76,6 +76,22 @@ sub extract-covid-data($data) is export {
                 }
             }
         }
+
+        if $cc eq 'CN' {
+            my $region = @row[0];
+
+            if $region {
+                my $region-cc = 'CN/' ~ chinese-region-to-code($region);
+
+                for @dates Z @row[4..*] -> ($date, $n) {
+                    %per-day{$region-cc}{$date} += $n;
+                    %daily-per-country{$date}{$region-cc} += $n;
+
+                    my $uptodate = %per-day{$region-cc}{$date};
+                    %total{$region-cc} = $uptodate if !%total{$region-cc} or $uptodate > %total{$region-cc};
+                }
+            }
+        }
     }
 
     for %daily-per-country.kv -> $date, %per-country {

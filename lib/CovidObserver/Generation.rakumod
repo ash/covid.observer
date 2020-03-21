@@ -494,6 +494,8 @@ sub generate-continent-graph(%countries, %per-day, %totals, %daily-totals) is ex
 }
 
 sub generate-scattered-age(%countries, %per-day, %totals, %daily-totals) is export {
+    say "Generating cases vs age...";
+
     my $chart11data = scattered-age-graph(%countries, %per-day, %totals, %daily-totals);
 
     my $country-list = country-list(%countries);
@@ -503,7 +505,7 @@ sub generate-scattered-age(%countries, %per-day, %totals, %daily-totals) is expo
         <h1>Coronavirus vs Life Expectancy</h1>
 
         <div id="block3">            
-            <p>Each point on this graph reflects a single country. The blue dots are the number of confirmed cases of Coronavirus, the red ones are the number of people faield to recover. Move the cursor over the dot to see the name of the country.</p>
+            <p>Each point on this graph reflects a single country. The blue dots are the number of confirmed cases (in % to the total population of the country), the red ones are the fraction of people failed to recover (in % to the total population). Move the cursor over the dot to see the name of the country.</p>
             <canvas id="Chart11"></canvas>
             <script>
                 var ctx11 = document.getElementById('Chart11').getContext('2d');

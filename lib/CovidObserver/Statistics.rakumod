@@ -907,6 +907,9 @@ sub scattered-age-graph(%countries, %per-day, %totals, %daily-totals) is export 
 
         my $country = %countries{$cc}<country>;
 
+        $confirmed /= 1_000_000 * %countries{$cc}<population> / 100;
+        $failed    /= 1_000_000 * %countries{$cc}<population> / 100;
+
         $max = $confirmed if $max < $confirmed;
 
         @labels.push($country);
@@ -922,6 +925,7 @@ sub scattered-age-graph(%countries, %per-day, %totals, %daily-totals) is export 
         push @dataset-failed, %point-failed;
     }
 
+    $max = sprintf('%.02f', $max);
     my $labels = to-json(@labels);
 
     my %dataset1 =
@@ -952,7 +956,7 @@ sub scattered-age-graph(%countries, %per-day, %totals, %daily-totals) is export 
                     callbacks: {
                         label: function(tooltipItem, data) {
                             var label = data.labels[tooltipItem.index];
-                            return label + ': life expectancy: ' + tooltipItem.xLabel + ' years, cases: ' + tooltipItem.yLabel;
+                            return label;
                         }
                     }
                 },
@@ -970,15 +974,15 @@ sub scattered-age-graph(%countries, %per-day, %totals, %daily-totals) is export 
                         {
                             type: "logarithmic",
                             ticks: {
-                                min: 0,
-                                max: MAX,
                                 callback: function(value, index, values) {
-                                    return Number(value.toString());
+                                    var n = value.toString();
+                                    if (n.indexOf('e') != -1) return '';
+                                    else return n + '%';
                                 }
                             },
                             scaleLabel: {
                                 display: true,
-                                labelString: "The number of confirmed (blue) or failed (red) cases"
+                                labelString: "The number of confirmed (blue) or failed (red) cases, in %"
                             }
                         }
                     ]
