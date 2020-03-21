@@ -28,9 +28,7 @@ sub html-template($path, $title, $content) is export {
         </script>
         GA
 
-    my $std-page = $path !~~ / 'vs-china' | countries | 404 /;
-    my $raw-url = $std-page ?? '#raw' !! '/#raw';
-    my $speed-url = $std-page ?? '#speed' !! '/#speed';
+    my $anchor-prefix = $path ~~ / 'vs-china' | countries | 404 / ?? '/' !! '';
 
     my $template = qq:to/HTML/;
         <!DOCTYPE html>
@@ -44,7 +42,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=4">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=5">
             <style>
                 $style
             </style>
@@ -58,7 +56,9 @@ sub html-template($path, $title, $content) is export {
                 <a href="/">Home</a>
                 |
                 New:
-                <a href="$raw-url">Raw numbers</a>
+                <a href="{$anchor-prefix}#raw">Raw numbers</a>
+                |
+                <a href="{$anchor-prefix}#new">New daily cases</a>
                 |
                 <a href="/#continents">Continents</a>
                 |
@@ -73,7 +73,7 @@ sub html-template($path, $title, $content) is export {
                 |
                 <a href="/us#states">US states</a>
                 |
-                <a href="$speed-url">Daily speed</a>
+                <a href="{$anchor-prefix}#speed">Daily speed</a>
             </p>
 
             $content

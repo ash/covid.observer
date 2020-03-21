@@ -388,11 +388,13 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is
         @failed.push(%data<failed>);
         @recovered.push(%data<recovered>);
 
-        @active.push([-] %data<confirmed recovered failed>);
+        my $active = [-] %data<confirmed recovered failed>;
+        @active.push($active);
     }
 
     my $labels = to-json(@dates);
 
+    # Current values
     my %dataset1 =
         label => 'Recovered',
         data => @recovered,
@@ -441,15 +443,79 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is
     $json ~~ s/DATASET3/$dataset3/;
     $json ~~ s/LABELS/$labels/;
 
-    my %return =
-        json => $json,
+    # Deltas
+    my @delta-confirmed = @confirmed[1..*] >>->> @confirmed;
+    my @delta-recovered = @recovered[1..*] >>->> @recovered;
+    my @delta-failed    = @failed[1..*]    >>->> @failed;
+    my @delta-active    = @active[1..*]    >>->> @active;
 
+    @delta-confirmed.unshift(0);
+    @delta-recovered.unshift(0);
+    @delta-failed.unshift(0);
+    @delta-active.unshift(0);
+
+    my %delta-dataset0 =
+        label => 'Confirmed',
+        data => @delta-confirmed,
+        backgroundColor => 'lightblue';
+    my $delta-dataset0 = to-json(%delta-dataset0);
+
+    my %delta-dataset1 =
+        label => 'Recovered',
+        data => @delta-recovered,
+        backgroundColor => 'green';
+    my $delta-dataset1 = to-json(%delta-dataset1);
+
+    my %delta-dataset2 =
+        label => 'Failed to recover',
+        data => @delta-failed,
+        backgroundColor => 'red';
+    my $delta-dataset2 = to-json(%delta-dataset2);
+
+    my %delta-dataset3 =
+        label => 'Active cases',
+        data => @delta-active,
+        backgroundColor => 'orange';
+    my $delta-dataset3 = to-json(%delta-dataset3);
+
+    my $delta-json = q:to/JSON/;
+        {
+            "type": "bar",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET2,
+                    DATASET3,
+                    DATASET1,
+                    DATASET0
+                ]
+            },
+            "options": {
+                "animation": false,
+            }
+        }
+        JSON
+
+    $delta-json ~~ s/DATASET0/$delta-dataset0/;
+    $delta-json ~~ s/DATASET1/$delta-dataset1/;
+    $delta-json ~~ s/DATASET2/$delta-dataset2/;
+    $delta-json ~~ s/DATASET3/$delta-dataset3/;
+    $delta-json ~~ s/LABELS/$labels/;
+
+    my %return =
         date => @dates[*-1],
 
+        json => $json,
         confirmed => @confirmed[*-1],
         failed => @failed[*-1],
         recovered => @recovered[*-1],
-        active => @active[*-1];
+        active => @active[*-1],
+
+        delta-json => $delta-json,
+        delta-confirmed => @delta-confirmed[*-1],
+        delta-failed => @delta-failed[*-1],
+        delta-recovered => @delta-recovered[*-1],
+        delta-active => @delta-active[*-1];
 
     return %return;
 }
