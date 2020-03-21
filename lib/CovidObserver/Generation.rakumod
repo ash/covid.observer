@@ -66,9 +66,9 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) is export
         </div>
 
         <div id="block10">
-            <a name="#new"></a>
+            <a name="new"></a>
             <h2>New Confirmed Cases</h2>
-            <p>The number of new confirmed cases per day.</p>
+            <p>This graph shows the number of new cases by day. The lightblue bars are the number of the new total confirmed cases appeared that day.</p>
             <canvas id="Chart10"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale10" data-size="xs" data-style="rounded" data-color="blue">
@@ -184,9 +184,9 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) is
         </div>
 
         <div id="block10">
-            <a name="#new"></a>
+            <a name="new"></a>
             <h2>New Confirmed Cases</h2>
-            <p>The number of new confirmed cases per day.</p>
+            <p>This graph shows the number of new cases by day. The lightblue bars are the number of the new total confirmed cases appeared that day.</p>
             <canvas id="Chart10"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale10" data-size="xs" data-style="rounded" data-color="blue">
@@ -359,9 +359,9 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
         </div>
 
         <div id="block10">
-            <a name="#new"></a>
+            <a name="new"></a>
             <h2>New Confirmed Cases</h2>
-            <p>The number of new confirmed cases per day.</p>
+            <p>This graph shows the number of new cases by day. The lightblue bars are the number of the new total confirmed cases appeared that day.</p>
             <canvas id="Chart10"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale10" data-size="xs" data-style="rounded" data-color="blue">
