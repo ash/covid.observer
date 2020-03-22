@@ -165,6 +165,15 @@ p.left label {
     #block4 {
         display: none;
     }
+    #block9 span {
+        font-size: 300%;
+    }
+    #block9 p sup {
+        font-size: 100%;
+        position: relative;
+        display: block;
+        margin-top: 0.5em;
+    }    
 }
 
 

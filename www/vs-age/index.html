@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Coronavirus vs Life Expectancy | Coronavirus COVID-19 Observer</title>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160707541-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-160707541-1');
+</script>
+
+
+    <script src="/Chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/main.css?v=6">
+    <style>
+        
+    </style>
+
+    <script>
+        var chart = new Array();
+function log_scale(input, n) {
+    chart[n].options.scales.yAxes[0].type = input.checked ? 'logarithmic' : 'linear';
+    chart[n].update();
+    input.blur();
+}
+
+    </script>
+</head>
+<body>
+    <p>
+        <a href="/">Home</a>
+        |
+        New:
+        <a href="/vs-age">Cases vs life expectancy</a>
+        |
+        <a href="/#raw">Raw numbers</a>
+        |
+        <a href="/#new">New daily cases</a>
+        |
+        <a href="/cn#regions">China provinces</a>
+    </p>
+    <p>
+        <a href="#countries">Countries</a>
+        |
+        <a href="/countries">Affected countries</a>
+        |
+        <a href="/vs-china">Countries vs China</a>
+        |
+        <a href="/us#states">US states</a>
+        |
+        <a href="/#speed">Daily speed</a>
+    </p>
+    <p>
+        <a href="/#continents">Continents</a>
+        |
+        <a href="/continents">Spread over the continents</a>
+    </p>
+
+    <h1>Coronavirus vs Life Expectancy</h1>
+
+<div id="block3">            
+    <p>Each point on this graph reflects a single country. The blue dots are the number of confirmed cases (in % to the total population of the country), the red ones are the fraction of people failed to recover (in % to the total population). Move the cursor over the dot to see the name of the country.</p>
+    <canvas id="Chart11"></canvas>
+    <script>
+        var ctx11 = document.getElementById('Chart11').getContext('2d');
+        chart[11] = Chart.Scatter(ctx11, {
+    "type": "scatter",
+    "data": {
+        "labels": [ "Indonesia", "Bosnia and Herzegovina", "Cameroon", "Bahrain", "Ghana", "Bulgaria", "Czechia", "Spain", "Cyprus", "Taiwan", "Montenegro", "Colombia", "Gabon", "Iraq", "Iran", "Bhutan", "Guinea", "North Macedonia", "Nicaragua", "New Zealand", "Argentina", "Egypt", "Azerbaijan", "Malaysia", "Morocco", "Zambia", "Australia", "Viet Nam", "South Africa", "Senegal", "Thailand", "Sri Lanka", "Rwanda", "Eswatini", "Kuwait", "Chile", "Mexico", "Qatar", "Barbados", "France", "Belarus", "Sweden", "Angola", "South Korea", "United Arab Emirates", "United Kingdom", "Cambodia", "Algeria", "Nigeria", "Norway", "Estonia", "Papua New Guinea", "Trinidad and Tobago", "Mongolia", "Kenya", "Poland", "Saint Lucia", "Slovenia", "Belgium", "Georgia", "Moldova", "Namibia", "Uruguay", "Tunisia", "Honduras", "Canada", "Jordan", "Zimbabwe", "Japan", "Turkey", "Paraguay", "Brunei Darussalam", "Russian Federation", "Suriname", "Latvia", "Chad", "Mauritius", "Lebanon", "Venezuela", "Kazakhstan", "Liberia", "Denmark", "Eritrea", "Peru", "Israel", "Saudi Arabia", "Greece", "Bangladesh", "Finland", "Guatemala", "Uzbekistan", "Uganda", "India", "Fiji", "Somalia", "Niger", "Jamaica", "Iceland", "Cabo Verde", "Antigua and Barbuda", "Philippines", "Dominican Republic", "Gambia", "Ecuador", "Seychelles", "Oman", "Serbia", "Romania", "Portugal", "Djibouti", "El Salvador", "Lithuania", "Singapore", "Netherlands", "Ethiopia", "Pakistan", "Austria", "Panama", "Costa Rica", "Slovakia", "Brazil", "Hungary", "United States of America", "Italy", "Cuba", "Albania", "Bahamas", "Benin", "Armenia", "Guyana", "Congo", "Madagascar", "Haiti", "Luxembourg", "Kyrgyzstan", "Tanzania", "Equatorial Guinea", "Switzerland", "Germany", "Croatia", "Ukraine", "Afghanistan", "Burkina Faso", "China", "Maldives", "Bolivia", "Mauritania", "Togo", "Nepal", "Sudan", "Ireland", "Central African Republic", "Malta" ],
+        "datasets": [
+            { "data" : [ { "x" : 69.3, "y" : 0.00016628138653549404 }, { "y" : 0.0028173280823992728, "x" : 77.3 }, { "x" : 58.1, "y" : 0.00010434218051970134 }, { "x" : 79.1, "y" : 0.018583962953936144 }, { "y" : 6.246322066940847e-05, "x" : 63.4 }, { "y" : 0.002328538163740518, "x" : 74.8 }, { "x" : 79.2, "y" : 0.009308460876398608 }, { "y" : 0.054291265127265884, "x" : 83.1 }, { "y" : 0.007008176205573168, "x" : 80.7 }, { "x" : 79.2, "y" : 0.0006433855840923461 }, { "y" : 0.0022292993630573248, "x" : 76.8 }, { "y" : 0.00038935704438273003, "x" : 75.1 }, { "y" : 0.0001841112031667127, "x" : 66.4 }, { "y" : 0.0005443935100153143, "x" : 69.8 }, { "y" : 0.024857110810129545, "x" : 75.7 }, { "x" : 70.6, "y" : 0.0002620888481195125 }, { "y" : 1.566023552994237e-05, "x" : 59.8 }, { "x" : 75.9, "y" : 0.004079673626109911 }, { "y" : 3.055534336567107e-05, "x" : 75.5 }, { "x" : 82.2, "y" : 0.0010871610461834376 }, { "x" : 76.9, "y" : 0.00035283057209914095 }, { "x" : 70.5, "y" : 0.000292863397155639 }, { "y" : 0.000527483901788469, "x" : 73.1 }, { "x" : 75.3, "y" : 0.0037026835848737705 }, { "x" : 76, "y" : 0.00026321706085249426 }, { "x" : 62.3, "y" : 1.1197581322434354e-05 }, { "x" : 82.9, "y" : 0.004249460385982732 }, { "y" : 9.744759859053452e-05, "x" : 76.3 }, { "x" : 63.6, "y" : 0.0004098479634825465 }, { "x" : 66.8, "y" : 0.00028840725559019177 }, { "y" : 0.0005903001194962772, "x" : 75.5 }, { "y" : 0.0003611005594713863, "x" : 75.3 }, { "x" : 68, "y" : 0.000134632137483171 }, { "y" : 8.710042679209128e-05, "x" : 57.7 }, { "x" : 74.8, "y" : 0.0041834042452045354 }, { "y" : 0.0028334740396791895, "x" : 79.5 }, { "x" : 76.6, "y" : 0.00015912146140912637 }, { "x" : 78.1, "y" : 0.016983863564139685 }, { "x" : 75.6, "y" : 0.0020905923344947735 }, { "y" : 0.022157326073972396, "x" : 82.9 }, { "y" : 0.0008040286064914731, "x" : 74.2 }, { "x" : 82.4, "y" : 0.017566059543262524 }, { "y" : 6.284308396150233e-06, "x" : 62.6 }, { "x" : 82.7, "y" : 0.017177058992333866 }, { "y" : 0.0015659382836088224, "x" : 77.2 }, { "x" : 81.4, "y" : 0.007503309630357973 }, { "x" : 69.4, "y" : 0.0003214751463318473 }, { "y" : 0.0003228571229481733, "x" : 76.4 }, { "x" : 55.2, "y" : 1.0947256120013773e-05 }, { "y" : 0.0393760806112774, "x" : 82.5 }, { "y" : 0.02308388654194327, "x" : 77.8 }, { "x" : 65.9, "y" : 1.1394583015234558e-05 }, { "y" : 0.0035125448028673835, "x" : 71.8 }, { "y" : 0.0003100582909587002, "x" : 69.8 }, { "x" : 66.7, "y" : 1.3314566135352075e-05 }, { "y" : 0.0014147034137637973, "x" : 77.8 }, { "x" : 75.6, "y" : 0.0010940919037199124 }, { "y" : 0.018424977149179775, "x" : 80.9 }, { "y" : 0.024394893971038105, "x" : 81.2 }, { "x" : 72.6, "y" : 0.0012259807846277022 }, { "x" : 71.5, "y" : 0.001978581851457967 }, { "x" : 63.7, "y" : 0.00012026458208057727 }, { "x" : 77.1, "y" : 0.0031776294884016524 }, { "x" : 76, "y" : 0.0005130529214088433 }, { "y" : 0.00024625234709268324, "x" : 75.2 }, { "x" : 82.8, "y" : 0.003416107561947021 }, { "y" : 0.0008414425294752368, "x" : 74.3 }, { "x" : 61.4, "y" : 2.0484107746406746e-05 }, { "y" : 0.0007937865510329079, "x" : 84.2 }, { "x" : 76.4, "y" : 0.0008030722908895643 }, { "x" : 74.2, "y" : 0.00025551486244783237 }, { "y" : 0.019155319639972305, "x" : 76.4 }, { "y" : 0.000209772520211171, "x" : 71.9 }, { "y" : 0.0006879944960440316, "x" : 71.8 }, { "y" : 0.006503382807992867, "x" : 75 }, { "x" : 54.3, "y" : 6.27081125485204e-06 }, { "y" : 0.0011026226667716784, "x" : 74.8 }, { "y" : 0.002727657277885555, "x" : 76.3 }, { "x" : 74.1, "y" : 0.0002454779455600053 }, { "x" : 71.1, "y" : 0.0002856927239992669 }, { "x" : 62.9, "y" : 6.076072426783327e-05 }, { "x" : 81.2, "y" : 0.024601950830748974 }, { "y" : 2.8595121672242715e-05, "x" : 65 }, { "x" : 75.9, "y" : 0.0009781455222158996 }, { "y" : 0.01036457966523464, "x" : 82.3 }, { "y" : 0.0011439076703094679, "x" : 74.8 }, { "x" : 81.2, "y" : 0.0050603905093808185 }, { "x" : 72.7, "y" : 1.5333077373161718e-05 }, { "x" : 81.4, "y" : 0.00945374353783305 }, { "y" : 9.66925461422518e-05, "x" : 73.2 }, { "x" : 72.3, "y" : 0.00013037532934930584 }, { "x" : 62.5, "y" : 2.258886459331008e-06 }, { "x" : 68.8, "y" : 2.415073925412857e-05 }, { "x" : 69.9, "y" : 0.00011235955056179776 }, { "x" : 55.4, "y" : 6.475467690653957e-06 }, { "x" : 59.8, "y" : 4.289875464915253e-06 }, { "x" : 76, "y" : 0.0005426856154394057 }, { "y" : 0.13952802359882005, "x" : 82.4 }, { "x" : 73.2, "y" : 0.0007274049827241316 }, { "y" : 0.0010298661174047373, "x" : 75 }, { "x" : 69.3, "y" : 0.00028395269551576723 }, { "x" : 73.5, "y" : 0.0010429276468944967 }, { "x" : 61.9, "y" : 4.259488009541253e-05 }, { "x" : 76.5, "y" : 0.002912448125615154 }, { "y" : 0.007164790174002047, "x" : 73.3 }, { "y" : 0.0010452261306532664, "x" : 77 }, { "x" : 76.3, "y" : 0.0019493399603292218 }, { "x" : 75.2, "y" : 0.0018952108486619914 }, { "y" : 0.012516868435978174, "x" : 81.5 }, { "y" : 0.00010271158586688578, "x" : 63.8 }, { "y" : 4.6485682409817774e-05, "x" : 73.7 }, { "x" : 75, "y" : 0.0030076822727931585 }, { "x" : 82.9, "y" : 0.0074427579553089955 }, { "y" : 0.021290160319586363, "x" : 81.6 }, { "y" : 8.03007172638512e-06, "x" : 65.5 }, { "y" : 0.00033708077886900626, "x" : 66.5 }, { "y" : 0.031423434690846554, "x" : 81.9 }, { "y" : 0.004709871891484552, "x" : 78 }, { "x" : 79.6, "y" : 0.0023179332752199066 }, { "y" : 0.0032618654938610958, "x" : 77.4 }, { "x" : 75.1, "y" : 0.00048377276420934423 }, { "x" : 76, "y" : 0.0010635332018544715 }, { "x" : 78.5, "y" : 0.007745888425049283 }, { "x" : 82.8, "y" : 0.08848540299685714 }, { "y" : 0.0001852913927736357, "x" : 79 }, { "x" : 76.4, "y" : 0.002638064493734597 }, { "x" : 75.7, "y" : 0.0010269576379974327 }, { "y" : 1.694742907500932e-05, "x" : 61.1 }, { "x" : 74.8, "y" : 0.0054096088176623725 }, { "x" : 66.2, "y" : 0.0008942258559018906 }, { "x" : 64.3, "y" : 5.575689991636465e-05 }, { "y" : 1.1123759237355067e-05, "x" : 66.1 }, { "y" : 1.7757100620610666e-05, "x" : 63.5 }, { "x" : 82.4, "y" : 0.10881923014455092 }, { "x" : 71.4, "y" : 0.0002182078897738431 }, { "y" : 1.0343846704191844e-05, "x" : 63.9 }, { "y" : 0.0004424778761061947, "x" : 59.5 }, { "y" : 0.07653001839048351, "x" : 83.3 }, { "x" : 81, "y" : 0.02659698025551684 }, { "x" : 78.3, "y" : 0.004987531172069825 }, { "x" : 72.5, "y" : 0.00010683372126854815 }, { "x" : 62.7, "y" : 6.308849738971342e-05 }, { "x" : 60.3, "y" : 0.0003149389313728385 }, { "x" : 76.4, "y" : 0.005670660086315669 }, { "y" : 0.002448210922787194, "x" : 78.4 }, { "x" : 71.5, "y" : 0.00016502940129070362 }, { "x" : 63.9, "y" : 4.4192058687053935e-05 }, { "y" : 0.00019796100168266851, "x" : 60.6 }, { "x" : 70.2, "y" : 3.495440198261368e-06 }, { "x" : 65.1, "y" : 4.671456466697187e-06 }, { "y" : 0.01607782898105479, "x" : 81.5 }, { "x" : 53, "y" : 6.322178201129563e-05 }, { "x" : 81.5, "y" : 0.016575840145322433 } ], "label" : "Life expectancy vs Confirmed cases", "backgroundColor" : "#3671e9" },
+            { "data" : [ { "y" : 1.404153930744172e-05, "x" : 69.3 }, { "y" : 3.029385034837928e-05, "x" : 77.3 }, { "x" : 58.1, "y" : 0 }, { "x" : 79.1, "y" : 6.093102607847916e-05 }, { "x" : 63.4, "y" : 3.287537929968867e-06 }, { "x" : 74.8, "y" : 4.285653062099113e-05 }, { "x" : 79.2, "y" : 0 }, { "y" : 0.002942007154961401, "x" : 83.1 }, { "y" : 0, "x" : 80.7 }, { "x" : 79.2, "y" : 8.410269073102564e-06 }, { "x" : 76.8, "y" : 0 }, { "y" : 0, "x" : 75.1 }, { "x" : 66.4, "y" : 4.602780079167817e-05 }, { "y" : 4.3246213412431504e-05, "x" : 69.8 }, { "x" : 75.7, "y" : 0.0018766455322931379 }, { "y" : 0, "x" : 70.6 }, { "x" : 59.8, "y" : 0 }, { "y" : 0, "x" : 75.9 }, { "y" : 0, "x" : 75.5 }, { "x" : 82.2, "y" : 0 }, { "x" : 76.9, "y" : 8.932419546813694e-06 }, { "x" : 70.5, "y" : 9.961340039307448e-06 }, { "y" : 9.952526448839038e-06, "x" : 73.1 }, { "y" : 1.2519640185541067e-05, "x" : 75.3 }, { "x" : 76, "y" : 8.225533151640446e-06 }, { "x" : 62.3, "y" : 0 }, { "y" : 2.7774250888776028e-05, "x" : 82.9 }, { "x" : 76.3, "y" : 0 }, { "x" : 63.6, "y" : 0 }, { "y" : 0, "x" : 66.8 }, { "y" : 1.4362533321077306e-06, "x" : 75.5 }, { "y" : 0, "x" : 75.3 }, { "y" : 0, "x" : 68 }, { "y" : 0, "x" : 57.7 }, { "x" : 74.8, "y" : 0 }, { "x" : 79.5, "y" : 0 }, { "x" : 76.6, "y" : 1.567699127183511e-06 }, { "x" : 78.1, "y" : 0 }, { "x" : 75.6, "y" : 0 }, { "x" : 82.9, "y" : 0.0008628935800410565 }, { "y" : 0, "x" : 74.2 }, { "x" : 82.4, "y" : 0.00019927464030927423 }, { "x" : 62.6, "y" : 0 }, { "x" : 82.7, "y" : 0.00019912035654256783 }, { "x" : 77.2, "y" : 2.0469781485082646e-05 }, { "x" : 81.4, "y" : 0.00034651163479450676 }, { "y" : 0, "x" : 69.4 }, { "y" : 3.4840696721025896e-05, "x" : 76.4 }, { "x" : 55.2, "y" : 0 }, { "y" : 0.00013013813233188942, "x" : 82.5 }, { "y" : 0, "x" : 77.8 }, { "x" : 65.9, "y" : 0 }, { "x" : 71.8, "y" : 0 }, { "y" : 0, "x" : 69.8 }, { "y" : 0, "x" : 66.7 }, { "y" : 1.3196860203020497e-05, "x" : 77.8 }, { "y" : 0, "x" : 75.6 }, { "x" : 80.9, "y" : 4.8106989945639104e-05 }, { "y" : 0.0005806244746215108, "x" : 81.2 }, { "y" : 0, "x" : 72.6 }, { "x" : 71.5, "y" : 2.473227314322459e-05 }, { "y" : 0, "x" : 63.7 }, { "x" : 77.1, "y" : 0 }, { "y" : 8.550882023480723e-06, "x" : 76 }, { "x" : 75.2, "y" : 0 }, { "y" : 5.0787201625190454e-05, "x" : 82.8 }, { "y" : 0, "x" : 74.3 }, { "y" : 0, "x" : 61.4 }, { "y" : 2.7589403461918347e-05, "x" : 84.2 }, { "x" : 76.4, "y" : 1.078753823582997e-05 }, { "x" : 74.2, "y" : 1.4195270135990688e-05 }, { "y" : 0, "x" : 76.4 }, { "x" : 71.9, "y" : 6.855311118012124e-07 }, { "x" : 71.8, "y" : 0 }, { "y" : 0, "x" : 75 }, { "x" : 54.3, "y" : 0 }, { "x" : 74.8, "y" : 7.875876191226274e-05 }, { "x" : 76.3, "y" : 5.834561022215091e-05 }, { "x" : 74.1, "y" : 0 }, { "x" : 71.1, "y" : 0 }, { "x" : 62.9, "y" : 0 }, { "x" : 81.2, "y" : 0.00022522912732375822 }, { "x" : 65, "y" : 0 }, { "x" : 75.9, "y" : 1.537964657572169e-05 }, { "x" : 82.3, "y" : 1.173791581566777e-05 }, { "x" : 74.8, "y" : 0 }, { "y" : 0.00012412278607915216, "x" : 81.2 }, { "x" : 72.7, "y" : 1.2266461898529374e-06 }, { "y" : 1.8075991468132026e-05, "x" : 81.4 }, { "x" : 73.2, "y" : 5.687796831897165e-06 }, { "y" : 0, "x" : 72.3 }, { "x" : 62.5, "y" : 0 }, { "x" : 68.8, "y" : 2.927362333833766e-07 }, { "x" : 69.9, "y" : 0 }, { "y" : 0, "x" : 55.4 }, { "x" : 59.8, "y" : 0 }, { "x" : 76, "y" : 3.391785096496286e-05 }, { "y" : 0.0002949852507374631, "x" : 82.4 }, { "y" : 0, "x" : 73.2 }, { "x" : 75, "y" : 0 }, { "y" : 1.7573619592181034e-05, "x" : 69.3 }, { "x" : 73.5, "y" : 1.862370798025887e-05 }, { "y" : 0, "x" : 61.9 }, { "x" : 76.5, "y" : 4.02907843464547e-05 }, { "x" : 73.3, "y" : 0 }, { "x" : 77, "y" : 0 }, { "x" : 76.3, "y" : 1.1399648890814162e-05 }, { "x" : 75.2, "y" : 0 }, { "y" : 0.00011734564158729539, "x" : 81.5 }, { "y" : 0, "x" : 63.8 }, { "x" : 73.7, "y" : 0 }, { "x" : 75, "y" : 3.623713581678504e-05 }, { "x" : 82.9, "y" : 3.4457212756060164e-05 }, { "x" : 81.6, "y" : 0.0008013054845558604 }, { "x" : 65.5, "y" : 0 }, { "y" : 1.3852634748041353e-06, "x" : 66.5 }, { "y" : 8.933456912820627e-05, "x" : 81.9 }, { "y" : 2.354935945742276e-05, "x" : 78 }, { "x" : 79.6, "y" : 3.962279102940011e-05 }, { "x" : 77.4, "y" : 1.832508704416346e-05 }, { "y" : 7.107337378198005e-06, "x" : 75.1 }, { "x" : 76, "y" : 4.130226026619307e-05 }, { "y" : 9.329466618894935e-05, "x" : 78.5 }, { "y" : 0.00796860781402508, "x" : 82.8 }, { "x" : 79, "y" : 8.823399655887413e-06 }, { "y" : 6.942274983512097e-05, "x" : 76.4 }, { "x" : 75.7, "y" : 0 }, { "x" : 61.1, "y" : 0 }, { "x" : 74.8, "y" : 0 }, { "y" : 0.00012774655084312725, "x" : 66.2 }, { "y" : 0, "x" : 64.3 }, { "y" : 0, "x" : 66.1 }, { "x" : 63.5, "y" : 0 }, { "y" : 0.0012993340912782199, "x" : 82.4 }, { "y" : 0, "x" : 71.4 }, { "x" : 63.9, "y" : 0 }, { "x" : 59.5, "y" : 0 }, { "y" : 0.000872965989245059, "x" : 83.3 }, { "y" : 0.00010057832537088258, "x" : 81 }, { "x" : 78.3, "y" : 2.4211316369270996e-05 }, { "x" : 72.5, "y" : 6.819173697992435e-06 }, { "x" : 62.7, "y" : 0 }, { "x" : 60.3, "y" : 9.841841605401203e-06 }, { "y" : 0.0002273006730373626, "x" : 76.4 }, { "x" : 78.4, "y" : 0 }, { "x" : 71.5, "y" : 0 }, { "y" : 0, "x" : 63.9 }, { "y" : 0, "x" : 60.6 }, { "y" : 0, "x" : 70.2 }, { "x" : 65.1, "y" : 2.3357282333485936e-06 }, { "x" : 81.5, "y" : 6.144393241167435e-05 }, { "y" : 0, "x" : 53 }, { "x" : 81.5, "y" : 0 } ], "backgroundColor" : "red", "label" : "Life expectancy vs Failed cases" }
+        ]
+    },
+    "options": {
+        "animation": false,
+        "tooltips": {
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    var label = data.labels[tooltipItem.index];
+                    return label;
+                }
+            }
+        },
+        "scales": {
+            xAxes: [
+                {
+                    type: "linear",
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Life expextancy, in years"
+                    }
+                }
+            ],
+            yAxes: [
+                {
+                    type: "logarithmic",
+                    ticks: {
+                        callback: function(value, index, values) {
+                            var n = value.toString();
+                            if (n.indexOf('e') != -1) return '';
+                            else return n + '%';
+                        }
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: "The number of confirmed (blue) or failed (red) cases, in %"
+                    }
+                }
+            ]
+        }
+    }
+}
+);
+    </script>
+</div>
+
+<div id="countries">
+    <a name="continents"></a>
+    <h2>Statistics per Continent</h2>
+    <p><a href="/continents">Spread over the continents timeline</a></p>
+
+    <div id="countries-list">
+        <p class="current"><a href="/">Whole world</a></p><p><a href="/africa">Africa</a></p><p><a href="/asia">Asia</a></p><p><a href="/europe">Europe</a></p><p><a href="/north-america">North America</a></p><p><a href="/oceania">Oceania</a></p><p><a href="/south-america">South America</a></p>
+    </div>
+</div>
+
+<div id="countries">
+    
+    
+    <a name="countries"></a>
+    <h2>Statistics per Country</h2>
+    <p><a href="/">Whole world</a></p>
+    <p><a href="/countries">More statistics on countries</a></p>
+    <p><a href="/vs-china">Countries vs China</a></p>
+    <div id="countries-list">
+        <p class="current"><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ao">Angola</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p><a href="/am">Armenia</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p><a href="/az">Azerbaijan</a></p><p><a href="/bs">Bahamas</a></p><p><a href="/bh">Bahrain</a></p><p><a href="/bd">Bangladesh</a></p><p><a href="/bb">Barbados</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bj">Benin</a></p><p><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/br">Brazil</a></p><p><a href="/bn">Brunei Darussalam</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/cv">Cabo Verde</a></p><p><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/cf">Central African Republic</a></p><p><a href="/td">Chad</a></p><p><a href="/cl">Chile</a></p><p><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cg">Congo</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p><a href="/cy">Cyprus</a></p><p><a href="/cz">Czechia</a></p><p><a href="/dk">Denmark</a></p><p><a href="/dj">Djibouti</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/sv">El Salvador</a></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/er">Eritrea</a></p><p><a href="/ee">Estonia</a></p><p><a href="/sz">Eswatini</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fj">Fiji</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/ga">Gabon</a></p><p><a href="/gm">Gambia</a></p><p><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gh">Ghana</a></p><p><a href="/gr">Greece</a></p><p><a href="/gt">Guatemala</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gy">Guyana</a></p><p><a href="/ht">Haiti</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p><a href="/in">India</a></p><p><a href="/id">Indonesia</a></p><p><a href="/ir">Iran</a></p><p><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p><a href="/jp">Japan</a></p><p><a href="/jo">Jordan</a></p><p><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/xk">Kosovo</a></p><p><a href="/kw">Kuwait</a></p><p><a href="/kg">Kyrgyzstan</a></p><p><a href="/lv">Latvia</a></p><p><a href="/lb">Lebanon</a></p><p><a href="/lr">Liberia</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/mg">Madagascar</a></p><p><a href="/my">Malaysia</a></p><p><a href="/mv">Maldives</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mr">Mauritania</a></p><p><a href="/mu">Mauritius</a></p><p><a href="/mx">Mexico</a></p><p><a href="/md">Moldova</a></p><p><a href="/mc">Monaco</a></p><p><a href="/mn">Mongolia</a></p><p><a href="/me">Montenegro</a></p><p><a href="/ma">Morocco</a></p><p><a href="/na">Namibia</a></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ni">Nicaragua</a></p><p><a href="/ne">Niger</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/mk">North Macedonia</a></p><p><a href="/no">Norway</a></p><p><a href="/om">Oman</a></p><p><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/pg">Papua New Guinea</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p><a href="/qa">Qatar</a></p><p><a href="/ro">Romania</a></p><p><a href="/ru">Russian Federation</a></p><p><a href="/rw">Rwanda</a></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a></p><p><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sc">Seychelles</a></p><p><a href="/sg">Singapore</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a></p><p><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p><a href="/lk">Sri Lanka</a></p><p><a href="/sd">Sudan</a></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p><a href="/tw">Taiwan</a></p><p><a href="/tz">Tanzania</a></p><p><a href="/th">Thailand</a></p><p><a href="/tg">Togo</a></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a></p><p><a href="/tr">Turkey</a></p><p><a href="/ug">Uganda</a></p><p><a href="/ua">Ukraine</a></p><p><a href="/ae">United Arab Emirates</a></p><p><a href="/gb">United Kingdom</a></p><p><a href="/us">United States of America</a></p><p><a href="/uy">Uruguay</a></p><p><a href="/uz">Uzbekistan</a></p><p><a href="/ve">Venezuela</a></p><p><a href="/vn">Viet Nam</a></p><p><a href="/zm">Zambia</a></p><p><a href="/zw">Zimbabwe</a></p>
+    </div>
+</div>
+
+
+
+
+    <div id="about">
+        <p>Based on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
+        <p>This website presents the very same data but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
+        <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Twitter: <a href="https://twitter.com/andrewshitov">@andrewshitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
+    </div>
+</body>
+</html>
+
