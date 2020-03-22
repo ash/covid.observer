@@ -166,7 +166,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
                 }
 
                 my $region = %countries{$cc-code}<country>;
-                $region ~~ s/CN'/'//;
+                $region ~~ s/'China/'//;
                 $cn_html ~= qq{<p$is_current><a href="/$path">} ~ $region ~ '</a></p>';
             }
         }

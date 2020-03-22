@@ -455,7 +455,7 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) is 
         <div id="block6">
             <h2>Confirmed population timeline</h2>
             <p>On this graph, you see how the fraction (in %) of the confirmed infection cases changes over time in different countries or the US states.</p>
-            <p>The almost-horizontal red line displays China. The number of confirmed infections in China almost stopped growing.</p>
+            <p>The almost-horizontal red line in the bottom part of the graph line displays <a href="/cn">China</a>. The number of confirmed infections in China almost stopped growing. Note the top line reflecting the most suffered province of China, <a href="/cn/hb">Hubei</a>, where the spread is also almost stopped.</p>
             <p>Click on the bar in the legend to turn the line off and on.</p>
             <br/>
             <canvas id="Chart6"></canvas>

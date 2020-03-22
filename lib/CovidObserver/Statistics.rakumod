@@ -24,6 +24,7 @@ sub get-countries() is export {
     for $sth.allrows(:array-of-hash) -> %row {
         my $country = %row<country>;
         $country = "US/$country" if %row<cc> ~~ /US'/'/;
+        $country = "China/$country" if %row<cc> ~~ /'CN/'/;
         my %data =
             country => $country,
             population => %row<population>,
