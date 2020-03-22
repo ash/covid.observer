@@ -42,7 +42,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=7">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=8">
             <style>
                 $style
             </style>
@@ -249,4 +249,31 @@ sub fmtnum($n is copy) is export {
     $n ~~ s/ (\d) (\d ** 3) $/$0,$1/;
 
     return $n;
+}
+
+sub per-region($cc) is export {
+    state %links =
+        CN => {
+            link => 'https://covid.observer/cn#regions',
+            title => 'China provinces and regions'
+        },
+        US => {
+            link => 'https://covid.observer/us#states',
+            title => 'US states'
+        },
+        RU => {
+            link => 'https://yandex.ru/web-maps/covid19',
+            title => 'Statistics per region (Yandex)',
+        },
+        NL => {
+            link => 'https://www.rivm.nl/coronavirus-kaart-van-nederland-per-gemeente',
+            title => 'Statistics per municipality (RIVM)'
+        };
+
+    return '' unless %links{$cc};
+
+    my $target = %links{$cc}<link> ~~ /^ 'https://covid.observer/' / ?? '' !! ' target="_blank"';
+    my $link = %links{$cc}<link>;
+    my $title = %links{$cc}<title>;
+    return qq{<p><a href="$link"$target>} ~ $title ~ '</a></p>';
 }
