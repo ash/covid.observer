@@ -298,7 +298,7 @@ sub countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals) is
     return $html;
 }
 
-sub chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is export {
+sub chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$exclude?) is export {
     my $confirmed = 0;
     my $failed = 0;
     my $recovered = 0;
@@ -318,9 +318,14 @@ sub chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is e
         }
     }
     else {
-        $confirmed = [+] %totals.values.map: *<confirmed>;
-        $failed    = [+] %totals.values.map: *<failed>;
-        $recovered = [+] %totals.values.map: *<recovered>;
+        for %totals.keys -> $cc-code {
+            next if $cc-code ~~ /'/'/;
+            next if $exclude && $exclude eq $cc-code;
+
+            $confirmed += %totals{$cc-code}<confirmed>;
+            $failed    += %totals{$cc-code}<failed>;
+            $recovered += %totals{$cc-code}<recovered>;
+        }
     }
 
     my $active = $confirmed - $failed - $recovered;
@@ -358,7 +363,7 @@ sub chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is e
     return $json;
 }
 
-sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is export {
+sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$exclude?) is export {
     my @dates;
     my @confirmed;
     my @recovered;
@@ -368,7 +373,11 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is
     for %daily-totals.keys.sort(*[0]) -> $date {
         @dates.push($date);
 
-        my %data;
+        my %data =
+            confirmed => 0,
+            failed    => 0,
+            recovered => 0;
+
         if $cc {
             %data = %per-day{$cc}{$date};
         }
@@ -383,6 +392,12 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is
         }
         else {
             %data = %daily-totals{$date};
+        }
+
+        if $exclude {
+            %data<confirmed> -= %per-day{$exclude}{$date}<confirmed>;
+            %data<failed>    -= %per-day{$exclude}{$date}<failed>;
+            %data<recovered> -= %per-day{$exclude}{$date}<recovered>;
         }
 
         @confirmed.push(%data<confirmed>);
@@ -522,7 +537,12 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is
 }
 
 multi sub number-percent(%countries, %per-day, %totals, %daily-totals) is export {
-    my $confirmed = [+] %totals.values.map: *<confirmed>;
+    my $confirmed = 0;
+
+    for %totals.keys -> $cc {
+        next if $cc ~~ /'/'/;
+        $confirmed += %totals{$cc}<confirmed>;
+    }
 
     my $percent = '%.2g'.sprintf(100 * $confirmed / $world-population);
 

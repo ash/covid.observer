@@ -57,8 +57,7 @@ sub extract-covid-data($data) is export {
             %per-day{$cc}{$date} += $n;
             %daily-per-country{$date}{$cc} += $n;
 
-            my $uptodate = %per-day{$cc}{$date};
-            %total{$cc} = $uptodate if !%total{$cc} or $uptodate > %total{$cc};
+            %total{$cc} = %per-day{$cc}{$date};
         }
 
         if $cc eq 'US' {
@@ -71,8 +70,7 @@ sub extract-covid-data($data) is export {
                     %per-day{$state-cc}{$date} += $n;
                     %daily-per-country{$date}{$state-cc} += $n;
 
-                    my $uptodate = %per-day{$state-cc}{$date};
-                    %total{$state-cc} = $uptodate if !%total{$state-cc} or $uptodate > %total{$state-cc};
+                    %total{$state-cc} = %per-day{$state-cc}{$date};
                 }
             }
         }
@@ -87,15 +85,18 @@ sub extract-covid-data($data) is export {
                     %per-day{$region-cc}{$date} += $n;
                     %daily-per-country{$date}{$region-cc} += $n;
 
-                    my $uptodate = %per-day{$region-cc}{$date};
-                    %total{$region-cc} = $uptodate if !%total{$region-cc} or $uptodate > %total{$region-cc};
+                    %total{$region-cc} = %per-day{$region-cc}{$date};
                 }
             }
         }
     }
 
     for %daily-per-country.kv -> $date, %per-country {
-        %daily-total{$date} = [+] %per-country.values;
+        %daily-total{$date} = 0 unless %daily-total{$date}:exists;
+        for %per-country.keys -> $cc {
+            next if $cc ~~ /'/'/;
+            %daily-total{$date} += %per-country{$cc};
+        }
     }
 
     return 

@@ -6,11 +6,11 @@ use CovidObserver::Population;
 use CovidObserver::Statistics;
 use CovidObserver::HTML;
 
-sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) is export {
+sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude?) is export {
     say 'Generating world data...';
 
-    my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals);
-    my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals);
+    my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$exclude);
+    my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, :$exclude);
     my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals);
 
     my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals);
@@ -18,8 +18,9 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) is export
     my $country-list = country-list(%countries);
     my $continent-list = continent-list();
 
+    my $exclude-name = $exclude ?? " without %countries{$exclude}<country>" !! '';
     my $content = qq:to/HTML/;
-        <h1>COVID-19 World Statistics</h1>
+        <h1>COVID-19 World Statistics{$exclude-name}</h1>
 
         <div id="block2">
             <h2>Affected World Population</h2>
@@ -112,7 +113,8 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals) is export
 
         HTML
 
-    html-template('/', 'World statistics', $content);
+    my $exclude-path = $exclude ?? '-' ~ $exclude.lc !! '';
+    html-template("/$exclude-path", "World statistics$exclude-name", $content);
 }
 
 sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) is export {
