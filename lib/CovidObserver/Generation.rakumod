@@ -7,25 +7,32 @@ use CovidObserver::Statistics;
 use CovidObserver::HTML;
 
 sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude?) is export {
-    say 'Generating world data...';
+    my $without-str = $exclude ?? " excluding %countries{$exclude}<country>" !! '';
+    say "Generating world data{$without-str}...";
 
     my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$exclude);
     my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, :$exclude);
-    my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals);
+    my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$exclude);
 
-    my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals);
+    my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$exclude);
 
-    my $country-list = country-list(%countries);
+    my $country-list = country-list(%countries, :$exclude);
     my $continent-list = continent-list();
 
-    my $exclude-name = $exclude ?? " without %countries{$exclude}<country>" !! '';
     my $content = qq:to/HTML/;
-        <h1>COVID-19 World Statistics{$exclude-name}</h1>
+        <h1>COVID-19 World Statistics{$without-str}</h1>
 
         <div id="block2">
-            <h2>Affected World Population</h2>
+            <h2>Affected World Population{$without-str}</h2>
             <div id="percent">$chart3&thinsp;%</div>
-            <p>This is the part of confirmed infection cases against the total 7.8 billion of the world population.</p>
+            <p>This is the part of confirmed infection cases against the total {
+                if $exclude {
+                    sprintf('%.1f', ($world-population / 1_000_000 - %countries{$exclude}<population>) / 1000)
+                }
+                else {
+                    '7.8'
+                }
+            } billion of the world population{$without-str}.</p>
         </div>
 
         <div id="block9">
@@ -39,7 +46,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
 
         <div id="block1">
             <h2>Recovery Pie</h2>
-            <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world.</p>
+            <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world{$without-str}.</p>
             <canvas id="Chart1"></canvas>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
@@ -49,7 +56,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
 
         <div id="block3">
             <h2>Daily Flow</h2>
-            <p>The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the world. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the world{$without-str}. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <canvas id="Chart2"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale2" data-size="xs" data-style="rounded" data-color="blue">
@@ -114,23 +121,29 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
         HTML
 
     my $exclude-path = $exclude ?? '-' ~ $exclude.lc !! '';
-    html-template("/$exclude-path", "World statistics$exclude-name", $content);
+    html-template("/$exclude-path", "World statistics$without-str", $content);
 }
 
-sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) is export {
-    say "Generating $cc...";
+sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$exclude?) is export {
+    my $without-str = $exclude ?? " excluding %countries{$exclude}<country>" !! '';
+    say "Generating {$cc}{$without-str}...";
 
-    my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc);
-    my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc);
-    my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$cc);
+    my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc, :$exclude);
+    my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc, :$exclude);
+    my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$cc, :$exclude);
 
-    my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc);
+    my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc, :$exclude);
 
-    my $country-list = country-list(%countries, :$cc);
+    my $country-list = country-list(%countries, :$cc, :$exclude);
     my $continent-list = continent-list(%countries{$cc}<continent>);
 
     my $country-name = %countries{$cc}<country>;
     my $population = +%countries{$cc}<population>;
+
+    if $exclude {
+        $population -= %countries{$exclude}<population>;
+    }
+
     my $population-str = $population <= 1
         ?? sprintf('%i thousand', (1000 * $population).round)
         !! sprintf('%i million', $population.round);
@@ -139,7 +152,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) is
     $proper-country-name = "the $country-name" if $cc ~~ /[US|GB|NL|DO|CZ]$/;
 
     my $content = qq:to/HTML/;
-        <h1>Coronavirus in {$proper-country-name}</h1>
+        <h1>Coronavirus in {$proper-country-name}{$without-str}</h1>
 
         <div id="block2">
             <h2>Affected Population</h2>
@@ -149,7 +162,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) is
 
         <div id="block1">
             <h2>Recovery Pie</h2>
-            <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$proper-country-name}.</p>
+            <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$proper-country-name}{$without-str}.</p>
             <canvas id="Chart1"></canvas>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
@@ -168,7 +181,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) is
 
         <div id="block3">
             <h2>Daily Flow</h2>
-            <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name} and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name}{$without-str} and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <canvas id="Chart2"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale2" data-size="xs" data-style="rounded" data-color="blue">
@@ -209,7 +222,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) is
         <div id="block7">
             <a name="speed"></a>
             <h2>Daily Speed</h2>
-            <p>This graph shows the speed of growth (in %) over time in {$proper-country-name}. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
+            <p>This graph shows the speed of growth (in %) over time in {$proper-country-name}{$without-str}. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
@@ -233,7 +246,16 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals) is
 
         HTML
 
-    html-template('/' ~ $cc.lc, "Coronavirus in {$proper-country-name}", $content);
+    my $url;
+    if $exclude {
+        my @parts = $exclude.lc.split('/');
+        $url = '/' ~ @parts[0] ~ '/-' ~ @parts[1];
+    }
+    else {
+        $url = '/' ~ $cc.lc;
+    }
+
+    html-template($url, "Coronavirus in {$proper-country-name}{$without-str}", $content);
 }
 
 sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) is export {

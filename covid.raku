@@ -152,6 +152,7 @@ multi sub MAIN('generate') {
     my %daily-totals = get-daily-totals-stats();
 
     generate-world-stats(%countries, %per-day, %totals, %daily-totals);
+    generate-world-stats(%countries, %per-day, %totals, %daily-totals, exclude => 'CN');
 
     generate-countries-stats(%countries, %per-day, %totals, %daily-totals);
     generate-china-level-stats(%countries, %per-day, %totals, %daily-totals);
@@ -159,6 +160,7 @@ multi sub MAIN('generate') {
     for get-known-countries() -> $cc {
         generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals);
     }
+    generate-country-stats('CN', %countries, %per-day, %totals, %daily-totals, exclude => 'CN/HB');
 
     for %continents.keys -> $cont {
         generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals);

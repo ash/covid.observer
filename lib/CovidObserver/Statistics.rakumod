@@ -307,6 +307,12 @@ sub chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$ex
         $confirmed = %totals{$cc}<confirmed>;
         $failed    = %totals{$cc}<failed>;
         $recovered = %totals{$cc}<recovered>;
+
+        if $exclude {
+            $confirmed -= %totals{$exclude}<confirmed>;
+            $failed    -= %totals{$exclude}<failed>;
+            $recovered -= %totals{$exclude}<recovered>;
+        }
     }
     elsif $cont {
         for %totals.keys -> $cc-code {
@@ -383,6 +389,7 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
         }
         elsif $cont {
             for %totals.keys -> $cc-code {
+                next if $cc-code ~~ /'/'/;
                 next unless %countries{$cc-code} && %countries{$cc-code}<continent> eq $cont;
 
                 %data<confirmed> += %per-day{$cc-code}{$date}<confirmed>;
@@ -391,7 +398,13 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
             }
         }
         else {
-            %data = %daily-totals{$date};
+            for %totals.keys -> $cc-code {
+                next if $cc-code ~~ /'/'/;
+
+                %data<confirmed> += %per-day{$cc-code}{$date}<confirmed>;
+                %data<failed>    += %per-day{$cc-code}{$date}<failed>;
+                %data<recovered> += %per-day{$cc-code}{$date}<recovered>;
+            }
         }
 
         if $exclude {
@@ -536,7 +549,7 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
     return %return;
 }
 
-multi sub number-percent(%countries, %per-day, %totals, %daily-totals) is export {
+multi sub number-percent(%countries, %per-day, %totals, %daily-totals, :$exclude?) is export {
     my $confirmed = 0;
 
     for %totals.keys -> $cc {
@@ -544,16 +557,28 @@ multi sub number-percent(%countries, %per-day, %totals, %daily-totals) is export
         $confirmed += %totals{$cc}<confirmed>;
     }
 
-    my $percent = '%.2g'.sprintf(100 * $confirmed / $world-population);
+    my $population = $world-population;
+
+    if $exclude {
+        $confirmed -= %totals{$exclude}<confirmed>;
+        $population -= %countries{$exclude}<population>;
+    }
+
+    my $percent = '%.2g'.sprintf(100 * $confirmed / $population);
 
     return $percent;
 }
 
-multi sub number-percent(%countries, %per-day, %totals, %daily-totals, :$cc!) is export {
+multi sub number-percent(%countries, %per-day, %totals, %daily-totals, :$cc!, :$exclude?) is export {
     my $confirmed = %totals{$cc}<confirmed>;
 
     my $population = %countries{$cc}<population>;
     return 0 unless $population;
+
+    if $exclude {
+        $confirmed  -= %totals{$exclude}<confirmed>;
+        $population -= %countries{$exclude}<population>;
+    }
 
     $population *= 1_000_000;
     my $percent = '%.2g'.sprintf(100 * $confirmed / $population);
@@ -748,7 +773,7 @@ sub continent-joint-graph(%countries, %per-day, %totals, %daily-totals) is expor
     return $json;
 }
 
-sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is export {
+sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$exclude?) is export {
     my @labels;
     my @confirmed;
     my @failed;
@@ -759,9 +784,18 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is
 
     if $cc {
         %data = %per-day{$cc};
+
+        if $exclude {
+            for %per-day{$exclude}.keys -> $date {
+                %data{$date}<confirmed> -= %per-day{$exclude}{$date}<confirmed>;
+                %data{$date}<failed>    -= %per-day{$exclude}{$date}<failed>;
+                %data{$date}<recovered> -= %per-day{$exclude}{$date}<recovered>;
+            }
+        }
     }
     elsif $cont {
         for %per-day.keys -> $cc-code {
+            next if $cc-code ~~ /'/'/;
             next unless %countries{$cc-code} && %countries{$cc-code}<continent> eq $cont;
 
             for %per-day{$cc-code}.keys -> $date {
@@ -773,8 +807,32 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?) is
             }
         }
     }
+    elsif $exclude {
+        for %per-day.keys -> $cc-code {
+            next if $cc-code ~~ /'/'/;
+            next if $cc-code eq $exclude;
+
+            for %per-day{$cc-code}.keys -> $date {
+                %data{$date} = Hash.new unless %data{$date};
+
+                %data{$date}<confirmed> += %per-day{$cc-code}{$date}<confirmed>;
+                %data{$date}<failed>    += %per-day{$cc-code}{$date}<failed>;
+                %data{$date}<recovered> += %per-day{$cc-code}{$date}<recovered>;
+            }
+        }
+    }
     else {
-        %data = %daily-totals;
+        for %per-day.keys -> $cc-code {
+            next if $cc-code ~~ /'/'/;
+
+            for %per-day{$cc-code}.keys -> $date {
+                %data{$date} = Hash.new unless %data{$date};
+
+                %data{$date}<confirmed> += %per-day{$cc-code}{$date}<confirmed>;
+                %data{$date}<failed>    += %per-day{$cc-code}{$date}<failed>;
+                %data{$date}<recovered> += %per-day{$cc-code}{$date}<recovered>;
+            }
+        }
     }
 
     my @dates = %data.keys.sort;
