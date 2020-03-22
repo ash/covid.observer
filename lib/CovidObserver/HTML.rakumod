@@ -50,6 +50,8 @@ sub html-template($path, $title, $content) is export {
             <script>
                 $script
             </script>
+            <link rel="stylesheet" type="text/css" href="/likely.css">
+            <script src="/likely.js" type="text/javascript"></script>
         </head>
         <body>
             <p>
@@ -61,11 +63,11 @@ sub html-template($path, $title, $content) is export {
                 <a href="{$anchor-prefix}#raw">Raw numbers</a>
                 |
                 <a href="{$anchor-prefix}#new">New daily cases</a>
-                |
-                <a href="/cn#regions">China provinces</a>
             </p>
             <p>
                 New:
+                <a href="/cn#regions">China provinces</a>
+                |
                 <a href="/-cn">World without China</a>
                 |
                 <a href="/cn/-hb">China without Hubei</a>
@@ -87,12 +89,27 @@ sub html-template($path, $title, $content) is export {
                 <a href="/continents">Spread over the continents</a>
             </p>
 
+            <div class="likely" style="min-height: 50px">
+                <div class="twitter">Tweet</div>
+                <div class="facebook">Share</div>
+                <div class="linkedin">Link</div>
+                <div class="telegram">Send</div>
+                <div class="whatsapp">Send</div>
+            </div>
+
             $content
 
             <div id="about">
+                <div class="likely" style="min-height: 50px">
+                    <div class="twitter">Tweet</div>
+                    <div class="facebook">Share</div>
+                    <div class="linkedin">Link</div>
+                    <div class="telegram">Send</div>
+                    <div class="whatsapp">Send</div>
+                </div>
                 <p>Based on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
-                <p>This website presents the very same data but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
-                <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Twitter: <a href="https://twitter.com/andrewshitov">\@andrewshitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
+                <p>This website presents the very same data as the JHU’s <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">original dashboard</a> but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
+                <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Twitter: <a href="https://twitter.com/andrewshitov">\@andrewshitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>. Contact <a href="mailto:andy@shitov.ru">by e-mail</a>.</p>
             </div>
         </body>
         </html>
