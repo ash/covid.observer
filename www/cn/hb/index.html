@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Coronavirus in Hubei | Coronavirus COVID-19 Observer</title>
+    <title>Coronavirus in China/Hubei | Coronavirus COVID-19 Observer</title>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160707541-1"></script>
 <script>
@@ -16,7 +16,7 @@
 
     <script src="/Chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/main.css?v=7">
+    <link rel="stylesheet" type="text/css" href="/main.css?v=8">
     <style>
         
     </style>
@@ -30,6 +30,8 @@ function log_scale(input, n) {
 }
 
     </script>
+    <link rel="stylesheet" type="text/css" href="/likely.css">
+    <script src="/likely.js" type="text/javascript"></script>
 </head>
 <body>
     <p>
@@ -41,13 +43,13 @@ function log_scale(input, n) {
         <a href="#raw">Raw numbers</a>
         |
         <a href="#new">New daily cases</a>
-        |
-        <a href="/cn#regions">China provinces</a>
     </p>
     <p>
         New:
+        <a href="/cn#regions">China provinces</a>
+        |
         <a href="/-cn">World without China</a>
-        |                
+        |
         <a href="/cn/-hb">China without Hubei</a>
     </p>
     <p>
@@ -67,7 +69,16 @@ function log_scale(input, n) {
         <a href="/continents">Spread over the continents</a>
     </p>
 
-    <h1>Coronavirus in Hubei</h1>
+    <div class="likely" style="min-height: 50px">
+        <div class="twitter">Tweet</div>
+        <div class="facebook">Share</div>
+        <div class="linkedin">Link</div>
+        <div class="telegram">Send</div>
+        <div class="whatsapp">Send</div>
+    </div>
+
+    <h1>Coronavirus in China/Hubei</h1>
+
 
 <div id="block2">
     <h2>Affected Population</h2>
@@ -77,16 +88,16 @@ function log_scale(input, n) {
 
 <div id="block1">
     <h2>Recovery Pie</h2>
-    <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in Hubei.</p>
+    <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in China/Hubei.</p>
     <canvas id="Chart1"></canvas>
     <script>
         var ctx1 = document.getElementById('Chart1').getContext('2d');
         chart[1] = new Chart(ctx1, {
     "type": "pie",
     "data": {
-        "labels": ["Recovered 87%", "Failed to recover 5%", "Active cases 8%"],
+        "labels": ["Recovered 88%", "Failed to recover 5%", "Active cases 8%"],
         "datasets": [
-            { "label" : "Recovery statistics", "data" : [ 58946, 3139, 5715 ], "backgroundColor" : [ "green", "red", "orange" ] }
+            { "label" : "Recovery statistics", "data" : [ 59433, 3144, 5223 ], "backgroundColor" : [ "green", "red", "orange" ] }
         ]
     },
     "options": {
@@ -99,16 +110,16 @@ function log_scale(input, n) {
 
 <div id="block9">
     <a name="raw"></a>
-    <h2>Raw Numbers on March 21<sup>th</sup>, 2020</h2>
+    <h2>Raw Numbers on March 22<sup>th</sup>, 2020</h2>
     <p class="confirmed"><span>67,800</span><sup>confirmed</sup></p>
-    <p class="recovered"><span>58,946</span><sup>recovered</sup></p>
-    <p class="failed"><span>3,139</span><sup>failed</sup></p>
-    <p class="active"><span>5,715</span><sup>active</sup></p>
+    <p class="recovered"><span>59,433</span><sup>recovered</sup></p>
+    <p class="failed"><span>3,144</span><sup>failed</sup></p>
+    <p class="active"><span>5,223</span><sup>active</sup></p>
 </div>
 
 <div id="block3">
     <h2>Daily Flow</h2>
-    <p>The height of a single bar is the total number of people suffered from Coronavirus in Hubei and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
+    <p>The height of a single bar is the total number of people suffered from Coronavirus in China/Hubei and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
     <canvas id="Chart2"></canvas>
     <p class="left">
         <label class="toggle-switchy" for="logscale2" data-size="xs" data-style="rounded" data-color="blue">
@@ -124,11 +135,11 @@ function log_scale(input, n) {
         chart[2] = new Chart(ctx2, {
     "type": "bar",
     "data": {
-        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21" ],
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22" ],
         "datasets": [
-            { "data" : [ 17, 17, 24, 40, 52, 76, 125, 125, 162, 204, 249, 350, 414, 479, 549, 618, 699, 780, 871, 974, 1068, 1068, 1310, 1457, 1596, 1696, 1789, 1921, 2029, 2144, 2144, 2346, 2346, 2495, 2563, 2615, 2641, 2682, 2727, 2761, 2803, 2835, 2871, 2902, 2931, 2959, 2986, 3008, 3024, 3046, 3056, 3062, 3075, 3085, 3099, 3111, 3122, 3130, 3133, 3139 ], "backgroundColor" : "red", "label" : "Failed to recover" },
-            { "data" : [ 399, 399, 494, 689, 964, 1302, 3349, 3341, 4651, 5461, 6736, 10532, 12722, 15677, 18483, 20677, 23139, 24881, 26965, 28532, 29659, 29612, 43437, 48175, 49030, 49847, 50338, 50633, 49665, 48510, 48637, 46439, 46395, 45044, 43252, 41603, 39572, 36829, 34617, 32610, 30366, 28174, 25904, 23972, 22628, 21207, 19486, 18247, 16993, 15593, 14407, 13171, 11755, 10421, 9557, 8685, 7751, 6988, 6285, 5715 ], "backgroundColor" : "orange", "label" : "Active cases" },
-            { "label" : "Recovered", "backgroundColor" : "green", "data" : [ 28, 28, 31, 32, 42, 45, 80, 88, 90, 141, 168, 295, 386, 522, 633, 817, 1115, 1439, 1795, 2222, 2639, 2686, 3459, 4774, 5623, 6639, 7862, 9128, 10337, 11788, 11881, 15299, 15343, 16748, 18971, 20969, 23383, 26403, 28993, 31536, 33934, 36208, 38557, 40592, 42033, 43500, 45235, 46488, 47743, 49134, 50318, 51553, 52960, 54288, 55142, 56003, 56927, 57682, 58382, 58946 ] }
+            { "data" : [ 17, 17, 24, 40, 52, 76, 125, 125, 162, 204, 249, 350, 414, 479, 549, 618, 699, 780, 871, 974, 1068, 1068, 1310, 1457, 1596, 1696, 1789, 1921, 2029, 2144, 2144, 2346, 2346, 2495, 2563, 2615, 2641, 2682, 2727, 2761, 2803, 2835, 2871, 2902, 2931, 2959, 2986, 3008, 3024, 3046, 3056, 3062, 3075, 3085, 3099, 3111, 3122, 3130, 3133, 3139, 3144 ], "label" : "Failed to recover", "backgroundColor" : "red" },
+            { "backgroundColor" : "orange", "label" : "Active cases", "data" : [ 399, 399, 494, 689, 964, 1302, 3349, 3341, 4651, 5461, 6736, 10532, 12722, 15677, 18483, 20677, 23139, 24881, 26965, 28532, 29659, 29612, 43437, 48175, 49030, 49847, 50338, 50633, 49665, 48510, 48637, 46439, 46395, 45044, 43252, 41603, 39572, 36829, 34617, 32610, 30366, 28174, 25904, 23972, 22628, 21207, 19486, 18247, 16993, 15593, 14407, 13171, 11755, 10421, 9557, 8685, 7751, 6988, 6285, 5715, 5223 ] },
+            { "backgroundColor" : "green", "data" : [ 28, 28, 31, 32, 42, 45, 80, 88, 90, 141, 168, 295, 386, 522, 633, 817, 1115, 1439, 1795, 2222, 2639, 2686, 3459, 4774, 5623, 6639, 7862, 9128, 10337, 11788, 11881, 15299, 15343, 16748, 18971, 20969, 23383, 26403, 28993, 31536, 33934, 36208, 38557, 40592, 42033, 43500, 45235, 46488, 47743, 49134, 50318, 51553, 52960, 54288, 55142, 56003, 56927, 57682, 58382, 58946, 59433 ], "label" : "Recovered" }
         ]
     },
     "options": {
@@ -167,12 +178,12 @@ function log_scale(input, n) {
         chart[10] = new Chart(ctx10, {
     "type": "bar",
     "data": {
-        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21" ],
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22" ],
         "datasets": [
-            { "label" : "Failed to recover", "backgroundColor" : "red", "data" : [ 0, 0, 7, 16, 12, 24, 49, 0, 37, 42, 45, 101, 64, 65, 70, 69, 81, 81, 91, 103, 94, 0, 242, 147, 139, 100, 93, 132, 108, 115, 0, 202, 0, 149, 68, 52, 26, 41, 45, 34, 42, 32, 36, 31, 29, 28, 27, 22, 16, 22, 10, 6, 13, 10, 14, 12, 11, 8, 3, 6 ] },
-            { "label" : "Active cases", "backgroundColor" : "orange", "data" : [ 0, 0, 95, 195, 275, 338, 2047, -8, 1310, 810, 1275, 3796, 2190, 2955, 2806, 2194, 2462, 1742, 2084, 1567, 1127, -47, 13825, 4738, 855, 817, 491, 295, -968, -1155, 127, -2198, -44, -1351, -1792, -1649, -2031, -2743, -2212, -2007, -2244, -2192, -2270, -1932, -1344, -1421, -1721, -1239, -1254, -1400, -1186, -1236, -1416, -1334, -864, -872, -934, -763, -703, -570 ] },
-            { "label" : "Recovered", "backgroundColor" : "green", "data" : [ 0, 0, 3, 1, 10, 3, 35, 8, 2, 51, 27, 127, 91, 136, 111, 184, 298, 324, 356, 427, 417, 47, 773, 1315, 849, 1016, 1223, 1266, 1209, 1451, 93, 3418, 44, 1405, 2223, 1998, 2414, 3020, 2590, 2543, 2398, 2274, 2349, 2035, 1441, 1467, 1735, 1253, 1255, 1391, 1184, 1235, 1407, 1328, 854, 861, 924, 755, 700, 564 ] },
-            { "backgroundColor" : "lightblue", "data" : [ 0, 0, 105, 212, 297, 365, 2131, 0, 1349, 903, 1347, 4024, 2345, 3156, 2987, 2447, 2841, 2147, 2531, 2097, 1638, 0, 14840, 6200, 1843, 1933, 1807, 1693, 349, 411, 220, 1422, 0, 203, 499, 401, 409, 318, 423, 570, 196, 114, 115, 134, 126, 74, 41, 36, 17, 13, 8, 5, 4, 4, 4, 1, 1, 0, 0, 0 ], "label" : "Confirmed" }
+            { "data" : [ 0, 0, 7, 16, 12, 24, 49, 0, 37, 42, 45, 101, 64, 65, 70, 69, 81, 81, 91, 103, 94, 0, 242, 147, 139, 100, 93, 132, 108, 115, 0, 202, 0, 149, 68, 52, 26, 41, 45, 34, 42, 32, 36, 31, 29, 28, 27, 22, 16, 22, 10, 6, 13, 10, 14, 12, 11, 8, 3, 6, 5 ], "label" : "Failed to recover", "backgroundColor" : "red" },
+            { "backgroundColor" : "orange", "label" : "Active cases", "data" : [ 0, 0, 95, 195, 275, 338, 2047, -8, 1310, 810, 1275, 3796, 2190, 2955, 2806, 2194, 2462, 1742, 2084, 1567, 1127, -47, 13825, 4738, 855, 817, 491, 295, -968, -1155, 127, -2198, -44, -1351, -1792, -1649, -2031, -2743, -2212, -2007, -2244, -2192, -2270, -1932, -1344, -1421, -1721, -1239, -1254, -1400, -1186, -1236, -1416, -1334, -864, -872, -934, -763, -703, -570, -492 ] },
+            { "backgroundColor" : "green", "label" : "Recovered", "data" : [ 0, 0, 3, 1, 10, 3, 35, 8, 2, 51, 27, 127, 91, 136, 111, 184, 298, 324, 356, 427, 417, 47, 773, 1315, 849, 1016, 1223, 1266, 1209, 1451, 93, 3418, 44, 1405, 2223, 1998, 2414, 3020, 2590, 2543, 2398, 2274, 2349, 2035, 1441, 1467, 1735, 1253, 1255, 1391, 1184, 1235, 1407, 1328, 854, 861, 924, 755, 700, 564, 487 ] },
+            { "backgroundColor" : "lightblue", "data" : [ 0, 0, 105, 212, 297, 365, 2131, 0, 1349, 903, 1347, 4024, 2345, 3156, 2987, 2447, 2841, 2147, 2531, 2097, 1638, 0, 14840, 6200, 1843, 1933, 1807, 1693, 349, 411, 220, 1422, 0, 203, 499, 401, 409, 318, 423, 570, 196, 114, 115, 134, 126, 74, 41, 36, 17, 13, 8, 5, 4, 4, 4, 1, 1, 0, 0, 0, 0 ], "label" : "Confirmed" }
         ]
     },
     "options": {
@@ -186,7 +197,7 @@ function log_scale(input, n) {
 <div id="block7">
     <a name="speed"></a>
     <h2>Daily Speed</h2>
-    <p>This graph shows the speed of growth (in %) over time in Hubei. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
+    <p>This graph shows the speed of growth (in %) over time in China/Hubei. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
     <canvas id="Chart7"></canvas>
     <p class="left">
         <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
@@ -202,12 +213,12 @@ function log_scale(input, n) {
         chart[7] = new Chart(ctx7, {
     "type": "line",
     "data": {
-        "labels": [ "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21" ],
+        "labels": [ "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22" ],
         "datasets": [
-            { "data" : [ 60.043333, 66.476667, 68.403333, 62.35, 42.043333, 39.963333, 37.023333, 40.74, 39.166667, 33.203333, 27.266667, 21.013333, 17.556667, 14.576667, 12.216667, 9.816667, 12.016667, 15.356667, 18.606667, 19.386667, 14.91, 9.843333, 4.946667, 3.3, 2.373333, 1.703333, 1.28, 1.116667, 1.06, 0.883333, 0.816667, 0.726667, 0.8, 0.83, 0.806667, 0.76, 0.636667, 0.476667, 0.34, 0.25, 0.22, 0.183333, 0.136667, 0.09, 0.056667, 0.036667, 0.023333, 0.016667, 0.013333, 0.01, 0.006667, 0.003333, 0, 0 ], "lineTension" : 0, "label" : "Confirmed total", "borderColor" : "lightblue", "fill" : false },
-            { "lineTension" : 0, "data" : [ 59.433333, 55.83, 50.22, 41.666667, 33.216667, 33.79, 33.713333, 34.89, 31.81, 26.336667, 22.076667, 18.636667, 17.32, 16.503333, 15.703333, 13.83, 13.41, 13.273333, 14.206667, 14.903333, 13.633333, 12.003333, 9.466667, 8.58, 7.47, 7.01, 5.97, 5.616667, 5.403333, 4.94, 4.56, 3.356667, 2.82, 2.106667, 1.966667, 1.893333, 1.86, 1.75, 1.63, 1.533333, 1.416667, 1.32, 1.19, 1.076667, 0.933333, 0.783333, 0.646667, 0.53, 0.486667, 0.476667, 0.503333, 0.506667, 0.45, 0.38 ], "label" : "Failed to recover", "fill" : false, "borderColor" : "red" },
-            { "fill" : false, "borderColor" : "orange", "label" : "Active cases", "data" : [ 34.01, 45.626667, 89.973333, 76.893333, 76.75, 70.93, 26.536667, 45.383333, 39.263333, 41.206667, 39.396667, 24.586667, 21.626667, 16.396667, 13.223333, 11.203333, 8.553333, 5.99, 18.76, 20.46, 19.733333, 20.343333, 5.11, 1.67, 0.443333, -0.89, -1.13, -2.833333, -2.226667, -2.42, -3.833333, -3.596667, -5.193333, -6.533333, -7.21, -7.873333, -8.54, -8.636667, -9.32, -9.873333, -9.45, -9.136667, -9.153333, -8.786667, -9.206667, -9.86, -9.69, -10.43, -11.723333, -12.756667, -12.986667, -13.166667, -13.166667, -12.666667 ], "lineTension" : 0 },
-            { "borderColor" : "green", "fill" : false, "label" : "Recovered", "lineTension" : 0, "data" : [ 24.55, 32.196667, 34.113333, 37.55, 32.463333, 40.41, 46.886667, 52.906667, 53.913333, 46.11, 42.613333, 39.186667, 39.49, 38.65, 35.956667, 29.946667, 25.74, 25.36, 26.996667, 30.183333, 30.763333, 28.466667, 24.716667, 21.856667, 18.75, 17.806667, 15.63, 14.656667, 14.303333, 13.113333, 13.973333, 14.07, 15.266667, 15.043333, 14.03, 12.663333, 11.186667, 9.78, 8.576667, 7.39, 6.313333, 5.406667, 4.77, 4.343333, 4.006667, 3.733333, 3.53, 3.45, 3.313333, 3.073333, 2.763333, 2.413333, 2.123333, 1.89 ] }
+            { "fill" : false, "borderColor" : "lightblue", "lineTension" : 0, "data" : [ 60.043333, 66.476667, 68.403333, 62.35, 42.043333, 39.963333, 37.023333, 40.74, 39.166667, 33.203333, 27.266667, 21.013333, 17.556667, 14.576667, 12.216667, 9.816667, 12.016667, 15.356667, 18.606667, 19.386667, 14.91, 9.843333, 4.946667, 3.3, 2.373333, 1.703333, 1.28, 1.116667, 1.06, 0.883333, 0.816667, 0.726667, 0.8, 0.83, 0.806667, 0.76, 0.636667, 0.476667, 0.34, 0.25, 0.22, 0.183333, 0.136667, 0.09, 0.056667, 0.036667, 0.023333, 0.016667, 0.013333, 0.01, 0.006667, 0.003333, 0, 0, 0 ], "label" : "Confirmed total" },
+            { "fill" : false, "borderColor" : "red", "data" : [ 59.433333, 55.83, 50.22, 41.666667, 33.216667, 33.79, 33.713333, 34.89, 31.81, 26.336667, 22.076667, 18.636667, 17.32, 16.503333, 15.703333, 13.83, 13.41, 13.273333, 14.206667, 14.903333, 13.633333, 12.003333, 9.466667, 8.58, 7.47, 7.01, 5.97, 5.616667, 5.403333, 4.94, 4.56, 3.356667, 2.82, 2.106667, 1.966667, 1.893333, 1.86, 1.75, 1.63, 1.533333, 1.416667, 1.32, 1.19, 1.076667, 0.933333, 0.783333, 0.646667, 0.53, 0.486667, 0.476667, 0.503333, 0.506667, 0.45, 0.38, 0.296667 ], "label" : "Failed to recover", "lineTension" : 0 },
+            { "borderColor" : "orange", "fill" : false, "lineTension" : 0, "label" : "Active cases", "data" : [ 34.01, 45.626667, 89.973333, 76.893333, 76.75, 70.93, 26.536667, 45.383333, 39.263333, 41.206667, 39.396667, 24.586667, 21.626667, 16.396667, 13.223333, 11.203333, 8.553333, 5.99, 18.76, 20.46, 19.733333, 20.343333, 5.11, 1.67, 0.443333, -0.89, -1.13, -2.833333, -2.226667, -2.42, -3.833333, -3.596667, -5.193333, -6.533333, -7.21, -7.873333, -8.54, -8.636667, -9.32, -9.873333, -9.45, -9.136667, -9.153333, -8.786667, -9.206667, -9.86, -9.69, -10.43, -11.723333, -12.756667, -12.986667, -13.166667, -13.166667, -12.666667, -13.253333 ] },
+            { "label" : "Recovered", "data" : [ 24.55, 32.196667, 34.113333, 37.55, 32.463333, 40.41, 46.886667, 52.906667, 53.913333, 46.11, 42.613333, 39.186667, 39.49, 38.65, 35.956667, 29.946667, 25.74, 25.36, 26.996667, 30.183333, 30.763333, 28.466667, 24.716667, 21.856667, 18.75, 17.806667, 15.63, 14.656667, 14.303333, 13.113333, 13.973333, 14.07, 15.266667, 15.043333, 14.03, 12.663333, 11.186667, 9.78, 8.576667, 7.39, 6.313333, 5.406667, 4.77, 4.343333, 4.006667, 3.733333, 3.53, 3.45, 3.313333, 3.073333, 2.763333, 2.413333, 2.123333, 1.89, 1.69 ], "lineTension" : 0, "borderColor" : "green", "fill" : false }
         ]
     },
     "options": {
@@ -252,7 +263,7 @@ function log_scale(input, n) {
     <p><a href="/countries">More statistics on countries</a></p>
     <p><a href="/vs-china">Countries vs China</a></p>
     <div id="countries-list">
-        <p><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ao">Angola</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p><a href="/am">Armenia</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p><a href="/az">Azerbaijan</a></p><p><a href="/bs">Bahamas</a></p><p><a href="/bh">Bahrain</a></p><p><a href="/bd">Bangladesh</a></p><p><a href="/bb">Barbados</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bj">Benin</a></p><p><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/br">Brazil</a></p><p><a href="/bn">Brunei Darussalam</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/cv">Cabo Verde</a></p><p><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/cf">Central African Republic</a></p><p><a href="/td">Chad</a></p><p><a href="/cl">Chile</a></p><p class="current"><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cg">Congo</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p><a href="/cy">Cyprus</a></p><p><a href="/cz">Czechia</a></p><p><a href="/dk">Denmark</a></p><p><a href="/dj">Djibouti</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/sv">El Salvador</a></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/er">Eritrea</a></p><p><a href="/ee">Estonia</a></p><p><a href="/sz">Eswatini</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fj">Fiji</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/ga">Gabon</a></p><p><a href="/gm">Gambia</a></p><p><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gh">Ghana</a></p><p><a href="/gr">Greece</a></p><p><a href="/gt">Guatemala</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gy">Guyana</a></p><p><a href="/ht">Haiti</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p><a href="/in">India</a></p><p><a href="/id">Indonesia</a></p><p><a href="/ir">Iran</a></p><p><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p><a href="/jp">Japan</a></p><p><a href="/jo">Jordan</a></p><p><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/xk">Kosovo</a></p><p><a href="/kw">Kuwait</a></p><p><a href="/kg">Kyrgyzstan</a></p><p><a href="/lv">Latvia</a></p><p><a href="/lb">Lebanon</a></p><p><a href="/lr">Liberia</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/mg">Madagascar</a></p><p><a href="/my">Malaysia</a></p><p><a href="/mv">Maldives</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mr">Mauritania</a></p><p><a href="/mu">Mauritius</a></p><p><a href="/mx">Mexico</a></p><p><a href="/md">Moldova</a></p><p><a href="/mc">Monaco</a></p><p><a href="/mn">Mongolia</a></p><p><a href="/me">Montenegro</a></p><p><a href="/ma">Morocco</a></p><p><a href="/na">Namibia</a></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ni">Nicaragua</a></p><p><a href="/ne">Niger</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/mk">North Macedonia</a></p><p><a href="/no">Norway</a></p><p><a href="/om">Oman</a></p><p><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/pg">Papua New Guinea</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p><a href="/qa">Qatar</a></p><p><a href="/ro">Romania</a></p><p><a href="/ru">Russian Federation</a></p><p><a href="/rw">Rwanda</a></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a></p><p><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sc">Seychelles</a></p><p><a href="/sg">Singapore</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a></p><p><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p><a href="/lk">Sri Lanka</a></p><p><a href="/sd">Sudan</a></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p><a href="/tw">Taiwan</a></p><p><a href="/tz">Tanzania</a></p><p><a href="/th">Thailand</a></p><p><a href="/tg">Togo</a></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a></p><p><a href="/tr">Turkey</a></p><p><a href="/ug">Uganda</a></p><p><a href="/ua">Ukraine</a></p><p><a href="/ae">United Arab Emirates</a></p><p><a href="/gb">United Kingdom</a></p><p><a href="/us">United States of America</a></p><p><a href="/uy">Uruguay</a></p><p><a href="/uz">Uzbekistan</a></p><p><a href="/ve">Venezuela</a></p><p><a href="/vn">Viet Nam</a></p><p><a href="/zm">Zambia</a></p><p><a href="/zw">Zimbabwe</a></p>
+        <p><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ao">Angola</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p><a href="/am">Armenia</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p><a href="/az">Azerbaijan</a></p><p><a href="/bs">Bahamas</a></p><p><a href="/bh">Bahrain</a></p><p><a href="/bd">Bangladesh</a></p><p><a href="/bb">Barbados</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bj">Benin</a></p><p><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/br">Brazil</a></p><p><a href="/bn">Brunei Darussalam</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/cv">Cabo Verde</a></p><p><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/cf">Central African Republic</a></p><p><a href="/td">Chad</a></p><p><a href="/cl">Chile</a></p><p class="current"><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cg">Congo</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p><a href="/cy">Cyprus</a></p><p><a href="/cz">Czechia</a></p><p><a href="/dk">Denmark</a></p><p><a href="/dj">Djibouti</a></p><p><a href="/dm">Dominica</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/sv">El Salvador</a></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/er">Eritrea</a></p><p><a href="/ee">Estonia</a></p><p><a href="/sz">Eswatini</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fj">Fiji</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/ga">Gabon</a></p><p><a href="/gm">Gambia</a></p><p><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gh">Ghana</a></p><p><a href="/gr">Greece</a></p><p><a href="/gd">Grenada</a></p><p><a href="/gt">Guatemala</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gy">Guyana</a></p><p><a href="/ht">Haiti</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p><a href="/in">India</a></p><p><a href="/id">Indonesia</a></p><p><a href="/ir">Iran</a></p><p><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p><a href="/jp">Japan</a></p><p><a href="/jo">Jordan</a></p><p><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/xk">Kosovo</a></p><p><a href="/kw">Kuwait</a></p><p><a href="/kg">Kyrgyzstan</a></p><p><a href="/lv">Latvia</a></p><p><a href="/lb">Lebanon</a></p><p><a href="/lr">Liberia</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/mg">Madagascar</a></p><p><a href="/my">Malaysia</a></p><p><a href="/mv">Maldives</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mr">Mauritania</a></p><p><a href="/mu">Mauritius</a></p><p><a href="/mx">Mexico</a></p><p><a href="/md">Moldova</a></p><p><a href="/mc">Monaco</a></p><p><a href="/mn">Mongolia</a></p><p><a href="/me">Montenegro</a></p><p><a href="/ma">Morocco</a></p><p><a href="/mz">Mozambique</a></p><p><a href="/na">Namibia</a></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ni">Nicaragua</a></p><p><a href="/ne">Niger</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/mk">North Macedonia</a></p><p><a href="/no">Norway</a></p><p><a href="/om">Oman</a></p><p><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/pg">Papua New Guinea</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p><a href="/qa">Qatar</a></p><p><a href="/ro">Romania</a></p><p><a href="/ru">Russian Federation</a></p><p><a href="/rw">Rwanda</a></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a></p><p><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sc">Seychelles</a></p><p><a href="/sg">Singapore</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a></p><p><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p><a href="/lk">Sri Lanka</a></p><p><a href="/sd">Sudan</a></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p><a href="/sy">Syrian Arab Republic</a></p><p><a href="/tw">Taiwan</a></p><p><a href="/tz">Tanzania</a></p><p><a href="/th">Thailand</a></p><p><a href="/tl">Timor-Leste</a></p><p><a href="/tg">Togo</a></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a></p><p><a href="/tr">Turkey</a></p><p><a href="/ug">Uganda</a></p><p><a href="/ua">Ukraine</a></p><p><a href="/ae">United Arab Emirates</a></p><p><a href="/gb">United Kingdom</a></p><p><a href="/us">United States of America</a></p><p><a href="/uy">Uruguay</a></p><p><a href="/uz">Uzbekistan</a></p><p><a href="/ve">Venezuela</a></p><p><a href="/vn">Viet Nam</a></p><p><a href="/zm">Zambia</a></p><p><a href="/zw">Zimbabwe</a></p>
     </div>
 </div>
 
@@ -260,9 +271,16 @@ function log_scale(input, n) {
 
 
     <div id="about">
+        <div class="likely" style="min-height: 50px">
+            <div class="twitter">Tweet</div>
+            <div class="facebook">Share</div>
+            <div class="linkedin">Link</div>
+            <div class="telegram">Send</div>
+            <div class="whatsapp">Send</div>
+        </div>
         <p>Based on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
-        <p>This website presents the very same data but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
-        <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Twitter: <a href="https://twitter.com/andrewshitov">@andrewshitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
+        <p>This website presents the very same data as the JHU’s <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">original dashboard</a> but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
+        <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Twitter: <a href="https://twitter.com/andrewshitov">@andrewshitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>. Contact <a href="mailto:andy@shitov.ru">by e-mail</a>.</p>
     </div>
 </body>
 </html>
