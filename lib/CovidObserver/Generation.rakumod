@@ -152,6 +152,11 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
     $proper-country-name = "the $country-name" if $cc ~~ /[US|GB|NL|DO|CZ]$/;
 
     my $per-region-link = per-region($cc);
+    if $cc eq 'NL' {
+        $per-region-link ~= q:to/LINKS/;
+            <p>Note: The numbers for <a href="/aw">Aruba</a>, <a href="/cw">Curaçao</a>, and <a href="/sx">Sint Maarten</a> are not included in the statistics for the Netherlands.</p>
+            LINKS
+    }
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus in {$proper-country-name}{$without-str}</h1>

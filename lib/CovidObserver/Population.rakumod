@@ -35,6 +35,7 @@ sub parse-population() is export {
         $country = 'Tanzania' if $country ~~ /Tanzania/;
         $country = 'Moldova' if $country ~~ /Moldova/;
         $country = 'South Korea' if $country ~~ /Korea/;
+        $country = 'Sint Maarten' if $country ~~ /'Sint Maarten'/;
 
         %countries{$cc} = $country;
         %population{$cc} = +$value;
@@ -106,7 +107,10 @@ sub country2cc($country is copy, :$silent = False) is export {
         'Russia' => 'RU',
         'Cabo Verde' => 'CV',
         'Sierra Leone' => 'SL',
-        'Syrian Arab Republic' => 'SY';
+        'Syrian Arab Republic' => 'SY',
+        'Curaçao' => 'CW',
+        'Curacao' => 'CW',
+        'Sint Maarten' => 'SX';
 
     $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
     $country = 'South Korea' if $country eq 'Republic of Korea';
@@ -162,7 +166,9 @@ sub cc2country($cc) is export {
         'MD' => 'Moldova',
         'KR' => 'South Korea',
         'CV' => 'Cabo Verde',
-        'SL' => 'Sierra Leone';
+        'SL' => 'Sierra Leone',
+        'CW' => 'Curaçao',
+        'SX' => 'Sint Maarten';
 
     given $cc {
         when %force{$cc}:exists {$country = %force{$cc}}
