@@ -50,6 +50,10 @@ sub extract-covid-data($data) is export {
     while my @row = $csv.getline($fh) {
         my $country = @row[1] || '';
 
+        if $country eq 'Netherlands' {
+            $country = @row[0] || '';
+        }
+
         my $cc = country2cc($country);
         next unless $cc;
 
