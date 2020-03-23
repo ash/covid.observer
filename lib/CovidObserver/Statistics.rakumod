@@ -545,7 +545,15 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
         delta-confirmed => @delta-confirmed[*-1],
         delta-failed => @delta-failed[*-1],
         delta-recovered => @delta-recovered[*-1],
-        delta-active => @delta-active[*-1];
+        delta-active => @delta-active[*-1],
+
+        table => {
+            dates     => @dates,
+            confirmed => @confirmed,
+            failed    => @failed,
+            recovered => @recovered,
+            active    => @active,
+        };
 
     return %return;
 }

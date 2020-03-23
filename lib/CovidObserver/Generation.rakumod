@@ -16,6 +16,8 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
 
     my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$exclude);
 
+    my $daily-table = daily-table($chart2data, $world-population / 1_000_000);
+
     my $country-list = country-list(%countries, :$exclude);
     my $continent-list = continent-list();
 
@@ -115,6 +117,12 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
+        <div id="block11">
+            <a name="table"></a>
+            <h1>Raw Daily Numbers</h1>
+            $daily-table
+        </div>
+
         $continent-list
         $country-list
 
@@ -143,6 +151,8 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
     if $exclude {
         $population -= %countries{$exclude}<population>;
     }
+
+    my $daily-table = daily-table($chart2data, $population);
 
     my $population-str = $population <= 1
         ?? sprintf('%i thousand', (1000 * $population).round)
@@ -249,6 +259,12 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
+        <div id="block11">
+            <a name="table"></a>
+            <h1>Raw Daily Numbers</h1>
+            $daily-table
+        </div>
+
         $continent-list
         $country-list
 
@@ -333,6 +349,8 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
     my %chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$cont);
 
     my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$cont);
+
+    my $daily-table = daily-table($chart2data, %chart3<population>);
 
     my $country-list = country-list(%countries, :$cont);
     my $continent-list = continent-list($cont);
@@ -430,6 +448,12 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             </script>
             <p>Note 1. In calculations, the 3-day moving average is used.</p>
             <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+        </div>
+
+        <div id="block11">
+            <a name="table"></a>
+            <h1>Raw Daily Numbers</h1>
+            $daily-table
         </div>
 
         $continent-list

@@ -42,7 +42,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=8">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=9">
             <style>
                 $style
             </style>
@@ -58,6 +58,8 @@ sub html-template($path, $title, $content) is export {
                 <a href="/">Home</a>
                 |
                 New:
+                <a href="{$anchor-prefix}#table">Table data</a>
+                |
                 <a href="/vs-age">Cases vs life expectancy</a>
                 |
                 <a href="{$anchor-prefix}#raw">Raw numbers</a>
@@ -293,4 +295,61 @@ sub per-region($cc) is export {
     my $link = %links{$cc}<link>;
     my $title = %links{$cc}<title>;
     return qq{<p><a href="$link"$target>} ~ $title ~ '</a></p>';
+}
+
+sub daily-table($chartdata, $population) is export {
+    my $html = '<table><thead><tr><th>Date</th><th>Confirmed<br/>cases</th><th>Recovered<br/>cases</th><th>Failed<br/>cases</th><th>Active<br/>cases</th><th>Recovery<br/>rate, %</th><th>Mortality<br/>rate, %</th><th>Affected<br/>population, %</th></tr></thead><tbody>';
+
+    my $dates     = $chartdata<table><dates>;
+    my $confirmed = $chartdata<table><confirmed>;
+    my $failed    = $chartdata<table><failed>;
+    my $recovered = $chartdata<table><recovered>;
+    my $active    = $chartdata<table><active>;
+
+    for +$chartdata<table><dates> -1 ... 0 -> $index  {
+        last unless $confirmed[$index];
+
+        $html ~= qq:to/TR/;
+            <tr>
+                <td>{
+                    my $date = fmtdate($dates[$index]);
+                    $date ~~ s/^(\w\w\w)\S+/$0/;
+                    $date ~~ s/', '\d\d\d\d$//;
+                    $date
+                }</td>
+                <td>{fmtnum($confirmed[$index])}</td>
+                <td>{fmtnum($recovered[$index])}</td>
+                <td>{fmtnum($failed[$index])}</td>
+                <td>{fmtnum($active[$index])}</td>
+                <td>{
+                    if $confirmed[$index] {
+                        sprintf('%0.1f&thinsp;%%', 100 * $recovered[$index] / $confirmed[$index])
+                    }
+                    else {
+                        ''
+                    }
+                }</td>
+                <td>{
+                    if $confirmed[$index] {
+                        sprintf('%0.1f&thinsp;%%', 100 * $failed[$index] / $confirmed[$index])
+                    }
+                    else {
+                        ''
+                    }
+                }</td>
+                <td>{
+                    my $percent = '%.2g'.sprintf(100 * $confirmed[$index] / (1_000_000 * $population));
+                    if $percent ~~ /e/ {
+                        '&lt;&thinsp;0.001&thinsp;%'
+                    }
+                    else {
+                        $percent ~ '&thinsp;%'
+                    }
+                }</td>
+            </tr>
+            TR
+    }
+    $html ~= '</tbody></table>';
+
+    return $html;
 }
