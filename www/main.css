@@ -34,7 +34,7 @@ body, html {
     padding-right: 2%;
 }
 #block7 {
-    padding-bottom: 10%;
+    padding-bottom: 5%;
     margin-bottom: 5%;
     padding-left: 2%;
     padding-right: 2%;
@@ -159,6 +159,35 @@ p.left label {
 a[target="_blank"]::after {
     content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
     margin: 0 3px 0 5px;
+}
+
+#block11 {
+    text-align: center;
+    padding-left: 2%;
+    padding-right: 2%;
+    margin-bottom: 10%;
+}
+#block11 table {
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+    position: relative;
+}
+#block11 table tbody tr:hover {
+    background: #f5f5ea;
+}
+#block11 table td {
+    text-align: right;
+    padding: 0.3em 1em;
+}
+#block11 table th {
+    text-align: right;
+    padding: 0.5em 1em;
+    border-bottom: 1px solid #333333;
+    position: sticky;
+    top: 0;
+    background: #f3f3f3;
+    vertical-align: top;
 }
 
 @media screen and (max-width: 850px) {
