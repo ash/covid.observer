@@ -103,22 +103,19 @@ multi sub MAIN('population') {
 #| Fetch the latest COVID-19 data from JHU and rebuild the database
 multi sub MAIN('fetch') {
     my %stats = read-covid-data();
-    
+
     say "Updating database...";
 
     dbh.execute('delete from per_day');
     dbh.execute('delete from totals');
     dbh.execute('delete from daily_totals');
 
-    my %confirmed = %stats<confirmed>;
-    my %failed = %stats<failed>;
-    my %recovered = %stats<recovered>;
-
-    for %confirmed<per-day>.keys -> $cc {
+    for %stats<confirmed><per-day>.keys -> $cc {
         my @values;
-        for %confirmed<per-day>{$cc}.kv -> $date, $confirmed {
-            my $failed = %failed<per-day>{$cc}{$date};
-            my $recovered = %recovered<per-day>{$cc}{$date};
+        for %stats<confirmed><per-day>{$cc}.keys -> $date {
+            my $confirmed = %stats<confirmed><per-day>{$cc}{$date} || 0;
+            my $failed = %stats<failed><per-day>{$cc}{$date} || 0;
+            my $recovered = %stats<recovered><per-day>{$cc}{$date} || 0;
 
             @values.push("('$cc','{date2yyyymmdd($date)}',$confirmed,$failed,$recovered)");  # Safe here
         }
@@ -129,13 +126,14 @@ multi sub MAIN('fetch') {
         $sth.finish();
 
         $sth = dbh.prepare('insert into totals (cc, confirmed, failed, recovered) values (?, ?, ?, ?)');
-        $sth.execute($cc, %confirmed<total>{$cc}, %failed<total>{$cc}, %recovered<total>{$cc});
+        $sth.execute($cc, %stats<confirmed><total>{$cc}, %stats<failed><total>{$cc}, %stats<recovered><total>{$cc});
         $sth.finish();
     }
 
-    for %confirmed<daily-total>.kv -> $date, $confirmed {
-        my $failed = %failed<daily-total>{$date};
-        my $recovered = %recovered<daily-total>{$date};
+    for %stats<confirmed><daily-total>.keys -> $date {
+        my $confirmed = %stats<confirmed><daily-total>{$date} || 0;
+        my $failed = %stats<failed><daily-total>{$date} || 0;
+        my $recovered = %stats<recovered><daily-total>{$date} || 0;
 
         my $sth = dbh.prepare('insert into daily_totals (date, confirmed, failed, recovered) values (?, ?, ?, ?)');
         $sth.execute(date2yyyymmdd($date), $confirmed, $failed, $recovered);

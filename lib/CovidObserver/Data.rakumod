@@ -33,7 +33,8 @@ sub read-covid-data() is export {
     my %dates;
     my %cc;
 
-    for dir('COVID-19/csse_covid_19_data/csse_covid_19_daily_reports', test => /'.csv'$/) -> $path {
+    my %raw;
+    for dir('COVID-19/csse_covid_19_data/csse_covid_19_daily_reports', test => /'.csv'$/).sort(~*.path) -> $path {
         $path.path ~~ / (\d\d) '-' (\d\d) '-' \d\d(\d\d) '.csv' /;
         my $month = ~$/[0];
         my $day   = ~$/[1];
@@ -49,57 +50,108 @@ sub read-covid-data() is export {
 
         while my @row = $csv.getline($fh) {
             my ($country, $confirmed, $failed, $recovered);
+            my $region = '';
 
             if @headers[0] ne 'FIPS' {
                 $country = @row[1] || '';
-                if $country eq 'Netherlands' {
-                    $country = @row[0] || '';
-                }
+                $region  = @row[0] || '';
 
                 ($confirmed, $failed, $recovered) = @row[3..5];
             }
             else {
                 $country = @row[3] || '';
-                if $country eq 'Netherlands' {
-                    $country = @row[2] || '';
-                }
+                $region  = @row[2] || '';
 
                 ($confirmed, $failed, $recovered) = @row[7..9];
+            }
+
+            if $country eq 'Netherlands' && $region {
+                $country = $region;
             }
 
             my $cc = country2cc($country);
             next unless $cc;
 
+            my $region-cc = '';
+
+            if $cc eq 'US' && 
+               $region && $region !~~ /Princess/ && $region !~~ /','/
+               && $region ne 'US' { # What is 'US/US'?
+
+                $region-cc = state2code($region);
+                unless $region-cc {
+                    say "WARNING: State code not found for US/$region";
+                    next;
+                }
+                $region-cc = 'US/' ~ $region-cc;
+            }
+            elsif $cc eq 'CN' {
+                if $region {
+                    $region-cc = 'CN/' ~ chinese-region-to-code($region);
+                }
+            }
+            
+            next if $cc eq 'US' && $region-cc eq '';
+
             %cc{$cc} = 1;
+            %cc{$region-cc} = 1 if $region-cc;
 
-            %stats<confirmed><per-day>{$cc}{$date} += $confirmed;
-            %stats<failed><per-day>{$cc}{$date}    += $failed;
-            %stats<recovered><per-day>{$cc}{$date} += $recovered;
+            # += as US divides further per state AND further per city
+            %raw{$cc}{$region-cc}{$date}<confirmed> += $confirmed // 0;
+            %raw{$cc}{$region-cc}{$date}<failed>    += $failed // 0;
+            %raw{$cc}{$region-cc}{$date}<recovered> += $recovered // 0;
+        }
+    }
 
-            %stats<confirmed><total>{$cc} += $confirmed;
-            %stats<failed><total>{$cc}    += $failed;
-            %stats<recovered><total>{$cc} += $recovered;
+    # Count per-day data
+    for %raw.keys -> $cc { # only countries
+        for %raw{$cc}.keys -> $region-cc { # regions or '' for countries without them
+            for %raw{$cc}{$region-cc}.keys -> $date {
+                my $confirmed = %raw{$cc}{$region-cc}{$date}<confirmed>;
+                my $failed    = %raw{$cc}{$region-cc}{$date}<failed>;
+                my $recovered = %raw{$cc}{$region-cc}{$date}<recovered>;
 
-            %stats<confirmed><daily-total>{$date} += $confirmed;
-            %stats<failed><daily-total>{$date}    += $failed;
-            %stats<recovered><daily-total>{$date} += $recovered;
+                if $region-cc {
+                    %stats<confirmed><per-day>{$region-cc}{$date} = $confirmed;
+                    %stats<failed><per-day>{$region-cc}{$date}    = $failed;
+                    %stats<recovered><per-day>{$region-cc}{$date} = $recovered;
+                }
+
+                # += if there's a region, otherwise bare =
+                %stats<confirmed><per-day>{$cc}{$date} += $confirmed;
+                %stats<failed><per-day>{$cc}{$date}    += $failed;
+                %stats<recovered><per-day>{$cc}{$date} += $recovered;
+            }
         }
     }
 
     # Fill zeroes for missing dates/countries
     for %dates.keys -> $date {
-        for %cc.keys -> $cc {
+        for %cc.keys -> $cc { # including regions
             %stats<confirmed><per-day>{$cc}{$date} //= 0;
             %stats<failed><per-day>{$cc}{$date}    //= 0;
             %stats<recovered><per-day>{$cc}{$date} //= 0;
+        }
+    }
 
-            %stats<confirmed><total>{$cc} //= 0;
-            %stats<failed><total>{$cc}    //= 0;
-            %stats<recovered><total>{$cc} //= 0;
+    # Count totals
+    for %cc.keys -> $cc { # including regions    
+        # Take the last day, basically
+        my $date = %dates.keys.sort[*-1];
+        %stats<confirmed><total>{$cc} = %stats<confirmed><per-day>{$cc}{$date};
+        %stats<failed><total>{$cc}    = %stats<failed><per-day>{$cc}{$date};
+        %stats<recovered><total>{$cc} = %stats<recovered><per-day>{$cc}{$date};
+    }
 
-            %stats<confirmed><daily-total>{$date} //= 0;
-            %stats<failed><daily-total>{$date}    //= 0;
-            %stats<recovered><daily-total>{$date} //= 0;
+    # Count totals per day
+    for %dates.keys.sort -> $date {
+        for %cc.keys -> $cc { 
+            # only countries
+            next if $cc ~~ /'/'/;
+
+            %stats<confirmed><daily-total>{$date} += %stats<confirmed><per-day>{$cc}{$date};
+            %stats<failed><daily-total>{$date}    += %stats<failed><per-day>{$cc}{$date};
+            %stats<recovered><daily-total>{$date} += %stats<recovered><per-day>{$cc}{$date};
         }
     }
 
