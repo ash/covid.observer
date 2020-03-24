@@ -42,7 +42,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=10">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=11">
             <style>
                 $style
             </style>
@@ -252,17 +252,19 @@ sub continent-list($cont?) is export {
 
 sub fmtdate($date) is export {
     my ($year, $month, $day) = $date.split('-');
+    $day ~~ s/^0//;
 
     my $dt = DateTime.new(:$year, :$month, :$day);
     my $ending;
     given $day {
-        when 1 {$ending = 'st'}
-        when 2 {$ending = 'nd'}
-        when 3 {$ending = 'rd'}
-        default {$ending = 'th'}
+        when 1|21 {$ending = 'st'}
+        when 2|22 {$ending = 'nd'}
+        when 3    {$ending = 'rd'}
+        default   {$ending = 'th'}
     }
 
-    return strftime("%B {$day}<sup>th</sup>, %Y", $dt);
+
+    return strftime("%B {$day}<sup>{$ending}</sup>, %Y", $dt);
 }
 
 sub fmtnum($n is copy) is export {
@@ -313,7 +315,7 @@ sub daily-table($chartdata, $population) is export {
 
         $html ~= qq:to/TR/;
             <tr>
-                <td>{
+                <td class="date">{
                     my $date = fmtdate($dates[$index]);
                     $date ~~ s/^(\w\w\w)\S+/$0/;
                     $date ~~ s/', '\d\d\d\d$//;

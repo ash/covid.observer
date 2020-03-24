@@ -180,6 +180,10 @@ a[target="_blank"]::after {
     text-align: right;
     padding: 0.3em 1em;
 }
+#block11 table td.date {
+    text-align: left;
+    padding: 0.3em 1em;
+}
 #block11 table th {
     text-align: right;
     padding: 0.5em 1em;
