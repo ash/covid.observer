@@ -211,7 +211,13 @@ a[target="_blank"]::after {
         position: relative;
         display: block;
         margin-top: 0.5em;
-    }    
+    }
+    .desktop {
+        display: none;
+    }
+    #block11 {
+        display: none;
+    }
 }
 
 
