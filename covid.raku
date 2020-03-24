@@ -96,12 +96,13 @@ multi sub MAIN('population') {
 
         my $sth = dbh.prepare('insert into countries (cc, continent, country, population, life_expectancy) values (?, ?, ?, ?, ?)');
         $sth.execute($cc, $continent, $country, $n, $age);
+        $sth.finish();
     }
 }
 
 #| Fetch the latest COVID-19 data from JHU and rebuild the database
 multi sub MAIN('fetch') {
-    my %stats = fetch-covid-data(%covid-sources);
+    my %stats = read-covid-data();
     
     say "Updating database...";
 
@@ -114,16 +115,22 @@ multi sub MAIN('fetch') {
     my %recovered = %stats<recovered>;
 
     for %confirmed<per-day>.keys -> $cc {
+        my @values;
         for %confirmed<per-day>{$cc}.kv -> $date, $confirmed {
             my $failed = %failed<per-day>{$cc}{$date};
             my $recovered = %recovered<per-day>{$cc}{$date};
 
-            my $sth = dbh.prepare('insert into per_day (cc, date, confirmed, failed, recovered) values (?, ?, ?, ?, ?)');
-            $sth.execute($cc, date2yyyymmdd($date), $confirmed, $failed, $recovered);
+            @values.push("('$cc','{date2yyyymmdd($date)}',$confirmed,$failed,$recovered)");  # Safe here
         }
 
-        my $sth = dbh.prepare('insert into totals (cc, confirmed, failed, recovered) values (?, ?, ?, ?)');
+        my $values-sql = join ',', @values;
+        my $sth = dbh.prepare("insert into per_day (cc, date, confirmed, failed, recovered) values $values-sql");
+        $sth.execute();
+        $sth.finish();
+
+        $sth = dbh.prepare('insert into totals (cc, confirmed, failed, recovered) values (?, ?, ?, ?)');
         $sth.execute($cc, %confirmed<total>{$cc}, %failed<total>{$cc}, %recovered<total>{$cc});
+        $sth.finish();
     }
 
     for %confirmed<daily-total>.kv -> $date, $confirmed {
@@ -132,6 +139,7 @@ multi sub MAIN('fetch') {
 
         my $sth = dbh.prepare('insert into daily_totals (date, confirmed, failed, recovered) values (?, ?, ?, ?)');
         $sth.execute(date2yyyymmdd($date), $confirmed, $failed, $recovered);
+        $sth.finish();
     }
 }
 

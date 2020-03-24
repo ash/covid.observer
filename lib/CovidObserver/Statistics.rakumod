@@ -32,6 +32,7 @@ sub get-countries() is export {
             age => %row<life_expectancy>;
         %countries{%row<cc>} = %data;
     }
+    $sth.finish();
 
     return %countries;
 }
@@ -44,6 +45,7 @@ sub get-known-countries() is export {
     for $sth.allrows() -> @row {
         @countries.push(@row[0]);
     }
+    $sth.finish();
 
     return @countries;    
 }
@@ -60,6 +62,7 @@ sub get-total-stats() is export {
             recovered => %row<recovered>;
         %stats{%row<cc>} = %data;
     }
+    $sth.finish();
 
     return %stats;
 }
@@ -76,6 +79,7 @@ sub get-per-day-stats() is export {
             recovered => %row<recovered>;
         %stats{%row<cc>}{%row<date>} = %data;
     }
+    $sth.finish();
 
     return %stats;
 }
@@ -92,6 +96,7 @@ sub get-daily-totals-stats() is export {
             recovered => %row<recovered>;
         %stats{%row<date>} = %data;
     }
+    $sth.finish();
 
     return %stats;
 }
@@ -183,6 +188,7 @@ sub countries-first-appeared(%countries, %per-day, %totals, %daily-totals) is ex
     for $sth.allrows(:array-of-hash) -> %row {
         %data{%row<date>}++;        
     }
+    $sth.finish();
 
     my @dates;
     my @n;
@@ -280,6 +286,7 @@ sub countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals) is
 
         %data{%row<date>}{$cc} = 1; # and here
     }
+    $sth.finish();
 
     my $html;    
     for %data.keys.sort.reverse -> $date {        

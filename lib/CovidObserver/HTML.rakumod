@@ -257,10 +257,10 @@ sub fmtdate($date) is export {
     my $dt = DateTime.new(:$year, :$month, :$day);
     my $ending;
     given $day {
-        when 1|21 {$ending = 'st'}
-        when 2|22 {$ending = 'nd'}
-        when 3    {$ending = 'rd'}
-        default   {$ending = 'th'}
+        when 1|21|31 {$ending = 'st'}
+        when 2|22    {$ending = 'nd'}
+        when 3       {$ending = 'rd'}
+        default      {$ending = 'th'}
     }
 
 

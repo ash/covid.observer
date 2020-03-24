@@ -46,7 +46,7 @@ sub parse-population() is export {
     # https://www.census.gov/data/datasets/time-series/demo/popest/2010s-state-total.html
     my @us-population = csv(in => 'data/us-population.csv');
     for @us-population -> ($state, $population) {
-        my $state-cc = 'US/' ~ state-to-code($state);
+        my $state-cc = 'US/' ~ state2code($state);
         %countries{$state-cc} = $state;
         %population{$state-cc} = +$population / 1_000_000;
     }
@@ -110,7 +110,12 @@ sub country2cc($country is copy, :$silent = False) is export {
         'Syrian Arab Republic' => 'SY',
         'Curaçao' => 'CW',
         'Curacao' => 'CW',
-        'Sint Maarten' => 'SX';
+        'Sint Maarten' => 'SX',
+        'Reunion' => 'RE',
+        'The Bahamas' => 'BS',
+        'The Gambia' => 'GM',
+        'Mainland China' => 'CN',
+        'UK' => 'GB';
 
     $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
     $country = 'South Korea' if $country eq 'Republic of Korea';
@@ -201,4 +206,10 @@ sub chinese-region-to-code($code) is export {
     }
 
     return %provinces{$code};
+}
+
+sub state2code($state) is export {
+    return 'VI' if $state eq 'United States Virgin Islands';
+
+    return state-to-code($state);
 }
