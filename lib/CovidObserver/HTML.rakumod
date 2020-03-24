@@ -302,7 +302,23 @@ sub per-region($cc) is export {
 }
 
 sub daily-table($chartdata, $population) is export {
-    my $html = '<table><thead><tr><th>Date</th><th>Confirmed<br/>cases</th><th>Recovered<br/>cases</th><th>Failed<br/>cases</th><th>Active<br/>cases</th><th>Recovery<br/>rate, %</th><th>Mortality<br/>rate, %</th><th>Affected<br/>population, %</th></tr></thead><tbody>';
+    my $html = q:to/HEADER/;
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Confirmed<br/>cases</th>
+                    <th>Daily<br/>growth, %</th>
+                    <th>Recovered<br/>cases</th>
+                    <th>Failed<br/>cases</th>
+                    <th>Active<br/>cases</th>
+                    <th>Recovery<br/>rate, %</th>
+                    <th>Mortality<br/>rate, %</th>
+                    <th>Affected<br/>population, %</th>
+                    </tr>
+                </thead>
+            <tbody>
+        HEADER
 
     my $dates     = $chartdata<table><dates>;
     my $confirmed = $chartdata<table><confirmed>;
@@ -322,6 +338,16 @@ sub daily-table($chartdata, $population) is export {
                     $date
                 }</td>
                 <td>{fmtnum($confirmed[$index])}</td>
+                <td>{
+                    if $index {
+                        my $prev = $confirmed[$index - 1];
+                        if $prev {
+                            sprintf('%.1f&thinsp;%%', 100 * ($confirmed[$index] - $prev) / $prev)
+                        }
+                        else {'—'}
+                    }
+                    else {'—'}
+                }</td>
                 <td>{fmtnum($recovered[$index])}</td>
                 <td>{fmtnum($failed[$index])}</td>
                 <td>{fmtnum($active[$index])}</td>
@@ -329,17 +355,13 @@ sub daily-table($chartdata, $population) is export {
                     if $confirmed[$index] {
                         sprintf('%0.1f&thinsp;%%', 100 * $recovered[$index] / $confirmed[$index])
                     }
-                    else {
-                        ''
-                    }
+                    else {''}
                 }</td>
                 <td>{
                     if $confirmed[$index] {
                         sprintf('%0.1f&thinsp;%%', 100 * $failed[$index] / $confirmed[$index])
                     }
-                    else {
-                        ''
-                    }
+                    else {''}
                 }</td>
                 <td>{
                     my $percent = '%.2g'.sprintf(100 * $confirmed[$index] / (1_000_000 * $population));
