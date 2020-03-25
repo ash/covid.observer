@@ -35,7 +35,25 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
                     '7.8'
                 }
             } billion of the world population{$without-str}.</p>
+            <div class="affected">
+                {
+                    if $chart2data<confirmed> {
+                        'Affected 1 of every ' ~ fmtnum(($world-population / $chart2data<confirmed>).round())
+                    }
+                    else {
+                        'Nobody affected'
+                    }
+                }
+            </div>
+            <div class="failed">
+                {
+                    if $chart2data<failed> {
+                        'Failed to recover 1 of every ' ~ fmtnum(($world-population / $chart2data<failed>).round())
+                    }
+                }
+            </div>
         </div>
+
 
         <div id="block9">
             <a name="raw"></a>
@@ -176,6 +194,23 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
             <h2>Affected Population</h2>
             <div id="percent">$chart3&thinsp;%</div>
             <p>This is the part of confirmed infection cases against the total $population-str of its population.</p>
+            <div class="affected">
+                {
+                    if $chart2data<confirmed> {
+                        'Affected 1 of every ' ~ fmtnum((1_000_000 * $population / $chart2data<confirmed>).round())
+                    }
+                    else {
+                        'Nobody affected'
+                    }
+                }
+            </div>
+            <div class="failed">
+                {
+                    if $chart2data<failed> {
+                        'Failed to recover 1 of every ' ~ fmtnum((1_000_000 * $population / $chart2data<failed>).round())
+                    }
+                }
+            </div>
         </div>
 
         <div id="block1">
@@ -350,13 +385,14 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
 
     my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$cont);
 
-    my $daily-table = daily-table($chart2data, %chart3<population>);
+    my $population = %chart3<population>;
+    my $daily-table = daily-table($chart2data, $population);
 
     my $country-list = country-list(%countries, :$cont);
     my $continent-list = continent-list($cont);
 
     my $percent-str = %chart3<percent> ~ '&thinsp;%';
-    my $population-str = %chart3<population>.round() ~ ' million';
+    my $population-str = $population.round() ~ ' million';
 
     my $continent-name = %continents{$cont};
     my $continent-url = $continent-name.lc.subst(' ', '-');
@@ -368,6 +404,23 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             <h2>Affected Population</h2>
             <div id="percent">{$percent-str}</div>
             <p>This is the part of confirmed infection cases against the total $population-str of its population.</p>
+            <div class="affected">
+                {
+                    if $chart2data<confirmed> {
+                        'Affected 1 of every ' ~ fmtnum((1_000_000 * $population / $chart2data<confirmed>).round())
+                    }
+                    else {
+                        'Nobody affected'
+                    }
+                }
+            </div>
+            <div class="failed">
+                {
+                    if $chart2data<failed> {
+                        'Failed to recover 1 of every ' ~ fmtnum((1_000_000 * $population / $chart2data<failed>).round())
+                    }
+                }
+            </div>
         </div>
 
         <div id="block1">

@@ -42,7 +42,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=11">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=12">
             <style>
                 $style
             </style>
@@ -268,6 +268,7 @@ sub fmtdate($date) is export {
 }
 
 sub fmtnum($n is copy) is export {
+    $n ~~ s/ (\d) (\d ** 9) $/$0,$1/;
     $n ~~ s/ (\d) (\d ** 6) $/$0,$1/;
     $n ~~ s/ (\d) (\d ** 3) $/$0,$1/;
 
