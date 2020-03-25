@@ -203,6 +203,126 @@ a[target="_blank"]::after {
     background: #f3f3f3;
     vertical-align: top;
 }
+#block13 div.dashboard {
+    padding-left: 2%;
+    padding-right: 2%;
+    text-align: center;
+}
+#block13 div.dashboard div {
+    float: left;
+    width: 5em;
+    height: 5em;
+    margin: 0.3em;
+    position: relative;
+}
+#block13 div.dashboard div h5 {
+    font-weight: normal;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+    font-size: 80%;
+    position: absolute;
+    bottom: 2px;
+    width: 100%;
+}
+div.clear {
+    clear: both;
+}
+#block13 p.c {
+    margin: 0;
+    padding: 0;
+    color: #333333;
+    font-size: 80%;
+}
+#block13 p.d {
+    margin: 0;
+    padding: 0;
+    color: red;
+    font-size: 80%;
+}
+.LN {
+    background-color: #f5f5f5;
+}
+.L0 {
+    background-color: #93bb2b;
+}
+.L1 {
+    background-color: #cfcc26;
+}
+.L2 {
+    background-color: #d4bf26;
+}
+.L3 {
+    background-color: #d4bf25;
+}
+.L4 {
+    background-color: #d7ab24;
+}
+.L5 {
+    background-color: #d79323;
+}
+.L6 {
+    background-color: #d77820;
+}
+.L7 {
+    background-color: #d75c20;
+}
+.L8 {
+    background-color: #d7421e;
+}
+.L9 {
+    background-color: #d72b1d;
+}
+.L10 {
+    background-color: #d71c1c;
+}
+
+#block13 div.dashboard div.L0 h5,
+#block13 div.dashboard div.L0 p.c,
+#block13 div.dashboard div.L0 p.d,
+
+#block13 div.dashboard div.L1 h5,
+#block13 div.dashboard div.L1 p.c,
+#block13 div.dashboard div.L1 p.d,
+
+#block13 div.dashboard div.L2 h5,
+#block13 div.dashboard div.L2 p.c,
+#block13 div.dashboard div.L2 p.d,
+
+#block13 div.dashboard div.L3 h5,
+#block13 div.dashboard div.L3 p.c,
+#block13 div.dashboard div.L3 p.d,
+
+#block13 div.dashboard div.L4 h5,
+#block13 div.dashboard div.L4 p.c,
+#block13 div.dashboard div.L4 p.d,
+
+#block13 div.dashboard div.L5 h5,
+#block13 div.dashboard div.L5 p.c,
+#block13 div.dashboard div.L5 p.d,
+
+#block13 div.dashboard div.L6 h5,
+#block13 div.dashboard div.L6 p.c,
+#block13 div.dashboard div.L6 p.d,
+
+#block13 div.dashboard div.L7 h5,
+#block13 div.dashboard div.L7 p.c,
+#block13 div.dashboard div.L7 p.d,
+
+#block13 div.dashboard div.L8 h5,
+#block13 div.dashboard div.L8 p.c,
+#block13 div.dashboard div.L8 p.d,
+
+#block13 div.dashboard div.L9 h5,
+#block13 div.dashboard div.L9 p.c,
+#block13 div.dashboard div.L9 p.d,
+
+#block13 div.dashboard div.L10 h5,
+#block13 div.dashboard div.L10 p.c,
+#block13 div.dashboard div.L10 p.d {
+    color: white;
+}
+
 
 @media screen and (max-width: 850px) {
     h1 {

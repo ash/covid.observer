@@ -175,6 +175,7 @@ multi sub MAIN('generate') {
     generate-continent-graph(%countries, %per-day, %totals, %daily-totals);
 
     generate-scattered-age(%countries, %per-day, %totals, %daily-totals);
+    generate-overview(%countries, %per-day, %totals, %daily-totals);
 
     geo-sanity();
 }

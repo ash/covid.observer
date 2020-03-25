@@ -42,7 +42,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=13">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=14">
             <style>
                 $style
             </style>
@@ -58,6 +58,8 @@ sub html-template($path, $title, $content) is export {
                 <a href="/">Home</a>
                 |
                 New:
+                <a href="/overview">World overview</a>
+                |
                 <span class="desktop">
                     <a href="{$anchor-prefix}#table">Table data</a>
                     |
@@ -69,7 +71,6 @@ sub html-template($path, $title, $content) is export {
                 <a href="{$anchor-prefix}#new">New daily cases</a>
             </p>
             <p>
-                New:
                 <a href="/cn#regions">China provinces</a>
                 |
                 <a href="/-cn">World without China</a>

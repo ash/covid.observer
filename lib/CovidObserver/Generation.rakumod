@@ -612,7 +612,7 @@ sub generate-scattered-age(%countries, %per-day, %totals, %daily-totals) is expo
     my $content = qq:to/HTML/;
         <h1>Coronavirus vs Life Expectancy</h1>
 
-        <div id="block3">            
+        <div id="block3">
             <p>Each point on this graph reflects a single country. The blue dots are the number of confirmed cases (in % to the total population of the country), the red ones are the fraction of people failed to recover (in % to the total population). Move the cursor over the dot to see the name of the country.</p>
             <canvas id="Chart11"></canvas>
             <script>
@@ -627,4 +627,75 @@ sub generate-scattered-age(%countries, %per-day, %totals, %daily-totals) is expo
         HTML
 
     html-template('/vs-age', 'Coronavirus vs Life Expectancy', $content);
+}
+
+sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
+    say "Generating dashboard overview...";
+
+    my $max = 0;
+    my %delta;
+
+    my @recent-dates = %daily-totals.keys.sort[*-2, *-1];
+
+    for %per-day.keys -> $cc {
+        my $delta = %per-day{$cc}{@recent-dates[1]}<confirmed> - %per-day{$cc}{@recent-dates[0]}<confirmed>;
+        %delta{$cc} = $delta;
+
+        $max = $delta if $delta > $max;
+    }
+    $max = log($max);
+
+    my $dashboard = '';
+    for %countries.keys.sort -> $cc {
+        next if $cc ~~ /'/'/;
+
+        my $confirmed = %totals{$cc}:exists ?? %totals{$cc}<confirmed> !! 0;
+        my $failed    = %totals{$cc}:exists ?? %totals{$cc}<failed>    !! 0;
+
+        my $level;
+        if %delta{$cc}:exists {
+            $level = %delta{$cc} ?? (10 * log(%delta{$cc}) / $max).round() !! 0;
+            $level = 0 if $level < 0;
+        }
+        else {
+            $level = 'N';
+        }
+
+        my $item = qq:to/ITEM/;
+            <div class="L{$level}">
+                <p class="c">{fmtnum($confirmed)}</p>
+                <p class="d">{$confirmed ?? fmtnum($failed) !! ''}</p>
+                <h5>{%countries{$cc}<country>}</h5>
+            </div>
+            ITEM
+
+        if $confirmed {
+            $dashboard ~= '<a href="/' ~ $cc.lc ~ '">' ~ $item ~ '</a>';
+        }
+        else {
+            $dashboard ~= $item;
+        }
+    }
+
+    my $country-list = country-list(%countries);
+    my $continent-list = continent-list();
+
+    my $content = qq:to/HTML/;
+        <h1>Coronavirus World Overview</h1>
+
+        <div id="block13">
+            <p>Each cell here represents a country, and the colour of the cell reflects the number of new confirmed cases happened since yesterday.</p>
+            <p>The numbers shown are the total number of confirmed infections and the number of people failed to recover. Click on the cell to get more information about the country.</p>
+            <div class="dashboard">
+                $dashboard
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        $continent-list
+        $country-list
+
+        HTML
+
+    html-template('/overview', 'Coronavirus World Overview Dashboard', $content);
 }
