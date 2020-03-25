@@ -28,7 +28,7 @@ sub html-template($path, $title, $content) is export {
         </script>
         GA
 
-    my $anchor-prefix = $path ~~ / 'vs-' | countries | 404 / ?? '/' !! '';
+    my $anchor-prefix = $path ~~ / 'vs-' | countries | overview | 404 / ?? '/' !! '';
 
     my $template = qq:to/HTML/;
         <!DOCTYPE html>
