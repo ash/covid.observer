@@ -54,16 +54,6 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
             </div>
         </div>
 
-
-        <div id="block9">
-            <a name="raw"></a>
-            <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
-            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><sup>confirmed</sup></p>
-            <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><sup>recovered</sup></p>
-            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><sup>failed</sup></p>
-            <p class="active"><span>{fmtnum($chart2data<active>)}</span><sup>active</sup></p>
-        </div>
-
         <div id="block1">
             <h2>Recovery Pie</h2>
             <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world{$without-str}.</p>
@@ -72,6 +62,15 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
                 chart[1] = new Chart(ctx1, $chart1data);
             </script>
+        </div>
+
+        <div id="block9">
+            <a name="raw"></a>
+            <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
+            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><sup>confirmed</sup></p>
+            <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><sup>recovered</sup></p>
+            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><sup>failed</sup></p>
+            <p class="active"><span>{fmtnum($chart2data<active>)}</span><sup>active</sup></p>
         </div>
 
         <div id="block3">
