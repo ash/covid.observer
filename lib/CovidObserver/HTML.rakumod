@@ -316,16 +316,19 @@ sub daily-table($chartdata, $population) is export {
                     <th>Recovery<br/>rate, %</th>
                     <th>Mortality<br/>rate, %</th>
                     <th>Affected<br/>population, %</th>
+                    <th>1 confirmed<br/>per every</th>
+                    <th>1 failed<br/>per every</th>
                     </tr>
                 </thead>
             <tbody>
         HEADER
 
-    my $dates     = $chartdata<table><dates>;
-    my $confirmed = $chartdata<table><confirmed>;
-    my $failed    = $chartdata<table><failed>;
-    my $recovered = $chartdata<table><recovered>;
-    my $active    = $chartdata<table><active>;
+    my $dates        = $chartdata<table><dates>;
+    my $confirmed    = $chartdata<table><confirmed>;
+    my $failed       = $chartdata<table><failed>;
+    my $recovered    = $chartdata<table><recovered>;
+    my $active       = $chartdata<table><active>;
+    my $population-n = 1_000_000 * $population;
 
     for +$chartdata<table><dates> -1 ... 0 -> $index  {
         last unless $confirmed[$index];
@@ -365,13 +368,25 @@ sub daily-table($chartdata, $population) is export {
                     else {''}
                 }</td>
                 <td>{
-                    my $percent = '%.2g'.sprintf(100 * $confirmed[$index] / (1_000_000 * $population));
+                    my $percent = '%.2g'.sprintf(100 * $confirmed[$index] / $population-n);
                     if $percent ~~ /e/ {
                         '&lt;&thinsp;0.001&thinsp;%'
                     }
                     else {
                         $percent ~ '&thinsp;%'
                     }
+                }</td>
+                <td>{
+                    if $confirmed[$index] {
+                        fmtnum(($population-n / $confirmed[$index]).round())
+                    }
+                    else {'—'}
+                }</td>
+                <td>{
+                    if $failed[$index] {
+                        fmtnum(($population-n / $failed[$index]).round())
+                    }
+                    else {'—'}
                 }</td>
             </tr>
             TR
