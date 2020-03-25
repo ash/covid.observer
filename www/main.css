@@ -19,7 +19,7 @@ body, html {
 #block2 div.failed {
     font-size: 150%;
     padding-top: 2em;
-    color: red;
+    color: #aa0000;
 }
 #block4 {
     padding-top: 5%;
