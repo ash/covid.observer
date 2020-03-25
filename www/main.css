@@ -8,9 +8,18 @@ body, html {
     background: white;
 }
 #block2 {
-    padding-top: 10%;
+    padding-top: 7%;
     background: #f5f5ea;
     padding-bottom: 10%;
+}
+#block2 div.affected {
+    font-size: 250%;
+    padding-top: 2em;
+}
+#block2 div.failed {
+    font-size: 150%;
+    padding-top: 2em;
+    color: red;
 }
 #block4 {
     padding-top: 5%;
