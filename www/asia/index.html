@@ -16,7 +16,7 @@
 
     <script src="/Chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/main.css?v=8">
+    <link rel="stylesheet" type="text/css" href="/main.css?v=12">
     <style>
         
     </style>
@@ -38,6 +38,10 @@ function log_scale(input, n) {
         <a href="/">Home</a>
         |
         New:
+        <span class="desktop">
+            <a href="#table">Table data</a>
+            |
+        </span>
         <a href="/vs-age">Cases vs life expectancy</a>
         |
         <a href="#raw">Raw numbers</a>
@@ -81,8 +85,14 @@ function log_scale(input, n) {
 
 <div id="block2">
     <h2>Affected Population</h2>
-    <div id="percent">0.0026&thinsp;%</div>
+    <div id="percent">0.0028&thinsp;%</div>
     <p>This is the part of confirmed infection cases against the total 4701 million of its population.</p>
+    <div class="affected">
+        Affected 1 of every 74,200
+    </div>
+    <div class="failed">
+        Failed to recover 1 of every 1,924,419
+    </div>
 </div>
 
 <div id="block1">
@@ -94,9 +104,9 @@ function log_scale(input, n) {
         chart[1] = new Chart(ctx1, {
     "type": "pie",
     "data": {
-        "labels": ["Recovered 68%", "Failed to recover 4%", "Active cases 28%"],
+        "labels": ["Recovered 66%", "Failed to recover 4%", "Active cases 29%"],
         "datasets": [
-            { "backgroundColor" : [ "green", "red", "orange" ], "label" : "Recovery statistics", "data" : [ 84315, 5258, 34028 ] }
+            { "label" : "Recovery statistics", "data" : [ 87092, 5603, 38467 ], "backgroundColor" : [ "green", "red", "orange" ] }
         ]
     },
     "options": {
@@ -109,11 +119,11 @@ function log_scale(input, n) {
 
 <div id="block9">
     <a name="raw"></a>
-    <h2>Raw Numbers on March 22<sup>th</sup>, 2020</h2>
-    <p class="confirmed"><span>55,801</span><sup>confirmed</sup></p>
-    <p class="recovered"><span>24,882</span><sup>recovered</sup></p>
-    <p class="failed"><span>2,114</span><sup>failed</sup></p>
-    <p class="active"><span>28,805</span><sup>active</sup></p>
+    <h2>Raw Numbers on March 24<sup>th</sup>, 2020</h2>
+    <p class="confirmed"><span>63,361</span><sup>confirmed</sup></p>
+    <p class="recovered"><span>26,768</span><sup>recovered</sup></p>
+    <p class="failed"><span>2,443</span><sup>failed</sup></p>
+    <p class="active"><span>34,150</span><sup>active</sup></p>
 </div>
 
 <div id="block3">
@@ -134,11 +144,11 @@ function log_scale(input, n) {
         chart[2] = new Chart(ctx2, {
     "type": "bar",
     "data": {
-        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22" ],
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24" ],
         "datasets": [
-            { "backgroundColor" : "red", "label" : "Failed to recover", "data" : [ 0, 1, 2, 2, 4, 6, 6, 8, 9, 9, 10, 12, 12, 13, 15, 16, 20, 26, 35, 39, 45, 50, 61, 66, 69, 73, 78, 85, 92, 100, 103, 107, 116, 123, 131, 137, 150, 161, 176, 191, 214, 226, 250, 266, 291, 315, 373, 424, 481, 559, 644, 743, 854, 973, 1109, 1258, 1431, 1599, 1778, 1924, 2114 ] },
-            { "data" : [ 110, 205, 381, 659, 1033, 1467, 1971, 2543, 3245, 3997, 4716, 5376, 6060, 6819, 7411, 7965, 8401, 8691, 8907, 9067, 9140, 9098, 9028, 8848, 8595, 8335, 7965, 7563, 7072, 6593, 6359, 6067, 5830, 5679, 5464, 5390, 5626, 5957, 6538, 7199, 7935, 9337, 9957, 10642, 12053, 12776, 13335, 13682, 14163, 15436, 16523, 18028, 19757, 19874, 20630, 21466, 23152, 25112, 26118, 27641, 28805 ], "label" : "Active cases", "backgroundColor" : "orange" },
-            { "backgroundColor" : "green", "data" : [ 0, 2, 5, 7, 10, 16, 27, 38, 51, 79, 114, 175, 235, 328, 489, 668, 894, 1175, 1444, 1719, 2039, 2454, 2819, 3267, 3751, 4198, 4690, 5182, 5741, 6346, 6959, 7536, 8000, 8429, 8876, 9344, 9777, 10188, 10668, 11022, 11444, 11782, 12257, 12700, 13187, 14104, 14671, 15109, 15753, 16167, 16291, 16549, 16640, 18341, 19063, 20208, 20419, 20829, 21985, 23094, 24882 ], "label" : "Recovered" }
+            { "label" : "Failed to recover", "data" : [ 0, 1, 2, 2, 4, 6, 6, 8, 9, 9, 10, 12, 12, 12, 14, 15, 19, 25, 34, 38, 44, 49, 60, 65, 68, 72, 77, 84, 90, 98, 101, 105, 114, 121, 129, 135, 148, 159, 174, 189, 212, 224, 248, 264, 289, 313, 370, 428, 477, 559, 644, 743, 854, 973, 1109, 1258, 1431, 1599, 1778, 1924, 2114, 2279, 2443 ], "backgroundColor" : "red" },
+            { "label" : "Active cases", "data" : [ 109, 201, 377, 652, 1020, 1453, 1956, 2526, 3228, 3978, 4696, 5353, 6037, 6793, 7381, 7933, 8368, 8657, 8870, 9021, 9083, 9042, 8970, 8787, 8534, 8276, 7903, 7499, 7011, 6529, 6294, 6002, 5765, 5617, 5398, 5322, 5558, 5893, 6476, 7139, 7871, 9275, 9890, 10577, 11978, 12699, 13260, 13594, 14047, 15436, 16523, 18028, 19757, 19874, 20630, 21466, 23152, 25112, 26118, 27641, 28805, 31292, 34150 ], "backgroundColor" : "orange" },
+            { "label" : "Recovered", "data" : [ 0, 2, 5, 7, 10, 16, 27, 38, 51, 79, 114, 175, 235, 328, 489, 667, 893, 1174, 1443, 1718, 2038, 2451, 2815, 3263, 3747, 4191, 4683, 5175, 5731, 6334, 6948, 7524, 7983, 8404, 8850, 9313, 9745, 10150, 10627, 10978, 11400, 11736, 12211, 12648, 13131, 14043, 14603, 15046, 15661, 16167, 16291, 16549, 16640, 18341, 19063, 20208, 20419, 20829, 21985, 23094, 24882, 25691, 26768 ], "backgroundColor" : "green" }
         ]
     },
     "options": {
@@ -176,12 +186,12 @@ function log_scale(input, n) {
         chart[10] = new Chart(ctx10, {
     "type": "bar",
     "data": {
-        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22" ],
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24" ],
         "datasets": [
-            { "label" : "Failed to recover", "data" : [ 0, 1, 1, 0, 2, 2, 0, 2, 1, 0, 1, 2, 0, 1, 2, 1, 4, 6, 9, 4, 6, 5, 11, 5, 3, 4, 5, 7, 7, 8, 3, 4, 9, 7, 8, 6, 13, 11, 15, 15, 23, 12, 24, 16, 25, 24, 58, 51, 57, 78, 85, 99, 111, 119, 136, 149, 173, 168, 179, 146, 190 ], "backgroundColor" : "red" },
-            { "data" : [ 0, 95, 176, 278, 374, 434, 504, 572, 702, 752, 719, 660, 684, 759, 592, 554, 436, 290, 216, 160, 73, -42, -70, -180, -253, -260, -370, -402, -491, -479, -234, -292, -237, -151, -215, -74, 236, 331, 581, 661, 736, 1402, 620, 685, 1411, 723, 559, 347, 481, 1273, 1087, 1505, 1729, 117, 756, 836, 1686, 1960, 1006, 1523, 1164 ], "label" : "Active cases", "backgroundColor" : "orange" },
-            { "backgroundColor" : "green", "data" : [ 0, 2, 3, 2, 3, 6, 11, 11, 13, 28, 35, 61, 60, 93, 161, 179, 226, 281, 269, 275, 320, 415, 365, 448, 484, 447, 492, 492, 559, 605, 613, 577, 464, 429, 447, 468, 433, 411, 480, 354, 422, 338, 475, 443, 487, 917, 567, 438, 644, 414, 124, 258, 91, 1701, 722, 1145, 211, 410, 1156, 1109, 1788 ], "label" : "Recovered" },
-            { "backgroundColor" : "lightblue", "data" : [ 0, 98, 180, 280, 379, 442, 515, 585, 716, 780, 755, 723, 744, 853, 755, 734, 666, 577, 494, 439, 399, 378, 306, 273, 234, 191, 127, 97, 75, 134, 382, 289, 236, 285, 240, 400, 682, 753, 1076, 1030, 1181, 1752, 1119, 1144, 1923, 1664, 1184, 836, 1182, 1765, 1296, 1862, 1931, 1937, 1614, 2130, 2070, 2538, 2341, 2778, 3142 ], "label" : "Confirmed" }
+            { "backgroundColor" : "red", "data" : [ 0, 1, 1, 0, 2, 2, 0, 2, 1, 0, 1, 2, 0, 0, 2, 1, 4, 6, 9, 4, 6, 5, 11, 5, 3, 4, 5, 7, 6, 8, 3, 4, 9, 7, 8, 6, 13, 11, 15, 15, 23, 12, 24, 16, 25, 24, 57, 58, 49, 82, 85, 99, 111, 119, 136, 149, 173, 168, 179, 146, 190, 165, 164 ], "label" : "Failed to recover" },
+            { "label" : "Active cases", "data" : [ 0, 92, 176, 275, 368, 433, 503, 570, 702, 750, 718, 657, 684, 756, 588, 552, 435, 289, 213, 151, 62, -41, -72, -183, -253, -258, -373, -404, -488, -482, -235, -292, -237, -148, -219, -76, 236, 335, 583, 663, 732, 1404, 615, 687, 1401, 721, 561, 334, 453, 1389, 1087, 1505, 1729, 117, 756, 836, 1686, 1960, 1006, 1523, 1164, 2487, 2858 ], "backgroundColor" : "orange" },
+            { "data" : [ 0, 2, 3, 2, 3, 6, 11, 11, 13, 28, 35, 61, 60, 93, 161, 178, 226, 281, 269, 275, 320, 413, 364, 448, 484, 444, 492, 492, 556, 603, 614, 576, 459, 421, 446, 463, 432, 405, 477, 351, 422, 336, 475, 437, 483, 912, 560, 443, 615, 506, 124, 258, 91, 1701, 722, 1145, 211, 410, 1156, 1109, 1788, 809, 1077 ], "backgroundColor" : "green", "label" : "Recovered" },
+            { "label" : "Confirmed", "data" : [ 0, 95, 180, 277, 373, 441, 514, 583, 716, 778, 754, 720, 744, 849, 751, 731, 665, 576, 491, 430, 388, 377, 303, 270, 234, 190, 124, 95, 74, 129, 382, 288, 231, 280, 235, 393, 681, 751, 1075, 1029, 1177, 1752, 1114, 1140, 1909, 1657, 1178, 835, 1117, 1977, 1296, 1862, 1931, 1937, 1614, 2130, 2070, 2538, 2341, 2778, 3142, 3461, 4099 ], "backgroundColor" : "lightblue" }
         ]
     },
     "options": {
@@ -211,12 +221,12 @@ function log_scale(input, n) {
         chart[7] = new Chart(ctx7, {
     "type": "line",
     "data": {
-        "labels": [ "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22" ],
+        "labels": [ "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24" ],
         "datasets": [
-            { "fill" : false, "borderColor" : "lightblue", "data" : [ 79.823333, 64.796667, 52.623333, 43.956667, 37.576667, 32.41, 27.57, 23.413333, 20.013333, 17.51, 15.423333, 13.343333, 11.303333, 9.353333, 7.753333, 6.456667, 5.45, 4.67, 4.003333, 3.39, 2.81, 2.256667, 1.756667, 1.386667, 1.4, 1.713333, 2.206667, 2.596667, 2.696667, 2.74, 2.996667, 3.703333, 4.886667, 6.1, 7.193333, 8.216667, 8.703333, 8.876667, 8.843333, 8.66, 8.466667, 7.87, 7.06, 6.29, 5.746667, 5.943333, 6.363333, 6.73, 6.826667, 6.733333, 6.63, 6.573333, 6.646667, 6.823333, 7.08 ], "label" : "Confirmed total", "lineTension" : 0 },
-            { "fill" : false, "borderColor" : "red", "data" : [ 70, 56.11, 41.11, 28.79, 20.243333, 15.48, 13.706667, 12.3, 12.44, 12.203333, 14.28, 18.53, 26.043333, 30.53, 31.56, 28.573333, 23.83, 20.496667, 17.74, 15.576667, 12.026667, 9.963333, 9.07, 9.906667, 10.15, 9.42, 8.456667, 7.623333, 7.77, 7.97, 8.553333, 8.903333, 9.493333, 10.406667, 11.45, 11.926667, 12.14, 11.846667, 11.42, 11.233333, 12.206667, 14.223333, 16.28, 18.446667, 19.366667, 20.023333, 20.1, 20.143333, 19.88, 19.28, 18.796667, 18.203333, 17.5, 16.33, 15 ], "label" : "Failed to recover", "lineTension" : 0 },
-            { "fill" : false, "borderColor" : "orange", "lineTension" : 0, "data" : [ 97.793333, 84.416667, 68.02, 53.72, 44.153333, 37.94, 32.52, 27.536667, 22.593333, 19.053333, 15.956667, 13.786667, 11.373333, 8.353333, 6.29, 4.4, 2.843333, 1.54, 0.456667, -0.806667, -2.026667, -2.88, -4.103333, -5.12, -6.33, -7.58, -7.283333, -7.133333, -6.27, -4.876667, -4.953333, -3.873333, -1.116667, 1.706667, 6.213333, 10.03, 11.98, 15.906667, 14.873333, 13.8, 14.81, 10.923333, 10.166667, 8.74, 5.493333, 6.486667, 7.376667, 9.546667, 11.573333, 8.776667, 7.696667, 6.01, 5.43, 8.053333, 8.123333 ], "label" : "Active cases" },
-            { "lineTension" : 0, "data" : [ 89.25, 73.526667, 68.883333, 67.16, 62.036667, 61.366667, 61.093333, 59.763333, 58.866667, 55.646667, 54.22, 51.756667, 47.023333, 41.13, 35.066667, 30.39, 26.843333, 24.613333, 23.036667, 21.236667, 19.563333, 17.74, 16.333333, 15.196667, 14.396667, 13.763333, 12.753333, 11.393333, 9.826667, 8.456667, 7.496667, 6.883333, 6.526667, 6.11, 5.736667, 5.293333, 4.99, 4.816667, 4.776667, 5.27, 5.71, 6.056667, 6.036667, 5.52, 4.713333, 3.736667, 2.806667, 3.09, 3.88, 5.53, 6.41, 6.016667, 5.353333, 4.563333, 5.41 ], "label" : "Recovered", "fill" : false, "borderColor" : "green" }
+            { "label" : "Confirmed total", "data" : [ 80.006667, 65.003333, 52.866667, 44.193333, 37.78, 32.55, 27.663333, 23.476667, 20.046667, 17.526667, 15.43, 13.346667, 11.306667, 9.353333, 7.733333, 6.416667, 5.4, 4.623333, 3.97, 3.373333, 2.803333, 2.25, 1.75, 1.373333, 1.386667, 1.703333, 2.2, 2.593333, 2.683333, 2.716667, 2.97, 3.68, 4.883333, 6.113333, 7.22, 8.253333, 8.736667, 8.91, 8.866667, 8.673333, 8.473333, 7.873333, 7.04, 6.333333, 5.85, 6.12, 6.563333, 6.866667, 6.903333, 6.733333, 6.63, 6.573333, 6.646667, 6.823333, 7.08, 7.31, 7.726667 ], "lineTension" : 0, "fill" : false, "borderColor" : "lightblue" },
+            { "borderColor" : "red", "fill" : false, "label" : "Failed to recover", "lineTension" : 0, "data" : [ 70, 56.11, 41.11, 28.79, 20.243333, 15.48, 13.706667, 11.32, 10.61, 9.67, 12.133333, 17.813333, 26.693333, 32.183333, 33.023333, 29.693333, 24.556667, 21.013333, 18.123333, 15.886667, 12.24, 10.12, 9.056667, 9.773333, 9.906667, 9.18, 8.356667, 7.65, 7.92, 8.113333, 8.696667, 9.04, 9.626667, 10.543333, 11.59, 12.063333, 12.27, 11.963333, 11.523333, 11.326667, 12.26, 14.493333, 16.47, 18.706667, 19.543333, 20.053333, 20.186667, 20.14, 19.97, 19.28, 18.796667, 18.203333, 17.5, 16.33, 15, 13.57, 12.266667 ] },
+            { "label" : "Active cases", "lineTension" : 0, "data" : [ 97.583333, 84.983333, 68.136667, 53.886667, 44.486667, 38.15, 32.663333, 27.636667, 22.646667, 19.086667, 15.963333, 13.796667, 11.37, 8.35, 6.286667, 4.363333, 2.766667, 1.466667, 0.38, -0.866667, -2.056667, -2.913333, -4.146667, -5.17, -6.376667, -7.66, -7.36, -7.2, -6.346667, -4.91, -5.006667, -3.933333, -1.143333, 1.716667, 6.306667, 10.186667, 12.123333, 16.056667, 14.973333, 13.876667, 14.876667, 10.943333, 10.206667, 8.733333, 5.43, 6.716667, 7.59, 9.786667, 11.873333, 8.776667, 7.696667, 6.01, 5.43, 8.053333, 8.123333, 8.716667, 7.503333 ], "fill" : false, "borderColor" : "orange" },
+            { "label" : "Recovered", "lineTension" : 0, "data" : [ 89.25, 73.526667, 68.883333, 67.16, 62.036667, 61.366667, 61.093333, 59.763333, 58.866667, 55.613333, 54.173333, 51.703333, 46.98, 41.126667, 35.08, 30.4, 26.83, 24.586667, 23.01, 21.216667, 19.553333, 17.733333, 16.32, 15.18, 14.38, 13.753333, 12.743333, 11.373333, 9.796667, 8.41, 7.45, 6.843333, 6.493333, 6.083333, 5.713333, 5.28, 4.983333, 4.813333, 4.77, 5.256667, 5.69, 6.04, 6.003333, 5.546667, 4.796667, 3.886667, 2.976667, 3.206667, 3.946667, 5.53, 6.41, 6.016667, 5.353333, 4.563333, 5.41, 6.19, 6.89 ], "fill" : false, "borderColor" : "green" }
         ]
     },
     "options": {
@@ -232,6 +242,720 @@ function log_scale(input, n) {
     </script>
     <p>Note 1. In calculations, the 3-day moving average is used.</p>
     <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+</div>
+
+<div id="block11">
+    <a name="table"></a>
+    <h1>Raw Daily Numbers</h1>
+    <table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Confirmed<br/>cases</th>
+            <th>Daily<br/>growth, %</th>
+            <th>Recovered<br/>cases</th>
+            <th>Failed<br/>cases</th>
+            <th>Active<br/>cases</th>
+            <th>Recovery<br/>rate, %</th>
+            <th>Mortality<br/>rate, %</th>
+            <th>Affected<br/>population, %</th>
+            </tr>
+        </thead>
+    <tbody>
+<tr>
+    <td class="date">Mar 24<sup>th</sup></td>
+    <td>63,361</td>
+    <td>6.9&thinsp;%</td>
+    <td>26,768</td>
+    <td>2,443</td>
+    <td>34,150</td>
+    <td>42.2&thinsp;%</td>
+    <td>3.9&thinsp;%</td>
+    <td>0.0013&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 23<sup>th</sup></td>
+    <td>59,262</td>
+    <td>6.2&thinsp;%</td>
+    <td>25,691</td>
+    <td>2,279</td>
+    <td>31,292</td>
+    <td>43.4&thinsp;%</td>
+    <td>3.8&thinsp;%</td>
+    <td>0.0013&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 22<sup>nd</sup></td>
+    <td>55,801</td>
+    <td>6.0&thinsp;%</td>
+    <td>24,882</td>
+    <td>2,114</td>
+    <td>28,805</td>
+    <td>44.6&thinsp;%</td>
+    <td>3.8&thinsp;%</td>
+    <td>0.0012&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 21<sup>st</sup></td>
+    <td>52,659</td>
+    <td>5.6&thinsp;%</td>
+    <td>23,094</td>
+    <td>1,924</td>
+    <td>27,641</td>
+    <td>43.9&thinsp;%</td>
+    <td>3.7&thinsp;%</td>
+    <td>0.0011&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 20<sup>th</sup></td>
+    <td>49,881</td>
+    <td>4.9&thinsp;%</td>
+    <td>21,985</td>
+    <td>1,778</td>
+    <td>26,118</td>
+    <td>44.1&thinsp;%</td>
+    <td>3.6&thinsp;%</td>
+    <td>0.0011&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 19<sup>th</sup></td>
+    <td>47,540</td>
+    <td>5.6&thinsp;%</td>
+    <td>20,829</td>
+    <td>1,599</td>
+    <td>25,112</td>
+    <td>43.8&thinsp;%</td>
+    <td>3.4&thinsp;%</td>
+    <td>0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 18<sup>th</sup></td>
+    <td>45,002</td>
+    <td>4.8&thinsp;%</td>
+    <td>20,419</td>
+    <td>1,431</td>
+    <td>23,152</td>
+    <td>45.4&thinsp;%</td>
+    <td>3.2&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 17<sup>th</sup></td>
+    <td>42,932</td>
+    <td>5.2&thinsp;%</td>
+    <td>20,208</td>
+    <td>1,258</td>
+    <td>21,466</td>
+    <td>47.1&thinsp;%</td>
+    <td>2.9&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 16<sup>th</sup></td>
+    <td>40,802</td>
+    <td>4.1&thinsp;%</td>
+    <td>19,063</td>
+    <td>1,109</td>
+    <td>20,630</td>
+    <td>46.7&thinsp;%</td>
+    <td>2.7&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 15<sup>th</sup></td>
+    <td>39,188</td>
+    <td>5.2&thinsp;%</td>
+    <td>18,341</td>
+    <td>973</td>
+    <td>19,874</td>
+    <td>46.8&thinsp;%</td>
+    <td>2.5&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 14<sup>th</sup></td>
+    <td>37,251</td>
+    <td>5.5&thinsp;%</td>
+    <td>16,640</td>
+    <td>854</td>
+    <td>19,757</td>
+    <td>44.7&thinsp;%</td>
+    <td>2.3&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 13<sup>th</sup></td>
+    <td>35,320</td>
+    <td>5.6&thinsp;%</td>
+    <td>16,549</td>
+    <td>743</td>
+    <td>18,028</td>
+    <td>46.9&thinsp;%</td>
+    <td>2.1&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 12<sup>th</sup></td>
+    <td>33,458</td>
+    <td>4.0&thinsp;%</td>
+    <td>16,291</td>
+    <td>644</td>
+    <td>16,523</td>
+    <td>48.7&thinsp;%</td>
+    <td>1.9&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 11<sup>th</sup></td>
+    <td>32,162</td>
+    <td>6.5&thinsp;%</td>
+    <td>16,167</td>
+    <td>559</td>
+    <td>15,436</td>
+    <td>50.3&thinsp;%</td>
+    <td>1.7&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 10<sup>th</sup></td>
+    <td>30,185</td>
+    <td>3.8&thinsp;%</td>
+    <td>15,661</td>
+    <td>477</td>
+    <td>14,047</td>
+    <td>51.9&thinsp;%</td>
+    <td>1.6&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 9<sup>th</sup></td>
+    <td>29,068</td>
+    <td>3.0&thinsp;%</td>
+    <td>15,046</td>
+    <td>428</td>
+    <td>13,594</td>
+    <td>51.8&thinsp;%</td>
+    <td>1.5&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 8<sup>th</sup></td>
+    <td>28,233</td>
+    <td>4.4&thinsp;%</td>
+    <td>14,603</td>
+    <td>370</td>
+    <td>13,260</td>
+    <td>51.7&thinsp;%</td>
+    <td>1.3&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 7<sup>th</sup></td>
+    <td>27,055</td>
+    <td>6.5&thinsp;%</td>
+    <td>14,043</td>
+    <td>313</td>
+    <td>12,699</td>
+    <td>51.9&thinsp;%</td>
+    <td>1.2&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 6<sup>th</sup></td>
+    <td>25,398</td>
+    <td>8.1&thinsp;%</td>
+    <td>13,131</td>
+    <td>289</td>
+    <td>11,978</td>
+    <td>51.7&thinsp;%</td>
+    <td>1.1&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 5<sup>th</sup></td>
+    <td>23,489</td>
+    <td>5.1&thinsp;%</td>
+    <td>12,648</td>
+    <td>264</td>
+    <td>10,577</td>
+    <td>53.8&thinsp;%</td>
+    <td>1.1&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 4<sup>th</sup></td>
+    <td>22,349</td>
+    <td>5.2&thinsp;%</td>
+    <td>12,211</td>
+    <td>248</td>
+    <td>9,890</td>
+    <td>54.6&thinsp;%</td>
+    <td>1.1&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 3<sup>rd</sup></td>
+    <td>21,235</td>
+    <td>9.0&thinsp;%</td>
+    <td>11,736</td>
+    <td>224</td>
+    <td>9,275</td>
+    <td>55.3&thinsp;%</td>
+    <td>1.1&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 2<sup>nd</sup></td>
+    <td>19,483</td>
+    <td>6.4&thinsp;%</td>
+    <td>11,400</td>
+    <td>212</td>
+    <td>7,871</td>
+    <td>58.5&thinsp;%</td>
+    <td>1.1&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Mar 1<sup>st</sup></td>
+    <td>18,306</td>
+    <td>6.0&thinsp;%</td>
+    <td>10,978</td>
+    <td>189</td>
+    <td>7,139</td>
+    <td>60.0&thinsp;%</td>
+    <td>1.0&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 29<sup>th</sup></td>
+    <td>17,277</td>
+    <td>6.6&thinsp;%</td>
+    <td>10,627</td>
+    <td>174</td>
+    <td>6,476</td>
+    <td>61.5&thinsp;%</td>
+    <td>1.0&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 28<sup>th</sup></td>
+    <td>16,202</td>
+    <td>4.9&thinsp;%</td>
+    <td>10,150</td>
+    <td>159</td>
+    <td>5,893</td>
+    <td>62.6&thinsp;%</td>
+    <td>1.0&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 27<sup>th</sup></td>
+    <td>15,451</td>
+    <td>4.6&thinsp;%</td>
+    <td>9,745</td>
+    <td>148</td>
+    <td>5,558</td>
+    <td>63.1&thinsp;%</td>
+    <td>1.0&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 26<sup>th</sup></td>
+    <td>14,770</td>
+    <td>2.7&thinsp;%</td>
+    <td>9,313</td>
+    <td>135</td>
+    <td>5,322</td>
+    <td>63.1&thinsp;%</td>
+    <td>0.9&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 25<sup>th</sup></td>
+    <td>14,377</td>
+    <td>1.7&thinsp;%</td>
+    <td>8,850</td>
+    <td>129</td>
+    <td>5,398</td>
+    <td>61.6&thinsp;%</td>
+    <td>0.9&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 24<sup>th</sup></td>
+    <td>14,142</td>
+    <td>2.0&thinsp;%</td>
+    <td>8,404</td>
+    <td>121</td>
+    <td>5,617</td>
+    <td>59.4&thinsp;%</td>
+    <td>0.9&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 23<sup>th</sup></td>
+    <td>13,862</td>
+    <td>1.7&thinsp;%</td>
+    <td>7,983</td>
+    <td>114</td>
+    <td>5,765</td>
+    <td>57.6&thinsp;%</td>
+    <td>0.8&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 22<sup>nd</sup></td>
+    <td>13,631</td>
+    <td>2.2&thinsp;%</td>
+    <td>7,524</td>
+    <td>105</td>
+    <td>6,002</td>
+    <td>55.2&thinsp;%</td>
+    <td>0.8&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 21<sup>st</sup></td>
+    <td>13,343</td>
+    <td>2.9&thinsp;%</td>
+    <td>6,948</td>
+    <td>101</td>
+    <td>6,294</td>
+    <td>52.1&thinsp;%</td>
+    <td>0.8&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 20<sup>th</sup></td>
+    <td>12,961</td>
+    <td>1.0&thinsp;%</td>
+    <td>6,334</td>
+    <td>98</td>
+    <td>6,529</td>
+    <td>48.9&thinsp;%</td>
+    <td>0.8&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 19<sup>th</sup></td>
+    <td>12,832</td>
+    <td>0.6&thinsp;%</td>
+    <td>5,731</td>
+    <td>90</td>
+    <td>7,011</td>
+    <td>44.7&thinsp;%</td>
+    <td>0.7&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 18<sup>th</sup></td>
+    <td>12,758</td>
+    <td>0.8&thinsp;%</td>
+    <td>5,175</td>
+    <td>84</td>
+    <td>7,499</td>
+    <td>40.6&thinsp;%</td>
+    <td>0.7&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 17<sup>th</sup></td>
+    <td>12,663</td>
+    <td>1.0&thinsp;%</td>
+    <td>4,683</td>
+    <td>77</td>
+    <td>7,903</td>
+    <td>37.0&thinsp;%</td>
+    <td>0.6&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 16<sup>th</sup></td>
+    <td>12,539</td>
+    <td>1.5&thinsp;%</td>
+    <td>4,191</td>
+    <td>72</td>
+    <td>8,276</td>
+    <td>33.4&thinsp;%</td>
+    <td>0.6&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 15<sup>th</sup></td>
+    <td>12,349</td>
+    <td>1.9&thinsp;%</td>
+    <td>3,747</td>
+    <td>68</td>
+    <td>8,534</td>
+    <td>30.3&thinsp;%</td>
+    <td>0.6&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 14<sup>th</sup></td>
+    <td>12,115</td>
+    <td>2.3&thinsp;%</td>
+    <td>3,263</td>
+    <td>65</td>
+    <td>8,787</td>
+    <td>26.9&thinsp;%</td>
+    <td>0.5&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 13<sup>th</sup></td>
+    <td>11,845</td>
+    <td>2.6&thinsp;%</td>
+    <td>2,815</td>
+    <td>60</td>
+    <td>8,970</td>
+    <td>23.8&thinsp;%</td>
+    <td>0.5&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 12<sup>th</sup></td>
+    <td>11,542</td>
+    <td>3.4&thinsp;%</td>
+    <td>2,451</td>
+    <td>49</td>
+    <td>9,042</td>
+    <td>21.2&thinsp;%</td>
+    <td>0.4&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 11<sup>th</sup></td>
+    <td>11,165</td>
+    <td>3.6&thinsp;%</td>
+    <td>2,038</td>
+    <td>44</td>
+    <td>9,083</td>
+    <td>18.3&thinsp;%</td>
+    <td>0.4&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 10<sup>th</sup></td>
+    <td>10,777</td>
+    <td>4.2&thinsp;%</td>
+    <td>1,718</td>
+    <td>38</td>
+    <td>9,021</td>
+    <td>15.9&thinsp;%</td>
+    <td>0.4&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 9<sup>th</sup></td>
+    <td>10,347</td>
+    <td>5.0&thinsp;%</td>
+    <td>1,443</td>
+    <td>34</td>
+    <td>8,870</td>
+    <td>13.9&thinsp;%</td>
+    <td>0.3&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 8<sup>th</sup></td>
+    <td>9,856</td>
+    <td>6.2&thinsp;%</td>
+    <td>1,174</td>
+    <td>25</td>
+    <td>8,657</td>
+    <td>11.9&thinsp;%</td>
+    <td>0.3&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 7<sup>th</sup></td>
+    <td>9,280</td>
+    <td>7.7&thinsp;%</td>
+    <td>893</td>
+    <td>19</td>
+    <td>8,368</td>
+    <td>9.6&thinsp;%</td>
+    <td>0.2&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 6<sup>th</sup></td>
+    <td>8,615</td>
+    <td>9.3&thinsp;%</td>
+    <td>667</td>
+    <td>15</td>
+    <td>7,933</td>
+    <td>7.7&thinsp;%</td>
+    <td>0.2&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 5<sup>th</sup></td>
+    <td>7,884</td>
+    <td>10.5&thinsp;%</td>
+    <td>489</td>
+    <td>14</td>
+    <td>7,381</td>
+    <td>6.2&thinsp;%</td>
+    <td>0.2&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 4<sup>th</sup></td>
+    <td>7,133</td>
+    <td>13.5&thinsp;%</td>
+    <td>328</td>
+    <td>12</td>
+    <td>6,793</td>
+    <td>4.6&thinsp;%</td>
+    <td>0.2&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 3<sup>rd</sup></td>
+    <td>6,284</td>
+    <td>13.4&thinsp;%</td>
+    <td>235</td>
+    <td>12</td>
+    <td>6,037</td>
+    <td>3.7&thinsp;%</td>
+    <td>0.2&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 2<sup>nd</sup></td>
+    <td>5,540</td>
+    <td>14.9&thinsp;%</td>
+    <td>175</td>
+    <td>12</td>
+    <td>5,353</td>
+    <td>3.2&thinsp;%</td>
+    <td>0.2&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Feb 1<sup>st</sup></td>
+    <td>4,820</td>
+    <td>18.5&thinsp;%</td>
+    <td>114</td>
+    <td>10</td>
+    <td>4,696</td>
+    <td>2.4&thinsp;%</td>
+    <td>0.2&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Jan 31<sup>st</sup></td>
+    <td>4,066</td>
+    <td>23.7&thinsp;%</td>
+    <td>79</td>
+    <td>9</td>
+    <td>3,978</td>
+    <td>1.9&thinsp;%</td>
+    <td>0.2&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Jan 30<sup>th</sup></td>
+    <td>3,288</td>
+    <td>27.8&thinsp;%</td>
+    <td>51</td>
+    <td>9</td>
+    <td>3,228</td>
+    <td>1.6&thinsp;%</td>
+    <td>0.3&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Jan 29<sup>th</sup></td>
+    <td>2,572</td>
+    <td>29.3&thinsp;%</td>
+    <td>38</td>
+    <td>8</td>
+    <td>2,526</td>
+    <td>1.5&thinsp;%</td>
+    <td>0.3&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Jan 28<sup>th</sup></td>
+    <td>1,989</td>
+    <td>34.8&thinsp;%</td>
+    <td>27</td>
+    <td>6</td>
+    <td>1,956</td>
+    <td>1.4&thinsp;%</td>
+    <td>0.3&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Jan 27<sup>th</sup></td>
+    <td>1,475</td>
+    <td>42.6&thinsp;%</td>
+    <td>16</td>
+    <td>6</td>
+    <td>1,453</td>
+    <td>1.1&thinsp;%</td>
+    <td>0.4&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Jan 26<sup>th</sup></td>
+    <td>1,034</td>
+    <td>56.4&thinsp;%</td>
+    <td>10</td>
+    <td>4</td>
+    <td>1,020</td>
+    <td>1.0&thinsp;%</td>
+    <td>0.4&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Jan 25<sup>th</sup></td>
+    <td>661</td>
+    <td>72.1&thinsp;%</td>
+    <td>7</td>
+    <td>2</td>
+    <td>652</td>
+    <td>1.1&thinsp;%</td>
+    <td>0.3&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Jan 24<sup>th</sup></td>
+    <td>384</td>
+    <td>88.2&thinsp;%</td>
+    <td>5</td>
+    <td>2</td>
+    <td>377</td>
+    <td>1.3&thinsp;%</td>
+    <td>0.5&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Jan 23<sup>th</sup></td>
+    <td>204</td>
+    <td>87.2&thinsp;%</td>
+    <td>2</td>
+    <td>1</td>
+    <td>201</td>
+    <td>1.0&thinsp;%</td>
+    <td>0.5&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+<tr>
+    <td class="date">Jan 22<sup>nd</sup></td>
+    <td>109</td>
+    <td>—</td>
+    <td>0</td>
+    <td>0</td>
+    <td>109</td>
+    <td>0.0&thinsp;%</td>
+    <td>0.0&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+</tr>
+</tbody></table>
 </div>
 
 <div id="countries">
@@ -254,7 +978,7 @@ function log_scale(input, n) {
     <p><a href="/countries">More statistics on countries</a></p>
     <p><a href="/vs-china">Countries vs China</a></p>
     <div id="countries-list">
-        <p><a href="/">Whole world</a></p><p class="current"><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ao">Angola</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p class="current"><a href="/am">Armenia</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p class="current"><a href="/az">Azerbaijan</a></p><p><a href="/bs">Bahamas</a></p><p class="current"><a href="/bh">Bahrain</a></p><p class="current"><a href="/bd">Bangladesh</a></p><p><a href="/bb">Barbados</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bj">Benin</a></p><p class="current"><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/br">Brazil</a></p><p class="current"><a href="/bn">Brunei Darussalam</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/cv">Cabo Verde</a></p><p class="current"><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/cf">Central African Republic</a></p><p><a href="/td">Chad</a></p><p><a href="/cl">Chile</a></p><p class="current"><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cg">Congo</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p class="current"><a href="/cy">Cyprus</a></p><p><a href="/cz">Czechia</a></p><p><a href="/dk">Denmark</a></p><p><a href="/dj">Djibouti</a></p><p><a href="/dm">Dominica</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/sv">El Salvador</a></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/er">Eritrea</a></p><p><a href="/ee">Estonia</a></p><p><a href="/sz">Eswatini</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fj">Fiji</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/ga">Gabon</a></p><p><a href="/gm">Gambia</a></p><p class="current"><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gh">Ghana</a></p><p><a href="/gr">Greece</a></p><p><a href="/gd">Grenada</a></p><p><a href="/gt">Guatemala</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gy">Guyana</a></p><p><a href="/ht">Haiti</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p class="current"><a href="/in">India</a></p><p class="current"><a href="/id">Indonesia</a></p><p class="current"><a href="/ir">Iran</a></p><p class="current"><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p class="current"><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p class="current"><a href="/jp">Japan</a></p><p class="current"><a href="/jo">Jordan</a></p><p class="current"><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/xk">Kosovo</a></p><p class="current"><a href="/kw">Kuwait</a></p><p class="current"><a href="/kg">Kyrgyzstan</a></p><p><a href="/lv">Latvia</a></p><p class="current"><a href="/lb">Lebanon</a></p><p><a href="/lr">Liberia</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/mg">Madagascar</a></p><p class="current"><a href="/my">Malaysia</a></p><p class="current"><a href="/mv">Maldives</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mr">Mauritania</a></p><p><a href="/mu">Mauritius</a></p><p><a href="/mx">Mexico</a></p><p><a href="/md">Moldova</a></p><p><a href="/mc">Monaco</a></p><p class="current"><a href="/mn">Mongolia</a></p><p><a href="/me">Montenegro</a></p><p><a href="/ma">Morocco</a></p><p><a href="/mz">Mozambique</a></p><p><a href="/na">Namibia</a></p><p class="current"><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ni">Nicaragua</a></p><p><a href="/ne">Niger</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/mk">North Macedonia</a></p><p><a href="/no">Norway</a></p><p class="current"><a href="/om">Oman</a></p><p class="current"><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/pg">Papua New Guinea</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p class="current"><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p class="current"><a href="/qa">Qatar</a></p><p><a href="/ro">Romania</a></p><p class="current"><a href="/ru">Russian Federation</a></p><p><a href="/rw">Rwanda</a></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a></p><p class="current"><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sc">Seychelles</a></p><p class="current"><a href="/sg">Singapore</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a></p><p class="current"><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p class="current"><a href="/lk">Sri Lanka</a></p><p><a href="/sd">Sudan</a></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p class="current"><a href="/sy">Syrian Arab Republic</a></p><p class="current"><a href="/tw">Taiwan</a></p><p><a href="/tz">Tanzania</a></p><p class="current"><a href="/th">Thailand</a></p><p class="current"><a href="/tl">Timor-Leste</a></p><p><a href="/tg">Togo</a></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a></p><p class="current"><a href="/tr">Turkey</a></p><p><a href="/ug">Uganda</a></p><p><a href="/ua">Ukraine</a></p><p class="current"><a href="/ae">United Arab Emirates</a></p><p><a href="/gb">United Kingdom</a></p><p><a href="/us">United States of America</a></p><p><a href="/uy">Uruguay</a></p><p class="current"><a href="/uz">Uzbekistan</a></p><p><a href="/ve">Venezuela</a></p><p class="current"><a href="/vn">Viet Nam</a></p><p><a href="/zm">Zambia</a></p><p><a href="/zw">Zimbabwe</a></p>
+        <p><a href="/">Whole world</a></p><p class="current"><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ao">Angola</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p class="current"><a href="/am">Armenia</a></p><p><a href="/aw">Aruba</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p class="current"><a href="/az">Azerbaijan</a></p><p><a href="/bs">Bahamas</a></p><p class="current"><a href="/bh">Bahrain</a></p><p class="current"><a href="/bd">Bangladesh</a></p><p><a href="/bb">Barbados</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bz">Belize</a></p><p><a href="/bj">Benin</a></p><p class="current"><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/br">Brazil</a></p><p class="current"><a href="/bn">Brunei Darussalam</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/cv">Cabo Verde</a></p><p class="current"><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/ky">Cayman Islands</a></p><p><a href="/cf">Central African Republic</a></p><p><a href="/td">Chad</a></p><p><a href="/cl">Chile</a></p><p class="current"><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cg">Congo</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p><a href="/cw">Curaçao</a></p><p class="current"><a href="/cy">Cyprus</a></p><p><a href="/cz">Czechia</a></p><p><a href="/dk">Denmark</a></p><p><a href="/dj">Djibouti</a></p><p><a href="/dm">Dominica</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/sv">El Salvador</a></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/er">Eritrea</a></p><p><a href="/ee">Estonia</a></p><p><a href="/sz">Eswatini</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fo">Faroe Islands</a></p><p><a href="/fj">Fiji</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/gf">French Guiana</a></p><p><a href="/ga">Gabon</a></p><p><a href="/gm">Gambia</a></p><p class="current"><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gh">Ghana</a></p><p><a href="/gi">Gibraltar</a></p><p><a href="/gr">Greece</a></p><p><a href="/gl">Greenland</a></p><p><a href="/gd">Grenada</a></p><p><a href="/gp">Guadeloupe</a></p><p><a href="/gu">Guam</a></p><p><a href="/gt">Guatemala</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gy">Guyana</a></p><p><a href="/ht">Haiti</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p class="current"><a href="/in">India</a></p><p class="current"><a href="/id">Indonesia</a></p><p class="current"><a href="/ir">Iran</a></p><p class="current"><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p class="current"><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p class="current"><a href="/jp">Japan</a></p><p class="current"><a href="/jo">Jordan</a></p><p class="current"><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/xk">Kosovo</a></p><p class="current"><a href="/kw">Kuwait</a></p><p class="current"><a href="/kg">Kyrgyzstan</a></p><p><a href="/lv">Latvia</a></p><p class="current"><a href="/lb">Lebanon</a></p><p><a href="/lr">Liberia</a></p><p><a href="/ly">Libya</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/mg">Madagascar</a></p><p class="current"><a href="/my">Malaysia</a></p><p class="current"><a href="/mv">Maldives</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mr">Mauritania</a></p><p><a href="/mu">Mauritius</a></p><p><a href="/yt">Mayotte</a></p><p><a href="/mx">Mexico</a></p><p><a href="/md">Moldova</a></p><p><a href="/mc">Monaco</a></p><p class="current"><a href="/mn">Mongolia</a></p><p><a href="/me">Montenegro</a></p><p><a href="/ma">Morocco</a></p><p><a href="/mz">Mozambique</a></p><p><a href="/na">Namibia</a></p><p class="current"><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ni">Nicaragua</a></p><p><a href="/ne">Niger</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/mk">North Macedonia</a></p><p><a href="/no">Norway</a></p><p class="current"><a href="/om">Oman</a></p><p class="current"><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/pg">Papua New Guinea</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p class="current"><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p><a href="/pr">Puerto Rico</a></p><p class="current"><a href="/qa">Qatar</a></p><p><a href="/re">Réunion</a></p><p><a href="/ro">Romania</a></p><p class="current"><a href="/ru">Russian Federation</a></p><p><a href="/rw">Rwanda</a></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a></p><p class="current"><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sc">Seychelles</a></p><p class="current"><a href="/sg">Singapore</a></p><p><a href="/sx">Sint Maarten</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a></p><p class="current"><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p class="current"><a href="/lk">Sri Lanka</a></p><p><a href="/sd">Sudan</a></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p class="current"><a href="/sy">Syrian Arab Republic</a></p><p class="current"><a href="/tw">Taiwan</a></p><p><a href="/tz">Tanzania</a></p><p class="current"><a href="/th">Thailand</a></p><p class="current"><a href="/tl">Timor-Leste</a></p><p><a href="/tg">Togo</a></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a></p><p class="current"><a href="/tr">Turkey</a></p><p><a href="/ug">Uganda</a></p><p><a href="/ua">Ukraine</a></p><p class="current"><a href="/ae">United Arab Emirates</a></p><p><a href="/gb">United Kingdom</a></p><p><a href="/us">United States of America</a></p><p><a href="/uy">Uruguay</a></p><p class="current"><a href="/uz">Uzbekistan</a></p><p><a href="/ve">Venezuela</a></p><p class="current"><a href="/vn">Viet Nam</a></p><p><a href="/zm">Zambia</a></p><p><a href="/zw">Zimbabwe</a></p>
     </div>
 </div>
 
