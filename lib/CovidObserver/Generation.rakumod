@@ -646,7 +646,8 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
     $max = log($max);
 
     my $dashboard = '';
-    for %countries.keys.sort -> $cc {
+    for %countries.sort: *.value<country> -> $c {
+        my $cc = $c.key;
         next if $cc ~~ /'/'/;
 
         my $confirmed = %totals{$cc}:exists ?? %totals{$cc}<confirmed> !! 0;
@@ -673,7 +674,7 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
             $dashboard ~= '<a href="/' ~ $cc.lc ~ '">' ~ $item ~ '</a>';
         }
         else {
-            $dashboard ~= $item;
+            #$dashboard ~= $item;
         }
     }
 

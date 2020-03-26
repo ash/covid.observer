@@ -89,6 +89,8 @@ sub parse-population() is export {
 }
 
 sub country2cc($country is copy, :$silent = False) is export {
+    $country.=trim();
+
     state %force =
         'United Arab Emirates' => 'AE',
         'North Macedonia' => 'MK',
@@ -115,8 +117,10 @@ sub country2cc($country is copy, :$silent = False) is export {
         'The Bahamas' => 'BS',
         'The Gambia' => 'GM',
         'Mainland China' => 'CN',
-        'UK' => 'GB';
+        'UK' => 'GB',
+        'Laos' => 'LA';
 
+    $country = 'Lao People\'s Democratic Republic' if $country eq 'Lao People\'s Dem. Rep.';
     $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
     $country = 'South Korea' if $country eq 'Republic of Korea';
     $country = 'Czech Republic' if $country eq 'Czechia';
@@ -173,7 +177,9 @@ sub cc2country($cc) is export {
         'CV' => 'Cabo Verde',
         'SL' => 'Sierra Leone',
         'CW' => 'Curaçao',
-        'SX' => 'Sint Maarten';
+        'SX' => 'Sint Maarten',
+        'LA' => 'Laos',
+        'FM' => 'Micronesia';
 
     given $cc {
         when %force{$cc}:exists {$country = %force{$cc}}
