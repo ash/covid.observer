@@ -113,12 +113,21 @@ sub country2cc($country is copy, :$silent = False) is export {
         'Curaçao' => 'CW',
         'Curacao' => 'CW',
         'Sint Maarten' => 'SX',
+        'Saint Martin' => 'SX',
         'Reunion' => 'RE',
         'The Bahamas' => 'BS',
         'The Gambia' => 'GM',
         'Mainland China' => 'CN',
         'UK' => 'GB',
-        'Laos' => 'LA';
+        'Laos' => 'LA',
+        'Macau' => 'MO',
+        'Ivory Coast' => 'CI',
+        'Saint Barthelemy' => 'BL',
+        'Saint Barthélemy' => 'BL',
+        'Palestine' => 'PS',
+        'Dem. Rep. of the Congo' => 'CD',
+        'Republic of the Congo' => 'CG',
+        'East Timor' => 'TL';
 
     $country = 'Lao People\'s Democratic Republic' if $country eq 'Lao People\'s Dem. Rep.';
     $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
@@ -129,9 +138,13 @@ sub country2cc($country is copy, :$silent = False) is export {
     $country = 'Bolivia' if $country ~~ /Bolivia/;
     $country = 'Tanzania' if $country eq 'United Rep. of Tanzania';
     $country = 'Micronesia' if $country ~~ /Micronesia/;
-
     $country = 'North Macedonia' if $country ~~ /'North Macedonia'/;
     $country = 'United Kingdom' if $country ~~ /'United Kingdom of Great Britain'/;
+    $country = 'Saint Martin' if $country ~~ / 'St. Martin' | 'St Martin' /;
+    $country = 'Hong Kong' if $country eq 'Hong Kong SAR';
+    $country = 'Palestine' if $country ~~ /Palestine|Palestinian/;
+    $country = 'Macau' if $country eq 'Macao SAR';
+    $country = 'French Guiana' if $country eq 'Fench Guiana'; # typo in the source data
 
     $country ~~ s/'Korea, South'/South Korea/;
     $country ~~ s:g/'*'//;
@@ -177,9 +190,13 @@ sub cc2country($cc) is export {
         'CV' => 'Cabo Verde',
         'SL' => 'Sierra Leone',
         'CW' => 'Curaçao',
-        'SX' => 'Sint Maarten',
+        'SX' => 'Saint Martin',
         'LA' => 'Laos',
-        'FM' => 'Micronesia';
+        'FM' => 'Micronesia',
+        'BL' => 'Saint Barthélemy',
+        'PS' => 'Palestine',
+        'CD' => 'Democratic Republic of the Congo',
+        'CG' => 'Republic of the Congo';
 
     given $cc {
         when %force{$cc}:exists {$country = %force{$cc}}

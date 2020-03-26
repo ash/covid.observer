@@ -68,6 +68,30 @@ sub read-covid-data() is export {
             if $country eq 'Netherlands' && $region {
                 $country = $region;
             }
+            elsif $country eq 'France' && $region {
+                $country = $region;
+            }
+            elsif $country eq 'Channel Islands' {
+                $country = 'United Kingdom';
+                $region = '';
+            }
+            elsif $country eq 'United Kingdom' && $region {
+                if $region eq 'Channel Islands' {
+                    $region = '';
+                }
+                else {
+                    $country = $region;
+                }
+            }
+            elsif $country eq 'Taipei and environs' {
+                $country = 'China';
+                $region = 'Taiwan';
+            }
+
+            if $region eq 'Wuhan Evacuee' {
+                # $country = 'US';
+                $region = ''; # Currently located in the US regardles nationality?
+            }
 
             my $cc = country2cc($country);
             next unless $cc;

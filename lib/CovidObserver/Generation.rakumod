@@ -176,7 +176,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
         !! sprintf('%i million', $population.round);
 
     my $proper-country-name = $country-name;
-    $proper-country-name = "the $country-name" if $cc ~~ /[US|GB|NL|DO|CZ|BS|GM]$/;
+    $proper-country-name = "the $country-name" if $cc ~~ /[US|GB|NL|DO|CZ|BS|GM|CD|CG]$/;
 
     my $per-region-link = per-region($cc);
     if $cc eq 'NL' {
