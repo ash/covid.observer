@@ -5,6 +5,7 @@ use JSON::Tiny;
 use CovidObserver::Population;
 use CovidObserver::Statistics;
 use CovidObserver::HTML;
+use JSON::Tiny;
 
 sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude?) is export {
     my $without-str = $exclude ?? " excluding %countries{$exclude}<country>" !! '';
@@ -130,8 +131,8 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
-            <p>Note 1. In calculations, the 3-day moving average is used.</p>
-            <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+            <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
+            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
         <div id="block11">
@@ -289,8 +290,8 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
-            <p>Note 1. In calculations, the 3-day moving average is used.</p>
-            <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+            <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
+            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
         <div id="block11">
@@ -498,8 +499,8 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
-            <p>Note 1. In calculations, the 3-day moving average is used.</p>
-            <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+            <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
+            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
         <div id="block11">
@@ -535,7 +536,7 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) is 
 
         <div id="block6">
             <h2>Confirmed population timeline</h2>
-            <p>On this graph, you see how the fraction (in %) of the confirmed infection cases changes over time in different countries or the US states.</p>
+            <p>On this graph, you see how the fraction (in %) of the confirmed infection cases changes over time in different countries.</p>
             <p>The almost-horizontal red line in the bottom part of the graph line displays <a href="/cn">China</a>. The number of confirmed infections in China almost stopped growing. Note the top line reflecting the most suffered province of China, <a href="/cn/hb">Hubei</a>, where the spread is also almost stopped.</p>
             <p>Click on the bar in the legend to turn the line off and on.</p>
             <br/>
@@ -549,8 +550,8 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) is 
                 </label>
                 <label for="logscale6"> Logarithmic scale</label>
             </p>
-            <p>1. Note that only countries and US states with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
-            <p>2. The line for the country is drawn only if it reaches at least 75% of the corresponding maximum parameter in China.</p>
+            <p>1. Note that only countries with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
+            <p>2. The line for the country is drawn only if it reaches at least 85% of the corresponding maximum parameter in China.</p>
             <script>
                 var ctx6 = document.getElementById('Chart6').getContext('2d');
                 chart[6] = new Chart(ctx6, $chart6data);
@@ -632,50 +633,92 @@ sub generate-scattered-age(%countries, %per-day, %totals, %daily-totals) is expo
 sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
     say "Generating dashboard overview...";
 
-    my $max = 0;
     my %delta;
+    my %confirmed;
+    my %failed;
+    my @max;
 
-    my @recent-dates = %daily-totals.keys.sort[*-2, *-1];
+    my @dates = %daily-totals.keys.sort;
+    my $days = @dates.elems - 2;
 
-    for %per-day.keys -> $cc {
-        my $delta = %per-day{$cc}{@recent-dates[1]}<confirmed> - %per-day{$cc}{@recent-dates[0]}<confirmed>;
-        %delta{$cc} = $delta;
+    my @display-dates;
 
-        $max = $delta if $delta > $max;
-    }
-    $max = log($max);
+    my @dashboard;
 
-    my $dashboard = '';
-    for %countries.sort: *.value<country> -> $c {
-        my $cc = $c.key;
-        next if $cc ~~ /'/'/;
+    for 2 .. $days + 1 -> $day {
+        my $day-max = 0;
 
-        my $confirmed = %totals{$cc}:exists ?? %totals{$cc}<confirmed> !! 0;
-        my $failed    = %totals{$cc}:exists ?? %totals{$cc}<failed>    !! 0;
+        @display-dates.push("'" ~ fmtdate(@dates[$day]) ~ "'");
 
-        my $level;
-        if %delta{$cc}:exists {
-            $level = %delta{$cc} ?? (10 * log(%delta{$cc}) / $max).round() !! 0;
-            $level = 0 if $level < 0;
+        my @recent-dates = %daily-totals.keys.sort[$day - 1, $day];
+
+        for %per-day.keys -> $cc {
+            next if $cc ~~ /'/'/;
+
+            my $prev = %per-day{$cc}{@recent-dates[0]};
+            my $curr = %per-day{$cc}{@recent-dates[1]};
+
+            %delta{$cc}     //= [];
+            %confirmed{$cc} //= [];
+            %failed{$cc}    //= [];
+            my $delta = 0;
+
+            if ($curr) {
+                my $curr-confirmed = $curr<confirmed>;
+                my $prev-confirmed = $prev<confirmed> // 0;
+
+                $delta = $curr-confirmed - $prev-confirmed;
+
+                $delta = 0 if $delta < 0;
+                %delta{$cc}.push($delta);
+
+                %confirmed{$cc}.push($curr-confirmed);
+                %failed{$cc}.push($curr<failed> // 0);
+            }
+            else {
+                %delta{$cc}.push(0);
+                %confirmed{$cc}.push(0);
+                %failed{$cc}.push(0);
+            }
+
+            $day-max = $delta if $delta > $day-max;
         }
-        else {
-            $level = 'N';
+        @max.push($day-max ?? log($day-max) !! 0);
+
+
+        my $dashboard = '';
+        for %countries.sort: *.value<country> -> $c {
+            my $cc = $c.key;
+            my $country = $c.value<country>;
+            next if $cc ~~ /'/'/;
+
+            my $have-data = %confirmed{$cc}:exists;
+
+            my $confirmed = $have-data ?? %confirmed{$cc}[*-1] !! 0;
+            my $failed    = $have-data ?? %failed{$cc}[*-1]    !! 0;
+            my $delta     = $have-data ?? %delta{$cc}[*-1]     !! 0;
+
+            my $level;
+            if $have-data && $confirmed {
+                $level = $delta ?? (10 * log($delta) / @max[*-1]).round() !! 0;
+                $level = 0 if $level < 0;
+            }
+            else {
+                $level = 'N';
+            }
+
+            my $item = '<div class="L' ~ $level ~ '"><p class="c">' ~ fmtnum($confirmed) ~ '</p><p class="d">' ~
+                    ($confirmed ?? fmtnum($failed) !! '') ~ '</p><h5>' ~ $country ~ '</h5></div>';
+
+            if $confirmed {
+                $dashboard ~= '<a href="/' ~ $cc.lc ~ '">' ~ $item ~ '</a>';
+            }
+            else {
+                $dashboard ~= $item;
+            }
         }
 
-        my $item = qq:to/ITEM/;
-            <div class="L{$level}">
-                <p class="c">{fmtnum($confirmed)}</p>
-                <p class="d">{$confirmed ?? fmtnum($failed) !! ''}</p>
-                <h5>{%countries{$cc}<country>}</h5>
-            </div>
-            ITEM
-
-        if $confirmed {
-            $dashboard ~= '<a href="/' ~ $cc.lc ~ '">' ~ $item ~ '</a>';
-        }
-        else {
-            #$dashboard ~= $item;
-        }
+        @dashboard.push($dashboard);
     }
 
     my $country-list = country-list(%countries);
@@ -687,11 +730,48 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
         <div id="block13">
             <p>Each cell here represents a country, and the colour of the cell reflects the number of new confirmed cases happened since yesterday.</p>
             <p>The numbers shown are the total number of confirmed infections and the number of people failed to recover. Click on the cell to get more information about the country.</p>
-            <div class="dashboard">
-                $dashboard
+            <div class="dashboard" id="Dashboard">
+                @dashboard[*-1]
             </div>
             <div class="clear"></div>
+
+            <div class="slidecontainer">
+                <input type="range" min="1" max="$days" value="$days" class="slider" id="sliderInput">
+                <h2><span id="currentDate"></span></h2>
+                <input type="button" value="►" style="font-size: 400%; cursor: pointer;" onclick="PlayOverview(0)"/>
+            </div>
         </div>
+
+        <script>
+            var dashboard = {to-json(@dashboard)};
+
+            var dates = \[{@display-dates.join(', ')}\];
+
+            var slider = document.getElementById("sliderInput");
+            var output = document.getElementById("currentDate");
+            output.innerHTML = dates[dates.length - 1];
+
+            var dashboardDiv = document.getElementById('Dashboard');
+
+            slider.oninput = function() \{
+                var n = this.value - 1;
+                output.innerHTML = dates[n];
+                dashboardDiv.innerHTML = dashboard[n];
+            \}
+
+            function PlayOverview(n) \{
+                slider.value = n;
+
+                if (slider.max == slider.value) return;
+
+                setTimeout(function () \{
+                    output.innerHTML = dates[n];
+                    dashboardDiv.innerHTML = dashboard[n];
+
+                    PlayOverview(n + 1);
+                \}, 250);
+            \}
+        </script>
 
         $continent-list
         $country-list

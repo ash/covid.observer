@@ -69,7 +69,7 @@ sub read-covid-data() is export {
                 $country = $region;
             }
             elsif $country eq 'France' && $region {
-                $country = $region;
+                $country = $region if $date ne "03/23/20"; # Wrongly mixed with French Polynesia data for this date
             }
             elsif $country eq 'Channel Islands' {
                 $country = 'United Kingdom';

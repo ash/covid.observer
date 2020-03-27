@@ -115,7 +115,9 @@ sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) is export {
     my %data;
     for %date-cc.keys.sort -> $date {
         for %date-cc{$date}.keys -> $cc {
+            next if $cc ~~ /'/'/ && $cc ne 'CN/HB';
             next unless %countries{$cc};
+
             my $confirmed = %date-cc{$date}{$cc} || 0;
             %data{$cc}{$date} = sprintf('%.6f', 100 * $confirmed / (1_000_000 * +%countries{$cc}<population>));
 
@@ -135,7 +137,7 @@ sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) is export {
             next unless %max-cc{$cc};
             next if %countries{$cc}<population> < 1;
 
-            next if %max-cc{$cc} < 0.75 * %max-cc<CN>;
+            next if %max-cc{$cc} < 0.85 * %max-cc<CN>;
 
             %dataset{$cc} = [] unless %dataset{$cc};
             %dataset{$cc}.push(%data{$cc}{$date});
@@ -859,15 +861,15 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
     my $skip-days-recovered = $skip-days;
     my $skip-days-active    = $skip-days;
 
-    my $avg-width = 3;
+    my $avg-width = 1;
 
     for $avg-width ..^ @dates -> $index {
         @labels.push(@dates[$index]);
 
         my $day0 = @dates[$index];
         my $day1 = @dates[$index - 1];
-        my $day2 = @dates[$index - 2];
-        my $day3 = @dates[$index - 3];
+        # my $day2 = @dates[$index - 2];
+        # my $day3 = @dates[$index - 3];
 
         # Skip the first days in the graph to avoid a huge peak after first data appeared;
         $skip-days-confirmed-- if %data{$day0}<confirmed> && $skip-days-confirmed;
@@ -875,26 +877,34 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
         $skip-days-recovered-- if %data{$day0}<recovered> && $skip-days-recovered;
         $skip-days-active--    if [-] %data{$day0}<confirmed failed recovered> && $skip-days-active;
 
-        my $r = (%data{$day0}<confirmed> + %data{$day1}<confirmed> + %data{$day2}<confirmed>) / 3;
-        my $l = (%data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed>) / 3;
+        # my $r = (%data{$day0}<confirmed> + %data{$day1}<confirmed> + %data{$day2}<confirmed>) / 3;
+        # my $l = (%data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed>) / 3;
+        my $r = %data{$day0}<confirmed>;
+        my $l = %data{$day1}<confirmed>;
         my $delta = $r - $l;
         my $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
         @confirmed.push($skip-days-confirmed ?? 0 !! $speed);
 
-        $r = (%data{$day0}<failed> + %data{$day1}<failed> + %data{$day2}<failed>) / 3;
-        $l = (%data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed>) / 3;
+        # $r = (%data{$day0}<failed> + %data{$day1}<failed> + %data{$day2}<failed>) / 3;
+        # $l = (%data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed>) / 3;
+        $r = %data{$day0}<failed>;
+        $l = %data{$day1}<failed>;
         $delta = $r - $l;
         $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
         @failed.push($skip-days-failed ?? 0 !! $speed);
 
-        $r = (%data{$day0}<recovered> + %data{$day1}<recovered> + %data{$day2}<recovered>) / 3;
-        $l = (%data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered>) / 3;
+        # $r = (%data{$day0}<recovered> + %data{$day1}<recovered> + %data{$day2}<recovered>) / 3;
+        # $l = (%data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered>) / 3;
+        $r = %data{$day0}<recovered>;
+        $l = %data{$day1}<recovered>;
         $delta = $r - $l;
         $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
         @recovered.push($skip-days-recovered ?? 0 !! $speed);
 
-        $r = ([-] %data{$day0}<confirmed failed recovered> + [-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered>) / 3;
-        $l = ([-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> + [-] %data{$day3}<confirmed failed recovered>) / 3;
+        # $r = ([-] %data{$day0}<confirmed failed recovered> + [-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered>) / 3;
+        # $l = ([-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> + [-] %data{$day3}<confirmed failed recovered>) / 3;
+        $r = [-] %data{$day0}<confirmed failed recovered>;
+        $l = [-] %data{$day1}<confirmed failed recovered>;
         $delta = $r - $l;
         $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
         @active.push($skip-days-active ?? 0 !! $speed);
@@ -969,15 +979,17 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
 }
 
 sub moving-average(@in, $width = 3) {
-    my @out;
+    return @in;
 
-    @out.push(0) for ^$width;
-    for $width ..^ @in -> $index {
-        my $avg = [+] @in[$index - $width .. $index];
-        @out.push($avg / $width);
-    }
+    # my @out;
 
-    return @out;
+    # @out.push(0) for ^$width;
+    # for $width ..^ @in -> $index {
+    #     my $avg = [+] @in[$index - $width .. $index];
+    #     @out.push($avg / $width);
+    # }
+
+    # return @out;
 }
 
 sub trim-data(@data, $trim-length) {

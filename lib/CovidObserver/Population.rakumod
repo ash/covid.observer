@@ -127,7 +127,8 @@ sub country2cc($country is copy, :$silent = False) is export {
         'Palestine' => 'PS',
         'Dem. Rep. of the Congo' => 'CD',
         'Republic of the Congo' => 'CG',
-        'East Timor' => 'TL';
+        'East Timor' => 'TL',
+        'West Bank and Gaza' => 'IL';
 
     $country = 'Lao People\'s Democratic Republic' if $country eq 'Lao People\'s Dem. Rep.';
     $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
