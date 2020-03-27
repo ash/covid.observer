@@ -203,6 +203,9 @@ a[target="_blank"]::after {
     background: #f3f3f3;
     vertical-align: top;
 }
+#block13 {
+    margin-bottom: 10%;
+}
 #block13 div.dashboard {
     padding-left: 2%;
     padding-right: 2%;
@@ -323,6 +326,40 @@ div.clear {
     color: white;
 }
 
+.slidecontainer {
+    width: 100%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+.slider:hover {
+    opacity: 1;
+}
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+.slider::-moz-range-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
 
 @media screen and (max-width: 850px) {
     h1 {
