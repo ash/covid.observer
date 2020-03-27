@@ -16,7 +16,7 @@
 
     <script src="/Chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/main.css?v=12">
+    <link rel="stylesheet" type="text/css" href="/main.css?v=14">
     <style>
         
     </style>
@@ -38,6 +38,8 @@ function log_scale(input, n) {
         <a href="/">Home</a>
         |
         New:
+        <a href="/overview">World overview</a>
+        |
         <span class="desktop">
             <a href="#table">Table data</a>
             |
@@ -49,7 +51,6 @@ function log_scale(input, n) {
         <a href="#new">New daily cases</a>
     </p>
     <p>
-        New:
         <a href="/cn#regions">China provinces</a>
         |
         <a href="/-cn">World without China</a>
@@ -89,7 +90,7 @@ function log_scale(input, n) {
     <div id="percent"><&thinsp;0.001&thinsp;%</div>
     <p>This is the part of confirmed infection cases against the total 46 million of its population.</p>
     <div class="affected">
-        Affected 1 of every 261,172
+        Affected 1 of every 258,237
     </div>
     <div class="failed">
         Failed to recover 1 of every 22,983,120
@@ -105,9 +106,9 @@ function log_scale(input, n) {
         chart[1] = new Chart(ctx1, {
     "type": "pie",
     "data": {
-        "labels": ["Recovered 98%", "Failed to recover 1%", "Active cases 1%"],
+        "labels": ["Recovered 97%", "Failed to recover 1%", "Active cases 2%"],
         "datasets": [
-            { "label" : "Recovery statistics", "data" : [ 172, 2, 2 ], "backgroundColor" : [ "green", "red", "orange" ] }
+            { "label" : "Recovery statistics", "backgroundColor" : [ "green", "red", "orange" ], "data" : [ 172, 2, 4 ] }
         ]
     },
     "options": {
@@ -120,11 +121,11 @@ function log_scale(input, n) {
 
 <div id="block9">
     <a name="raw"></a>
-    <h2>Raw Numbers on March 24<sup>th</sup>, 2020</h2>
-    <p class="confirmed"><span>176</span><sup>confirmed</sup></p>
+    <h2>Raw Numbers on March 26<sup>th</sup>, 2020</h2>
+    <p class="confirmed"><span>178</span><sup>confirmed</sup></p>
     <p class="recovered"><span>172</span><sup>recovered</sup></p>
     <p class="failed"><span>2</span><sup>failed</sup></p>
-    <p class="active"><span>2</span><sup>active</sup></p>
+    <p class="active"><span>4</span><sup>active</sup></p>
 </div>
 
 <div id="block3">
@@ -145,11 +146,11 @@ function log_scale(input, n) {
         chart[2] = new Chart(ctx2, {
     "type": "bar",
     "data": {
-        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24" ],
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24", "2020-03-25", "2020-03-26" ],
         "datasets": [
-            { "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ], "backgroundColor" : "red", "label" : "Failed to recover" },
-            { "backgroundColor" : "orange", "data" : [ 1, 2, 5, 11, 16, 26, 44, 55, 70, 82, 91, 102, 112, 117, 123, 126, 126, 121, 123, 130, 133, 128, 129, 126, 126, 129, 124, 115, 111, 93, 76, 65, 57, 48, 43, 28, 22, 16, 15, 9, 4, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2 ], "label" : "Active cases" },
-            { "label" : "Recovered", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 5, 5, 5, 7, 12, 17, 18, 19, 20, 26, 27, 36, 42, 42, 47, 57, 60, 79, 96, 107, 115, 124, 129, 144, 150, 156, 157, 163, 168, 169, 169, 169, 170, 170, 170, 170, 170, 170, 170, 170, 172, 172, 172, 172, 172, 172, 172, 172, 172, 172, 172 ], "backgroundColor" : "green" }
+            { "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ], "backgroundColor" : "red", "label" : "Failed to recover" },
+            { "label" : "Active cases", "data" : [ 1, 2, 5, 11, 16, 26, 44, 55, 70, 82, 91, 102, 112, 117, 123, 126, 126, 121, 123, 130, 133, 128, 129, 126, 126, 129, 124, 115, 111, 93, 76, 65, 57, 48, 43, 28, 22, 16, 15, 9, 4, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4 ], "backgroundColor" : "orange" },
+            { "label" : "Recovered", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 5, 5, 5, 7, 12, 17, 18, 19, 20, 26, 27, 36, 42, 42, 47, 57, 60, 79, 96, 107, 115, 124, 129, 144, 150, 156, 157, 163, 168, 169, 169, 169, 170, 170, 170, 170, 170, 170, 170, 170, 172, 172, 172, 172, 172, 172, 172, 172, 172, 172, 172, 172, 172 ], "backgroundColor" : "green" }
         ]
     },
     "options": {
@@ -188,12 +189,12 @@ function log_scale(input, n) {
         chart[10] = new Chart(ctx10, {
     "type": "bar",
     "data": {
-        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24" ],
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24", "2020-03-25", "2020-03-26" ],
         "datasets": [
-            { "backgroundColor" : "red", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], "label" : "Failed to recover" },
-            { "label" : "Active cases", "backgroundColor" : "orange", "data" : [ 0, 1, 3, 6, 5, 10, 18, 11, 15, 12, 9, 11, 10, 5, 6, 3, 0, -5, 2, 7, 3, -5, 1, -3, 0, 3, -5, -9, -4, -18, -17, -11, -8, -9, -5, -15, -6, -6, -1, -6, -5, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, -2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0 ] },
-            { "label" : "Recovered", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 0, 0, 2, 5, 5, 1, 1, 1, 6, 1, 9, 6, 0, 5, 10, 3, 19, 17, 11, 8, 9, 5, 15, 6, 6, 1, 6, 5, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], "backgroundColor" : "green" },
-            { "data" : [ 0, 1, 3, 6, 5, 10, 18, 11, 15, 13, 10, 12, 12, 5, 6, 5, 5, 0, 3, 8, 4, 1, 2, 6, 6, 3, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0 ], "backgroundColor" : "lightblue", "label" : "Confirmed" }
+            { "label" : "Failed to recover", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], "backgroundColor" : "red" },
+            { "label" : "Active cases", "data" : [ 0, 1, 3, 6, 5, 10, 18, 11, 15, 12, 9, 11, 10, 5, 6, 3, 0, -5, 2, 7, 3, -5, 1, -3, 0, 3, -5, -9, -4, -18, -17, -11, -8, -9, -5, -15, -6, -6, -1, -6, -5, -1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, -2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ], "backgroundColor" : "orange" },
+            { "label" : "Recovered", "backgroundColor" : "green", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 0, 0, 2, 5, 5, 1, 1, 1, 6, 1, 9, 6, 0, 5, 10, 3, 19, 17, 11, 8, 9, 5, 15, 6, 6, 1, 6, 5, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] },
+            { "data" : [ 0, 1, 3, 6, 5, 10, 18, 11, 15, 13, 10, 12, 12, 5, 6, 5, 5, 0, 3, 8, 4, 1, 2, 6, 6, 3, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ], "backgroundColor" : "lightblue", "label" : "Confirmed" }
         ]
     },
     "options": {
@@ -223,12 +224,12 @@ function log_scale(input, n) {
         chart[7] = new Chart(ctx7, {
     "type": "line",
     "data": {
-        "labels": [ "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24" ],
+        "labels": [ "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24", "2020-03-25", "2020-03-26" ],
         "datasets": [
-            { "borderColor" : "lightblue", "fill" : false, "label" : "Confirmed total", "lineTension" : 0, "data" : [ 110.223333, 83.673333, 69.48, 55.296667, 40.633333, 30.26, 22.56, 17.936667, 14.076667, 10.786667, 8.146667, 5.913333, 4.336667, 3.763333, 3.536667, 3.676667, 3.536667, 3.303333, 3.126667, 3.18, 3.266667, 2.88, 1.953333, 1.116667, 0.646667, 0.513333, 0.45, 0.256667, 0.126667, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.126667, 0.253333, 0.38, 0.38, 0.253333, 0.126667, 0, 0, 0 ] },
-            { "fill" : false, "lineTension" : 0, "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 66.666667, 88.89, 95.556667, 95.556667, 28.89, 6.666667, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], "label" : "Failed to recover", "borderColor" : "red" },
-            { "borderColor" : "orange", "label" : "Active cases", "lineTension" : 0, "data" : [ 45.25, 55.636667, 61.886667, 51.036667, 49.43, 39.543333, 24.203333, 20.65, 15.54, 11.69, 9.906667, 6.903333, 3.816667, 1.14, 0.036667, 1.07, 1.806667, 1.87, 1.596667, -0.953333, -1.69, 0.266667, -1.216667, -2.783333, -3.886667, -9.77, -14.26, -16.423333, -19.076667, -18.713333, -16.076667, -21.81, -23.936667, -26.316667, -24.746667, -24.066667, -29.293333, -25.483333, -23.966667, -14.443333, -7.036667, -3.703333, -3.703333, -3.703333, 0, 0, 0, 0, -8.333333, -8.333333, 2.776667, 2.776667, 11.11, 11.11, 0, 0, 0 ], "fill" : false },
-            { "borderColor" : "green", "fill" : false, "label" : "Recovered", "data" : [ 0, 0, 0, 0, 66.666667, 100, 122.223333, 132.223333, 70.683333, 41.793333, 33.296667, 39.963333, 45.023333, 45.543333, 33.67, 21.683333, 15.6, 17.943333, 22.083333, 22.166667, 21.12, 17.63, 15.746667, 17.486667, 21.063333, 23.913333, 24.06, 20.493333, 15.98, 11.94, 9.866667, 9.056667, 7.9, 6.21, 4.866667, 3.56, 2.996667, 2.126667, 1.353333, 0.6, 0.266667, 0.2, 0.133333, 0.066667, 0, 0, 0.13, 0.26, 0.39, 0.39, 0.26, 0.13, 0, 0, 0, 0, 0 ], "lineTension" : 0 }
+            { "fill" : false, "data" : [ "45.45", "62.50", "69.23", "25.00", "27.27", "18.57", "12.05", "12.90", "11.43", "4.27", "4.92", "3.91", "3.76", "0.00", "2.17", "5.67", "2.68", "0.65", "1.30", "3.85", "3.70", "1.79", "0.00", "0.58", "0.00", "1.16", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "1.15", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "1.14" ], "lineTension" : 0, "label" : "Confirmed total", "borderColor" : "lightblue" },
+            { "fill" : false, "borderColor" : "red", "lineTension" : 0, "label" : "Failed to recover", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "100.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00" ] },
+            { "fill" : false, "borderColor" : "orange", "data" : [ "45.45", "62.50", "69.23", "25.00", "27.27", "17.14", "10.98", "12.09", "9.80", "4.46", "5.13", "2.44", "0.00", "-3.97", "1.65", "5.69", "2.31", "-3.76", "0.78", "-2.33", "0.00", "2.38", "-3.88", "-7.26", "-3.48", "-16.22", "-18.28", "-14.47", "-12.31", "-15.79", "-10.42", "-34.88", "-21.43", "-27.27", "-6.25", "-40.00", "-55.56", "-25.00", "0.00", "0.00", "-33.33", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "-100.00", 0, 0, "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "100.00" ], "lineTension" : 0, "label" : "Active cases" },
+            { "data" : [ 0, 0, 0, 0, 0, 0, "100.00", "50.00", "66.67", "0.00", "0.00", "40.00", "71.43", "41.67", "5.88", "5.56", "5.26", "30.00", "3.85", "33.33", "16.67", "0.00", "11.90", "21.28", "5.26", "31.67", "21.52", "11.46", "7.48", "7.83", "4.03", "11.63", "4.17", "4.00", "0.64", "3.82", "3.07", "0.60", "0.00", "0.00", "0.59", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "1.18", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00" ], "lineTension" : 0, "label" : "Recovered", "borderColor" : "green", "fill" : false }
         ]
     },
     "options": {
@@ -242,8 +243,8 @@ function log_scale(input, n) {
 }
 );
     </script>
-    <p>Note 1. In calculations, the 3-day moving average is used.</p>
-    <p>Note 2. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+    <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
+    <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
 </div>
 
 <div id="block11">
@@ -261,9 +262,37 @@ function log_scale(input, n) {
             <th>Recovery<br/>rate, %</th>
             <th>Mortality<br/>rate, %</th>
             <th>Affected<br/>population, %</th>
+            <th>1 confirmed<br/>per every</th>
+            <th>1 failed<br/>per every</th>
             </tr>
         </thead>
     <tbody>
+<tr>
+    <td class="date">Mar 26<sup>th</sup></td>
+    <td>178</td>
+    <td>1.1&thinsp;%</td>
+    <td>172</td>
+    <td>2</td>
+    <td>4</td>
+    <td>96.6&thinsp;%</td>
+    <td>1.1&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>258,237</td>
+    <td>22,983,120</td>
+</tr>
+<tr>
+    <td class="date">Mar 25<sup>th</sup></td>
+    <td>176</td>
+    <td>0.0&thinsp;%</td>
+    <td>172</td>
+    <td>2</td>
+    <td>2</td>
+    <td>97.7&thinsp;%</td>
+    <td>1.1&thinsp;%</td>
+    <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>261,172</td>
+    <td>22,983,120</td>
+</tr>
 <tr>
     <td class="date">Mar 24<sup>th</sup></td>
     <td>176</td>
@@ -274,6 +303,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>261,172</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 23<sup>th</sup></td>
@@ -285,6 +316,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>261,172</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 22<sup>nd</sup></td>
@@ -296,6 +329,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>261,172</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 21<sup>st</sup></td>
@@ -307,6 +342,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>261,172</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 20<sup>th</sup></td>
@@ -318,6 +355,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>261,172</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 19<sup>th</sup></td>
@@ -329,6 +368,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>261,172</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 18<sup>th</sup></td>
@@ -340,6 +381,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>261,172</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 17<sup>th</sup></td>
@@ -351,6 +394,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>261,172</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 16<sup>th</sup></td>
@@ -362,6 +407,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>261,172</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 15<sup>th</sup></td>
@@ -373,6 +420,8 @@ function log_scale(input, n) {
     <td>98.9&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 14<sup>th</sup></td>
@@ -384,6 +433,8 @@ function log_scale(input, n) {
     <td>98.9&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 13<sup>th</sup></td>
@@ -395,6 +446,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 12<sup>th</sup></td>
@@ -406,6 +459,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 11<sup>th</sup></td>
@@ -417,6 +472,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 10<sup>th</sup></td>
@@ -428,6 +485,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 9<sup>th</sup></td>
@@ -439,6 +498,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 8<sup>th</sup></td>
@@ -450,6 +511,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 7<sup>th</sup></td>
@@ -461,6 +524,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 6<sup>th</sup></td>
@@ -472,6 +537,8 @@ function log_scale(input, n) {
     <td>97.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 5<sup>th</sup></td>
@@ -483,6 +550,8 @@ function log_scale(input, n) {
     <td>97.1&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 4<sup>th</sup></td>
@@ -494,6 +563,8 @@ function log_scale(input, n) {
     <td>97.1&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 3<sup>rd</sup></td>
@@ -505,6 +576,8 @@ function log_scale(input, n) {
     <td>97.1&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 2<sup>nd</sup></td>
@@ -516,6 +589,8 @@ function log_scale(input, n) {
     <td>96.6&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Mar 1<sup>st</sup></td>
@@ -527,6 +602,8 @@ function log_scale(input, n) {
     <td>93.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Feb 29<sup>th</sup></td>
@@ -538,6 +615,8 @@ function log_scale(input, n) {
     <td>90.2&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Feb 28<sup>th</sup></td>
@@ -549,6 +628,8 @@ function log_scale(input, n) {
     <td>89.7&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Feb 27<sup>th</sup></td>
@@ -560,6 +641,8 @@ function log_scale(input, n) {
     <td>86.2&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Feb 26<sup>th</sup></td>
@@ -571,6 +654,8 @@ function log_scale(input, n) {
     <td>82.8&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Feb 25<sup>th</sup></td>
@@ -582,6 +667,8 @@ function log_scale(input, n) {
     <td>74.1&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Feb 24<sup>th</sup></td>
@@ -593,6 +680,8 @@ function log_scale(input, n) {
     <td>71.3&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Feb 23<sup>th</sup></td>
@@ -604,6 +693,8 @@ function log_scale(input, n) {
     <td>66.1&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Feb 22<sup>nd</sup></td>
@@ -615,6 +706,8 @@ function log_scale(input, n) {
     <td>61.5&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Feb 21<sup>st</sup></td>
@@ -626,6 +719,8 @@ function log_scale(input, n) {
     <td>55.2&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Feb 20<sup>th</sup></td>
@@ -637,6 +732,8 @@ function log_scale(input, n) {
     <td>45.4&thinsp;%</td>
     <td>1.1&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>264,174</td>
+    <td>22,983,120</td>
 </tr>
 <tr>
     <td class="date">Feb 19<sup>th</sup></td>
@@ -648,6 +745,8 @@ function log_scale(input, n) {
     <td>34.9&thinsp;%</td>
     <td>0.6&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>267,246</td>
+    <td>45,966,239</td>
 </tr>
 <tr>
     <td class="date">Feb 18<sup>th</sup></td>
@@ -659,6 +758,8 @@ function log_scale(input, n) {
     <td>33.1&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>267,246</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 17<sup>th</sup></td>
@@ -670,6 +771,8 @@ function log_scale(input, n) {
     <td>27.5&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>268,808</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 16<sup>th</sup></td>
@@ -681,6 +784,8 @@ function log_scale(input, n) {
     <td>24.6&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>268,808</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 15<sup>th</sup></td>
@@ -692,6 +797,8 @@ function log_scale(input, n) {
     <td>25.0&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>273,609</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 14<sup>th</sup></td>
@@ -703,6 +810,8 @@ function log_scale(input, n) {
     <td>22.2&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>283,742</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 13<sup>th</sup></td>
@@ -714,6 +823,8 @@ function log_scale(input, n) {
     <td>17.3&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>294,655</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 12<sup>th</sup></td>
@@ -725,6 +836,8 @@ function log_scale(input, n) {
     <td>16.9&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>298,482</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 11<sup>th</sup></td>
@@ -736,6 +849,8 @@ function log_scale(input, n) {
     <td>13.1&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>300,433</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 10<sup>th</sup></td>
@@ -747,6 +862,8 @@ function log_scale(input, n) {
     <td>12.8&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>308,498</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 9<sup>th</sup></td>
@@ -758,6 +875,8 @@ function log_scale(input, n) {
     <td>12.8&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>326,002</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 8<sup>th</sup></td>
@@ -769,6 +888,8 @@ function log_scale(input, n) {
     <td>12.3&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>333,089</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 7<sup>th</sup></td>
@@ -780,6 +901,8 @@ function log_scale(input, n) {
     <td>8.7&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>333,089</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 6<sup>th</sup></td>
@@ -791,6 +914,8 @@ function log_scale(input, n) {
     <td>5.3&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>345,611</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 5<sup>th</sup></td>
@@ -802,6 +927,8 @@ function log_scale(input, n) {
     <td>3.9&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>359,111</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 4<sup>th</sup></td>
@@ -813,6 +940,8 @@ function log_scale(input, n) {
     <td>4.1&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>376,772</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 3<sup>rd</sup></td>
@@ -824,6 +953,8 @@ function log_scale(input, n) {
     <td>4.3&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>392,874</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 2<sup>nd</sup></td>
@@ -835,6 +966,8 @@ function log_scale(input, n) {
     <td>2.9&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>437,774</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Feb 1<sup>st</sup></td>
@@ -846,6 +979,8 @@ function log_scale(input, n) {
     <td>2.2&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>494,261</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Jan 31<sup>st</sup></td>
@@ -857,6 +992,8 @@ function log_scale(input, n) {
     <td>1.2&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>553,810</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Jan 30<sup>th</sup></td>
@@ -868,6 +1005,8 @@ function log_scale(input, n) {
     <td>0.0&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>656,661</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Jan 29<sup>th</sup></td>
@@ -879,6 +1018,8 @@ function log_scale(input, n) {
     <td>0.0&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>835,750</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Jan 28<sup>th</sup></td>
@@ -890,6 +1031,8 @@ function log_scale(input, n) {
     <td>0.0&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>1,044,687</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Jan 27<sup>th</sup></td>
@@ -901,6 +1044,8 @@ function log_scale(input, n) {
     <td>0.0&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>1,767,932</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Jan 26<sup>th</sup></td>
@@ -912,6 +1057,8 @@ function log_scale(input, n) {
     <td>0.0&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>2,872,890</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Jan 25<sup>th</sup></td>
@@ -923,6 +1070,8 @@ function log_scale(input, n) {
     <td>0.0&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>4,178,749</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Jan 24<sup>th</sup></td>
@@ -934,6 +1083,8 @@ function log_scale(input, n) {
     <td>0.0&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>9,193,248</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Jan 23<sup>th</sup></td>
@@ -945,6 +1096,8 @@ function log_scale(input, n) {
     <td>0.0&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>22,983,120</td>
+    <td>—</td>
 </tr>
 <tr>
     <td class="date">Jan 22<sup>nd</sup></td>
@@ -956,6 +1109,8 @@ function log_scale(input, n) {
     <td>0.0&thinsp;%</td>
     <td>0.0&thinsp;%</td>
     <td>&lt;&thinsp;0.001&thinsp;%</td>
+    <td>45,966,239</td>
+    <td>—</td>
 </tr>
 </tbody></table>
 </div>
@@ -977,7 +1132,7 @@ function log_scale(input, n) {
     <p><a href="/cn/#">Cumulative China statistics</a></p>
     <p><a href="/cn/-hb">China excluding Hubei</a></p>
     <div id="countries-list">
-        <p><a href="/cn/ah">Anhui</a></p><p><a href="/cn/bj">Beijing</a></p><p><a href="/cn/cq">Chongqing</a></p><p><a href="/cn/fj">Fujian</a></p><p><a href="/cn/gs">Gansu</a></p><p><a href="/cn/gd">Guangdong</a></p><p><a href="/cn/gx">Guangxi Zhuangzu</a></p><p><a href="/cn/gz">Guizhou</a></p><p><a href="/cn/hi">Hainan</a></p><p><a href="/cn/he">Hebei</a></p><p><a href="/cn/hl">Heilongjiang</a></p><p><a href="/cn/ha">Henan</a></p><p><a href="/cn/hk">Hong Kong</a></p><p><a href="/cn/hb">Hubei</a></p><p><a href="/cn/hn">Hunan</a></p><p><a href="/cn/js">Jiangsu</a></p><p><a href="/cn/jx">Jiangxi</a></p><p><a href="/cn/jl">Jilin</a></p><p><a href="/cn/ln">Liaoning</a></p><p><a href="/cn/mo">Macao</a></p><p><a href="/cn/nm">Nei Mongol</a></p><p><a href="/cn/nx">Ningxia Huizi</a></p><p><a href="/cn/qh">Qinghai</a></p><p><a href="/cn/sn">Shaanxi</a></p><p><a href="/cn/sd">Shandong</a></p><p><a href="/cn/sh">Shanghai</a></p><p><a href="/cn/sx">Shanxi</a></p><p><a href="/cn/sc">Sichuan</a></p><p><a href="/cn/tj">Tianjin</a></p><p><a href="/cn/xj">Xinjiang Uygur</a></p><p><a href="/cn/xz">Xizang</a></p><p class="current"><a href="/cn/yn">Yunnan</a></p><p><a href="/cn/zj">Zhejiang</a></p>
+        <p><a href="/cn/ah">Anhui</a></p><p><a href="/cn/bj">Beijing</a></p><p><a href="/cn/cq">Chongqing</a></p><p><a href="/cn/fj">Fujian</a></p><p><a href="/cn/gs">Gansu</a></p><p><a href="/cn/gd">Guangdong</a></p><p><a href="/cn/gx">Guangxi Zhuangzu</a></p><p><a href="/cn/gz">Guizhou</a></p><p><a href="/cn/hi">Hainan</a></p><p><a href="/cn/he">Hebei</a></p><p><a href="/cn/hl">Heilongjiang</a></p><p><a href="/cn/ha">Henan</a></p><p><a href="/cn/hk">Hong Kong</a></p><p><a href="/cn/hb">Hubei</a></p><p><a href="/cn/hn">Hunan</a></p><p><a href="/cn/js">Jiangsu</a></p><p><a href="/cn/jx">Jiangxi</a></p><p><a href="/cn/jl">Jilin</a></p><p><a href="/cn/ln">Liaoning</a></p><p><a href="/cn/mo">Macao</a></p><p><a href="/cn/nm">Nei Mongol</a></p><p><a href="/cn/nx">Ningxia Huizi</a></p><p><a href="/cn/qh">Qinghai</a></p><p><a href="/cn/sn">Shaanxi</a></p><p><a href="/cn/sd">Shandong</a></p><p><a href="/cn/sh">Shanghai</a></p><p><a href="/cn/sx">Shanxi</a></p><p><a href="/cn/sc">Sichuan</a></p><p><a href="/cn/tw">Taiwan</a></p><p><a href="/cn/tj">Tianjin</a></p><p><a href="/cn/xj">Xinjiang Uygur</a></p><p><a href="/cn/xz">Xizang</a></p><p class="current"><a href="/cn/yn">Yunnan</a></p><p><a href="/cn/zj">Zhejiang</a></p>
     </div>
 
     <a name="countries"></a>
@@ -987,7 +1142,7 @@ function log_scale(input, n) {
     <p><a href="/countries">More statistics on countries</a></p>
     <p><a href="/vs-china">Countries vs China</a></p>
     <div id="countries-list">
-        <p><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ao">Angola</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p><a href="/am">Armenia</a></p><p><a href="/aw">Aruba</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p><a href="/az">Azerbaijan</a></p><p><a href="/bs">Bahamas</a></p><p><a href="/bh">Bahrain</a></p><p><a href="/bd">Bangladesh</a></p><p><a href="/bb">Barbados</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bz">Belize</a></p><p><a href="/bj">Benin</a></p><p><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/br">Brazil</a></p><p><a href="/bn">Brunei Darussalam</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/cv">Cabo Verde</a></p><p><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/ky">Cayman Islands</a></p><p><a href="/cf">Central African Republic</a></p><p><a href="/td">Chad</a></p><p><a href="/cl">Chile</a></p><p class="current"><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cg">Congo</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p><a href="/cw">Curaçao</a></p><p><a href="/cy">Cyprus</a></p><p><a href="/cz">Czechia</a></p><p><a href="/dk">Denmark</a></p><p><a href="/dj">Djibouti</a></p><p><a href="/dm">Dominica</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/sv">El Salvador</a></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/er">Eritrea</a></p><p><a href="/ee">Estonia</a></p><p><a href="/sz">Eswatini</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fo">Faroe Islands</a></p><p><a href="/fj">Fiji</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/gf">French Guiana</a></p><p><a href="/ga">Gabon</a></p><p><a href="/gm">Gambia</a></p><p><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gh">Ghana</a></p><p><a href="/gi">Gibraltar</a></p><p><a href="/gr">Greece</a></p><p><a href="/gl">Greenland</a></p><p><a href="/gd">Grenada</a></p><p><a href="/gp">Guadeloupe</a></p><p><a href="/gu">Guam</a></p><p><a href="/gt">Guatemala</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gy">Guyana</a></p><p><a href="/ht">Haiti</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p><a href="/in">India</a></p><p><a href="/id">Indonesia</a></p><p><a href="/ir">Iran</a></p><p><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p><a href="/jp">Japan</a></p><p><a href="/jo">Jordan</a></p><p><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/xk">Kosovo</a></p><p><a href="/kw">Kuwait</a></p><p><a href="/kg">Kyrgyzstan</a></p><p><a href="/lv">Latvia</a></p><p><a href="/lb">Lebanon</a></p><p><a href="/lr">Liberia</a></p><p><a href="/ly">Libya</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/mg">Madagascar</a></p><p><a href="/my">Malaysia</a></p><p><a href="/mv">Maldives</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mr">Mauritania</a></p><p><a href="/mu">Mauritius</a></p><p><a href="/yt">Mayotte</a></p><p><a href="/mx">Mexico</a></p><p><a href="/md">Moldova</a></p><p><a href="/mc">Monaco</a></p><p><a href="/mn">Mongolia</a></p><p><a href="/me">Montenegro</a></p><p><a href="/ma">Morocco</a></p><p><a href="/mz">Mozambique</a></p><p><a href="/na">Namibia</a></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ni">Nicaragua</a></p><p><a href="/ne">Niger</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/mk">North Macedonia</a></p><p><a href="/no">Norway</a></p><p><a href="/om">Oman</a></p><p><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/pg">Papua New Guinea</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p><a href="/pr">Puerto Rico</a></p><p><a href="/qa">Qatar</a></p><p><a href="/re">Réunion</a></p><p><a href="/ro">Romania</a></p><p><a href="/ru">Russian Federation</a></p><p><a href="/rw">Rwanda</a></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a></p><p><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sc">Seychelles</a></p><p><a href="/sg">Singapore</a></p><p><a href="/sx">Sint Maarten</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a></p><p><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p><a href="/lk">Sri Lanka</a></p><p><a href="/sd">Sudan</a></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p><a href="/sy">Syrian Arab Republic</a></p><p><a href="/tw">Taiwan</a></p><p><a href="/tz">Tanzania</a></p><p><a href="/th">Thailand</a></p><p><a href="/tl">Timor-Leste</a></p><p><a href="/tg">Togo</a></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a></p><p><a href="/tr">Turkey</a></p><p><a href="/ug">Uganda</a></p><p><a href="/ua">Ukraine</a></p><p><a href="/ae">United Arab Emirates</a></p><p><a href="/gb">United Kingdom</a></p><p><a href="/us">United States of America</a></p><p><a href="/uy">Uruguay</a></p><p><a href="/uz">Uzbekistan</a></p><p><a href="/ve">Venezuela</a></p><p><a href="/vn">Viet Nam</a></p><p><a href="/zm">Zambia</a></p><p><a href="/zw">Zimbabwe</a></p>
+        <p><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ao">Angola</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p><a href="/am">Armenia</a></p><p><a href="/aw">Aruba</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p><a href="/az">Azerbaijan</a></p><p><a href="/bs">Bahamas</a></p><p><a href="/bh">Bahrain</a></p><p><a href="/bd">Bangladesh</a></p><p><a href="/bb">Barbados</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bz">Belize</a></p><p><a href="/bj">Benin</a></p><p><a href="/bm">Bermuda</a></p><p><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/br">Brazil</a></p><p><a href="/bn">Brunei Darussalam</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/cv">Cabo Verde</a></p><p><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/ky">Cayman Islands</a></p><p><a href="/cf">Central African Republic</a></p><p><a href="/td">Chad</a></p><p><a href="/cl">Chile</a></p><p class="current"><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cg">Congo</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p><a href="/cw">Curaçao</a></p><p><a href="/cy">Cyprus</a></p><p><a href="/cz">Czechia</a></p><p><a href="/cd">Dem. Rep. of the Congo</a></p><p><a href="/dk">Denmark</a></p><p><a href="/dj">Djibouti</a></p><p><a href="/dm">Dominica</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/sv">El Salvador</a></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/er">Eritrea</a></p><p><a href="/ee">Estonia</a></p><p><a href="/sz">Eswatini</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fo">Faroe Islands</a></p><p><a href="/fj">Fiji</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/gf">French Guiana</a></p><p><a href="/pf">French Polynesia</a></p><p><a href="/ga">Gabon</a></p><p><a href="/gm">Gambia</a></p><p><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gh">Ghana</a></p><p><a href="/gi">Gibraltar</a></p><p><a href="/gr">Greece</a></p><p><a href="/gl">Greenland</a></p><p><a href="/gd">Grenada</a></p><p><a href="/gp">Guadeloupe</a></p><p><a href="/gu">Guam</a></p><p><a href="/gt">Guatemala</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gw">Guinea-Bissau</a></p><p><a href="/gy">Guyana</a></p><p><a href="/ht">Haiti</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p><a href="/in">India</a></p><p><a href="/id">Indonesia</a></p><p><a href="/ir">Iran</a></p><p><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p><a href="/im">Isle of Man</a></p><p><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p><a href="/jp">Japan</a></p><p><a href="/jo">Jordan</a></p><p><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/xk">Kosovo</a></p><p><a href="/kw">Kuwait</a></p><p><a href="/kg">Kyrgyzstan</a></p><p><a href="/la">Lao People's Dem. Rep.</a></p><p><a href="/lv">Latvia</a></p><p><a href="/lb">Lebanon</a></p><p><a href="/lr">Liberia</a></p><p><a href="/ly">Libya</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/mg">Madagascar</a></p><p><a href="/my">Malaysia</a></p><p><a href="/mv">Maldives</a></p><p><a href="/ml">Mali</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mr">Mauritania</a></p><p><a href="/mu">Mauritius</a></p><p><a href="/yt">Mayotte</a></p><p><a href="/mx">Mexico</a></p><p><a href="/md">Moldova</a></p><p><a href="/mc">Monaco</a></p><p><a href="/mn">Mongolia</a></p><p><a href="/me">Montenegro</a></p><p><a href="/ms">Montserrat</a></p><p><a href="/ma">Morocco</a></p><p><a href="/mz">Mozambique</a></p><p><a href="/na">Namibia</a></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nc">New Caledonia</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ni">Nicaragua</a></p><p><a href="/ne">Niger</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/mk">North Macedonia</a></p><p><a href="/no">Norway</a></p><p><a href="/om">Oman</a></p><p><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/pg">Papua New Guinea</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p><a href="/pr">Puerto Rico</a></p><p><a href="/qa">Qatar</a></p><p><a href="/re">Réunion</a></p><p><a href="/ro">Romania</a></p><p><a href="/ru">Russian Federation</a></p><p><a href="/rw">Rwanda</a></p><p><a href="/bl">Saint Barthélemy</a></p><p><a href="/kn">Saint Kitts and Nevis</a></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a></p><p><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sc">Seychelles</a></p><p><a href="/sg">Singapore</a></p><p><a href="/sx">Sint Maarten</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a></p><p><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p><a href="/lk">Sri Lanka</a></p><p><a href="/ps">State of Palestine</a></p><p><a href="/sd">Sudan</a></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p><a href="/sy">Syrian Arab Republic</a></p><p><a href="/tw">Taiwan</a></p><p><a href="/tz">Tanzania</a></p><p><a href="/th">Thailand</a></p><p><a href="/tl">Timor-Leste</a></p><p><a href="/tg">Togo</a></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a></p><p><a href="/tr">Turkey</a></p><p><a href="/ug">Uganda</a></p><p><a href="/ua">Ukraine</a></p><p><a href="/ae">United Arab Emirates</a></p><p><a href="/gb">United Kingdom</a></p><p><a href="/us">United States of America</a></p><p><a href="/uy">Uruguay</a></p><p><a href="/uz">Uzbekistan</a></p><p><a href="/ve">Venezuela</a></p><p><a href="/vn">Viet Nam</a></p><p><a href="/zm">Zambia</a></p><p><a href="/zw">Zimbabwe</a></p>
     </div>
 </div>
 
