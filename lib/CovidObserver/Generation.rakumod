@@ -333,7 +333,7 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) is ex
         <h1>Coronavirus in different countries</h1>
 
         <div id="block5">
-            <h2>Number of Countires Affected</h2>
+            <h2>Number of Countries Affected</h2>
             <p>%chart5data<current-n> countires are affected, which is {$percent}&thinsp;\% from the total %chart5data<total-countries> countries.</p>
             <canvas id="Chart5"></canvas>
             <p class="left">
