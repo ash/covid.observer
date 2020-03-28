@@ -132,7 +132,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
             <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
-            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
         <div id="block11">
@@ -291,7 +291,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
             <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
-            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
         <div id="block11">
@@ -500,7 +500,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
             <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
-            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreeses, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
         </div>
 
         <div id="block11">
