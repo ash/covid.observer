@@ -637,7 +637,7 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals, :$limit =
         my $population-mln = %countries{$cc}<population>;
 
         next if $population-mln < 1;
-        
+
         %per-mln{$cc} = sprintf('%.2f', %totals{$cc}{$param} / $population-mln);
     }
 
@@ -705,6 +705,9 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals, :$limit =
                 "scales": {
                     "xAxes": [{
                         "stacked": true,
+                        "ticks": {
+                            "min": 0
+                        }
                     }],
                     "yAxes": [{
                         "stacked": true,
@@ -712,7 +715,8 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals, :$limit =
                             "autoSkip": false
                         }
                     }],
-                }
+                },
+                "maintainAspectRatio": false
             }
         }
         JSON

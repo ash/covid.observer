@@ -368,7 +368,7 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) is ex
 sub generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals) is export {
     say 'Generating per-capita data...';
 
-    my $N = 50;
+    my $N = 100;
     my $chart4data = countries-per-capita(%countries, %per-day, %totals, %daily-totals, limit => $N);
     my $chart14data = countries-per-capita(%countries, %per-day, %totals, %daily-totals, limit => $N, param => 'failed');
 
@@ -377,12 +377,16 @@ sub generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals) is e
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus per million of population</h1>
+        <p>Sorted by <a href="#confirmed">confirmed cases</a> | by <a href="#failed">failed cases</a></p>
 
         <div id="block4">
+            <a name="confirmed"></a>
             <h2>Top $N confirmations per million</h2>
             <p>This graph shows the number of affected people per each million of the population. The length of a bar per country is proportional to the number of confirmed cases per million.</p>
             <p>The $N most affected countries with more than one million of population are shown only. </p>
-            <canvas id="Chart4"></canvas>
+            <div style="height: {$N * 1.9}ex">
+                <canvas id="Chart4"></canvas>
+            </div>
             <script>
                 var ctx4 = document.getElementById('Chart4').getContext('2d');
                 chart[4] = new Chart(ctx4, $chart4data);
@@ -390,10 +394,13 @@ sub generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals) is e
         </div>
 
         <div id="block14">
+            <a name="failed"></a>
             <h2>Top $N failures per million</h2>
-            <p>This graph shows the number of people who could not recover from the disease per each million of the population. Countries with more than one million are shown only.</p>
+            <p>This graph shows the relative number of people who could not recover from the disease. The data are the same as on the <a href="#confirmed">graph above</a> but sorted by the number of failures.</p>
             <p>The $N most affected countries with more than one million of population are shown only. </p>
-            <canvas id="Chart14"></canvas>
+            <div style="height: {$N * 1.9}ex">
+                <canvas id="Chart14"></canvas>
+            </div>
             <script>
                 var ctx14 = document.getElementById('Chart14').getContext('2d');
                 chart[14] = new Chart(ctx14, $chart14data);
