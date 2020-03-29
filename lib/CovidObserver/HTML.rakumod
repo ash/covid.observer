@@ -288,11 +288,15 @@ sub per-region($cc) is export {
         },
         RU => {
             link => 'https://yandex.ru/web-maps/covid19',
-            title => 'Statistics per region (Yandex)',
+            title => 'Statistics per region (Yandex)'
         },
         NL => {
             link => 'https://www.rivm.nl/coronavirus-kaart-van-nederland-per-gemeente',
             title => 'Statistics per municipality (RIVM)'
+        },
+        IN => {
+            link => 'https://www.mohfw.gov.in/index.html',
+            title => 'Official Statistics at the Ministry of Health and Family Welfare'
         };
 
     return '' unless %links{$cc};

@@ -283,7 +283,9 @@ sub countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals) is
     my %data;
     for $sth.allrows(:array-of-hash) -> %row {
         my $cc = %row<cc>;
+
         next if %cc{$cc};
+
         %cc{$cc} = 1; # "Bag" datatype should be used here
 
         %data{%row<date>}{$cc} = 1; # and here
@@ -291,12 +293,12 @@ sub countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals) is
     $sth.finish();
 
     my $html;    
-    for %data.keys.sort.reverse -> $date {        
+    for %data.keys.sort.reverse -> $date {
         $html ~= "<h4>{$date}</h4><p>";
 
         my @countries;
         for %data{$date}.keys.sort -> $cc {
-            next unless %countries{$cc}; # TW is skipped here
+            next unless %countries{$cc};
             my $confirmed = %per-day{$cc}{$date}<confirmed>;
             @countries.push('<a href="/' ~ $cc.lc ~ '">' ~ %countries{$cc}<country> ~ "</a> ($confirmed)");
         }
