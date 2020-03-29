@@ -192,3 +192,39 @@ multi sub MAIN('404') {
         <h1 style="margin-top: 2em; margin-bottom: 3em">Error 404<br/>Virus Not Found</h1>
     HTML
 }
+
+#| Run as: ./covid.raku series > misc/series.cpp
+multi sub MAIN('series') {
+    my %countries = get-countries();
+    my %per-day = get-per-day-stats();
+    my %totals = get-total-stats();
+
+    for <confirmed failed recovered> -> $series-type {
+        my $comma = '';
+        say "series $series-type = \{";
+        for %per-day.keys.sort -> $cc {
+            next if %totals{$cc}<confirmed> < 1000;
+
+            my @data;
+            my $prev-date;
+            for %per-day{$cc}.keys.sort[1..*] -> $date {
+                unless ($prev-date) {
+                    $prev-date = $date;
+                    next;
+                }
+
+                @data.push(
+                    %per-day{$cc}{$date}{$series-type} -
+                    %per-day{$cc}{$prev-date}{$series-type}
+                );
+
+                $prev-date = $date;
+            }
+
+            # NB. join and push would drastically slow Rakudo down at this point. So printing asap.
+            say "\t" ~ $comma ~ '{"' ~ $cc ~ '", {' ~ @data.join(', ') ~ "}}";
+            $comma = ',' unless $comma;
+        }
+        say "};";
+    }
+}
