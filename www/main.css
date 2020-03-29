@@ -23,9 +23,14 @@ body, html {
 }
 #block4 {
     padding-top: 5%;
-    background: #f5f5ea;
-    padding-bottom: 10%;
-    margin-bottom: 10%;
+    padding-bottom: 5%;
+    margin-bottom: 5%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+#block14 {
+    padding-bottom: 5%;
+    margin-bottom: 5%;
     padding-left: 2%;
     padding-right: 2%;
 }
@@ -370,9 +375,6 @@ div.clear {
     }
     #countries-list {
         column-count: 2;
-    }
-    #block4 {
-        display: none;
     }
     #block9 span {
         font-size: 300%;

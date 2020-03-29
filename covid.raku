@@ -161,6 +161,7 @@ multi sub MAIN('generate') {
     generate-world-stats(%countries, %per-day, %totals, %daily-totals, exclude => 'CN');
 
     generate-countries-stats(%countries, %per-day, %totals, %daily-totals);
+    generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals);
     generate-china-level-stats(%countries, %per-day, %totals, %daily-totals);
 
     for get-known-countries() -> $cc {
@@ -191,4 +192,3 @@ multi sub MAIN('404') {
         <h1 style="margin-top: 2em; margin-bottom: 3em">Error 404<br/>Virus Not Found</h1>
     HTML
 }
-

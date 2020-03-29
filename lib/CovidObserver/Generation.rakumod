@@ -321,7 +321,6 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) is ex
     say 'Generating countries data...';
 
     my %chart5data = countries-first-appeared(%countries, %per-day, %totals, %daily-totals);
-    my $chart4data = countries-per-capita(%countries, %per-day, %totals, %daily-totals);
     my $countries-appeared = countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals);
 
     my $country-list = country-list(%countries);
@@ -358,13 +357,46 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) is ex
             $countries-appeared
         </div>
 
+        $continent-list
+        $country-list
+
+        HTML
+
+    html-template('/countries', 'Coronavirus in different countries', $content);
+}
+
+sub generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals) is export {
+    say 'Generating per-capita data...';
+
+    my $N = 50;
+    my $chart4data = countries-per-capita(%countries, %per-day, %totals, %daily-totals, limit => $N);
+    my $chart14data = countries-per-capita(%countries, %per-day, %totals, %daily-totals, limit => $N, param => 'failed');
+
+    my $country-list = country-list(%countries);
+    my $continent-list = continent-list();
+
+    my $content = qq:to/HTML/;
+        <h1>Coronavirus per million of population</h1>
+
         <div id="block4">
-            <h2>Top 30 Affected per Million</h2>
-            <p>This graph shows the number of affected people per each million of the population. Countries with more than one million are shown only.</p>
+            <h2>Top $N confirmations per million</h2>
+            <p>This graph shows the number of affected people per each million of the population. The length of a bar per country is proportional to the number of confirmed cases per million.</p>
+            <p>The $N most affected countries with more than one million of population are shown only. </p>
             <canvas id="Chart4"></canvas>
             <script>
                 var ctx4 = document.getElementById('Chart4').getContext('2d');
                 chart[4] = new Chart(ctx4, $chart4data);
+            </script>
+        </div>
+
+        <div id="block14">
+            <h2>Top $N failures per million</h2>
+            <p>This graph shows the number of people who could not recover from the disease per each million of the population. Countries with more than one million are shown only.</p>
+            <p>The $N most affected countries with more than one million of population are shown only. </p>
+            <canvas id="Chart14"></canvas>
+            <script>
+                var ctx14 = document.getElementById('Chart14').getContext('2d');
+                chart[14] = new Chart(ctx14, $chart14data);
             </script>
         </div>
 
@@ -373,7 +405,7 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) is ex
 
         HTML
 
-    html-template('/countries', 'Coronavirus in different countries', $content);
+    html-template('/per-million', 'Coronavirus per million of population', $content);
 }
 
 sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals) is export {

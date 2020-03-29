@@ -631,14 +631,14 @@ multi sub number-percent(%countries, %per-day, %totals, %daily-totals, :$cont!) 
         population => $population;
 }
 
-sub countries-per-capita(%countries, %per-day, %totals, %daily-totals) is export {
+sub countries-per-capita(%countries, %per-day, %totals, %daily-totals, :$limit = 50, :$param = 'confirmed') is export {
     my %per-mln;
     for get-known-countries() -> $cc {
         my $population-mln = %countries{$cc}<population>;
 
         next if $population-mln < 1;
         
-        %per-mln{$cc} = sprintf('%.2f', %totals{$cc}<confirmed> / $population-mln);
+        %per-mln{$cc} = sprintf('%.2f', %totals{$cc}{$param} / $population-mln);
     }
 
     my @labels;
@@ -648,14 +648,15 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals) is export
 
     my $count = 0;
     for %per-mln.sort(+*.value).reverse -> $item {
-        last if ++$count > 30;
+        last if ++$count > $limit;
 
         my $cc = $item.key;
         my $population-mln = %countries{$cc}<population>;
 
         @labels.push(%countries{$cc}<country>);
 
-        my $per-capita-confirmed = $item.value;
+        my $per-capita-confirmed = %totals{$cc}<confirmed> / $population-mln;
+        $per-capita-confirmed = 0 if $per-capita-confirmed < 0;
         
         my $per-capita-failed = %totals{$cc}<failed> / $population-mln;
         $per-capita-failed = 0 if $per-capita-failed < 0;
