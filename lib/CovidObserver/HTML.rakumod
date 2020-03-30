@@ -30,6 +30,7 @@ sub html-template($path, $title, $content) is export {
 
     my $anchor-prefix = $path ~~ / 'vs-' | countries | overview | 404 / ?? '/' !! '';
 
+    my $timestamp = DateTime.now.truncated-to('hour');
     my $template = qq:to/HTML/;
         <!DOCTYPE html>
         <html lang="en">
@@ -42,7 +43,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=15">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=16">
             <style>
                 $style
             </style>
@@ -50,10 +51,23 @@ sub html-template($path, $title, $content) is export {
             <script>
                 $script
             </script>
+
+            <script src="/countries.js?v=$timestamp" type="text/javascript"></script>
+            <script src="/autocomplete.js" type="text/javascript"></script>
+
             <link rel="stylesheet" type="text/css" href="/likely.css">
             <script src="/likely.js" type="text/javascript"></script>
         </head>
         <body>
+
+        <div class="autocomplete">
+            <input id="SearchBox" type="text" name="myCountry" placeholder="Find a country or region">
+        </div>
+        <script>
+            autocomplete(document.getElementById("SearchBox"), countries);
+        </script>
+
+
             <p>
                 <a href="/">Home</a>
                 |

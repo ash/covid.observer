@@ -819,3 +819,36 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
 
     html-template('/overview', 'Coronavirus World Overview Dashboard', $content);
 }
+
+sub generate-js-countries(%countries, %per-day, %totals, %daily-totals) is export {
+    my @countries;
+    for %countries.sort: *.value<country> -> $c {
+        my $cc = $c.key;
+        next if $cc ~~ /'/'/;
+        next unless %per-day{$cc};
+
+        my $country = $c.value<country>;
+        $country ~~ s:g/\'/\\'/;
+
+        @countries.push("['$cc','$country']");
+    }
+
+    for %countries.sort: *.value<country> -> $c {
+        my $cc = $c.key;
+        next unless $cc ~~ /'/'/;
+        next unless %per-day{$cc};
+
+        my $country = $c.value<country>;
+        $country ~~ s:g/\'/\\'/;
+
+        @countries.push("['$cc','$country']");
+    }
+
+    my $js = 'var countries = [' ~ @countries.join(',') ~ "];";
+
+    my $filepath = "./www/countries.js";
+    my $io = $filepath.IO;
+    my $fh = $io.open(:w);
+    $fh.say: $js;
+    $fh.close;
+}

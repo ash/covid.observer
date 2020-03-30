@@ -178,6 +178,8 @@ multi sub MAIN('generate') {
     generate-scattered-age(%countries, %per-day, %totals, %daily-totals);
     generate-overview(%countries, %per-day, %totals, %daily-totals);
 
+    generate-js-countries(%countries, %per-day, %totals, %daily-totals);
+
     geo-sanity();
 }
 
