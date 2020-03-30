@@ -59,6 +59,8 @@ sub html-template($path, $title, $content) is export {
                 |
                 New:
                 <a href="/per-million">Countries sorted per million affected</a>
+                |
+                <a href="https://andrewshitov.com/category/covid-19/">Tech blog</a>
             </p>
             <p>
                 <a href="/overview">World overview</a>
@@ -117,12 +119,13 @@ sub html-template($path, $title, $content) is export {
                 </div>
                 <p>Based on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
                 <p>This website presents the very same data as the JHU’s <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">original dashboard</a> but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
-                <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Twitter: <a href="https://twitter.com/andrewshitov">\@andrewshitov</a>. Source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>. Contact <a href="mailto:andy@shitov.ru">by e-mail</a>.</p>
+                <p>Read the <a href="https://andrewshitov.com/category/covid-19/">Technology blog</a>. Look at the source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
+                <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Twitter: <a href="https://twitter.com/andrewshitov">\@andrewshitov</a>. Contact <a href="mailto:andy@shitov.ru">by e-mail</a>.</p>
             </div>
         </body>
         </html>
         HTML    
-
+#find-strings($template);
     mkdir("www$path");
     my $filepath = "./www$path/index.html";
     my $io = $filepath.IO;
@@ -291,15 +294,19 @@ sub per-region($cc) is export {
         },
         RU => {
             link => 'https://yandex.ru/web-maps/covid19',
-            title => 'Statistics per region (Yandex)'
+            title => 'Official data: Карта распространения коронавируса в России'
         },
         NL => {
             link => 'https://www.rivm.nl/coronavirus-kaart-van-nederland-per-gemeente',
-            title => 'Statistics per municipality (RIVM)'
+            title => 'Official data: Coronavirus kaart van Nederland per gemeente'
         },
         IN => {
             link => 'https://www.mohfw.gov.in/',
             title => 'Official Statistics by the Ministry of Health and Family Welfare'
+        },
+        CL => {
+            link => 'https://www.gob.cl/coronavirus/casosconfirmados/',
+            title => 'Official data: Casos confirmados de COVID-19 a nivel nacional'
         };
 
     return '' unless %links{$cc};
@@ -402,4 +409,27 @@ sub daily-table($chartdata, $population) is export {
     $html ~= '</tbody></table>';
 
     return $html;
+}
+
+sub find-strings($html) {
+    my @matches = $html ~~ m:g/
+        '<' (\w+) <-[ > ]>* '>'
+            (<-[ < ]>+)
+        '<'
+    /;
+
+    for @matches -> $match {
+        my $tag = ~$match[0];
+        next if $tag ~~ /script/;
+
+        my $content = ~$match[1];
+
+        my $copy = $content;
+        $copy ~~ s:g/'&' <alpha>+ ';'/ /;
+        next unless $copy ~~ /<alpha>/;
+
+        my $trim = $content.trim;
+
+        say $trim;
+    }
 }

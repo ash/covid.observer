@@ -120,7 +120,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
-                    <input type="checkbox" id="logscale7" onclick="log_scale(this, 7)">
+                    <input type="checkbox" id="logscale7" checked="checked" onclick="log_scale(this, 7)">
                     <span class="toggle">
                         <span class="switch"></span>
                     </span>
@@ -279,7 +279,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
-                    <input type="checkbox" id="logscale7" onclick="log_scale(this, 7)">
+                    <input type="checkbox" id="logscale7" checked="checked" onclick="log_scale(this, 7)">
                     <span class="toggle">
                         <span class="switch"></span>
                     </span>
@@ -527,7 +527,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
-                    <input type="checkbox" id="logscale7" onclick="log_scale(this, 7)">
+                    <input type="checkbox" id="logscale7" checked="checked" onclick="log_scale(this, 7)">
                     <span class="toggle">
                         <span class="switch"></span>
                     </span>

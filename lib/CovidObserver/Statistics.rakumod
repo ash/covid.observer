@@ -969,7 +969,7 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
                 "animation": false,
                 "scales": {
                     "yAxes": [{
-                        "type": "linear",
+                        "type": "logarithmic",
                     }],
                 }
             }
