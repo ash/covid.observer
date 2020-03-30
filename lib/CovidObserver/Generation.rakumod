@@ -821,6 +821,8 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
 }
 
 sub generate-js-countries(%countries, %per-day, %totals, %daily-totals) is export {
+    say "Generating a new JS country list...";
+
     my @countries;
     for %countries.sort: *.value<country> -> $c {
         my $cc = $c.key;
@@ -844,7 +846,8 @@ sub generate-js-countries(%countries, %per-day, %totals, %daily-totals) is expor
         @countries.push("['$cc','$country']");
     }
 
-    my $js = 'var countries = [' ~ @countries.join(',') ~ "];";
+    my $js = q{var countries = [['asia','Asia'],['africa','Africa'],['europe','Europe'],['north-america','North America'],['south-america','South America'],['oceania','Oceania'],} ~
+        @countries.join(',') ~ "];";
 
     my $filepath = "./www/countries.js";
     my $io = $filepath.IO;
