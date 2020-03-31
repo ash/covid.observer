@@ -43,7 +43,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=16">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=17">
             <style>
                 $style
             </style>
@@ -283,7 +283,6 @@ sub fmtdate($date) is export {
         when 3       {$ending = 'rd'}
         default      {$ending = 'th'}
     }
-
 
     return strftime("%B {$day}<sup>{$ending}</sup>, %Y", $dt);
 }
