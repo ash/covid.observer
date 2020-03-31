@@ -519,3 +519,9 @@ https://toggleswitchy.com
     background-color: DodgerBlue !important; 
     color: #ffffff; 
 }
+
+@media screen and (max-width: 850px) {
+    .autocomplete {
+        width: 96%;
+    }    
+}
