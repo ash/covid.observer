@@ -460,8 +460,8 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
             "data": {
                 "labels": LABELS,
                 "datasets": [
-                    DATASET2,
                     DATASET3,
+                    DATASET2,
                     DATASET1
                 ]
             },
