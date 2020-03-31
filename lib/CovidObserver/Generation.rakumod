@@ -227,7 +227,12 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
             <a name="raw"></a>
             <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
             <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><sup>confirmed</sup></p>
-            <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><sup>recovered</sup></p>
+            {
+                if $cc !~~ /US/ {
+                    '<p class="recovered"><span>' ~ fmtnum($chart2data<recovered>) ~ '</span><sup>recovered</sup></p>'
+                }
+                else {''}
+            }
             <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><sup>failed</sup></p>
             <p class="active"><span>{fmtnum($chart2data<active>)}</span><sup>active</sup></p>
         </div>
