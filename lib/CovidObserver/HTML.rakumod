@@ -43,7 +43,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=17">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=18">
             <style>
                 $style
             </style>
@@ -165,6 +165,14 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
         return False;
     }
 
+    sub arrow($cc-code) {
+        do given %countries{$cc-code}<direction> {
+            when Order::Less {' <span class="down">▼</span>'}
+            when Order::More {' <span class="up">▲</span>'}
+            default {''};
+        }
+    }
+
     my $us_html = '';
     my $cn_html = '';
     for get-known-countries() -> $cc-code {
@@ -178,7 +186,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
 
                 my $state = %countries{$cc-code}<country>;
                 $state ~~ s/US'/'//;
-                $us_html ~= qq{<p$is_current><a href="/$path">} ~ $state ~ '</a></p>';
+                $us_html ~= qq{<p$is_current><a href="/$path">} ~ $state ~ '</a>' ~ arrow($cc-code) ~ '</p>';
             }
         }
         elsif $cc-code ~~ /CN'/'/ {
@@ -192,7 +200,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
 
                 my $region = %countries{$cc-code}<country>;
                 $region ~~ s/'China/'//;
-                $cn_html ~= qq{<p$is_current><a href="/$path">} ~ $region ~ '</a></p>';
+                $cn_html ~= qq{<p$is_current><a href="/$path">} ~ $region ~ '</a>' ~ arrow($cc-code) ~ '</p>';
             }
         }
         else {
@@ -201,7 +209,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
             if $exclude && $exclude eq $cc-code {
                 $is_current = ' class="excluded"';
             }
-            $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc-code}<country> ~ '</a></p>';
+            $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc-code}<country> ~ '</a>' ~ arrow($cc-code) ~ '</p>';
         }
     }
 
@@ -241,6 +249,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
             <div id="countries-list">
                 $html
             </div>
+            <p>The green and red arrows display the change of the number of new confirmed cases for the last two days.</p>
         </div>
         HTML
 }

@@ -1111,3 +1111,17 @@ sub scattered-age-graph(%countries, %per-day, %totals, %daily-totals) is export 
 
     return $json;
 }
+
+sub add-country-arrows(%countries, %per-day) is export {
+    my @dates = %per-day<CN>.keys.sort[*-3, *-2, *-1];
+
+    for %per-day.keys -> $cc {
+        next unless %countries{$cc};
+        next unless %per-day{$cc}{@dates[2]};
+
+        my $delta1 = %per-day{$cc}{@dates[1]}<confirmed> - %per-day{$cc}{@dates[0]}<confirmed>;
+        my $delta2 = %per-day{$cc}{@dates[2]}<confirmed> - %per-day{$cc}{@dates[1]}<confirmed>;
+        my $direction = $delta2 <=> $delta1;
+        %countries{$cc}<direction> = $direction;
+    }
+}

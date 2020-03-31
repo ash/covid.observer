@@ -157,6 +157,8 @@ multi sub MAIN('generate') {
     my %totals = get-total-stats();
     my %daily-totals = get-daily-totals-stats();
 
+    add-country-arrows(%countries, %per-day);
+
     generate-world-stats(%countries, %per-day, %totals, %daily-totals);
     generate-world-stats(%countries, %per-day, %totals, %daily-totals, exclude => 'CN');
 

@@ -366,6 +366,15 @@ div.clear {
     cursor: pointer;
 }
 
+span.down {
+    color: #4ec34e;
+    font-weight: bold;
+}
+span.up {
+    color: #e54c4c;
+    font-weight: bold;
+}
+
 @media screen and (max-width: 850px) {
     h1 {
         font-size: 300%;
