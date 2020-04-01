@@ -117,3 +117,40 @@ function autocomplete(inp, arr) {
         closeAllLists(e.target);
     });
   }
+
+
+var isMenuVisible = false;
+document.addEventListener("mousemove", function(event){
+    if (event.clientY <= 70) {
+        if (isMenuVisible) return;
+
+        isMenuVisible = true;
+
+        var mainmenu = document.getElementById('mainmenu');
+        mainmenu.style.position = 'fixed';
+        
+        mainmenu.style.top = '0';
+        mainmenu.style.width = "100%";
+
+        document.body.style.paddingTop = mainmenu.clientHeight + 'px';
+    }
+    else if (event.clientY >= 150) {
+        var searchbox = document.getElementById('SearchBoxautocomplete-list');
+        if (searchbox) return;
+
+        if (!isMenuVisible) return;
+
+        if (event.srcElement.tagName == 'A' || event.srcElement.tagName == 'DIV') return;
+        isMenuVisible = false;
+
+        var mainmenu = document.getElementById('mainmenu');
+        mainmenu.style.position = 'relative';
+        mainmenu.style.top = '0';
+        mainmenu.style.width = '100%';
+        
+        var x = document.getElementsByClassName("autocomplete-items");
+        if (x && x.style && x.style.display) x.style.display = 'none';
+
+        document.body.style.paddingTop = '0';
+    }
+});

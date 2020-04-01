@@ -92,7 +92,12 @@ body, html {
     margin-bottom: 10%;
 }
 #block3 {
-    margin-bottom: 10%;
+    margin-bottom: 5%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+#block16 {
+    margin-bottom: 5%;
     padding-left: 2%;
     padding-right: 2%;
 }
@@ -121,10 +126,10 @@ p {
 #percent {
     font-size: 900%;
 }
-#countries {
+.countries {
     padding-bottom: 10%;
 }
-#countries-list {
+.countries-list {
     column-count: 4;
     text-align: left;
     padding-left: 3%;
@@ -138,25 +143,25 @@ a:hover {
     color: #1d7cf8;
     text-decoration: underline;
 }
-#countries-list a {
+.countries-list a {
     color: #333333;
     text-decoration: none;
     padding: 0 2px;
 }
-#countries-list a:hover {
+.countries-list a:hover {
     color: #333333;
     text-decoration: underline;
     padding: 0 2px;
 }
-#countries-list p.current {
+.countries-list p.current {
     font-weight: bold;
 }
-#countries-list p.current a {
+.countries-list p.current a {
     background-color: #1d7cf8;
     color: white;
     padding: 0 2px;
 }
-#countries-list p.excluded a {
+.countries-list p.excluded a {
     background-color: #f85a67;
     color: white;
     padding: 0 2px;
@@ -375,6 +380,10 @@ span.up {
     font-weight: bold;
 }
 
+.menu {
+    position: relative;
+    z-index: 100;
+}
 .menu ul {
     list-style-type: none;
     margin: 0;
@@ -440,7 +449,7 @@ span.up {
     #percent {
         font-size: 450%;
     }
-    #countries-list {
+    .countries-list {
         column-count: 2;
     }
     #block9 span {
@@ -545,7 +554,11 @@ https://toggleswitchy.com
 .toggle-switchy[data-color='blue'] > input:checked + .toggle				{background:#3498db;}
 .toggle-switchy[data-color='blue'] > input:checked + .toggle > .switch		{border-color:#3498db;}
 
-/* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_autocomplete */
+
+/* 
+    Based on:
+    https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_autocomplete
+*/
 .autocomplete {
     position: relative;
     display: inline-block;

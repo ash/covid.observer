@@ -38,12 +38,13 @@ sub html-template($path, $title, $content) is export {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>$title | Coronavirus COVID-19 Observer</title>
+            <link rel="icon" href="favicon.ico?v=2" type="image/x-icon">
 
             $ga
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=20">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=22">
             <style>
                 $style
             </style>
@@ -53,14 +54,14 @@ sub html-template($path, $title, $content) is export {
             </script>
 
             <script src="/countries.js?v=$timestamp" type="text/javascript"></script>
-            <script src="/autocomplete.js" type="text/javascript"></script>
+            <script src="/autocomplete.js?v=2" type="text/javascript"></script>
 
             <link rel="stylesheet" type="text/css" href="/likely.css">
             <script src="/likely.js" type="text/javascript"></script>
         </head>
         <body>
 
-            <div class="menu">
+            <div class="menu" id="mainmenu">
                 <ul>
                     <li><a href="/">Home</a></li>
 
@@ -236,7 +237,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
             <a name="states"></a>
             <h2>Coronavirus in the USA</h2>
             <p><a href="/us/#">Cumulative USA statistics</a></p>
-            <div id="countries-list">
+            <div class="countries-list">
                 $us_html
             </div>
         USHTML
@@ -248,14 +249,14 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
             <h2>Coronavirus in China</h2>
             <p><a href="/cn/#">Cumulative China statistics</a></p>
             <p><a href="/cn/-hb">China excluding Hubei</a></p>
-            <div id="countries-list">
+            <div class="countries-list">
                 $cn_html
             </div>
         CNHTML
     }
 
     return qq:to/HTML/;
-        <div id="countries">
+        <div class="countries">
             $us_html
             $cn_html
             <a name="countries"></a>
@@ -264,7 +265,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
             <p><a href="/-cn">World excluding China</a></p>
             <p><a href="/countries">More statistics on countries</a></p>
             <p><a href="/vs-china">Countries vs China</a></p>
-            <div id="countries-list">
+            <div class="countries-list">
                 $html
             </div>
             <p>The green and red arrows display the change of the number of new confirmed cases for the last two days.</p>
@@ -286,12 +287,12 @@ sub continent-list($cont?) is export {
     }
 
     return qq:to/HTML/;
-        <div id="countries">
+        <div class="countries">
             <a name="continents"></a>
             <h2>Statistics per Continent</h2>
             <p><a href="/continents">Spread over the continents timeline</a></p>
 
-            <div id="countries-list">
+            <div class="countries-list">
                 $html
             </div>
         </div>
