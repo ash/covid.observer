@@ -832,14 +832,16 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
     my %data;
 
     if $cc {
-        %data = Hash.new;
+        for %per-day{$cc}.keys -> $date {
+            my $confirmed = %per-day{$cc}{$date}<confirmed> || 0;
+            my $failed    = %per-day{$cc}{$date}<failed>    || 0;
+            my $recovered = %per-day{$cc}{$date}<recovered> || 0;
 
-        for %per-day{$cc} -> $date {
-            %data{$date} = Hash.new unless %data{$date};
-
-            %data{$date}<confirmed> += %per-day{$cc}{$date}<confirmed> || 0;
-            %data{$date}<failed>    += %per-day{$cc}{$date}<failed> || 0;
-            %data{$date}<recovered> += %per-day{$cc}{$date}<recovered> || 0;
+            %data{$date} = {
+                confirmed => $confirmed,
+                failed => $failed,
+                recovered => $recovered,
+            };
         }
 
         if $exclude {
