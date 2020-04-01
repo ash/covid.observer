@@ -43,7 +43,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=19">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=20">
             <style>
                 $style
             </style>
