@@ -731,26 +731,34 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals, :$limit =
 
 sub continent-joint-graph(%countries, %per-day, %totals, %daily-totals) is export {
     my @labels;
-    my %datasets;
+    my %datasets-active;
+    my %datasets-confirmed;
+
     for %daily-totals.keys.sort -> $date {
         push @labels, $date;
 
-        my %day-data;
+        my %day-data-active;
+        my %day-data-confirmed;
+
         for %per-day.keys -> $cc {
             next unless %countries{$cc} && %countries{$cc}<continent>;
 
             my $continent = %countries{$cc}<continent>;
 
             my $confirmed = %per-day{$cc}{$date}<confirmed> || 0;
-            my $failed = %per-day{$cc}{$date}<failed> || 0;
+            my $failed    = %per-day{$cc}{$date}<failed>    || 0;
             my $recovered = %per-day{$cc}{$date}<recovered> || 0;
 
-            %day-data{$continent} += $confirmed - $failed - $recovered;
+            %day-data-active{$continent}    += $confirmed - $failed - $recovered;
+            %day-data-confirmed{$continent} += $confirmed;
         }
 
-        for %day-data.keys -> $cont {
-            %datasets{$cont} = [] unless %datasets{$cont};
-            %datasets{$cont}.push(%day-data{$cont});
+        for %day-data-confirmed.keys -> $cont {
+            %datasets-active{$cont} = [] unless %datasets-active{$cont};
+            %datasets-active{$cont}.push(%day-data-active{$cont});
+
+            %datasets-confirmed{$cont} = [] unless %datasets-confirmed{$cont};
+            %datasets-confirmed{$cont}.push(%day-data-confirmed{$cont});
         }
     }
 
@@ -760,13 +768,20 @@ sub continent-joint-graph(%countries, %per-day, %totals, %daily-totals) is expor
         AF => '#f5494d', AS => '#c7b53e', EU => '#477ccc',
         NA => '#d256d7', OC => '#40d8d3', SA => '#35ad38';
 
-    my %json;
-    for %datasets.keys -> $cont {
-        my %ds =
+    my %json-active;
+    my %json-confirmed;
+    for %datasets-confirmed.keys -> $cont {
+        my %ds-active =
             label => %continents{$cont},
-            data => %datasets{$cont},
+            data => %datasets-active{$cont},
             backgroundColor => %continent-color{$cont};
-        %json{$cont} = to-json(%ds);
+        my %ds-confirmed =
+            label => %continents{$cont},
+            data => %datasets-confirmed{$cont},
+            backgroundColor => %continent-color{$cont};
+
+        %json-active{$cont}    = to-json(%ds-active);
+        %json-confirmed{$cont} = to-json(%ds-confirmed);
     }
 
     my $json = q:to/JSON/;
@@ -789,13 +804,22 @@ sub continent-joint-graph(%countries, %per-day, %totals, %daily-totals) is expor
         }
         JSON
 
-    $json ~~ s/LABELS/$labels/;
+    my $json-active = $json;
+    my $json-confirmed = $json;
+
+    $json-active ~~ s/LABELS/$labels/;
+    $json-confirmed ~~ s/LABELS/$labels/;
 
     for %continents.keys -> $cont {
-        $json ~~ s/DATASET$cont/%json{$cont}/;
+        $json-active ~~ s/DATASET$cont/%json-active{$cont}/;
+        $json-confirmed ~~ s/DATASET$cont/%json-confirmed{$cont}/;
     }
 
-    return $json;
+    my %results =
+        active    => $json-active,
+        confirmed => $json-confirmed;
+
+    return %results;
 }
 
 sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$exclude?) is export {

@@ -625,7 +625,30 @@ sub generate-continent-graph(%countries, %per-day, %totals, %daily-totals) is ex
     my $content = qq:to/HTML/;
         <h1>Coronavirus Spread over the Continents</h1>
 
+        <p><a href="#confirmed">Confirmed cases</a> | <a href="#active">Active cases</a></p>
+
+        <div id="block16">
+            <a name="confirmed"></a>
+            <h2>Confirmed Cases Timeline</h2>
+            <p>This bar chart displays the timeline of the number of confirmed cases. The gold bars are those reflecting <a href="/asia">Asia</a> (mostly, <a href="/cn">China</a>). The blue bars correspond to the number of confirmed cases in <a href="/europe">Europe</a>.</p>
+            <canvas id="Chart16"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale16" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale16" onclick="log_scale(this, 16)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale16"> Logarithmic scale</label>
+            </p>
+            <script>
+                var ctx16 = document.getElementById('Chart16').getContext('2d');
+                chart[16] = new Chart(ctx16, $chart8data<confirmed>);
+            </script>
+        </div>
+
         <div id="block3">
+            <a name="active"></a>
             <h2>Active Cases Timeline</h2>
             <p>This bar chart displays the timeline of the number of active cases (thus, confirmed minus failed to recovered minus recovered). The gold bars are those reflecting <a href="/asia">Asia</a> (mostly, <a href="/cn">China</a>). The blue bars correspond to the number of active cases in <a href="/europe">Europe</a>.</p>
             <canvas id="Chart8"></canvas>
@@ -640,7 +663,7 @@ sub generate-continent-graph(%countries, %per-day, %totals, %daily-totals) is ex
             </p>
             <script>
                 var ctx8 = document.getElementById('Chart8').getContext('2d');
-                chart[8] = new Chart(ctx8, $chart8data);
+                chart[8] = new Chart(ctx8, $chart8data<active>);
             </script>
         </div>
 
