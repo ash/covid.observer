@@ -43,7 +43,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=18">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=19">
             <style>
                 $style
             </style>
@@ -60,66 +60,84 @@ sub html-template($path, $title, $content) is export {
         </head>
         <body>
 
-        <div class="autocomplete">
-            <input id="SearchBox" type="text" name="myCountry" placeholder="Find a country or region">
-        </div>
-        <script>
-            autocomplete(document.getElementById("SearchBox"), countries);
-        </script>
+            <div class="menu">
+                <ul>
+                    <li><a href="/">Home</a></li>
 
+                    <li class="dropdown">
+                        <a href="javascript: void(0)" class="dropbtn" style="cursor: normal">Statistics</a>
+                        <div class="dropdown-content">
+                            <a href="{$anchor-prefix}#recovery">Recovery pie</a>
+                            <a href="{$anchor-prefix}#raw">Raw numbers</a>
+                            <a href="{$anchor-prefix}#new">New daily cases</a>
+                            <a href="{$anchor-prefix}#daily">Daily flow</a>
+                            <a href="{$anchor-prefix}#speed">Daily speed</a>
+                            <a href="{$anchor-prefix}#table">Table data</a>
+                            <a href="/vs-age">Cases vs life expectancy</a>
+                        </div>
+                    </li>
 
-            <p>
-                <a href="/">Home</a>
-                |
-                New:
-                <a href="/per-million">Countries sorted per million affected</a>
-                |
-                <a href="https://andrewshitov.com/category/covid-19/">Tech blog</a>
-            </p>
-            <p>
-                <a href="/overview">World overview</a>
-                |
-                <span class="desktop">
-                    <a href="{$anchor-prefix}#table">Table data</a>
-                    |
-                </span>
-                <a href="/vs-age">Cases vs life expectancy</a>
-                |
-                <a href="{$anchor-prefix}#raw">Raw numbers</a>
-                |
-                <a href="{$anchor-prefix}#new">New daily cases</a>
-            </p>
-            <p>
-                <a href="/cn#regions">China provinces</a>
-                |
-                <a href="/-cn">World without China</a>
-                |
-                <a href="/cn/-hb">China without Hubei</a>
-            </p>
-            <p>
-                <a href="#countries">Countries</a>
-                |
-                <a href="/countries">Affected countries</a>
-                |
-                <a href="/vs-china">Countries vs China</a>
-                |
-                <a href="/us#states">US states</a>
-                |
-                <a href="{$anchor-prefix}#speed">Daily speed</a>
-            </p>
-            <p>
-                <a href="/#continents">Continents</a>
-                |
-                <a href="/continents">Spread over the continents</a>
-            </p>
+                    <li class="dropdown">
+                        <a href="javascript: void(0)" class="dropbtn">World</a>
+                        <div class="dropdown-content">
+                            <a href="/overview">Overview</a>
+                            <a href="/-cn">World excluding China</a>
+                        </div>
+                    </li>
 
-            <div class="likely" style="min-height: 50px">
-                <div class="twitter">Tweet</div>
-                <div class="facebook">Share</div>
-                <div class="linkedin">Link</div>
-                <div class="telegram">Send</div>
-                <div class="whatsapp">Send</div>
+                    <li class="dropdown">
+                        <a href="javascript: void(0)" class="dropbtn">Continents</a>
+                        <div class="dropdown-content">
+                            <a href="/africa">Africa</a>
+                            <a href="/asia">Asia</a>
+                            <a href="/europe">Europe</a>
+                            <a href="/north-america">North America</a>
+                            <a href="/south-america">South America</a>
+                            <a href="/oceania">Oceania</a>
+                            <a href="/continents">Spread over the continents</a>
+                        </div>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="javascript: void(0)" class="dropbtn">Countries</a>
+                        <div class="dropdown-content">
+                            <a href="{$anchor-prefix}#countries">List of countries</a>
+                            <a href="/countries">Affected countries</a>
+                            <a href="/per-million">Sorted per million affected</a>
+                            <a href="/vs-china">Countries vs China</a>
+                        </div>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="javascript: void(0)" class="dropbtn">China</a>
+                        <div class="dropdown-content">
+                            <a href="/cn">Cumulative data</a>
+                            <a href="/cn#regions">China provinces</a>
+                            <a href="/-cn">World excluding China</a>
+                            <a href="/cn/-hb">China excluding Hubei</a>
+                            <a href="/vs-china">Countries vs China</a>
+                        </div>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="javascript: void(0)" class="dropbtn">US</a>
+                        <div class="dropdown-content">
+                            <a href="/us">Cumulative data</a>
+                            <a href="/us#states">US states</a>
+                        </div>
+                    </li>
+
+                    <li class="searchbox">
+                        <div class="autocomplete">
+                            <input id="SearchBox" type="text" name="myCountry" placeholder="Find a country or region">
+                        </div>
+                    </li>
+                </ul>
             </div>
+
+            <script>
+                autocomplete(document.getElementById("SearchBox"), countries);
+            </script>
 
             $content
 
@@ -150,7 +168,7 @@ sub html-template($path, $title, $content) is export {
 
 sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
     my $is_current = !$cc && !$cont ?? ' class="current"' !! '';
-    my $html = qq{<p$is_current><a href="/">Whole world</a></p>};
+    my $html = qq{<a name="countries"></a><p$is_current><a href="/">Whole world</a></p>};
 
     sub current-country($cc-code) {
         if $cc {

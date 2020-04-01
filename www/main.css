@@ -99,7 +99,7 @@ body, html {
 h1 {
     font-weight: normal;
     font-size: 400%;
-    padding-top: 0.7em;
+    padding-top: 0em;
 }
 h2 {
     font-weight: normal;
@@ -375,6 +375,64 @@ span.up {
     font-weight: bold;
 }
 
+.menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    background-color: #333333;
+}
+.menu li {
+    float: left;
+}
+.menu li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+.menu li a:hover {
+    background-color: #4CAF50;
+}
+.menu .dropdown:hover .dropbtn {
+    background-color: #4CAF50;
+}
+.menu .active {
+    background-color: #4CAF50;
+}
+.menu .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+.menu li.dropdown {
+    display: inline-block;
+}
+.menu .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+.menu .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+.menu .dropdown-content a:hover {
+    background-color: #dedede;
+}
+.menu .dropdown:hover .dropdown-content {
+    display: block;
+}
+
 @media screen and (max-width: 850px) {
     h1 {
         font-size: 300%;
@@ -399,6 +457,11 @@ span.up {
     }
     #block11 {
         display: none;
+    }
+
+    .menu li.right, 
+    .menu li {
+        float: none;
     }
 }
 
@@ -486,22 +549,20 @@ https://toggleswitchy.com
 .autocomplete {
     position: relative;
     display: inline-block;
-    width: 30em;
-    margin-top: 0.5em;
+    width: 20em;
 }
 .autocomplete input {
     border: 1px solid transparent;
-    background-color: #f1f1f1;
+    background-color: #eeeeee;
     padding: 10px;
     font-size: 16px;
 }
 .autocomplete input[type=text] {
-    background-color: #f1f1f1;
-    width: 100%;
+    background-color: #eeeeee;
+    width: 100%;    
 }
 .autocomplete input[type=submit] {
     background-color: DodgerBlue;
-    color: #fff;
     cursor: pointer;
 }
 .autocomplete-items {
@@ -513,11 +574,12 @@ https://toggleswitchy.com
     top: 100%;
     left: 0;
     right: 0;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 .autocomplete-items div {
     padding: 10px;
     cursor: pointer;
-    background-color: #fff; 
+    background-color: white; 
     border-bottom: 1px solid #d4d4d4; 
     text-align: left;
 }
@@ -526,11 +588,24 @@ https://toggleswitchy.com
 }
 .autocomplete-active {
     background-color: DodgerBlue !important; 
-    color: #ffffff; 
+    color: white; 
+}
+
+.menu .searchbox {
+    position: absolute;
+    right: 2px;
+    top: 1px;
 }
 
 @media screen and (max-width: 850px) {
     .autocomplete {
         width: 96%;
     }    
+    .menu .searchbox {
+        width: 100%;
+        top: inherit;
+    }
+    h1 {
+        padding-top: 0.5em;
+    }
 }

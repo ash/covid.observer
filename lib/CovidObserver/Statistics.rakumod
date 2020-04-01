@@ -1112,6 +1112,87 @@ sub scattered-age-graph(%countries, %per-day, %totals, %daily-totals) is export 
     return $json;
 }
 
+sub common-start(%countries, %per-day, %totals, %daily-totals) is export {
+    my %date-cc;
+    for %per-day.keys -> $cc {
+        for %per-day{$cc}.keys -> $date {
+            %date-cc{$date}{$cc} = %per-day{$cc}{$date}<confirmed>;
+        }
+    }
+
+    my %max-cc;
+    # my $max = 0;
+
+    my %data;
+    for %date-cc.keys.sort -> $date {
+        for %date-cc{$date}.keys -> $cc {
+            next if $cc ~~ /'/'/ && $cc ne 'CN/HB';
+            next unless %countries{$cc};
+
+            my $confirmed = %date-cc{$date}{$cc} || 0;
+            %data{$cc}{$date} = sprintf('%.6f', 100 * $confirmed / (1_000_000 * +%countries{$cc}<population>));
+
+            %max-cc{$cc} = %data{$cc}{$date};# if %max-cc{$cc} < %data{$cc}{$date};
+            # $max = %max-cc{$cc} if $max < %max-cc{$cc};
+        }
+    }
+
+    my @labels;
+    my %dataset;
+
+    for %date-cc.keys.sort -> $date {
+        next if $date le '2020-02-20';
+        @labels.push($date);
+
+        for %date-cc{$date}.keys.sort -> $cc {
+            next unless %max-cc{$cc};
+            next if %countries{$cc}<population> < 1;
+
+            next if %max-cc{$cc} < 0.85 * %max-cc<CN>;
+
+            %dataset{$cc} = [] unless %dataset{$cc};
+            %dataset{$cc}.push(%data{$cc}{$date});
+        }
+    }
+
+    my @ds;
+    for %dataset.sort: -*.value[*-1] -> $data {
+        my $cc = $data.key;
+        my $color = $cc eq 'CN' ?? 'red' !! 'RANDOMCOLOR';
+        my %ds =
+            label => %countries{$cc}<country>,
+            data => $data.value,
+            fill => False,
+            borderColor => $color,
+            lineTension => 0;
+        push @ds, to-json(%ds);
+    }
+
+    my $json = q:to/JSON/;
+        {
+            "type": "line",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASETS
+                ]
+            },
+            "options": {
+                "animation": false,
+            }
+        }
+        JSON
+
+    my $datasets = @ds.join(",\n");
+    my $labels = to-json(@labels);
+
+    $json ~~ s/DATASETS/$datasets/;
+    $json ~~ s/LABELS/$labels/;
+    $json ~~ s:g/\"RANDOMCOLOR\"/randomColorGenerator()/; #"
+
+    return $json;
+}
+
 sub add-country-arrows(%countries, %per-day) is export {
     my @dates = %per-day<CN>.keys.sort[*-3, *-2, *-1];
 

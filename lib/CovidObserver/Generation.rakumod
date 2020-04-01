@@ -56,6 +56,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
         </div>
 
         <div id="block1">
+            <a name="recovery"></a>
             <h2>Recovery Pie</h2>
             <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world{$without-str}.</p>
             <canvas id="Chart1"></canvas>
@@ -75,6 +76,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
         </div>
 
         <div id="block3">
+            <a name="daily"></a>
             <h2>Daily Flow</h2>
             <p>The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the world{$without-str}. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <canvas id="Chart2"></canvas>
@@ -214,6 +216,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
         </div>
 
         <div id="block1">
+            <a name="recovery"></a>
             <h2>Recovery Pie</h2>
             <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$proper-country-name}{$without-str}.</p>
             <canvas id="Chart1"></canvas>
@@ -238,6 +241,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
         </div>
 
         <div id="block3">
+            <a name="daily"></a>
             <h2>Daily Flow</h2>
             <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name}{$without-str} and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <canvas id="Chart2"></canvas>
@@ -468,6 +472,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
         </div>
 
         <div id="block1">
+            <a name="recovery"></a>
             <h2>Recovery Pie</h2>
             <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$continent-name}.</p>
             <canvas id="Chart1"></canvas>
@@ -487,6 +492,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
         </div>
 
         <div id="block3">
+            <a name="daily"></a>
             <h2>Daily Flow</h2>
             <p>The height of a single bar is the total number of people suffered from Coronavirus in $continent-name and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <canvas id="Chart2"></canvas>
@@ -859,4 +865,53 @@ sub generate-js-countries(%countries, %per-day, %totals, %daily-totals) is expor
     my $fh = $io.open(:w);
     $fh.say: $js;
     $fh.close;
+}
+
+sub generate-common-start-stats(%countries, %per-day, %totals, %daily-totals) is export {
+    say 'Generating common start graph...';
+
+    my $chart15data = common-start(%countries, %per-day, %totals, %daily-totals);
+
+    my $country-list = country-list(%countries);
+    my $continent-list = continent-list();
+
+    my $content = qq:to/HTML/;
+        <h1>Countries vs China</h1>
+
+        <script>
+            var randomColorGenerator = function () \{
+                return '#' + (Math.random().toString(16) + '0000000').slice(2, 8);
+            \};
+        </script>
+
+        <div id="block6">
+            <h2>Confirmed population timeline</h2>
+            <p>On this graph, you see how the fraction (in %) of the confirmed infection cases changes over time in different countries.</p>
+            <p>The almost-horizontal red line in the bottom part of the graph line displays <a href="/cn">China</a>. The number of confirmed infections in China almost stopped growing. Note the top line reflecting the most suffered province of China, <a href="/cn/hb">Hubei</a>, where the spread is also almost stopped.</p>
+            <p>Click on the bar in the legend to turn the line off and on.</p>
+            <br/>
+            <canvas id="Chart6"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale6" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale6" onclick="log_scale(this, 6)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale6"> Logarithmic scale</label>
+            </p>
+            <p>1. Note that only countries with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
+            <p>2. The line for the country is drawn only if it reaches at least 85% of the corresponding maximum parameter in China.</p>
+            <script>
+                var ctx15 = document.getElementById('Chart15').getContext('2d');
+                chart[15] = new Chart(ctx15, $chart15data);
+            </script>
+        </div>
+
+        $continent-list
+        $country-list
+
+        HTML
+
+    html-template('/start', 'Coronavirus in different countries if it would have started at the same day', $content);
 }
