@@ -308,7 +308,7 @@ sub fmtdate($date) is export {
     given $day {
         when 1|21|31 {$ending = 'st'}
         when 2|22    {$ending = 'nd'}
-        when 3       {$ending = 'rd'}
+        when 3|23    {$ending = 'rd'}
         default      {$ending = 'th'}
     }
 
