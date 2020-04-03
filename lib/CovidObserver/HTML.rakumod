@@ -44,7 +44,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=22">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=23">
             <style>
                 $style
             </style>
@@ -125,6 +125,15 @@ sub html-template($path, $title, $content) is export {
                         <div class="dropdown-content">
                             <a href="/us">Cumulative data</a>
                             <a href="/us#states">US states</a>
+                        </div>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="javascript: void(0)" class="dropbtn">About</a>
+                        <div class="dropdown-content">
+                            <a href="/about">About the project</a>
+                            <a href="/sources">Data sources</a>
+                            <a href="https://andrewshitov.com/category/covid-19/" target="_blank">Tech blog</a>
                         </div>
                     </li>
 

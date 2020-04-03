@@ -165,17 +165,17 @@ multi sub MAIN('generate') {
     generate-countries-stats(%countries, %per-day, %totals, %daily-totals);
     generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals);
     generate-china-level-stats(%countries, %per-day, %totals, %daily-totals);
+    # # generate-common-start-stats(%countries, %per-day, %totals, %daily-totals);
 
     for get-known-countries() -> $cc {
         generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals);
     }
     generate-country-stats('CN', %countries, %per-day, %totals, %daily-totals, exclude => 'CN/HB');
+    generate-continent-graph(%countries, %per-day, %totals, %daily-totals);
 
     for %continents.keys -> $cont {
         generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals);
     }
-
-    generate-continent-graph(%countries, %per-day, %totals, %daily-totals);
 
     generate-scattered-age(%countries, %per-day, %totals, %daily-totals);
     generate-overview(%countries, %per-day, %totals, %daily-totals);
@@ -183,6 +183,12 @@ multi sub MAIN('generate') {
     generate-js-countries(%countries, %per-day, %totals, %daily-totals);
 
     geo-sanity();
+}
+
+#| Re-generate the "About" pages.
+multi sub MAIN('about') {
+    html-template('/about', 'About the project', 'html/about.html'.IO.slurp);
+    html-template('/sources', 'Data sources', 'html/sources.html'.IO.slurp);
 }
 
 #| Check if there are country mismatches
