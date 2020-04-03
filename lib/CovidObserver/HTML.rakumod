@@ -348,6 +348,10 @@ sub per-region($cc) is export {
         CL => {
             link => 'https://www.gob.cl/coronavirus/casosconfirmados/',
             title => 'Official data: Casos confirmados de COVID-19 a nivel nacional'
+        },
+        BE => {
+            link => 'https://epistat.wiv-isp.be/Covid/',
+            title => 'Division per communes (Belgian institute for health)'
         };
 
     return '' unless %links{$cc};
