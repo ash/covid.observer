@@ -147,6 +147,7 @@ sub country2cc($country is copy, :$silent = False) is export {
     $country = 'Macau' if $country eq 'Macao SAR';
     $country = 'French Guiana' if $country eq 'Fench Guiana'; # typo in the source data
     $country = 'Myanmar' if $country eq 'Burma';
+    $country = 'Bonaire' if $country ~~ /Bonaire/;
 
     $country ~~ s/'Korea, South'/South Korea/;
     $country ~~ s:g/'*'//;
