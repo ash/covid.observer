@@ -7,6 +7,12 @@ body, html {
     color: #333333;
     background: white;
 }
+p {
+    padding-left: 20%;
+    padding-right: 20%;
+    text-align: left;
+    line-height: 160%;
+}
 #block2 {
     padding-top: 7%;
     background: #f5f5ea;
@@ -63,6 +69,7 @@ body, html {
 #block9 p {
     padding: 5em 0 2em 0;
     position: relative;
+    text-align: center;
 }
 #block9 p.recovered {
     color: green;
@@ -120,9 +127,6 @@ h4 {
     margin-bottom: 0;
     font-size: 120%;
 }
-p {
-    line-height: 140%;
-}
 #percent {
     font-size: 900%;
 }
@@ -171,7 +175,7 @@ a:hover {
 }
 p.left {
     text-align: left;
-    padding-left: 3em;    
+    padding-left: 3em;
 }
 p.left label {
     cursor: pointer;
@@ -620,5 +624,10 @@ https://toggleswitchy.com
     }
     h1 {
         padding-top: 0.5em;
+    }
+
+    p {
+        padding-left: 10%;
+        padding-right: 10%;
     }
 }
