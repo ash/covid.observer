@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Coronavirus per million of population | Coronavirus COVID-19 Observer</title>
+    <link rel="icon" href="favicon.ico?v=2" type="image/x-icon">
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160707541-1"></script>
 <script>
@@ -16,7 +17,7 @@
 
     <script src="/Chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/main.css?v=17">
+    <link rel="stylesheet" type="text/css" href="/main.css?v=22">
     <style>
         
     </style>
@@ -31,74 +32,92 @@ function log_scale(input, n) {
 
     </script>
 
-    <script src="/countries.js?v=2020-03-31T02:00:00+02:00" type="text/javascript"></script>
-    <script src="/autocomplete.js" type="text/javascript"></script>
+    <script src="/countries.js?v=2020-04-03T02:00:00+02:00" type="text/javascript"></script>
+    <script src="/autocomplete.js?v=2" type="text/javascript"></script>
 
     <link rel="stylesheet" type="text/css" href="/likely.css">
     <script src="/likely.js" type="text/javascript"></script>
 </head>
 <body>
 
-<div class="autocomplete">
-    <input id="SearchBox" type="text" name="myCountry" placeholder="Find a country or region">
-</div>
-<script>
-    autocomplete(document.getElementById("SearchBox"), countries);
-</script>
+    <div class="menu" id="mainmenu">
+        <ul>
+            <li><a href="/">Home</a></li>
 
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn" style="cursor: normal">Statistics</a>
+                <div class="dropdown-content">
+                    <a href="#recovery">Recovery pie</a>
+                    <a href="#raw">Raw numbers</a>
+                    <a href="#new">New daily cases</a>
+                    <a href="#daily">Daily flow</a>
+                    <a href="#speed">Daily speed</a>
+                    <a href="#table">Table data</a>
+                    <a href="/vs-age">Cases vs life expectancy</a>
+                </div>
+            </li>
 
-    <p>
-        <a href="/">Home</a>
-        |
-        New:
-        <a href="/per-million">Countries sorted per million affected</a>
-        |
-        <a href="https://andrewshitov.com/category/covid-19/">Tech blog</a>
-    </p>
-    <p>
-        <a href="/overview">World overview</a>
-        |
-        <span class="desktop">
-            <a href="#table">Table data</a>
-            |
-        </span>
-        <a href="/vs-age">Cases vs life expectancy</a>
-        |
-        <a href="#raw">Raw numbers</a>
-        |
-        <a href="#new">New daily cases</a>
-    </p>
-    <p>
-        <a href="/cn#regions">China provinces</a>
-        |
-        <a href="/-cn">World without China</a>
-        |
-        <a href="/cn/-hb">China without Hubei</a>
-    </p>
-    <p>
-        <a href="#countries">Countries</a>
-        |
-        <a href="/countries">Affected countries</a>
-        |
-        <a href="/vs-china">Countries vs China</a>
-        |
-        <a href="/us#states">US states</a>
-        |
-        <a href="#speed">Daily speed</a>
-    </p>
-    <p>
-        <a href="/#continents">Continents</a>
-        |
-        <a href="/continents">Spread over the continents</a>
-    </p>
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">World</a>
+                <div class="dropdown-content">
+                    <a href="/overview">Overview</a>
+                    <a href="/-cn">World excluding China</a>
+                </div>
+            </li>
 
-    <div class="likely" style="min-height: 50px">
-        <div class="twitter">Tweet</div>
-        <div class="facebook">Share</div>
-        <div class="linkedin">Link</div>
-        <div class="telegram">Send</div>
-        <div class="whatsapp">Send</div>
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">Continents</a>
+                <div class="dropdown-content">
+                    <a href="/africa">Africa</a>
+                    <a href="/asia">Asia</a>
+                    <a href="/europe">Europe</a>
+                    <a href="/north-america">North America</a>
+                    <a href="/south-america">South America</a>
+                    <a href="/oceania">Oceania</a>
+                    <a href="/continents">Spread over the continents</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">Countries</a>
+                <div class="dropdown-content">
+                    <a href="#countries">List of countries</a>
+                    <a href="/countries">Affected countries</a>
+                    <a href="/per-million">Sorted per million affected</a>
+                    <a href="/vs-china">Countries vs China</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">China</a>
+                <div class="dropdown-content">
+                    <a href="/cn">Cumulative data</a>
+                    <a href="/cn#regions">China provinces</a>
+                    <a href="/-cn">World excluding China</a>
+                    <a href="/cn/-hb">China excluding Hubei</a>
+                    <a href="/vs-china">Countries vs China</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">US</a>
+                <div class="dropdown-content">
+                    <a href="/us">Cumulative data</a>
+                    <a href="/us#states">US states</a>
+                </div>
+            </li>
+
+            <li class="searchbox">
+                <div class="autocomplete">
+                    <input id="SearchBox" type="text" name="myCountry" placeholder="Find a country or region">
+                </div>
+            </li>
+        </ul>
     </div>
+
+    <script>
+        autocomplete(document.getElementById("SearchBox"), countries);
+    </script>
 
     <h1>Coronavirus per million of population</h1>
 <p>Sorted by <a href="#confirmed">confirmed cases</a> | by <a href="#failed">failed cases</a></p>
@@ -116,11 +135,11 @@ function log_scale(input, n) {
         chart[4] = new Chart(ctx4, {
     "type": "horizontalBar",
     "data": {
-        "labels": [ "US/New York", "US/New Jersey", "Spain", "Switzerland", "Italy", "China/Hubei", "Austria", "Belgium", "US/Louisiana", "US/Massachusetts", "Norway", "Germany", "US/Washington", "US/Connecticut", "Netherlands", "France", "US/Michigan", "Portugal", "Ireland", "Israel", "Estonia", "Iran", "United States of America", "Denmark", "US/Colorado", "Sweden", "US/Illinois", "US/Rhode Island", "US/Nevada", "Slovenia", "United Kingdom", "US/Pennsylvania", "Bahrain", "US/Tennessee", "US/Florida", "US/Utah", "US/Georgia", "US/Mississippi", "Czechia", "US/Indiana", "US/Maryland", "Qatar", "Finland", "US/New Hampshire", "Panama", "US/Idaho", "US/Wisconsin", "US/Maine", "US/South Carolina", "Canada", "Latvia", "Cyprus", "US/California", "Croatia", "South Korea", "US/Alabama", "US/Arizona", "Lithuania", "US/Missouri", "Australia", "US/Ohio", "Armenia", "US/Arkansas", "US/Oregon", "Singapore", "US/Iowa", "US/North Carolina", "North Macedonia", "US/Kansas", "Turkey", "Chile", "US/Hawaii", "US/Oklahoma", "US/Virginia", "US/Texas", "New Zealand", "Greece", "US/New Mexico", "Ecuador", "Bosnia and Herzegovina", "US/Kentucky", "Romania", "US/Minnesota", "Mauritius", "China/Hong Kong", "Uruguay", "Serbia", "Dominican Republic", "Malaysia", "US/Nebraska", "US/West Virginia", "Albania", "Moldova", "Costa Rica", "Lebanon", "Kuwait", "United Arab Emirates", "Slovakia", "Trinidad and Tobago", "China" ],
+        "labels": [ "US/New York", "US/New Jersey", "Spain", "Switzerland", "US/Louisiana", "Italy", "US/Massachusetts", "Belgium", "Austria", "China/Hubei", "US/Michigan", "US/Connecticut", "Germany", "Norway", "US/Washington", "France", "Portugal", "Netherlands", "Israel", "Ireland", "United States of America", "US/Colorado", "Estonia", "US/Rhode Island", "Denmark", "Iran", "US/Illinois", "US/Pennsylvania", "Sweden", "US/Georgia", "US/Nevada", "United Kingdom", "US/Idaho", "US/Florida", "US/Indiana", "US/Tennessee", "Slovenia", "US/Maryland", "US/Mississippi", "US/Utah", "Bahrain", "Czechia", "US/South Carolina", "Qatar", "Panama", "US/Missouri", "US/Wisconsin", "Canada", "Cyprus", "US/California", "US/Maine", "Finland", "US/Arizona", "US/Alabama", "US/Ohio", "Croatia", "Latvia", "US/New Hampshire", "Lithuania", "US/Oklahoma", "Armenia", "US/Arkansas", "Turkey", "US/Oregon", "US/Virginia", "US/North Carolina", "Australia", "US/Texas", "US/Iowa", "South Korea", "US/Kansas", "US/New Mexico", "US/Hawaii", "North Macedonia", "Ecuador", "Singapore", "Chile", "US/Kentucky", "New Zealand", "Bosnia and Herzegovina", "Greece", "Romania", "US/Minnesota", "US/Nebraska", "Serbia", "Mauritius", "Dominican Republic", "Moldova", "US/West Virginia", "China/Hong Kong", "United Arab Emirates", "Uruguay", "Malaysia", "Albania", "US/Puerto Rico", "Kuwait", "Costa Rica", "Slovakia", "Poland", "Lebanon" ],
         "datasets": [
-            { "data" : [ "62.85", "22.52", "165.09", "41.79", "191.43", "54.46", "12.06", "44.46", "40.81", "8.55", "5.95", "7.72", "30.49", "10.07", "50.53", "46.43", "18.62", "13.69", "11.06", "2.00", "2.26", "33.25", "9.04", "13.34", "9.35", "14.55", "5.69", "3.80", "5.55", "5.29", "20.88", "3.94", "2.44", "2.21", "3.35", "1.45", "8.98", "5.39", "2.15", "5.40", "2.60", "0.35", "2.35", "2.28", "5.65", "3.83", "3.52", "2.26", "3.89", "2.14", "0.00", "5.84", "3.92", "1.45", "3.08", "2.09", "3.13", "2.54", "2.17", "0.67", "3.47", "1.01", "2.40", "4.18", "0.52", "1.97", "0.73", "3.36", "2.80", "2.01", "0.42", "0.00", "4.26", "1.87", "1.79", "0.21", "4.11", "0.97", "3.45", "3.03", "2.53", "3.36", "1.89", "2.36", "0.53", "0.29", "1.82", "3.91", "1.16", "1.10", "0.54", "3.82", "0.49", "0.40", "1.60", "0.00", "0.51", "0.00", "2.15", "2.31" ], "backgroundColor" : "red", "label" : "Failed to recover" },
-            { "data" : [ "3377.26", "1869.66", "1357.82", "1599.27", "1247.36", "29.50", "990.94", "854.38", "847.03", "869.91", "818.20", "631.49", "701.61", "709.26", "622.09", "515.88", "638.80", "608.73", "583.92", "541.70", "522.03", "299.43", "482.21", "451.32", "450.16", "385.20", "388.34", "383.68", "369.17", "353.59", "307.08", "323.16", "141.36", "299.86", "287.70", "289.45", "280.84", "279.97", "276.26", "270.05", "242.13", "226.33", "240.23", "236.24", "226.31", "213.06", "212.76", "204.76", "196.09", "183.15", "196.67", "167.70", "187.68", "173.60", "83.45", "185.98", "177.87", "172.85", "173.32", "162.16", "164.08", "151.81", "159.81", "154.00", "111.64", "137.19", "136.96", "127.67", "127.58", "125.82", "120.57", "128.65", "123.95", "125.61", "123.36", "109.76", "106.65", "114.12", "109.30", "103.30", "107.85", "94.76", "106.71", "98.45", "74.17", "89.26", "87.66", "79.62", "66.04", "78.30", "77.71", "58.32", "69.50", "64.19", "58.35", "46.11", "55.78", "60.29", "55.91", "2.07" ], "backgroundColor" : "orange", "label" : "Active cases" },
-            { "backgroundColor" : "green", "label" : "Recovered", "data" : [ "0.00", "0.00", "359.03", "212.19", "241.45", "1075.03", "71.02", "132.33", "0.00", "0.00", "2.23", "161.64", "0.00", "0.00", "14.62", "121.71", "0.00", "4.20", "1.02", "21.01", "15.09", "167.78", "0.00", "12.65", "0.00", "1.59", "0.00", "0.00", "0.00", "4.81", "2.00", "0.00", "170.00", "0.00", "0.00", "0.00", "0.00", "0.00", "2.34", "0.00", "0.00", "18.01", "1.81", "0.00", "0.94", "0.00", "0.00", "0.00", "0.00", "12.46", "0.52", "18.35", "0.00", "16.22", "102.06", "0.00", "0.00", "2.54", "0.00", "10.20", "0.00", "10.14", "0.00", "0.00", "39.28", "0.00", "0.00", "5.76", "0.00", "1.94", "8.23", "0.00", "0.00", "0.00", "0.00", "13.17", "4.96", "0.00", "0.17", "5.15", "0.00", "10.79", "0.00", "0.00", "16.44", "0.00", "0.00", "0.37", "14.99", "0.00", "0.00", "15.27", "3.71", "0.79", "5.11", "17.11", "6.24", "1.28", "0.72", "52.95" ] }
+            { "label" : "Failed to recover", "data" : [ "122.46", "61.08", "221.41", "62.39", "68.38", "229.81", "23.52", "87.61", "17.64", "54.68", "42.19", "31.34", "13.25", "9.30", "40.30", "82.71", "20.44", "78.32", "4.34", "20.07", "18.00", "15.91", "8.30", "11.40", "21.31", "38.11", "12.70", "7.09", "30.69", "16.82", "14.07", "43.30", "5.74", "8.72", "12.03", "5.67", "8.18", "6.24", "8.76", "2.53", "2.44", "4.12", "6.70", "1.06", "7.54", "3.67", "6.68", "3.72", "8.34", "6.39", "5.27", "3.43", "5.01", "6.69", "7.02", "1.69", "0.00", "2.28", "3.26", "9.06", "2.37", "4.12", "4.27", "5.48", "5.12", "2.20", "0.95", "3.06", "3.61", "3.30", "4.21", "2.91", "0.74", "5.28", "6.91", "0.69", "0.95", "7.14", "0.21", "4.85", "5.06", "5.94", "3.39", "2.74", "3.53", "5.51", "5.59", "1.48", "1.08", "0.53", "0.82", "1.16", "1.56", "5.55", "3.22", "0.00", "0.40", "0.18", "1.50", "2.33" ], "backgroundColor" : "red" },
+            { "data" : [ "4651.27", "2849.53", "1604.17", "1661.89", "1951.92", "1371.57", "1345.80", "1026.23", "1029.80", "19.35", "1049.56", "1038.57", "733.35", "941.64", "909.80", "633.97", "856.33", "766.68", "777.64", "767.23", "721.37", "648.60", "605.01", "612.56", "394.67", "369.02", "586.99", "565.07", "513.83", "535.16", "527.65", "456.86", "489.27", "470.31", "456.50", "442.62", "389.67", "397.49", "387.79", "392.56", "157.20", "350.54", "329.27", "308.60", "300.49", "306.40", "300.67", "251.53", "265.31", "282.78", "277.79", "216.73", "263.29", "251.25", "244.44", "221.78", "223.95", "237.76", "229.38", "225.77", "210.64", "216.39", "208.13", "210.12", "208.10", "205.12", "181.41", "198.52", "197.91", "77.68", "189.62", "185.51", "187.46", "170.87", "171.41", "134.21", "160.99", "170.30", "147.18", "150.56", "136.54", "121.67", "136.50", "131.96", "129.96", "127.59", "121.43", "117.73", "115.49", "87.00", "94.16", "82.04", "71.96", "64.22", "81.59", "62.04", "76.87", "76.97", "74.77", "63.01" ], "backgroundColor" : "orange", "label" : "Active cases" },
+            { "data" : [ "0.00", "0.00", "572.20", "467.10", "0.00", "301.87", "0.00", "216.22", "195.31", "1084.97", "0.00", "0.00", "268.69", "5.95", "0.00", "190.82", "6.65", "14.62", "41.79", "1.02", "0.00", "0.00", "33.95", "0.00", "203.05", "201.55", "0.00", "0.00", "10.26", "0.00", "0.00", "2.00", "0.00", "0.00", "0.00", "0.00", "33.67", "0.00", "0.00", "0.00", "232.15", "6.27", "0.00", "25.42", "2.12", "0.00", "0.00", "46.38", "23.36", "0.00", "0.00", "54.23", "0.00", "0.00", "0.00", "21.31", "16.26", "0.00", "2.54", "0.00", "11.16", "0.00", "4.97", "0.00", "0.00", "0.00", "20.63", "0.00", "0.00", "113.77", "0.00", "0.00", "0.00", "8.16", "3.74", "45.83", "17.68", "0.00", "19.23", "6.06", "5.82", "13.79", "0.00", "0.00", "0.00", "0.00", "1.49", "5.69", "0.00", "19.65", "9.83", "17.91", "24.01", "26.38", "0.00", "19.25", "1.19", "0.92", "1.48", "6.71" ], "backgroundColor" : "green", "label" : "Recovered" }
         ]
     },
     "options": {
@@ -159,11 +178,11 @@ function log_scale(input, n) {
         chart[14] = new Chart(ctx14, {
     "type": "horizontalBar",
     "data": {
-        "labels": [ "Italy", "Spain", "US/New York", "China/Hubei", "Netherlands", "France", "Belgium", "Switzerland", "US/Louisiana", "Iran", "US/Washington", "US/New Jersey", "United Kingdom", "US/Michigan", "Sweden", "Portugal", "Denmark", "Austria", "Ireland", "US/Connecticut", "US/Colorado", "United States of America", "US/Georgia", "US/Massachusetts", "Germany", "Norway", "Cyprus", "US/Illinois", "Panama", "US/Nevada", "US/Indiana", "US/Mississippi", "Slovenia", "US/Oklahoma", "US/Oregon", "Greece", "US/Pennsylvania", "US/California", "Dominican Republic", "US/South Carolina", "US/Idaho", "Albania", "US/Rhode Island", "US/Wisconsin", "US/Ohio", "Ecuador", "Romania", "North Macedonia", "US/Florida", "US/Arizona", "South Korea", "Bosnia and Herzegovina", "US/Kansas", "US/Maryland", "Lithuania", "US/Kentucky", "Bahrain", "US/Arkansas", "Mauritius", "Finland", "China", "US/New Hampshire", "US/Maine", "Estonia", "US/Tennessee", "US/Missouri", "Trinidad and Tobago", "Czechia", "Canada", "US/Alabama", "Turkey", "Israel", "US/Iowa", "US/Minnesota", "US/Virginia", "Serbia", "US/Texas", "US/Puerto Rico", "Lebanon", "Hungary", "Croatia", "US/Utah", "Iraq", "Malaysia", "Bulgaria", "US/Nebraska", "Armenia", "US/New Mexico", "Morocco", "Poland", "Algeria", "Brazil", "Peru", "US/North Carolina", "Philippines", "Honduras", "Tunisia", "Australia", "China/Hainan", "Burkina Faso" ],
+        "labels": [ "Italy", "Spain", "US/New York", "Belgium", "France", "Netherlands", "US/Louisiana", "Switzerland", "US/New Jersey", "China/Hubei", "United Kingdom", "US/Michigan", "US/Washington", "Iran", "US/Connecticut", "Sweden", "US/Massachusetts", "Denmark", "Portugal", "Ireland", "United States of America", "Austria", "US/Georgia", "US/Colorado", "US/Nevada", "Germany", "US/Illinois", "US/Indiana", "US/Rhode Island", "Norway", "US/Oklahoma", "US/Mississippi", "US/Florida", "Cyprus", "Estonia", "Slovenia", "Panama", "US/Kentucky", "US/Pennsylvania", "US/Ohio", "Ecuador", "US/South Carolina", "US/Alabama", "US/Wisconsin", "US/California", "US/Maryland", "Romania", "US/Idaho", "US/Tennessee", "Dominican Republic", "Albania", "Mauritius", "US/Oregon", "North Macedonia", "US/Maine", "US/Virginia", "Greece", "US/Arizona", "Bosnia and Herzegovina", "Israel", "Turkey", "US/Kansas", "US/Arkansas", "Czechia", "Canada", "US/Missouri", "US/Iowa", "Trinidad and Tobago", "Serbia", "Finland", "US/Minnesota", "South Korea", "Lithuania", "US/Puerto Rico", "US/Texas", "US/New Mexico", "US/Nebraska", "US/Utah", "Bahrain", "Armenia", "Lebanon", "China", "US/New Hampshire", "US/North Carolina", "Hungary", "Algeria", "Peru", "Croatia", "Malaysia", "Brazil", "Poland", "Moldova", "Honduras", "Bulgaria", "Iraq", "Morocco", "Tunisia", "Uruguay", "US/West Virginia", "Qatar" ],
         "datasets": [
-            { "label" : "Failed to recover", "backgroundColor" : "red", "data" : [ "191.43", "165.09", "62.85", "54.46", "50.53", "46.43", "44.46", "41.79", "40.81", "33.25", "30.49", "22.52", "20.88", "18.62", "14.55", "13.69", "13.34", "12.06", "11.06", "10.07", "9.35", "9.04", "8.98", "8.55", "7.72", "5.95", "5.84", "5.69", "5.65", "5.55", "5.40", "5.39", "5.29", "4.26", "4.18", "4.11", "3.94", "3.92", "3.91", "3.89", "3.83", "3.82", "3.80", "3.52", "3.47", "3.45", "3.36", "3.36", "3.35", "3.13", "3.08", "3.03", "2.80", "2.60", "2.54", "2.53", "2.44", "2.40", "2.36", "2.35", "2.31", "2.28", "2.26", "2.26", "2.21", "2.17", "2.15", "2.15", "2.14", "2.09", "2.01", "2.00", "1.97", "1.89", "1.87", "1.82", "1.79", "1.61", "1.60", "1.55", "1.45", "1.45", "1.17", "1.16", "1.14", "1.10", "1.01", "0.97", "0.90", "0.82", "0.81", "0.75", "0.74", "0.73", "0.72", "0.72", "0.68", "0.67", "0.65", "0.59" ] },
-            { "data" : [ "1247.36", "1357.82", "3377.26", "29.50", "622.09", "515.88", "854.38", "1599.27", "847.03", "299.43", "701.61", "1869.66", "307.08", "638.80", "385.20", "608.73", "451.32", "990.94", "583.92", "709.26", "450.16", "482.21", "280.84", "869.91", "631.49", "818.20", "167.70", "388.34", "226.31", "369.17", "270.05", "279.97", "353.59", "123.95", "154.00", "106.65", "323.16", "187.68", "79.62", "196.09", "213.06", "58.32", "383.68", "212.76", "164.08", "109.30", "94.76", "127.67", "287.70", "177.87", "83.45", "103.30", "127.58", "242.13", "172.85", "107.85", "141.36", "159.81", "98.45", "240.23", "2.07", "236.24", "204.76", "522.03", "299.86", "173.32", "55.91", "276.26", "183.15", "185.98", "125.82", "541.70", "137.19", "106.71", "125.61", "87.66", "123.36", "45.09", "58.35", "41.10", "173.60", "289.45", "10.99", "66.04", "47.71", "78.30", "151.81", "114.12", "13.93", "53.24", "11.89", "20.37", "26.85", "136.96", "13.19", "13.24", "25.74", "162.16", "-0.65", "9.99" ], "backgroundColor" : "orange", "label" : "Active cases" },
-            { "data" : [ "241.45", "359.03", "0.00", "1075.03", "14.62", "121.71", "132.33", "212.19", "0.00", "167.78", "0.00", "0.00", "2.00", "0.00", "1.59", "4.20", "12.65", "71.02", "1.02", "0.00", "0.00", "0.00", "0.00", "0.00", "161.64", "2.23", "18.35", "0.00", "0.94", "0.00", "0.00", "0.00", "4.81", "0.00", "0.00", "4.96", "0.00", "0.00", "0.37", "0.00", "0.00", "15.27", "0.00", "0.00", "0.00", "0.17", "10.79", "5.76", "0.00", "0.00", "102.06", "5.15", "0.00", "0.00", "2.54", "0.00", "170.00", "0.00", "0.00", "1.81", "52.95", "0.00", "0.00", "15.09", "0.00", "0.00", "0.72", "2.34", "12.46", "0.00", "1.94", "21.01", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "5.11", "3.51", "16.22", "0.00", "3.87", "14.99", "2.43", "0.00", "10.14", "0.00", "0.41", "0.18", "0.86", "0.57", "1.63", "0.00", "0.39", "0.31", "0.26", "10.20", "18.15", "1.53" ], "backgroundColor" : "green", "label" : "Recovered" }
+            { "label" : "Failed to recover", "backgroundColor" : "red", "data" : [ "229.81", "221.41", "122.46", "87.61", "82.71", "78.32", "68.38", "62.39", "61.08", "54.68", "43.30", "42.19", "40.30", "38.11", "31.34", "30.69", "23.52", "21.31", "20.44", "20.07", "18.00", "17.64", "16.82", "15.91", "14.07", "13.25", "12.70", "12.03", "11.40", "9.30", "9.06", "8.76", "8.72", "8.34", "8.30", "8.18", "7.54", "7.14", "7.09", "7.02", "6.91", "6.70", "6.69", "6.68", "6.39", "6.24", "5.94", "5.74", "5.67", "5.59", "5.55", "5.51", "5.48", "5.28", "5.27", "5.12", "5.06", "5.01", "4.85", "4.34", "4.27", "4.21", "4.12", "4.12", "3.72", "3.67", "3.61", "3.58", "3.53", "3.43", "3.39", "3.30", "3.26", "3.22", "3.06", "2.91", "2.74", "2.53", "2.44", "2.37", "2.33", "2.32", "2.28", "2.20", "2.17", "2.00", "1.69", "1.69", "1.56", "1.54", "1.50", "1.48", "1.44", "1.43", "1.37", "1.21", "1.20", "1.16", "1.08", "1.06" ] },
+            { "label" : "Active cases", "backgroundColor" : "orange", "data" : [ "1371.57", "1604.17", "4651.27", "1026.23", "633.97", "766.68", "1951.92", "1661.89", "2849.53", "19.35", "456.86", "1049.56", "909.80", "369.02", "1038.57", "513.83", "1345.80", "394.67", "856.33", "767.23", "721.37", "1029.80", "535.16", "648.60", "527.65", "733.35", "586.99", "456.50", "612.56", "941.64", "225.77", "387.79", "470.31", "265.31", "605.01", "389.67", "300.49", "170.30", "565.07", "244.44", "171.41", "329.27", "251.25", "300.67", "282.78", "397.49", "121.67", "489.27", "442.62", "121.43", "64.22", "127.59", "210.12", "170.87", "277.79", "208.10", "136.54", "263.29", "150.56", "777.64", "208.13", "189.62", "216.39", "350.54", "251.53", "306.40", "197.91", "63.08", "129.96", "216.73", "136.50", "77.68", "229.38", "81.59", "198.52", "185.51", "131.96", "392.56", "157.20", "210.64", "63.01", "1.78", "237.76", "205.12", "53.90", "19.49", "25.28", "221.78", "71.96", "35.98", "74.77", "117.73", "20.73", "60.28", "13.13", "17.36", "37.28", "82.04", "115.49", "308.60" ] },
+            { "data" : [ "301.87", "572.20", "0.00", "216.22", "190.82", "14.62", "0.00", "467.10", "0.00", "1084.97", "2.00", "0.00", "0.00", "201.55", "0.00", "10.26", "0.00", "203.05", "6.65", "1.02", "0.00", "195.31", "0.00", "0.00", "0.00", "268.69", "0.00", "0.00", "0.00", "5.95", "0.00", "0.00", "0.00", "23.36", "33.95", "33.67", "2.12", "0.00", "0.00", "0.00", "3.74", "0.00", "0.00", "0.00", "0.00", "0.00", "13.79", "0.00", "0.00", "1.49", "26.38", "0.00", "0.00", "8.16", "0.00", "0.00", "5.82", "0.00", "6.06", "41.79", "4.97", "0.00", "0.00", "6.27", "46.38", "0.00", "0.00", "0.72", "0.00", "54.23", "0.00", "113.77", "2.54", "0.00", "0.00", "0.00", "0.00", "0.00", "232.15", "11.16", "6.71", "53.40", "0.00", "0.00", "4.34", "1.42", "16.52", "21.31", "24.01", "0.60", "1.48", "5.69", "0.31", "3.57", "5.14", "0.85", "0.43", "17.91", "0.00", "25.42" ], "backgroundColor" : "green", "label" : "Recovered" }
         ]
     },
     "options": {
@@ -189,17 +208,17 @@ function log_scale(input, n) {
     </script>
 </div>
 
-<div id="countries">
+<div class="countries">
     <a name="continents"></a>
     <h2>Statistics per Continent</h2>
     <p><a href="/continents">Spread over the continents timeline</a></p>
 
-    <div id="countries-list">
+    <div class="countries-list">
         <p class="current"><a href="/">Whole world</a></p><p><a href="/africa">Africa</a></p><p><a href="/asia">Asia</a></p><p><a href="/europe">Europe</a></p><p><a href="/north-america">North America</a></p><p><a href="/oceania">Oceania</a></p><p><a href="/south-america">South America</a></p>
     </div>
 </div>
 
-<div id="countries">
+<div class="countries">
     
     
     <a name="countries"></a>
@@ -208,9 +227,10 @@ function log_scale(input, n) {
     <p><a href="/-cn">World excluding China</a></p>
     <p><a href="/countries">More statistics on countries</a></p>
     <p><a href="/vs-china">Countries vs China</a></p>
-    <div id="countries-list">
-        <p class="current"><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a></p><p><a href="/al">Albania</a></p><p><a href="/dz">Algeria</a></p><p><a href="/ad">Andorra</a></p><p><a href="/ao">Angola</a></p><p><a href="/ai">Anguilla</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a></p><p><a href="/am">Armenia</a></p><p><a href="/aw">Aruba</a></p><p><a href="/au">Australia</a></p><p><a href="/at">Austria</a></p><p><a href="/az">Azerbaijan</a></p><p><a href="/bs">Bahamas</a></p><p><a href="/bh">Bahrain</a></p><p><a href="/bd">Bangladesh</a></p><p><a href="/bb">Barbados</a></p><p><a href="/by">Belarus</a></p><p><a href="/be">Belgium</a></p><p><a href="/bz">Belize</a></p><p><a href="/bj">Benin</a></p><p><a href="/bm">Bermuda</a></p><p><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a></p><p><a href="/ba">Bosnia and Herzegovina</a></p><p><a href="/bw">Botswana</a></p><p><a href="/br">Brazil</a></p><p><a href="/vg">British Virgin Islands</a></p><p><a href="/bn">Brunei Darussalam</a></p><p><a href="/bg">Bulgaria</a></p><p><a href="/bf">Burkina Faso</a></p><p><a href="/cv">Cabo Verde</a></p><p><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a></p><p><a href="/ca">Canada</a></p><p><a href="/ky">Cayman Islands</a></p><p><a href="/cf">Central African Republic</a></p><p><a href="/td">Chad</a></p><p><a href="/cl">Chile</a></p><p><a href="/cn">China</a></p><p><a href="/co">Colombia</a></p><p><a href="/cg">Congo</a></p><p><a href="/cr">Costa Rica</a></p><p><a href="/hr">Croatia</a></p><p><a href="/cu">Cuba</a></p><p><a href="/cw">Curaçao</a></p><p><a href="/cy">Cyprus</a></p><p><a href="/cz">Czechia</a></p><p><a href="/cd">Dem. Rep. of the Congo</a></p><p><a href="/dk">Denmark</a></p><p><a href="/dj">Djibouti</a></p><p><a href="/dm">Dominica</a></p><p><a href="/do">Dominican Republic</a></p><p><a href="/ec">Ecuador</a></p><p><a href="/eg">Egypt</a></p><p><a href="/sv">El Salvador</a></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/er">Eritrea</a></p><p><a href="/ee">Estonia</a></p><p><a href="/sz">Eswatini</a></p><p><a href="/et">Ethiopia</a></p><p><a href="/fo">Faroe Islands</a></p><p><a href="/fj">Fiji</a></p><p><a href="/fi">Finland</a></p><p><a href="/fr">France</a></p><p><a href="/gf">French Guiana</a></p><p><a href="/pf">French Polynesia</a></p><p><a href="/ga">Gabon</a></p><p><a href="/gm">Gambia</a></p><p><a href="/ge">Georgia</a></p><p><a href="/de">Germany</a></p><p><a href="/gh">Ghana</a></p><p><a href="/gi">Gibraltar</a></p><p><a href="/gr">Greece</a></p><p><a href="/gl">Greenland</a></p><p><a href="/gd">Grenada</a></p><p><a href="/gp">Guadeloupe</a></p><p><a href="/gu">Guam</a></p><p><a href="/gt">Guatemala</a></p><p><a href="/gn">Guinea</a></p><p><a href="/gw">Guinea-Bissau</a></p><p><a href="/gy">Guyana</a></p><p><a href="/ht">Haiti</a></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a></p><p><a href="/hu">Hungary</a></p><p><a href="/is">Iceland</a></p><p><a href="/in">India</a></p><p><a href="/id">Indonesia</a></p><p><a href="/ir">Iran</a></p><p><a href="/iq">Iraq</a></p><p><a href="/ie">Ireland</a></p><p><a href="/im">Isle of Man</a></p><p><a href="/il">Israel</a></p><p><a href="/it">Italy</a></p><p><a href="/jm">Jamaica</a></p><p><a href="/jp">Japan</a></p><p><a href="/jo">Jordan</a></p><p><a href="/kz">Kazakhstan</a></p><p><a href="/ke">Kenya</a></p><p><a href="/xk">Kosovo</a></p><p><a href="/kw">Kuwait</a></p><p><a href="/kg">Kyrgyzstan</a></p><p><a href="/la">Lao People's Dem. Rep.</a></p><p><a href="/lv">Latvia</a></p><p><a href="/lb">Lebanon</a></p><p><a href="/lr">Liberia</a></p><p><a href="/ly">Libya</a></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a></p><p><a href="/lu">Luxembourg</a></p><p><a href="/mg">Madagascar</a></p><p><a href="/my">Malaysia</a></p><p><a href="/mv">Maldives</a></p><p><a href="/ml">Mali</a></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a></p><p><a href="/mr">Mauritania</a></p><p><a href="/mu">Mauritius</a></p><p><a href="/yt">Mayotte</a></p><p><a href="/mx">Mexico</a></p><p><a href="/md">Moldova</a></p><p><a href="/mc">Monaco</a></p><p><a href="/mn">Mongolia</a></p><p><a href="/me">Montenegro</a></p><p><a href="/ms">Montserrat</a></p><p><a href="/ma">Morocco</a></p><p><a href="/mz">Mozambique</a></p><p><a href="/mm">Myanmar</a></p><p><a href="/na">Namibia</a></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a></p><p><a href="/nc">New Caledonia</a></p><p><a href="/nz">New Zealand</a></p><p><a href="/ni">Nicaragua</a></p><p><a href="/ne">Niger</a></p><p><a href="/ng">Nigeria</a></p><p><a href="/mk">North Macedonia</a></p><p><a href="/no">Norway</a></p><p><a href="/om">Oman</a></p><p><a href="/pk">Pakistan</a></p><p><a href="/pa">Panama</a></p><p><a href="/pg">Papua New Guinea</a></p><p><a href="/py">Paraguay</a></p><p><a href="/pe">Peru</a></p><p><a href="/ph">Philippines</a></p><p><a href="/pl">Poland</a></p><p><a href="/pt">Portugal</a></p><p><a href="/pr">Puerto Rico</a></p><p><a href="/qa">Qatar</a></p><p><a href="/re">Réunion</a></p><p><a href="/ro">Romania</a></p><p><a href="/ru">Russian Federation</a></p><p><a href="/rw">Rwanda</a></p><p><a href="/bl">Saint Barthélemy</a></p><p><a href="/kn">Saint Kitts and Nevis</a></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a></p><p><a href="/sa">Saudi Arabia</a></p><p><a href="/sn">Senegal</a></p><p><a href="/rs">Serbia</a></p><p><a href="/sc">Seychelles</a></p><p><a href="/sg">Singapore</a></p><p><a href="/sx">Sint Maarten</a></p><p><a href="/sk">Slovakia</a></p><p><a href="/si">Slovenia</a></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a></p><p><a href="/kr">South Korea</a></p><p><a href="/es">Spain</a></p><p><a href="/lk">Sri Lanka</a></p><p><a href="/ps">State of Palestine</a></p><p><a href="/sd">Sudan</a></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a></p><p><a href="/ch">Switzerland</a></p><p><a href="/sy">Syrian Arab Republic</a></p><p><a href="/tw">Taiwan</a></p><p><a href="/tz">Tanzania</a></p><p><a href="/th">Thailand</a></p><p><a href="/tl">Timor-Leste</a></p><p><a href="/tg">Togo</a></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a></p><p><a href="/tr">Turkey</a></p><p><a href="/tc">Turks and Caicos Islands</a></p><p><a href="/ug">Uganda</a></p><p><a href="/ua">Ukraine</a></p><p><a href="/ae">United Arab Emirates</a></p><p><a href="/gb">United Kingdom</a></p><p><a href="/us">United States of America</a></p><p><a href="/uy">Uruguay</a></p><p><a href="/uz">Uzbekistan</a></p><p><a href="/ve">Venezuela</a></p><p><a href="/vn">Viet Nam</a></p><p><a href="/zm">Zambia</a></p><p><a href="/zw">Zimbabwe</a></p>
+    <div class="countries-list">
+        <a name="countries"></a><p class="current"><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a> <span class="down">▼</span></p><p><a href="/al">Albania</a> <span class="up">▲</span></p><p><a href="/dz">Algeria</a> <span class="up">▲</span></p><p><a href="/ad">Andorra</a> <span class="up">▲</span></p><p><a href="/ao">Angola</a> <span class="down">▼</span></p><p><a href="/ai">Anguilla</a> <span class="up">▲</span></p><p><a href="/ag">Antigua and Barbuda</a> <span class="up">▲</span></p><p><a href="/ar">Argentina</a> <span class="up">▲</span></p><p><a href="/am">Armenia</a> <span class="up">▲</span></p><p><a href="/aw">Aruba</a> <span class="up">▲</span></p><p><a href="/au">Australia</a> <span class="down">▼</span></p><p><a href="/at">Austria</a> <span class="down">▼</span></p><p><a href="/az">Azerbaijan</a> <span class="down">▼</span></p><p><a href="/bs">Bahamas</a> <span class="down">▼</span></p><p><a href="/bh">Bahrain</a> <span class="up">▲</span></p><p><a href="/bd">Bangladesh</a> <span class="down">▼</span></p><p><a href="/bb">Barbados</a> <span class="up">▲</span></p><p><a href="/by">Belarus</a> <span class="up">▲</span></p><p><a href="/be">Belgium</a> <span class="up">▲</span></p><p><a href="/bz">Belize</a></p><p><a href="/bj">Benin</a> <span class="down">▼</span></p><p><a href="/bm">Bermuda</a> <span class="up">▲</span></p><p><a href="/bt">Bhutan</a> <span class="up">▲</span></p><p><a href="/bo">Bolivia</a></p><p><a href="/bq">Bonaire, St. Eustatius & Saba</a> <span class="up">▲</span></p><p><a href="/ba">Bosnia and Herzegovina</a> <span class="up">▲</span></p><p><a href="/bw">Botswana</a></p><p><a href="/br">Brazil</a> <span class="up">▲</span></p><p><a href="/vg">British Virgin Islands</a></p><p><a href="/bn">Brunei Darussalam</a></p><p><a href="/bg">Bulgaria</a> <span class="up">▲</span></p><p><a href="/bf">Burkina Faso</a> <span class="down">▼</span></p><p><a href="/bi">Burundi</a> <span class="up">▲</span></p><p><a href="/cv">Cabo Verde</a></p><p><a href="/kh">Cambodia</a> <span class="up">▲</span></p><p><a href="/cm">Cameroon</a> <span class="up">▲</span></p><p><a href="/ca">Canada</a> <span class="up">▲</span></p><p><a href="/ky">Cayman Islands</a> <span class="down">▼</span></p><p><a href="/cf">Central African Republic</a></p><p><a href="/td">Chad</a> <span class="up">▲</span></p><p><a href="/cl">Chile</a> <span class="up">▲</span></p><p><a href="/cn">China</a> <span class="down">▼</span></p><p><a href="/co">Colombia</a> <span class="down">▼</span></p><p><a href="/cg">Congo</a> <span class="up">▲</span></p><p><a href="/cr">Costa Rica</a> <span class="down">▼</span></p><p><a href="/hr">Croatia</a> <span class="down">▼</span></p><p><a href="/cu">Cuba</a> <span class="down">▼</span></p><p><a href="/cw">Curaçao</a></p><p><a href="/cy">Cyprus</a> <span class="down">▼</span></p><p><a href="/cz">Czechia</a> <span class="up">▲</span></p><p><a href="/cd">Dem. Rep. of the Congo</a> <span class="up">▲</span></p><p><a href="/dk">Denmark</a> <span class="up">▲</span></p><p><a href="/dj">Djibouti</a> <span class="up">▲</span></p><p><a href="/dm">Dominica</a></p><p><a href="/do">Dominican Republic</a> <span class="down">▼</span></p><p><a href="/ec">Ecuador</a> <span class="down">▼</span></p><p><a href="/eg">Egypt</a> <span class="up">▲</span></p><p><a href="/sv">El Salvador</a> <span class="up">▲</span></p><p><a href="/gq">Equatorial Guinea</a> <span class="down">▼</span></p><p><a href="/er">Eritrea</a> <span class="up">▲</span></p><p><a href="/ee">Estonia</a> <span class="up">▲</span></p><p><a href="/sz">Eswatini</a></p><p><a href="/et">Ethiopia</a> <span class="down">▼</span></p><p><a href="/fo">Faroe Islands</a></p><p><a href="/fj">Fiji</a> <span class="up">▲</span></p><p><a href="/fi">Finland</a> <span class="up">▲</span></p><p><a href="/fr">France</a> <span class="down">▼</span></p><p><a href="/gf">French Guiana</a> <span class="down">▼</span></p><p><a href="/pf">French Polynesia</a> <span class="down">▼</span></p><p><a href="/ga">Gabon</a> <span class="up">▲</span></p><p><a href="/gm">Gambia</a></p><p><a href="/ge">Georgia</a> <span class="up">▲</span></p><p><a href="/de">Germany</a> <span class="up">▲</span></p><p><a href="/gh">Ghana</a> <span class="down">▼</span></p><p><a href="/gi">Gibraltar</a> <span class="down">▼</span></p><p><a href="/gr">Greece</a> <span class="up">▲</span></p><p><a href="/gl">Greenland</a></p><p><a href="/gd">Grenada</a> <span class="up">▲</span></p><p><a href="/gp">Guadeloupe</a> <span class="down">▼</span></p><p><a href="/gu">Guam</a></p><p><a href="/gt">Guatemala</a> <span class="up">▲</span></p><p><a href="/gn">Guinea</a> <span class="up">▲</span></p><p><a href="/gw">Guinea-Bissau</a> <span class="down">▼</span></p><p><a href="/gy">Guyana</a> <span class="down">▼</span></p><p><a href="/ht">Haiti</a> <span class="down">▼</span></p><p><a href="/va">Holy See</a> <span class="up">▲</span></p><p><a href="/hn">Honduras</a> <span class="up">▲</span></p><p><a href="/hu">Hungary</a> <span class="up">▲</span></p><p><a href="/is">Iceland</a> <span class="up">▲</span></p><p><a href="/in">India</a> <span class="down">▼</span></p><p><a href="/id">Indonesia</a> <span class="down">▼</span></p><p><a href="/ir">Iran</a> <span class="down">▼</span></p><p><a href="/iq">Iraq</a> <span class="up">▲</span></p><p><a href="/ie">Ireland</a> <span class="up">▲</span></p><p><a href="/im">Isle of Man</a> <span class="up">▲</span></p><p><a href="/il">Israel</a> <span class="up">▲</span></p><p><a href="/it">Italy</a> <span class="down">▼</span></p><p><a href="/jm">Jamaica</a> <span class="down">▼</span></p><p><a href="/jp">Japan</a> <span class="up">▲</span></p><p><a href="/jo">Jordan</a> <span class="up">▲</span></p><p><a href="/kz">Kazakhstan</a> <span class="up">▲</span></p><p><a href="/ke">Kenya</a> <span class="up">▲</span></p><p><a href="/xk">Kosovo</a> <span class="down">▼</span></p><p><a href="/kw">Kuwait</a> <span class="down">▼</span></p><p><a href="/kg">Kyrgyzstan</a> <span class="up">▲</span></p><p><a href="/la">Lao People's Dem. Rep.</a> <span class="down">▼</span></p><p><a href="/lv">Latvia</a> <span class="down">▼</span></p><p><a href="/lb">Lebanon</a> <span class="up">▲</span></p><p><a href="/lr">Liberia</a> <span class="down">▼</span></p><p><a href="/ly">Libya</a> <span class="up">▲</span></p><p><a href="/li">Liechtenstein</a> <span class="up">▲</span></p><p><a href="/lt">Lithuania</a> <span class="up">▲</span></p><p><a href="/lu">Luxembourg</a> <span class="up">▲</span></p><p><a href="/mg">Madagascar</a> <span class="up">▲</span></p><p><a href="/mw">Malawi</a> <span class="up">▲</span></p><p><a href="/my">Malaysia</a> <span class="up">▲</span></p><p><a href="/mv">Maldives</a> <span class="down">▼</span></p><p><a href="/ml">Mali</a> <span class="up">▲</span></p><p><a href="/mt">Malta</a> <span class="down">▼</span></p><p><a href="/mq">Martinique</a> <span class="down">▼</span></p><p><a href="/mr">Mauritania</a></p><p><a href="/mu">Mauritius</a> <span class="down">▼</span></p><p><a href="/yt">Mayotte</a> <span class="up">▲</span></p><p><a href="/mx">Mexico</a> <span class="up">▲</span></p><p><a href="/md">Moldova</a> <span class="up">▲</span></p><p><a href="/mc">Monaco</a> <span class="up">▲</span></p><p><a href="/mn">Mongolia</a> <span class="down">▼</span></p><p><a href="/me">Montenegro</a> <span class="up">▲</span></p><p><a href="/ms">Montserrat</a></p><p><a href="/ma">Morocco</a> <span class="up">▲</span></p><p><a href="/mz">Mozambique</a> <span class="down">▼</span></p><p><a href="/mm">Myanmar</a> <span class="up">▲</span></p><p><a href="/na">Namibia</a> <span class="down">▼</span></p><p><a href="/np">Nepal</a> <span class="up">▲</span></p><p><a href="/nl">Netherlands</a> <span class="up">▲</span></p><p><a href="/nc">New Caledonia</a> <span class="up">▲</span></p><p><a href="/nz">New Zealand</a> <span class="up">▲</span></p><p><a href="/ni">Nicaragua</a></p><p><a href="/ne">Niger</a> <span class="down">▼</span></p><p><a href="/ng">Nigeria</a> <span class="down">▼</span></p><p><a href="/mk">North Macedonia</a> <span class="up">▲</span></p><p><a href="/no">Norway</a> <span class="up">▲</span></p><p><a href="/om">Oman</a> <span class="up">▲</span></p><p><a href="/pk">Pakistan</a> <span class="up">▲</span></p><p><a href="/pa">Panama</a> <span class="up">▲</span></p><p><a href="/pg">Papua New Guinea</a></p><p><a href="/py">Paraguay</a> <span class="up">▲</span></p><p><a href="/pe">Peru</a> <span class="down">▼</span></p><p><a href="/ph">Philippines</a> <span class="up">▲</span></p><p><a href="/pl">Poland</a> <span class="up">▲</span></p><p><a href="/pt">Portugal</a> <span class="down">▼</span></p><p><a href="/pr">Puerto Rico</a></p><p><a href="/qa">Qatar</a> <span class="up">▲</span></p><p><a href="/re">Réunion</a> <span class="down">▼</span></p><p><a href="/ro">Romania</a> <span class="up">▲</span></p><p><a href="/ru">Russian Federation</a> <span class="up">▲</span></p><p><a href="/rw">Rwanda</a> <span class="down">▼</span></p><p><a href="/bl">Saint Barthélemy</a></p><p><a href="/kn">Saint Kitts and Nevis</a> <span class="up">▲</span></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/sm">San Marino</a> <span class="up">▲</span></p><p><a href="/sa">Saudi Arabia</a> <span class="up">▲</span></p><p><a href="/sn">Senegal</a> <span class="down">▼</span></p><p><a href="/rs">Serbia</a> <span class="down">▼</span></p><p><a href="/sc">Seychelles</a></p><p><a href="/sl">Sierra Leone</a> <span class="down">▼</span></p><p><a href="/sg">Singapore</a> <span class="down">▼</span></p><p><a href="/sx">Sint Maarten</a> <span class="down">▼</span></p><p><a href="/sk">Slovakia</a> <span class="down">▼</span></p><p><a href="/si">Slovenia</a> <span class="up">▲</span></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a> <span class="up">▲</span></p><p><a href="/kr">South Korea</a> <span class="down">▼</span></p><p><a href="/es">Spain</a> <span class="down">▼</span></p><p><a href="/lk">Sri Lanka</a> <span class="up">▲</span></p><p><a href="/ps">State of Palestine</a></p><p><a href="/sd">Sudan</a> <span class="up">▲</span></p><p><a href="/sr">Suriname</a> <span class="down">▼</span></p><p><a href="/se">Sweden</a> <span class="up">▲</span></p><p><a href="/ch">Switzerland</a> <span class="down">▼</span></p><p><a href="/sy">Syrian Arab Republic</a> <span class="up">▲</span></p><p><a href="/tw">Taiwan</a> <span class="up">▲</span></p><p><a href="/tz">Tanzania</a> <span class="down">▼</span></p><p><a href="/th">Thailand</a> <span class="down">▼</span></p><p><a href="/tl">Timor-Leste</a></p><p><a href="/tg">Togo</a> <span class="up">▲</span></p><p><a href="/tt">Trinidad and Tobago</a> <span class="up">▲</span></p><p><a href="/tn">Tunisia</a> <span class="up">▲</span></p><p><a href="/tr">Turkey</a> <span class="up">▲</span></p><p><a href="/tc">Turks and Caicos Islands</a> <span class="down">▼</span></p><p><a href="/ug">Uganda</a> <span class="up">▲</span></p><p><a href="/ua">Ukraine</a> <span class="down">▼</span></p><p><a href="/ae">United Arab Emirates</a> <span class="up">▲</span></p><p><a href="/gb">United Kingdom</a> <span class="down">▼</span></p><p><a href="/us">United States of America</a> <span class="up">▲</span></p><p><a href="/uy">Uruguay</a> <span class="up">▲</span></p><p><a href="/uz">Uzbekistan</a> <span class="up">▲</span></p><p><a href="/ve">Venezuela</a> <span class="down">▼</span></p><p><a href="/vn">Viet Nam</a> <span class="up">▲</span></p><p><a href="/zm">Zambia</a> <span class="up">▲</span></p><p><a href="/zw">Zimbabwe</a> <span class="up">▲</span></p>
     </div>
+    <p>The green and red arrows display the change of the number of new confirmed cases for the last two days.</p>
 </div>
 
 
