@@ -38,7 +38,7 @@ sub html-template($path, $title, $content) is export {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>$title | Coronavirus COVID-19 Observer</title>
-            <link rel="icon" href="favicon.ico?v=2" type="image/x-icon">
+            <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon">
 
             $ga
 
