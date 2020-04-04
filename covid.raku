@@ -233,6 +233,7 @@ multi sub MAIN('generate') {
 multi sub MAIN('about') {
     html-template('/about', 'About the project', 'html/about.html'.IO.slurp);
     html-template('/sources', 'Data sources', 'html/sources.html'.IO.slurp);
+    html-template('/news', 'Covid.observer news and updates', 'html/news.html'.IO.slurp);
 }
 
 #| Check if there are country mismatches

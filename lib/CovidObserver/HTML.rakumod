@@ -155,6 +155,7 @@ sub html-template($path, $title, $content) is export {
                     <li class="dropdown">
                         <a href="javascript: void(0)" class="dropbtn">About</a>
                         <div class="dropdown-content">
+                            <a href="/news">What’s new</a>
                             <a href="/about">About the project</a>
                             <a href="/sources">Data sources</a>
                             <a href="https://andrewshitov.com/category/covid-19/" target="_blank">Tech blog</a>
