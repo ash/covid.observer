@@ -57,7 +57,21 @@ multi sub MAIN('setup', Bool :$force=False, Bool :$verbose=False) {
           recovered int DEFAULT 0
         );
 
-    EOSQL
+        DROP TABLE IF EXISTS mortality;
+        CREATE TABLE `mortality` (
+          `cc` varchar(5) DEFAULT NULL,
+          `year` int DEFAULT NULL,
+          `month` int DEFAULT NULL,
+          `n` int DEFAULT '0'
+        );
+
+        DROP TABLE IF EXISTS crude;
+        CREATE TABLE `crude` (
+          `cc` varchar(5) DEFAULT NULL,
+          `year` int DEFAULT NULL,
+          `deaths` double DEFAULT '0'
+        );
+        EOSQL
 
     if $force {
         # This can be piped to sh/bash for fast teardown & setup
@@ -87,6 +101,7 @@ multi sub MAIN('population') {
     say "Updating database...";
 
     dbh.execute('delete from countries');
+    my $sth = dbh.prepare('insert into countries (cc, continent, country, population, life_expectancy) values (?, ?, ?, ?, ?)');
     for %population<countries>.kv -> $cc, $country {
         my $n = %population<population>{$cc};
         my $age = %population<age>{$cc} || 0;
@@ -94,10 +109,31 @@ multi sub MAIN('population') {
         my $continent = $cc ~~ /'/'/ ?? '' !! %population<continent>{$cc};
         say "$cc, $continent, $country, $n";
 
-        my $sth = dbh.prepare('insert into countries (cc, continent, country, population, life_expectancy) values (?, ?, ?, ?, ?)');
         $sth.execute($cc, $continent, $country, $n, $age);
-        $sth.finish();
     }
+    $sth.finish();
+
+    dbh.execute('delete from mortality');
+    $sth = dbh.prepare('insert into mortality (cc, year, month, n) values (?, ?, ?, ?)');
+    for %population<mortality>.keys -> $cc {
+        my $years = 0;
+        for %population<mortality>{$cc}.keys.sort.reverse -> $year {
+            last if ++$years > 5; # Take last 5 non-empty years of data
+            for %population<mortality>{$cc}{$year}.keys -> $month {
+                $sth.execute($cc, $year, $month, %population<mortality>{$cc}{$year}{$month} || 0);
+            }
+        }
+    }
+    $sth.finish();
+
+    dbh.execute('delete from crude');
+    $sth = dbh.prepare('insert into crude (cc, year, deaths) values (?, ?, ?)');
+    for %population<crude>.keys -> $cc {
+        for %population<crude>{$cc}.keys.sort -> $year {
+            $sth.execute($cc, $year, %population<crude>{$cc}{$year} || 0);
+        }
+    }
+    $sth.finish();
 }
 
 #| Fetch the latest COVID-19 data from JHU and rebuild the database
@@ -158,6 +194,14 @@ multi sub MAIN('generate') {
     my %daily-totals = get-daily-totals-stats();
 
     add-country-arrows(%countries, %per-day);
+    my %mortality = get-mortality-data();
+    my %crude = get-crude-data();
+
+# generate-country-stats('RU', %countries, %per-day, %totals, %daily-totals, :%mortality, :%crude);
+# generate-country-stats('IT', %countries, %per-day, %totals, %daily-totals, :%mortality, :%crude);
+# generate-country-stats('CN', %countries, %per-day, %totals, %daily-totals, :%mortality, :%crude);
+# generate-country-stats('VA', %countries, %per-day, %totals, %daily-totals, :%mortality, :%crude);
+# exit;
 
     generate-world-stats(%countries, %per-day, %totals, %daily-totals);
     generate-world-stats(%countries, %per-day, %totals, %daily-totals, exclude => 'CN');
@@ -168,7 +212,7 @@ multi sub MAIN('generate') {
     # # generate-common-start-stats(%countries, %per-day, %totals, %daily-totals);
 
     for get-known-countries() -> $cc {
-        generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals);
+        generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :%mortality, :%crude);
     }
     generate-country-stats('CN', %countries, %per-day, %totals, %daily-totals, exclude => 'CN/HB');
     generate-continent-graph(%countries, %per-day, %totals, %daily-totals);
@@ -185,7 +229,7 @@ multi sub MAIN('generate') {
     geo-sanity();
 }
 
-#| Re-generate the "About" pages.
+#| Re-generate the "About" section pages
 multi sub MAIN('about') {
     html-template('/about', 'About the project', 'html/about.html'.IO.slurp);
     html-template('/sources', 'Data sources', 'html/sources.html'.IO.slurp);

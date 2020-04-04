@@ -34,6 +34,7 @@ sub read-covid-data() is export {
     my %cc;
 
     my %raw;
+    my %us-recovered;
     for dir('COVID-19/csse_covid_19_data/csse_covid_19_daily_reports', test => /'.csv'$/).sort(~*.path) -> $path {
         $path.path ~~ / (\d\d) '-' (\d\d) '-' \d\d(\d\d) '.csv' /;
         my $month = ~$/[0];
@@ -98,6 +99,10 @@ sub read-covid-data() is export {
 
             my $region-cc = '';
 
+            if $cc eq 'US' && $region eq 'Recovered' { # Canada is fine without this
+                %us-recovered{$date} = $recovered // 0;
+            }
+
             if $cc eq 'US' && 
                $region && $region !~~ /Princess/ && $region !~~ /','/
                && $region ne 'US' { # What is 'US/US'?
@@ -147,6 +152,10 @@ sub read-covid-data() is export {
                 %stats<recovered><per-day>{$cc}{$date} += $recovered;
             }
         }
+    }
+
+    for %us-recovered.keys -> $date {
+        %stats<recovered><per-day><US>{$date} = %us-recovered{$date};
     }
 
     # Fill zeroes for missing dates/countries

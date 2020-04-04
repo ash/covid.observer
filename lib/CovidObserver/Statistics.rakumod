@@ -101,6 +101,32 @@ sub get-daily-totals-stats() is export {
     return %stats;
 }
 
+sub get-mortality-data() is export {
+    my $sth = dbh.prepare('select cc, year, month, n from mortality');
+    $sth.execute();
+
+    my %mortality;
+    for $sth.allrows(:array-of-hash) -> %row {
+        %mortality{%row<cc>}{%row<year>}{%row<month>} = %row<n>;
+    }
+    $sth.finish();
+
+    return %mortality;
+}
+
+sub get-crude-data() is export {
+    my $sth = dbh.prepare('select cc, year, deaths from crude');
+    $sth.execute();
+
+    my %crude;
+    for $sth.allrows(:array-of-hash) -> %row {
+        %crude{%row<cc>}{%row<year>} = %row<deaths>;
+    }
+    $sth.finish();
+
+    return %crude;
+}
+
 sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) is export {
     my %date-cc;
     for %per-day.keys -> $cc {
@@ -472,7 +498,14 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
                         "stacked": true,
                     }],
                     "yAxes": [{
-                        "stacked": true
+                        "stacked": true,
+                        "ticks": {
+                            callback: function(value, index, values) {
+                                value = value.toString();
+                                if (value.length > 10) return '';
+                                return value;
+                            }
+                        }
                     }]
                 }
             }
@@ -1004,6 +1037,13 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
                 "scales": {
                     "yAxes": [{
                         "type": "logarithmic",
+                        "ticks": {
+                            callback: function(value, index, values) {
+                                value = value.toString();
+                                if (value.length > 10) return '';
+                                return value;
+                            }
+                        }
                     }],
                 }
             }
@@ -1102,8 +1142,7 @@ sub scattered-age-graph(%countries, %per-day, %totals, %daily-totals) is export 
                 "tooltips": {
                     callbacks: {
                         label: function(tooltipItem, data) {
-                            var label = data.labels[tooltipItem.index];
-                            return label;
+                            return data.labels[tooltipItem.index];
                         }
                     }
                 },
@@ -1239,4 +1278,233 @@ sub add-country-arrows(%countries, %per-day) is export {
         my $direction = $delta2 <=> $delta1;
         %countries{$cc}<direction> = $direction;
     }
+}
+
+sub mortality-graph($cc, %per-day, %mortality, %crude, %countries, %totals) is export {
+    # return Nil unless %mortality{$cc}:exists;
+
+    constant @months = <January February March April May June July August September October November December>;
+
+    my @years = %mortality{$cc}.keys.sort; # 5 last non-empty years in the db
+
+    my $max = 0;
+    # Some years are not complete in the data, so fill all the months with zeroes first.
+    my %recent = @years.map: * => [0 xx 12];
+    for @years -> $year is rw {
+        for %mortality{$cc}{$year}.keys -> $month {
+            my $value = %mortality{$cc}{$year}{$month};
+            %recent{$year}[$month - 1] = $value;
+            $max = $value if $value > $max;
+        }
+    }
+
+    my $is-averaged = False;
+    if !@years.elems && %crude{$cc} {
+        my $population = 1_000_000 * %countries{$cc}<population>;
+        @years = %crude{$cc}.keys.sort.reverse[0..5].reverse;
+        for @years -> $year {
+            my $deaths = %crude{$cc}{$year} * ($population / 1000);
+            $deaths /= 12;
+            %recent{$year} = $deaths.round xx 12;
+            $max = $deaths if $deaths > $max;
+        }
+        $is-averaged = True;
+    }
+
+
+    my $max-current = 0;
+    my @current = 0 xx 12;
+    my @weekly = 0 xx 52;
+    for %per-day{$cc}.keys.sort -> $date {
+        my ($year, $month, $day) = $date.split('-');
+        @current[$month - 1] = %per-day{$cc}{$date}<failed>;
+        @current[$month - 1] -= [+] @current[0 ..^ $month - 1];
+
+        my $value = @current[$month - 1];
+        $max-current = $value if $value > $max-current;
+
+        my $week-number = DateTime.new(year => $year, month => $month, day => $day).week-number;
+        @weekly[$week-number - 1] = %per-day{$cc}{$date}<failed>;
+    }
+
+    return Nil unless $max-current;
+
+    my $scale = $max < 20 * $max-current ?? 'linear' !! 'logarithmic';
+
+    for 1 ..^ @weekly.elems -> $week-number {
+        next unless @weekly[$week-number - 1];
+        @weekly[$week-number - 1] -= [+] @weekly[0 ..^ $week-number - 1];
+    }
+
+
+    my $json-monthly = q:to/JSON/;
+        {
+            "type": "bar",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASETS
+                ]
+            },
+            "options": {
+                "animation": false,
+                "scales": {
+                    "yAxes": [{
+                        "type": "SCALE",
+                        ticks: {
+                            callback: function(value, index, values) {
+                                value = value.toString();
+                                if (value.length > 10) return '';
+                                return value;
+                            }
+                        }
+                    }]
+                }
+            }
+        }
+        JSON
+
+    my @color = '#b7b7b7', '#c1c0c0', '#d3d3d3', '#e5e4e4', '#efeded';
+    my @datasets;
+    # for %recent.keys.sort Z @color.reverse -> ($year, $color) {
+        for %recent.keys.sort -> $year {
+        my %dataset =
+            label => $is-averaged ?? "Averaged mortality in $year" !! "Mortality in $year",
+            data => %recent{$year},
+            backgroundColor => @color[2];
+
+        @datasets.push(to-json(%dataset));
+    }
+
+    my %dataset =
+        label => "Deaths from COVID-19",
+        data => @current,
+        backgroundColor => 'red';
+
+    @datasets.push(to-json(%dataset));
+
+    my $labels = to-json(@months);
+    my $datasets = @datasets.join(",\n");
+
+    $json-monthly ~~ s/DATASETS/$datasets/;
+    $json-monthly ~~ s/LABELS/$labels/;
+    $json-monthly ~~ s/SCALE/$scale/;
+
+    my $json-weekly = q:to/JSON/;
+        {
+            "type": "bar",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET
+                ]
+            },
+            "options": {
+                "animation": false,
+            }
+        }
+        JSON
+
+    my $labels-weekly = to-json(1..52);
+    my %dataset-weekly =
+        label => "Deaths from COVID-19 by weeks of 2020",
+        data => @weekly,
+        backgroundColor => 'red';
+
+    my $dataset-weekly = to-json(%dataset-weekly);
+
+    $json-weekly ~~ s/DATASET/$dataset-weekly/;
+    $json-weekly ~~ s/LABELS/$labels-weekly/;
+
+    return {
+        monthly     => $json-monthly,
+        weekly      => $json-weekly,
+        is-averaged => $is-averaged,
+        scale       => $scale,
+    };
+}
+
+sub crude-graph($cc, %per-day, %crude, %countries, %totals) is export {
+    return Nil unless %crude{$cc}:exists;
+
+    my @years = %crude{$cc}.keys.sort;
+    my @data;
+    my $max = 0;
+    for @years -> $year {
+        my $value = %crude{$cc}{$year};
+        @data.push($value);
+        $max = $value if $value > $max;
+    }
+
+    # Extend years till now
+    my $last = @years[*-1];
+    for $last ^.. 2020 -> $year {
+        @years.push($year);
+    }
+
+    my $population = 1_000_000 * %countries{$cc}<population>;
+    my $failed = %totals{$cc}<failed>;
+
+    return Nil unless $failed;
+
+    my $crude-covid = 1000 * $failed / $population;
+    my @crude-covid = 0 xx @years.elems;
+    @crude-covid[*-1] = sprintf('%3g', $crude-covid);
+
+    my $scale = $max < 20 * @crude-covid[*-1] ?? 'linear' !! 'logarithmic';
+
+    my $json = q:to/JSON/;
+        {
+            "type": "line",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET1,
+                    DATASET2
+                ]
+            },
+            "options": {
+                "animation": false,
+                "scales": {
+                    "yAxes": [{
+                        "type": "SCALE",
+                        "ticks": {
+                            callback: function(value, index, values) {
+                                value = value.toString();
+                                if (value.length > 10) return '';
+                                return value;
+                            }
+                        }
+                    }]
+                }
+            }
+        }
+        JSON
+
+    my %dataset1 =
+        label => "Crude deaths rates per 1000 population",
+        data => @data,
+        fill => False,
+        borderColor => 'violet';
+
+    my %dataset2 =
+        label => "Crude rate COVID-19 per 1000",
+        data => @crude-covid,
+        fill => False,
+        type => 'bar',
+        backgroundColor => 'red';
+
+    my $dataset1 = to-json(%dataset1);
+    my $dataset2 = to-json(%dataset2);
+    my $labels = to-json(@years);
+
+    $json ~~ s/DATASET1/$dataset1/;
+    $json ~~ s/DATASET2/$dataset2/;
+    $json ~~ s/LABELS/$labels/;
+    $json ~~ s/SCALE/$scale/;
+
+    return {
+        json => $json,
+        scale => $scale,
+    };
 }

@@ -30,6 +30,21 @@ sub html-template($path, $title, $content) is export {
 
     my $anchor-prefix = $path ~~ / 'vs-' | countries | overview | 404 / ?? '/' !! '';
 
+    my $new-prefix = $content ~~ /block16/ && $content ~~ /block18/ ?? '' !! '/it';
+    my $new-block = qq:to/BLOCK/;
+        <div class="new">
+            <p class="center">New data on country-level pages. {'E.g., for Italy:' if $new-prefix eq '/it'}</p>
+            <p class="center">
+                <a href="{$new-prefix}#mortality">Mortality level</a>
+                |
+                <a href="{$new-prefix}#weekly">Weekly levels</a>
+                |
+                <a href="{$new-prefix}#crude">Crude death rates</a>
+            </p>
+            <p class="center">Compare the COVID-19 influence with the previous years.</p>
+        </div>
+        BLOCK
+
     my $timestamp = DateTime.now.truncated-to('hour');
     my $template = qq:to/HTML/;
         <!DOCTYPE html>
@@ -44,7 +59,7 @@ sub html-template($path, $title, $content) is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=23">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=28">
             <style>
                 $style
             </style>
@@ -74,6 +89,15 @@ sub html-template($path, $title, $content) is export {
                             <a href="{$anchor-prefix}#daily">Daily flow</a>
                             <a href="{$anchor-prefix}#speed">Daily speed</a>
                             <a href="{$anchor-prefix}#table">Table data</a>
+                            {
+                                if $path.chars == 3 {
+                                    q:to/LINKS/;
+                                        <a href="#mortality">Mortality level</a>
+                                        <a href="#weekly">Weekly levels</a>
+                                        <a href="#crude">Crude deaths</a>
+                                        LINKS
+                                }
+                            }
                             <a href="/vs-age">Cases vs life expectancy</a>
                         </div>
                     </li>
@@ -148,6 +172,8 @@ sub html-template($path, $title, $content) is export {
             <script>
                 autocomplete(document.getElementById("SearchBox"), countries);
             </script>
+
+            $new-block
 
             $content
 

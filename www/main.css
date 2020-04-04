@@ -13,9 +13,11 @@ p {
     text-align: left;
     line-height: 160%;
 }
+p.center {
+    text-align: center;
+}
 #block2 {
     padding-top: 7%;
-    background: #f5f5ea;
     padding-bottom: 10%;
 }
 #block2 div.affected {
@@ -103,7 +105,13 @@ p {
     padding-left: 2%;
     padding-right: 2%;
 }
-#block16 {
+#block16,
+#block16a {
+    margin-bottom: 5%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+#block18 {
     margin-bottom: 5%;
     padding-left: 2%;
     padding-right: 2%;
@@ -223,6 +231,9 @@ a[target="_blank"]::after {
 #block13 div.dashboard {
     padding-left: 2%;
     padding-right: 2%;
+    text-align: center;
+}
+#block13 div.dashboard p {
     text-align: center;
 }
 #block13 div.dashboard div {
@@ -445,6 +456,10 @@ span.up {
 .menu .dropdown:hover .dropdown-content {
     display: block;
 }
+div.new {
+    padding: 1em;    
+    background-color: #f5f5ea;
+}
 
 @media screen and (max-width: 850px) {
     h1 {
@@ -475,6 +490,10 @@ span.up {
     .menu li.right, 
     .menu li {
         float: none;
+    }
+
+    div.new {
+        padding-top: 2em;
     }
 }
 

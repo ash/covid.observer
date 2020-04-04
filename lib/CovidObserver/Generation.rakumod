@@ -28,7 +28,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
         <div id="block2">
             <h2>Affected World Population{$without-str}</h2>
             <div id="percent">$chart3&thinsp;%</div>
-            <p>This is the part of confirmed infection cases against the total {
+            <p class="center">This is the part of confirmed infection cases against the total {
                 if $exclude {
                     sprintf('%.1f', ($world-population / 1_000_000 - %countries{$exclude}<population>) / 1000)
                 }
@@ -134,7 +134,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
             <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
-            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that fewer cases registered today than yesterday.</p>
         </div>
 
         <div id="block11">
@@ -152,7 +152,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
     html-template("/$exclude-path", "World statistics$without-str", $content);
 }
 
-sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$exclude?) is export {
+sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$exclude?, :%mortality?, :%crude?) is export {
     my $without-str = $exclude ?? " excluding %countries{$exclude}<country>" !! '';
     say "Generating {$cc}{$without-str}...";
     my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc, :$exclude);
@@ -187,6 +187,86 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
             LINKS
     }
 
+    my $mortality-block = '';
+    if %mortality {
+        my $chart16data = mortality-graph($cc, %per-day, %mortality, %crude, %countries, %totals);
+        if $chart16data {
+            $mortality-block = qq:to/HTML/;
+                <div id="block16">
+                    <a name="mortality"></a>
+                    <h2>Mortality Level</h2>
+                    <p>The gray bars on this graph display the absolute number of deaths that happen in {$proper-country-name} every month during the recent five years of <a href="/sources">available data</a>. The red bars are the absolute numbers of people died due to the COVID-19 infection.</p>
+                    {'<p>Note that the vertical axis is drawn in logarithmic scale by default.</p>' if $chart16data<scale> eq 'logarithmic'}
+                    {'<p>As there is no monthly data available for ' ~ $proper-country-name ~ ', the gray bars are the average numbers obtained via the <a href="#crude">crude</a> death values known for this country for the recent five years of the available dataset.</p>' if $chart16data<is-averaged>}
+                    <canvas id="Chart16"></canvas>
+                    <p class="left">
+                        <label class="toggle-switchy" for="logscale16" data-size="xs" data-style="rounded" data-color="blue">
+                            <input type="checkbox" id="logscale16" {'checked="checked"' if $chart16data<scale> eq 'logarithmic'} onclick="log_scale(this, 16)">
+                            <span class="toggle">
+                                <span class="switch"></span>
+                            </span>
+                        </label>
+                        <label for="logscale16"> Logarithmic scale</label>
+                    </p>
+                    <script>
+                        var ctx16 = document.getElementById('Chart16').getContext('2d');
+                        chart[16] = new Chart(ctx16, $chart16data<monthly>);
+                    </script>
+                </div>
+
+                <div id="block16a">
+                    <a name="weekly"></a>
+                    <h2>Weekly Levels</h2>
+                    <p>This graph draws the number of deaths in {$proper-country-name} connected to the COVID-19 infection aggregated by weeks of 2020.</p>
+                    <canvas id="Chart17"></canvas>
+                    <p class="left">
+                        <label class="toggle-switchy" for="logscale17" data-size="xs" data-style="rounded" data-color="blue">
+                            <input type="checkbox" id="logscale17" onclick="log_scale(this, 17)">
+                            <span class="toggle">
+                                <span class="switch"></span>
+                            </span>
+                        </label>
+                        <label for="logscale17"> Logarithmic scale</label>
+                    </p>
+                    <script>
+                        var ctx17 = document.getElementById('Chart17').getContext('2d');
+                        chart[17] = new Chart(ctx17, $chart16data<weekly>);
+                    </script>
+                </div>
+                HTML
+        }
+    }
+
+    my $crude-block = '';
+    if %crude {
+        my $chart18data = crude-graph($cc, %per-day, %crude, %countries, %totals);
+        if $chart18data {
+            $crude-block = qq:to/HTML/;
+                <div id="block18">
+                    <a name="crude"></a>
+                    <h2>Crude rates</h2>
+                    <p>Crude mortality rate is the number of people died in a country within a year per each 1000 of population.</p>
+                    <p>Here, the crude rate for {$proper-country-name} is shown for the last 50 years. The red bar against 2020 is the number of people died due to COVID-19 per each 1000 people. Thus, you can directly compare the two parameters.</p>
+                    {'<p>Note that the vertical axis is drawn in logarithmic scale by default.</p>' if $chart18data<scale> eq 'logarithmic'}
+                    <canvas id="Chart18"></canvas>
+                    <p class="left">
+                        <label class="toggle-switchy" for="logscale18" data-size="xs" data-style="rounded" data-color="blue">
+                            <input type="checkbox" id="logscale18" {'checked="checked"' if $chart18data<scale> eq 'logarithmic'} onclick="log_scale(this, 18)">
+                            <span class="toggle">
+                                <span class="switch"></span>
+                            </span>
+                        </label>
+                        <label for="logscale18"> Logarithmic scale</label>
+                    </p>
+                    <script>
+                        var ctx18 = document.getElementById('Chart18').getContext('2d');
+                        chart[18] = new Chart(ctx18, $chart18data<json>);
+                    </script>
+                </div>
+                HTML
+        }
+    }
+
     my $content = qq:to/HTML/;
         <h1>Coronavirus in {$proper-country-name}{$without-str}</h1>
         $per-region-link
@@ -194,7 +274,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
         <div id="block2">
             <h2>Affected Population</h2>
             <div id="percent">$chart3&thinsp;%</div>
-            <p>This is the part of confirmed infection cases against the total $population-str of its population.</p>
+            <p class="center">This is the part of confirmed infection cases against the total $population-str of its population.</p>
             <div class="affected">
                 {
                     if $chart2data<confirmed> {
@@ -230,10 +310,9 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
             <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
             <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><sup>confirmed</sup></p>
             {
-                if $cc !~~ /US/ {
+                if $chart2data<recovered> {
                     '<p class="recovered"><span>' ~ fmtnum($chart2data<recovered>) ~ '</span><sup>recovered</sup></p>'
                 }
-                else {''}
             }
             <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><sup>failed</sup></p>
             <p class="active"><span>{fmtnum($chart2data<active>)}</span><sup>active</sup></p>
@@ -299,8 +378,11 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
             <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
-            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that fewer cases registered today than yesterday.</p>
         </div>
+
+        $mortality-block
+        $crude-block
 
         <div id="block11">
             <a name="table"></a>
@@ -450,7 +532,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
         <div id="block2">
             <h2>Affected Population</h2>
             <div id="percent">{$percent-str}</div>
-            <p>This is the part of confirmed infection cases against the total $population-str of its population.</p>
+            <p class="center">This is the part of confirmed infection cases against the total $population-str of its population.</p>
             <div class="affected">
                 {
                     if $chart2data<confirmed> {
@@ -549,7 +631,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
             <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
-            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that less cases registered today than yesterday.</p>
+            <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that fewer cases registered today than yesterday.</p>
         </div>
 
         <div id="block11">
