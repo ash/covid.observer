@@ -664,12 +664,19 @@ multi sub number-percent(%countries, %per-day, %totals, %daily-totals, :$cont!) 
         population => $population;
 }
 
-sub countries-per-capita(%countries, %per-day, %totals, %daily-totals, :$limit = 50, :$param = 'confirmed') is export {
+sub countries-per-capita(%countries, %per-day, %totals, %daily-totals, :$limit = 50, :$param = 'confirmed', :$mode = '', :$cc-only = '') is export {
     my %per-mln;
     for get-known-countries() -> $cc {
+        if $cc-only {
+            next unless $cc ~~ /^ $cc-only '/' /;
+        }
+        if !$cc-only && $mode ne 'combined' {
+            next if $cc ~~ / '/' /;
+        }
+
         my $population-mln = %countries{$cc}<population>;
 
-        next if $population-mln < 1;
+        next if !$cc-only && $population-mln < 1;
 
         %per-mln{$cc} = sprintf('%.2f', %totals{$cc}{$param} / $population-mln);
     }
@@ -717,7 +724,7 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals, :$limit =
     my $dataset2 = to-json(%dataset2);
 
     my %dataset3 =
-        label => 'Active cases',
+        label => $cc-only !~~ /US/ ?? 'Active cases' !! 'Active or recovered cases',
         data => @active,
         backgroundColor => 'orange';
     my $dataset3 = to-json(%dataset3);
@@ -754,7 +761,13 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals, :$limit =
         }
         JSON
 
-    $json ~~ s/DATASET1/$dataset1/;
+    if $cc-only !~~ /US/ {
+        $json ~~ s/DATASET1/$dataset1/;
+    }
+    else {
+        $json ~~ s/DATASET1//;
+    }
+
     $json ~~ s/DATASET2/$dataset2/;
     $json ~~ s/DATASET3/$dataset3/;
     $json ~~ s/LABELS/$labels/;

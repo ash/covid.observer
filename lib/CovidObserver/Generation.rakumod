@@ -455,28 +455,65 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) is ex
     html-template('/countries', 'Coronavirus in different countries', $content);
 }
 
-sub generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals) is export {
+sub generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals, :$mode = '', :$cc-only = '') is export {
     say 'Generating per-capita data...';
 
     my $N = 100;
-    my $chart4data = countries-per-capita(%countries, %per-day, %totals, %daily-totals, limit => $N);
-    my $chart14data = countries-per-capita(%countries, %per-day, %totals, %daily-totals, limit => $N, param => 'failed');
+    my $chart4data = countries-per-capita(%countries, %per-day, %totals, %daily-totals, limit => $N, :$mode, :$cc-only);
+    my $chart14data = countries-per-capita(%countries, %per-day, %totals, %daily-totals, limit => $N, param => 'failed', :$mode, :$cc-only);
 
     my $country-list = country-list(%countries);
     my $continent-list = continent-list();
 
+    my $in = '';
+    my $topNconfirmations = "Top $N confirmations";
+    my $topNfailures = "Top $N failures";
+
+    if $cc-only eq 'US' {
+        $in = 'in the USA';
+        $topNconfirmations = 'Confirmations';
+        $topNfailures = 'Failures';
+    }
+    elsif $cc-only eq 'CN' {
+        $in = 'in China';
+        $topNconfirmations = 'Confirmations';
+        $topNfailures = 'Failures';
+    }
+
+    my $path = '/per-million';
+    $path ~= "/$mode" if $mode;
+    $path ~= "/{$cc-only.lc}" if $cc-only;
+
     my $content = qq:to/HTML/;
-        <h1>Coronavirus per million of population</h1>
-        <p>Sorted by <a href="#confirmed">confirmed cases</a> | by <a href="#failed">failed cases</a></p>
+        <h1>Coronavirus per capita {$in}</h1>
+        <p class="center">
+            {$path eq '/per-million' ?? '<b>Countries</b>' !! '<a href="/per-million/">Countries</a>'}
+            |
+            {$path eq '/per-million/us' ?? '<b>US states</b>' !! '<a href="/per-million/us/">US states</a>'}
+            |
+            {$path eq '/per-million/cn' ?? '<b>China provinces</b>' !! '<a href="/per-million/cn/">China provinces</a>'}
+            |
+            {$path eq '/per-million/combined' ?? '<b>Combined</b>' !! '<a href="/per-million/combined">Combined</a>'}
+        </p>
 
         <div id="block4">
             <a name="confirmed"></a>
-            <h2>Top $N confirmations per million</h2>
+            <h2>{$topNconfirmations} per million</h2>
+            <p class="center">Sorted by <b>confirmed cases</b> | by <a href="#failed">failed cases</a></p>
             <p>This graph shows the number of affected people per each million of the population. The length of a bar per country is proportional to the number of confirmed cases per million.</p>
-            <p>The $N most affected countries with more than one million of population are shown only. </p>
+            {"<p>The $N most affected countries with more than one million of population are shown only. </p>" unless $cc-only}
             <div style="height: {$N * 1.9}ex">
                 <canvas id="Chart4"></canvas>
             </div>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale4" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale4" onclick="log_scale_horizontal(this, 4)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale4"> Logarithmic scale</label>
+            </p>
             <script>
                 var ctx4 = document.getElementById('Chart4').getContext('2d');
                 chart[4] = new Chart(ctx4, $chart4data);
@@ -485,12 +522,23 @@ sub generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals) is e
 
         <div id="block14">
             <a name="failed"></a>
-            <h2>Top $N failures per million</h2>
+            <h2>{$topNfailures} per million</h2>
+            <p class="center">Sorted by <a href="#confirmed">confirmed cases</a> | by <b>failed cases</b></p>
+
             <p>This graph shows the relative number of people who could not recover from the disease. The data are the same as on the <a href="#confirmed">graph above</a> but sorted by the number of failures.</p>
-            <p>The $N most affected countries with more than one million of population are shown only. </p>
+            {"<p>The $N most affected countries with more than one million of population are shown only. </p>" unless $cc-only}
             <div style="height: {$N * 1.9}ex">
                 <canvas id="Chart14"></canvas>
             </div>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale14" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale14" onclick="log_scale_horizontal(this, 14)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale14"> Logarithmic scale</label>
+            </p>
             <script>
                 var ctx14 = document.getElementById('Chart14').getContext('2d');
                 chart[14] = new Chart(ctx14, $chart14data);
@@ -502,7 +550,7 @@ sub generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals) is e
 
         HTML
 
-    html-template('/per-million', 'Coronavirus per million of population', $content);
+    html-template($path, 'Coronavirus per million of population', $content);
 }
 
 sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals) is export {

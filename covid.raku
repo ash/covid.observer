@@ -197,17 +197,16 @@ multi sub MAIN('generate') {
     my %mortality = get-mortality-data();
     my %crude = get-crude-data();
 
-# generate-country-stats('RU', %countries, %per-day, %totals, %daily-totals, :%mortality, :%crude);
-# generate-country-stats('IT', %countries, %per-day, %totals, %daily-totals, :%mortality, :%crude);
-# generate-country-stats('CN', %countries, %per-day, %totals, %daily-totals, :%mortality, :%crude);
-# generate-country-stats('VA', %countries, %per-day, %totals, %daily-totals, :%mortality, :%crude);
-# exit;
-
     generate-world-stats(%countries, %per-day, %totals, %daily-totals);
     generate-world-stats(%countries, %per-day, %totals, %daily-totals, exclude => 'CN');
 
     generate-countries-stats(%countries, %per-day, %totals, %daily-totals);
+
     generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals);
+    generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals, cc-only => 'US');
+    generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals, cc-only => 'CN');
+    generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals, mode => 'combined');
+
     generate-china-level-stats(%countries, %per-day, %totals, %daily-totals);
     # # generate-common-start-stats(%countries, %per-day, %totals, %daily-totals);
 

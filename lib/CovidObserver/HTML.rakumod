@@ -16,6 +16,11 @@ sub html-template($path, $title, $content) is export {
             chart[n].update();
             input.blur();
         }
+        function log_scale_horizontal(input, n) {
+            chart[n].options.scales.xAxes[0].type = input.checked ? 'logarithmic' : 'linear';
+            chart[n].update();
+            input.blur();
+        }
         JS
 
     my $ga = q:to/GA/;
@@ -141,6 +146,7 @@ sub html-template($path, $title, $content) is export {
                             <a href="/-cn">World excluding China</a>
                             <a href="/cn/-hb">China excluding Hubei</a>
                             <a href="/vs-china">Countries vs China</a>
+                            <a href="/per-million/cn">Provinces sorted per capita</a>
                         </div>
                     </li>
 
@@ -149,6 +155,7 @@ sub html-template($path, $title, $content) is export {
                         <div class="dropdown-content">
                             <a href="/us">Cumulative data</a>
                             <a href="/us#states">US states</a>
+                            <a href="/per-million/us">States sorted per capita</a>
                         </div>
                     </li>
 
