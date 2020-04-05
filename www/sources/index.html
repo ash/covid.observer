@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Data sources | Coronavirus COVID-19 Observer</title>
+    <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon">
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160707541-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-160707541-1');
+</script>
+
+
+    <script src="/Chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/main.css?v=28">
+    <style>
+        
+    </style>
+
+    <script>
+        var chart = new Array();
+function log_scale(input, n) {
+    chart[n].options.scales.yAxes[0].type = input.checked ? 'logarithmic' : 'linear';
+    chart[n].update();
+    input.blur();
+}
+function log_scale_horizontal(input, n) {
+    chart[n].options.scales.xAxes[0].type = input.checked ? 'logarithmic' : 'linear';
+    chart[n].update();
+    input.blur();
+}
+
+    </script>
+
+    <script src="/countries.js?v=2020-04-05T01:00:00+02:00" type="text/javascript"></script>
+    <script src="/autocomplete.js?v=2" type="text/javascript"></script>
+
+    <link rel="stylesheet" type="text/css" href="/likely.css">
+    <script src="/likely.js" type="text/javascript"></script>
+</head>
+<body>
+
+    <div class="menu" id="mainmenu">
+        <ul>
+            <li><a href="/">Home</a></li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn" style="cursor: normal">Statistics</a>
+                <div class="dropdown-content">
+                    <a href="#recovery">Recovery pie</a>
+                    <a href="#raw">Raw numbers</a>
+                    <a href="#new">New daily cases</a>
+                    <a href="#daily">Daily flow</a>
+                    <a href="#speed">Daily speed</a>
+                    <a href="#table">Table data</a>
+                    
+                    <a href="/vs-age">Cases vs life expectancy</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">World</a>
+                <div class="dropdown-content">
+                    <a href="/overview">Overview</a>
+                    <a href="/-cn">World excluding China</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">Continents</a>
+                <div class="dropdown-content">
+                    <a href="/africa">Africa</a>
+                    <a href="/asia">Asia</a>
+                    <a href="/europe">Europe</a>
+                    <a href="/north-america">North America</a>
+                    <a href="/south-america">South America</a>
+                    <a href="/oceania">Oceania</a>
+                    <a href="/continents">Spread over the continents</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">Countries</a>
+                <div class="dropdown-content">
+                    <a href="#countries">List of countries</a>
+                    <a href="/countries">Affected countries</a>
+                    <a href="/per-million">Sorted per million affected</a>
+                    <a href="/vs-china">Countries vs China</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">China</a>
+                <div class="dropdown-content">
+                    <a href="/cn">Cumulative data</a>
+                    <a href="/cn#regions">China provinces</a>
+                    <a href="/-cn">World excluding China</a>
+                    <a href="/cn/-hb">China excluding Hubei</a>
+                    <a href="/vs-china">Countries vs China</a>
+                    <a href="/per-million/cn">Provinces sorted per capita</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">US</a>
+                <div class="dropdown-content">
+                    <a href="/us">Cumulative data</a>
+                    <a href="/us#states">US states</a>
+                    <a href="/per-million/us">States sorted per capita</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">About</a>
+                <div class="dropdown-content">
+                    <a href="/news">What’s new</a>
+                    <a href="/about">About the project</a>
+                    <a href="/sources">Data sources</a>
+                    <a href="https://andrewshitov.com/category/covid-19/" target="_blank">Tech blog</a>
+                </div>
+            </li>
+
+            <li class="searchbox">
+                <div class="autocomplete">
+                    <input id="SearchBox" type="text" name="myCountry" placeholder="Find a country or region">
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        autocomplete(document.getElementById("SearchBox"), countries);
+    </script>
+
+    <div class="new">
+    <p class="center">New data on country-level pages. E.g., for Italy:</p>
+    <p class="center">
+        <a href="/it#mortality">Mortality level</a>
+        |
+        <a href="/it#weekly">Weekly levels</a>
+        |
+        <a href="/it#crude">Crude death rates</a>
+    </p>
+    <p class="center">Compare the COVID-19 influence with the previous years.</p>
+</div>
+
+
+    <h1>Data sources</h1>
+
+<style>
+    h3 {
+        text-align: left;
+        padding-left: 20%;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    @media screen and (max-width: 850px) {
+        h3 {
+            padding-left: 10%;
+        }
+    }
+</style>
+
+<div style="padding-bottom: 3em">
+    <h3>COVID-19 daily reports</h3>
+    <p>
+        <a href="https://github.com/CSSEGISandData/COVID-19">2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository</a>&nbsp;— Johns Hopkins CSSE
+    </p>
+
+    <h3>Population</h3>
+    <p>
+        <a href="https://data.un.org/_Docs/SYB/CSV/SYB62_1_201907_Population,%20Surface%20Area%20and%20Density.csv">Population, surface area and density</a>&nbsp;— <a href="https://data.un.org/">UNdata</a>
+    </p>
+    <p>
+        <a href="https://www2.census.gov/programs-surveys/popest/tables/2010-2019/state/totals/nst-est2019-01.xlsx">State Population Totals: 2010-2019</a>&nbsp;—
+        <a href="https://www.census.gov/data/datasets/time-series/demo/popest/2010s-state-total.html">The US Census Bureau</a>
+    </p>
+    <p>
+        <a href="https://en.wikipedia.org/wiki/ISO_3166-2:CN">ISO 3166-2:CN</a>&nbsp;— Wikipedia
+    </p>
+
+    <h3>Life expectancy</h3>
+    <p>
+        <a href="https://apps.who.int/gho/data/view.main.SDG2016LEXv?lang=en">Life expectancy and Healthy life expectancy</a>&nbsp;— Global Health Observatory data repository by <a href="https://www.who.int/en">WHO</a> 
+    </p>
+    <p>
+        <a href="http://data.un.org/Data.aspx?d=POP&f=tableCode%3A65">Deaths by month of death</a>&nbsp;— <a href="https://data.un.org/">UNdata</a>
+    </p>
+    <p>
+        <a href="https://data.worldbank.org/indicator/sp.dyn.cdrt.in">Death rate, crude (per 1,000 people)</a>&nbsp;— The World Bank
+    </p>
+</div>
+
+
+    <div id="about">
+        <div class="likely" style="min-height: 50px">
+            <div class="twitter">Tweet</div>
+            <div class="facebook">Share</div>
+            <div class="linkedin">Link</div>
+            <div class="telegram">Send</div>
+            <div class="whatsapp">Send</div>
+        </div>
+        <p>Based on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
+        <p>This website presents the very same data as the JHU’s <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">original dashboard</a> but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
+        <p>Read the <a href="https://andrewshitov.com/category/covid-19/">Technology blog</a>. Look at the source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
+        <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Twitter: <a href="https://twitter.com/andrewshitov">@andrewshitov</a>. Contact <a href="mailto:andy@shitov.ru">by e-mail</a>.</p>
+    </div>
+</body>
+</html>
+
