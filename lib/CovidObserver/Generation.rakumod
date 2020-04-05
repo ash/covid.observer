@@ -58,7 +58,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
         <div id="block1">
             <a name="recovery"></a>
             <h2>Recovery Pie</h2>
-            <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world{$without-str}.</p>
+            <p class="center">The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world{$without-str}.</p>
             <canvas id="Chart1"></canvas>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
@@ -297,7 +297,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
         <div id="block1">
             <a name="recovery"></a>
             <h2>Recovery Pie</h2>
-            <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$proper-country-name}{$without-str}.</p>
+            <p class="center">The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$proper-country-name}{$without-str}.</p>
             <canvas id="Chart1"></canvas>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
@@ -603,7 +603,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
         <div id="block1">
             <a name="recovery"></a>
             <h2>Recovery Pie</h2>
-            <p>The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$continent-name}.</p>
+            <p class="center">The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$continent-name}.</p>
             <canvas id="Chart1"></canvas>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
