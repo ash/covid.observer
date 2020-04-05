@@ -5,7 +5,7 @@ use DateTime::Format;
 use CovidObserver::Population;
 use CovidObserver::Statistics;
 
-sub html-template($path, $title, $content) is export {
+sub html-template($path, $title, $content, $header = '') is export {
     my $style = q:to/CSS/;
         CSS
 
@@ -36,19 +36,25 @@ sub html-template($path, $title, $content) is export {
     my $anchor-prefix = $path ~~ / 'vs-' | countries | overview | 404 / ?? '/' !! '';
 
     my $new-prefix = $content ~~ /block16/ && $content ~~ /block18/ ?? '' !! '/it';
+    # my $new-block = qq:to/BLOCK/;
+    #     <div class="new">
+    #         <p class="center">New data on country-level pages. {'E.g., for Italy:' if $new-prefix eq '/it'}</p>
+    #         <p class="center">
+    #             <a href="{$new-prefix}#mortality">Mortality level</a>
+    #             |
+    #             <a href="{$new-prefix}#weekly">Weekly levels</a>
+    #             |
+    #             <a href="{$new-prefix}#crude">Crude death rates</a>
+    #         </p>
+    #         <p class="center">Compare the COVID-19 influence with the previous years.</p>
+    #     </div>
+    #     BLOCK
     my $new-block = qq:to/BLOCK/;
-        <div class="new">
-            <p class="center">New data on country-level pages. {'E.g., for Italy:' if $new-prefix eq '/it'}</p>
-            <p class="center">
-                <a href="{$new-prefix}#mortality">Mortality level</a>
-                |
-                <a href="{$new-prefix}#weekly">Weekly levels</a>
-                |
-                <a href="{$new-prefix}#crude">Crude death rates</a>
-            </p>
-            <p class="center">Compare the COVID-19 influence with the previous years.</p>
+        <div>
+            <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/map/">World coronavirus map</a></span></p>
         </div>
-        BLOCK
+    BLOCK
+    $new-block = '' if $path eq '/map';
 
     my $timestamp = DateTime.now.truncated-to('hour');
     my $template = qq:to/HTML/;
@@ -78,6 +84,8 @@ sub html-template($path, $title, $content) is export {
 
             <link rel="stylesheet" type="text/css" href="/likely.css">
             <script src="/likely.js" type="text/javascript"></script>
+
+            $header
         </head>
         <body>
 
@@ -111,6 +119,7 @@ sub html-template($path, $title, $content) is export {
                         <a href="javascript: void(0)" class="dropbtn">World</a>
                         <div class="dropdown-content">
                             <a href="/overview">Overview</a>
+                            <a href="/map">World map</a>
                             <a href="/-cn">World excluding China</a>
                         </div>
                     </li>

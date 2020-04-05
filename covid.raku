@@ -221,7 +221,9 @@ multi sub MAIN('generate') {
     }
 
     generate-scattered-age(%countries, %per-day, %totals, %daily-totals);
-    generate-overview(%countries, %per-day, %totals, %daily-totals);
+
+    my %levels = generate-overview(%countries, %per-day, %totals, %daily-totals);
+    generate-world-map(%countries, %per-day, %totals, %daily-totals, %levels);
 
     generate-js-countries(%countries, %per-day, %totals, %daily-totals);
 

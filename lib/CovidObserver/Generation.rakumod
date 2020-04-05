@@ -849,6 +849,8 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
 
     my @dashboard;
 
+    my %levels;
+
     for 2 .. $days + 1 -> $day {
         my $day-max = 0;
 
@@ -910,6 +912,9 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
             else {
                 $level = 'N';
             }
+
+            # %levels{$cc}{$day} = $level;
+            %levels{$cc} = $level;
 
             my $item = '<div class="L' ~ $level ~ '"><p class="c">' ~ fmtnum($confirmed) ~ '</p><p class="d">' ~
                     ($confirmed ?? fmtnum($failed) !! '') ~ '</p><h5>' ~ $country ~ '</h5></div>';
@@ -983,6 +988,8 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
         HTML
 
     html-template('/overview', 'Coronavirus World Overview Dashboard', $content);
+
+    return %levels;
 }
 
 sub generate-js-countries(%countries, %per-day, %totals, %daily-totals) is export {
@@ -1068,4 +1075,104 @@ sub generate-common-start-stats(%countries, %per-day, %totals, %daily-totals) is
         HTML
 
     html-template('/start', 'Coronavirus in different countries if it would have started at the same day', $content);
+}
+
+sub generate-world-map(%countries, %per-day, %totals, %daily-totals, %levels) is export {
+    say "Generating World map...";
+
+    my $header = q:to/HEAD/;
+        <script src="/svgMap.js" type="text/javascript"></script>
+        <link rel="stylesheet" type="text/css" href="/svgMap.min.css">
+        HEAD
+
+    my @data;
+
+    my @confirmed;
+    my @failed;
+    my @recovered;
+    my @percent;
+
+    my @color = '#93bb2b', '#cfcc26', '#d4bf26', '#d4bf25', '#d7ab24',
+                '#d79323', '#d77820', '#d75c20', '#d7421e', '#d72b1d', '#d71c1c';
+
+    for %totals.keys -> $cc {
+        next unless $cc.chars == 2;
+
+        next unless %countries{$cc}:exists;
+        my $population = 1_000_000 * %countries{$cc}<population>;
+        next unless $population;
+
+        my $confirmed = %totals{$cc}<confirmed> || 0;
+        my $percent = sprintf('%2f', (100 * $confirmed / $population));
+
+        my $failed = %totals{$cc}<failed> || 0;
+        my $recovered = %totals{$cc}<recovered> || 0;
+
+        @confirmed.push($confirmed);
+        @failed.push($failed);
+        @recovered.push($recovered);
+        @percent.push($percent);
+
+        my $level = %levels{$cc} || 0;
+        my $color = $level eq 'N' ?? 'gray' !! @color[$level];
+        @data.push("$cc: \{confirmed: $confirmed, failed: $failed, recovered: $recovered, percent: $percent, color: '$color'\}");
+    }
+
+    my $script = qq:to/SCRIPT/;
+        <script>
+            new svgMap(\{
+                targetElementID: 'svgMap',
+                flagType: 'emoji',
+                colorMin: '#93bb2b',
+                colorMax: '#d71c1c',
+                mouseWheelZoomEnabled: false,
+                noDataText: 'No data for this country',
+                data: \{
+                    data: \{
+                        confirmed: \{
+                            name: 'Confirmed cases',
+                            format: '\{0}',
+                            thousandSeparator: ',',
+                            thresholdMax: {max(@confirmed)},
+                            thresholdMin: {min(@confirmed)}
+                        },
+                        failed: \{
+                            name: 'Died',
+                            format: '\{0}',
+                            thousandSeparator: ',',
+                            thresholdMax: {max(@failed)},
+                            thresholdMin: {min(@failed)}
+                        },
+                        recovered: \{
+                            name: 'Recovered',
+                            format: '\{0}',
+                            thousandSeparator: ',',
+                            thresholdMax: {max(@recovered)},
+                            thresholdMin: {min(@recovered)}
+                        },
+                        percent: \{
+                            name: 'Affected population',
+                            format: '\{0} %',
+                            thresholdMax: {max(@percent)},
+                            thresholdMin: {min(@percent)}
+                        }
+                    },
+                    applyData: 'confirmed',
+                    values: \{
+                        {@data.join(",\n")}
+                    }
+                }
+            });
+        </script>
+        SCRIPT
+
+    my $content = qq:to/HTML/;
+        <h1>Coronavirus World Map</h1>
+
+        <p>The colour of the country reflects the number of new confirmed cases happened since yesterday. Click on the map to navigate to the country-level page to get more information about the country.</p>
+        <div id="svgMap"></div>
+        $script
+        HTML
+
+    html-template('/map', 'Coronavirus world map', $content, $header);
 }
