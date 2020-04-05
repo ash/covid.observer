@@ -693,7 +693,7 @@ sub countries-per-capita(%countries, %per-day, %totals, %daily-totals, :$limit =
         my $cc = $item.key;
         my $population-mln = %countries{$cc}<population>;
 
-        @labels.push(%countries{$cc}<country>);
+        @labels.push($count ~ '. ' ~ %countries{$cc}<country>);
 
         my $per-capita-confirmed = %totals{$cc}<confirmed> / $population-mln;
         $per-capita-confirmed = 0 if $per-capita-confirmed < 0;
