@@ -33,7 +33,7 @@ sub html-template($path, $title, $content, $header = '') is export {
         </script>
         GA
 
-    my $anchor-prefix = $path ~~ / 'vs-' | countries | overview | 404 / ?? '/' !! '';
+    my $anchor-prefix = $path.chars == 3 ?? '' !! '/';
 
     my $new-prefix = $content ~~ /block16/ && $content ~~ /block18/ ?? '' !! '/it';
     # my $new-block = qq:to/BLOCK/;
