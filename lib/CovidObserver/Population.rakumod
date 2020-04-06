@@ -193,7 +193,8 @@ sub country2cc($country is copy, :$silent = False) is export {
         'Dem. Rep. of the Congo' => 'CD',
         'Republic of the Congo' => 'CG',
         'East Timor' => 'TL',
-        'West Bank and Gaza' => 'IL';
+        'West Bank and Gaza' => 'IL',
+        'Falkland Islands (Islas Malvinas)' => 'FK';
 
     $country = 'Lao People\'s Democratic Republic' if $country eq 'Lao People\'s Dem. Rep.';
     $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
@@ -265,7 +266,8 @@ sub cc2country($cc) is export {
         'BL' => 'Saint Barthélemy',
         'PS' => 'Palestine',
         'CD' => 'Democratic Republic of the Congo',
-        'CG' => 'Republic of the Congo';
+        'CG' => 'Republic of the Congo',
+        'FK' => 'Falkland Islands';
 
     given $cc {
         when %force{$cc}:exists {$country = %force{$cc}}
