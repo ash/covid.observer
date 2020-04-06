@@ -92,6 +92,7 @@ sub html-template($path, $title, $content, $header = '') is export {
             <div class="menu" id="mainmenu">
                 <ul>
                     <li><a href="/">Home</a></li>
+                    <li><a href="/map">Map</a></li>
 
                     <li class="dropdown">
                         <a href="javascript: void(0)" class="dropbtn" style="cursor: normal">Statistics</a>
