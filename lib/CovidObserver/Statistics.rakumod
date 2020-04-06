@@ -583,7 +583,7 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
         confirmed => @confirmed[*-1],
         failed => @failed[*-1],
         recovered => @recovered[*-1],
-        active => @active[*-1],
+        active => @active[*-1],        
 
         delta-json => $delta-json,
         delta-confirmed => @delta-confirmed[*-1],

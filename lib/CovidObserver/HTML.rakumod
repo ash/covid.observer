@@ -70,7 +70,7 @@ sub html-template($path, $title, $content, $header = '') is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=28">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=29">
             <style>
                 $style
             </style>
@@ -373,6 +373,16 @@ sub fmtnum($n is copy) is export {
     $n ~~ s/ (\d) (\d ** 3) $/$0,$1/;
 
     return $n;
+}
+
+sub pm($n) is export {
+    my $fmt = fmtnum($n);
+
+    my $str = do given $n {
+        when * > 0 {return "+$fmt"}
+        when * < 0 {return "&minus;$fmt"}
+        default    {return $fmt}
+    }
 }
 
 sub per-region($cc) is export {

@@ -69,10 +69,10 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
         <div id="block9">
             <a name="raw"></a>
             <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
-            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><sup>confirmed</sup></p>
-            <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><sup>recovered</sup></p>
-            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><sup>failed</sup></p>
-            <p class="active"><span>{fmtnum($chart2data<active>)}</span><sup>active</sup></p>
+            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><span class="updown"><sup>confirmed</sup><sub>{pm($chart2data<delta-confirmed>)}</sub></span></p>
+            <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><span class="updown"><sup>recovered</sup><sub>{pm($chart2data<delta-recovered>)}</sub></span></p>
+            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><span class="updown"><sup>failed</sup><sub>{pm($chart2data<delta-failed>)}</sub></span></p>
+            <p class="active"><span>{fmtnum($chart2data<active>)}</span><span class="updown"><sup>active</sup><sub>{pm($chart2data<delta-active>)}</sub></span></p>
         </div>
 
         <div id="block3">
@@ -308,14 +308,14 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
         <div id="block9">
             <a name="raw"></a>
             <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
-            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><sup>confirmed</sup></p>
+            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><span class="updown"><sup>confirmed</sup><sub>{pm($chart2data<delta-confirmed>)}</sub></span></p>
             {
                 if $chart2data<recovered> {
-                    '<p class="recovered"><span>' ~ fmtnum($chart2data<recovered>) ~ '</span><sup>recovered</sup></p>'
+                    qq[<p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><span class="updown"><sup>recovered</sup><sub>{pm($chart2data<delta-recovered>)}</sub></span></p>]
                 }
             }
-            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><sup>failed</sup></p>
-            <p class="active"><span>{fmtnum($chart2data<active>)}</span><sup>active</sup></p>
+            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><span class="updown"><sup>failed</sup><sub>{pm($chart2data<delta-failed>)}</sub></span></p>
+            <p class="active"><span>{fmtnum($chart2data<active>)}</span><span class="updown"><sup>active</sup><sub>{pm($chart2data<delta-active>)}</sub></span></p>
         </div>
 
         <div id="block3">
@@ -614,10 +614,10 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
         <div id="block9">
             <a name="raw"></a>
             <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
-            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><sup>confirmed</sup></p>
-            <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><sup>recovered</sup></p>
-            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><sup>failed</sup></p>
-            <p class="active"><span>{fmtnum($chart2data<active>)}</span><sup>active</sup></p>
+            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><span class="updown"><sup>confirmed</sup><sub>{pm($chart2data<delta-confirmed>)}</sub></span></p>
+            <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><span class="updown"><sup>recovered</sup><sub>{pm($chart2data<delta-recovered>)}</sub></span></p>
+            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><span class="updown"><sup>failed</sup><sub>{pm($chart2data<delta-failed>)}</sub></span></p>
+            <p class="active"><span>{fmtnum($chart2data<active>)}</span><span class="updown"><sup>active</sup><sub>{pm($chart2data<delta-active>)}</sub></span></p>
         </div>
 
         <div id="block3">
