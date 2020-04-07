@@ -147,7 +147,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
 
         <div id="block19">
             <a name="per-capita"></a>
-            <h2>Per-capita values</h2>
+            <h2>Per capita values</h2>
             <p>Here, the number of confirmations and deaths <i>per million of population</i> of the World is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
             <canvas id="Chart19"></canvas>
             <p class="left">
@@ -422,7 +422,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
 
         <div id="block19">
             <a name="per-capita"></a>
-            <h2>Per-capita values</h2>
+            <h2>Per capita values</h2>
             <p>Here, the number of confirmations and deaths <i>per million of population</i> in {$proper-country-name}{$without-str} is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
             <canvas id="Chart19"></canvas>
             <p class="left">
@@ -744,7 +744,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
 
         <div id="block19">
             <a name="per-capita"></a>
-            <h2>Per-capita values</h2>
+            <h2>Per capita values</h2>
             <p>Here, the number of confirmations and deaths <i>per million of population</i> in {$continent-name} is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
             <canvas id="Chart19"></canvas>
             <p class="left">
