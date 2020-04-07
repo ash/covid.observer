@@ -17,7 +17,7 @@
 
     <script src="/Chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/main.css?v=28">
+    <link rel="stylesheet" type="text/css" href="/main.css?v=30">
     <style>
         
     </style>
@@ -37,27 +37,30 @@ function log_scale_horizontal(input, n) {
 
     </script>
 
-    <script src="/countries.js?v=2020-04-05T01:00:00+02:00" type="text/javascript"></script>
+    <script src="/countries.js?v=2020-04-07T02:00:00+02:00" type="text/javascript"></script>
     <script src="/autocomplete.js?v=2" type="text/javascript"></script>
 
     <link rel="stylesheet" type="text/css" href="/likely.css">
     <script src="/likely.js" type="text/javascript"></script>
+
+    
 </head>
 <body>
 
     <div class="menu" id="mainmenu">
         <ul>
             <li><a href="/">Home</a></li>
+            <li><a href="/map">Map</a></li>
 
             <li class="dropdown">
                 <a href="javascript: void(0)" class="dropbtn" style="cursor: normal">Statistics</a>
                 <div class="dropdown-content">
-                    <a href="#recovery">Recovery pie</a>
-                    <a href="#raw">Raw numbers</a>
-                    <a href="#new">New daily cases</a>
-                    <a href="#daily">Daily flow</a>
-                    <a href="#speed">Daily speed</a>
-                    <a href="#table">Table data</a>
+                    <a href="/#recovery">Recovery pie</a>
+                    <a href="/#raw">Raw numbers</a>
+                    <a href="/#new">New daily cases</a>
+                    <a href="/#daily">Daily flow</a>
+                    <a href="/#speed">Daily speed</a>
+                    <a href="/#table">Table data</a>
                     
                     <a href="/vs-age">Cases vs life expectancy</a>
                 </div>
@@ -67,6 +70,7 @@ function log_scale_horizontal(input, n) {
                 <a href="javascript: void(0)" class="dropbtn">World</a>
                 <div class="dropdown-content">
                     <a href="/overview">Overview</a>
+                    <a href="/map">World map</a>
                     <a href="/-cn">World excluding China</a>
                 </div>
             </li>
@@ -87,7 +91,7 @@ function log_scale_horizontal(input, n) {
             <li class="dropdown">
                 <a href="javascript: void(0)" class="dropbtn">Countries</a>
                 <div class="dropdown-content">
-                    <a href="#countries">List of countries</a>
+                    <a href="/#countries">List of countries</a>
                     <a href="/countries">Affected countries</a>
                     <a href="/per-million">Sorted per million affected</a>
                     <a href="/vs-china">Countries vs China</a>
@@ -137,17 +141,9 @@ function log_scale_horizontal(input, n) {
         autocomplete(document.getElementById("SearchBox"), countries);
     </script>
 
-    <div class="new">
-    <p class="center">New data on country-level pages. E.g., for Italy:</p>
-    <p class="center">
-        <a href="/it#mortality">Mortality level</a>
-        |
-        <a href="/it#weekly">Weekly levels</a>
-        |
-        <a href="/it#crude">Crude death rates</a>
-    </p>
-    <p class="center">Compare the COVID-19 influence with the previous years.</p>
-</div>
+        <div>
+        <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/map/">World coronavirus map</a></span></p>
+    </div>
 
 
     <h1>Data sources</h1>
