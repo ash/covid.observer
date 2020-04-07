@@ -6,6 +6,7 @@ use CovidObserver::Population;
 use CovidObserver::Statistics;
 use CovidObserver::HTML;
 use CovidObserver::Excel;
+use CovidObserver::Format;
 use JSON::Tiny;
 
 sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude?) is export {
@@ -15,14 +16,15 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
     my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$exclude);
     my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, :$exclude);
     my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$exclude);
-
     my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$exclude);
+    my @per-capita = per-capita-data($chart2data, $world-population);
 
     my $table-path = 'world';
     $table-path ~= "-$exclude" if $exclude;
     $table-path.=subst('/', '.');
-    my $daily-table = daily-table($table-path, $chart2data, $world-population / 1_000_000);
-    excel-table($table-path, $chart2data, $world-population / 1_000_000);
+
+    my $daily-table = daily-table($table-path, @per-capita);
+    excel-table($table-path, @per-capita);
 
     my $country-list = country-list(%countries, :$exclude);
     my $continent-list = continent-list();
@@ -176,11 +178,14 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
         $population -= %countries{$exclude}<population>;
     }
 
+    my @per-capita = per-capita-data($chart2data, 1_000_000 * $population);
+
     my $table-path = $cc;
     $table-path ~= "-$exclude" if $exclude;
     $table-path.=subst('/', '.');
-    my $daily-table = daily-table($table-path, $chart2data, $population);
-    excel-table($table-path, $chart2data, $population);
+
+    my $daily-table = daily-table($table-path, @per-capita);
+    excel-table($table-path, @per-capita);
 
     my $population-str = $population <= 1
         ?? sprintf('%i thousand', (1000 * $population).round)
@@ -568,13 +573,14 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
     my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$cont);
     my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, :$cont);
     my %chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$cont);
-
     my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$cont);
 
     my $population = %chart3<population>;
+    my @per-capita = per-capita-data($chart2data, 1_000_000 * $population);
+
     my $table-path = %continents{$cont}.lc.subst(' ', '-');
-    my $daily-table = daily-table($table-path, $chart2data, $population);
-    excel-table($table-path, $chart2data, $population);
+    my $daily-table = daily-table($table-path, @per-capita);
+    excel-table($table-path, @per-capita);
 
     my $country-list = country-list(%countries, :$cont);
     my $continent-list = continent-list($cont);

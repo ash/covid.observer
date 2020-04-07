@@ -1,9 +1,8 @@
 unit module CovidObserver::HTML;
 
-use DateTime::Format;
-
 use CovidObserver::Population;
 use CovidObserver::Statistics;
+use CovidObserver::Format;
 
 sub html-template($path, $title, $content, $header = '') is export {
     my $style = q:to/CSS/;
@@ -119,6 +118,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                     <li class="dropdown">
                         <a href="javascript: void(0)" class="dropbtn">World</a>
                         <div class="dropdown-content">
+                            <a href="/">World numbers</a>
                             <a href="/overview">Overview</a>
                             <a href="/map">World map</a>
                             <a href="/-cn">World excluding China</a>
@@ -352,40 +352,6 @@ sub continent-list($cont?) is export {
         HTML
 }
 
-sub fmtdate($date) is export {
-    my ($year, $month, $day) = $date.split('-');
-    $day ~~ s/^0//;
-
-    my $dt = DateTime.new(:$year, :$month, :$day);
-    my $ending;
-    given $day {
-        when 1|21|31 {$ending = 'st'}
-        when 2|22    {$ending = 'nd'}
-        when 3|23    {$ending = 'rd'}
-        default      {$ending = 'th'}
-    }
-
-    return strftime("%B {$day}<sup>{$ending}</sup>, %Y", $dt);
-}
-
-sub fmtnum($n is copy) is export {
-    $n ~~ s/ (\d) (\d ** 9) $/$0,$1/;
-    $n ~~ s/ (\d) (\d ** 6) $/$0,$1/;
-    $n ~~ s/ (\d) (\d ** 3) $/$0,$1/;
-
-    return $n;
-}
-
-sub pm($n) is export {
-    my $fmt = fmtnum($n);
-
-    my $str = do given $n {
-        when * > 0 {return "+$fmt"}
-        when * < 0 {return "&minus;$fmt"}
-        default    {return $fmt}
-    }
-}
-
 sub per-region($cc) is export {
     state %links =
         CN => {
@@ -425,7 +391,7 @@ sub per-region($cc) is export {
     return qq{<p><a href="$link"$target>} ~ $title ~ '</a></p>';
 }
 
-sub daily-table($path, $chartdata, $population) is export {
+sub daily-table($path, @per-capita) is export {
     my $date = DateTime.now.yyyy-mm-dd;
     my $filebase = "/$path/{$path}-covid.observer".lc;
     my $html = qq[<p class="right">Download as <a href="{$filebase}.csv?$date">CSV</a> | <a href="{$filebase}.xls?$date">XLS</a></p>];
@@ -449,70 +415,20 @@ sub daily-table($path, $chartdata, $population) is export {
             <tbody>
         HEADER
 
-    my $dates        = $chartdata<table><dates>;
-    my $confirmed    = $chartdata<table><confirmed>;
-    my $failed       = $chartdata<table><failed>;
-    my $recovered    = $chartdata<table><recovered>;
-    my $active       = $chartdata<table><active>;
-    my $population-n = 1_000_000 * $population;
-
-    for +$chartdata<table><dates> -1 ... 0 -> $index  {
-        last unless $confirmed[$index];
-
-        my $c = $confirmed[$index] // 0;
-        my $f = $failed[$index] // 0;
-        my $r = $recovered[$index] // 0;
-        my $a = $active[$index] // 0;
-
+    for @per-capita -> %day {
         $html ~= qq:to/TR/;
             <tr>
-                <td class="date">{
-                    my $date = fmtdate($dates[$index]);
-                    $date ~~ s/^(\w\w\w)\S+/$0/;
-                    $date ~~ s/', '\d\d\d\d$//;
-                    $date
-                }</td>
-                <td>{fmtnum($c)}</td>
-                <td>{
-                    if $index {
-                        my $prev = $confirmed[$index - 1];
-                        if $prev {
-                            sprintf('%.1f&thinsp;%%', 100 * ($c - $prev) / $prev)
-                        }
-                        else {'—'}
-                    }
-                    else {'—'}
-                }</td>
-                <td>{fmtnum($r)}</td>
-                <td>{fmtnum($f)}</td>
-                <td>{fmtnum($a)}</td>
-                <td>{
-                    if $c {
-                        sprintf('%0.1f&thinsp;%%', 100 * $r / $c)
-                    }
-                    else {''}
-                }</td>
-                <td>{
-                    if $c {
-                        sprintf('%0.1f&thinsp;%%', 100 * $f / $c)
-                    }
-                    else {''}
-                }</td>
-                <td>{
-                    my $percent = '%.2g'.sprintf(100 * $c / $population-n);
-                    if $percent ~~ /e/ {
-                        '&lt;&thinsp;0.001&thinsp;%'
-                    }
-                    else {
-                        $percent ~ '&thinsp;%'
-                    }
-                }</td>
-                <td>{
-                    sprintf('%.02f', $c / $population)
-                }</td>
-                <td>{
-                    sprintf('%.02f', $f / $population)
-                }</td>
+                <td class="date">{%day<date-str>}</td>
+                <td>{%day<confirmed-str>}</td>
+                <td>{%day<confirmed-rate-str>}</td>
+                <td>{%day<recovered-str>}</td>
+                <td>{%day<failed-str>}</td>
+                <td>{%day<active-str>}</td>
+                <td>{%day<recovered-rate-str>}</td>
+                <td>{%day<failed-rate-str>}</td>
+                <td>{%day<percent-str>}</td>
+                <td>{%day<confirmed-per-million-str>}</td>
+                <td>{%day<failed-per-million-str>}</td>
             </tr>
             TR
     }

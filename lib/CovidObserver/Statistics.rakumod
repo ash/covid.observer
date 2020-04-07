@@ -4,6 +4,7 @@ use JSON::Tiny;
 
 use CovidObserver::DB;
 use CovidObserver::Population;
+use CovidObserver::Format;
 
 sub geo-sanity() is export {
     my $sth = dbh.prepare('select per_day.cc from per_day left join countries using (cc) where countries.cc is null group by 1');
@@ -1520,4 +1521,114 @@ sub crude-graph($cc, %per-day, %crude, %countries, %totals) is export {
         json => $json,
         scale => $scale,
     };
+}
+
+sub per-capita-data($chartdata, $population-n) is export {
+    my $dates          = $chartdata<table><dates>;
+    my $confirmed      = $chartdata<table><confirmed>;
+    my $failed         = $chartdata<table><failed>;
+    my $recovered      = $chartdata<table><recovered>;
+    my $active         = $chartdata<table><active>;
+    my $population-mln = $population-n / 1_000_000;
+
+    my @per-capita;
+    for +$chartdata<table><dates> -1 ... 0 -> $index  {
+        last unless $confirmed[$index];
+
+        my $c = $confirmed[$index] // 0;
+        my $f = $failed[$index] // 0;
+        my $r = $recovered[$index] // 0;
+        my $a = $active[$index] // 0;
+
+        my $date-str = fmtdate($dates[$index]);
+        $date-str ~~ s/^(\w\w\w)\S+/$0/;
+        $date-str ~~ s/', '\d\d\d\d$//; #'
+
+        my $confirmed-rate = '';
+        my $confirmed-rate-str = '—';
+        if $index {
+            my $prev = $confirmed[$index - 1];
+            if $prev {
+                $confirmed-rate = 100 * ($c - $prev) / $prev;
+                $confirmed-rate-str = sprintf('%.1f&thinsp;%%', $confirmed-rate);
+            }
+        }
+
+        my $recovered-rate = '';
+        my $recovered-rate-str = '';
+        if $c {
+            $recovered-rate = 100 * $r / $c;
+            $recovered-rate-str = sprintf('%0.1f&thinsp;%%', $recovered-rate);
+        }
+
+        my $failed-rate = '';
+        my $failed-rate-str = '';
+        if $c {
+            $failed-rate = 100 * $f / $c;
+            $failed-rate-str = sprintf('%0.1f&thinsp;%%', $failed-rate);
+        }
+
+        my $percent = 100 * $c / $population-n;
+        my $percent-str = '%.2g'.sprintf($percent);
+        $percent-str = $percent < 0.001 ?? '&lt;&thinsp;0.001&thinsp;%' !! "$percent-str&thinsp;%";
+
+        my $one-confirmed-per = '';
+        my $one-confirmed-per-str = '';
+        if $c {
+            $one-confirmed-per = ($population-n / $c).round();
+            $one-confirmed-per-str = fmtnum($one-confirmed-per);
+        }
+
+        my $one-failed-per = '';
+        my $one-failed-per-str = '';
+        if $f {
+            $one-failed-per = ($population-n / $f).round();
+            $one-failed-per-str = fmtnum($one-failed-per);
+        }
+
+        my $confirmed-per-million = $c / $population-mln;
+        my $confirmed-per-million-str = sprintf('%.02f', $confirmed-per-million);
+
+        my $failed-per-million = $f / $population-mln;
+        my $failed-per-million-str = sprintf('%.02f', $failed-per-million);
+
+        push @per-capita, {
+            date => $dates[$index],
+            :$date-str,
+
+            confirmed => $c,
+            confirmed-str => fmtnum($c),
+
+            failed => $f,
+            failed-str => fmtnum($f),
+
+            recovered => $r,
+            recovered-str => fmtnum($r),
+
+            active => $a,
+            active-str => fmtnum($a),
+
+            :$confirmed-rate,
+            :$confirmed-rate-str,
+            :$recovered-rate,
+            :$recovered-rate-str,
+            :$failed-rate,
+            :$failed-rate-str,
+
+            :$percent,
+            :$percent-str,
+
+            :$one-confirmed-per,
+            :$one-confirmed-per-str,
+            :$one-failed-per,
+            :$one-failed-per-str,
+
+            :$confirmed-per-million,
+            :$confirmed-per-million-str,
+            :$failed-per-million,
+            :$failed-per-million-str,
+        };
+    }
+
+    return @per-capita;
 }
