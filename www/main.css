@@ -16,6 +16,9 @@ p {
 p.center {
     text-align: center;
 }
+p.right {
+    text-align: right;
+}
 #block2 {
     padding-top: 7%;
     padding-bottom: 10%;
@@ -73,22 +76,45 @@ p.center {
     position: relative;
     text-align: center;
 }
+#block9 p.confirmed {
+    color: #333333;
+}
+#block9 p.confirmed span.updown {
+    color: #888888;
+}
 #block9 p.recovered {
     color: green;
+}
+#block9 p.recovered span.updown {
+    color: rgba(30, 145, 30, 0.705);
 }
 #block9 p.failed {
     color: red;
 }
+#block9 p.failed span.updown {
+    color: rgba(201, 44, 44, 0.637);
+}
 #block9 p.active {
     color: orange;
+}
+#block9 p.active span.updown {
+    color: rgba(248, 170, 26, 0.788);
 }
 #block9 span {
     font-size: 600%;
 }
-#block9 p sup {
-    font-size: 100%;
+#block9 p sup span.updown {
+    position: relative;
+}
+#block9 p span.updown sup {
+    font-size: 30%;
     position: absolute;
     top: 30%;
+}
+#block9 p span.updown sub {
+    font-size: 30%;
+    position: absolute;
+    top: 66%;
 }
 #block10 {
     padding-bottom: 10%;
@@ -474,12 +500,21 @@ div.new {
     #block9 span {
         font-size: 300%;
     }
-    #block9 p sup {
-        font-size: 100%;
+
+    #block9 p sup span.updown {
         position: relative;
-        display: block;
-        margin-top: 0.5em;
     }
+    #block9 p span.updown sup {
+        font-size: 30%;
+        position: absolute;
+        top: 40%;
+    }
+    #block9 p span.updown sub {
+        font-size: 30%;
+        position: absolute;
+        top: 66%;
+    }
+
     .desktop {
         display: none;
     }

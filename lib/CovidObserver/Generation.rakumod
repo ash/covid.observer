@@ -5,6 +5,7 @@ use JSON::Tiny;
 use CovidObserver::Population;
 use CovidObserver::Statistics;
 use CovidObserver::HTML;
+use CovidObserver::Excel;
 use JSON::Tiny;
 
 sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude?) is export {
@@ -17,7 +18,11 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
 
     my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$exclude);
 
-    my $daily-table = daily-table($chart2data, $world-population / 1_000_000);
+    my $table-path = 'world';
+    $table-path ~= "-$exclude" if $exclude;
+    $table-path.=subst('/', '.');
+    my $daily-table = daily-table($table-path, $chart2data, $world-population / 1_000_000);
+    excel-table($table-path, $chart2data, $world-population / 1_000_000);
 
     my $country-list = country-list(%countries, :$exclude);
     my $continent-list = continent-list();
@@ -171,7 +176,11 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
         $population -= %countries{$exclude}<population>;
     }
 
-    my $daily-table = daily-table($chart2data, $population);
+    my $table-path = $cc;
+    $table-path ~= "-$exclude" if $exclude;
+    $table-path.=subst('/', '.');
+    my $daily-table = daily-table($table-path, $chart2data, $population);
+    excel-table($table-path, $chart2data, $population);
 
     my $population-str = $population <= 1
         ?? sprintf('%i thousand', (1000 * $population).round)
@@ -563,7 +572,9 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
     my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$cont);
 
     my $population = %chart3<population>;
-    my $daily-table = daily-table($chart2data, $population);
+    my $table-path = %continents{$cont}.lc.subst(' ', '-');
+    my $daily-table = daily-table($table-path, $chart2data, $population);
+    excel-table($table-path, $chart2data, $population);
 
     my $country-list = country-list(%countries, :$cont);
     my $continent-list = continent-list($cont);
@@ -1172,6 +1183,10 @@ sub generate-world-map(%countries, %per-day, %totals, %daily-totals, %levels) is
         <p>The colour of the country reflects the number of new confirmed cases happened since yesterday. Click on the map to navigate to the country-level page to get more information about the country.</p>
         <div id="svgMap"></div>
         $script
+
+        {continent-list()}
+        {country-list(%countries)}
+
         HTML
 
     html-template('/map', 'Coronavirus world map', $content, $header);

@@ -70,7 +70,7 @@ sub html-template($path, $title, $content, $header = '') is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=29">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=30">
             <style>
                 $style
             </style>
@@ -425,8 +425,11 @@ sub per-region($cc) is export {
     return qq{<p><a href="$link"$target>} ~ $title ~ '</a></p>';
 }
 
-sub daily-table($chartdata, $population) is export {
-    my $html = q:to/HEADER/;
+sub daily-table($path, $chartdata, $population) is export {
+    my $date = DateTime.now.yyyy-mm-dd;
+    my $filebase = "/$path/{$path}-covid.observer".lc;
+    my $html = qq[<p class="right">Download as <a href="{$filebase}.csv?$date">CSV</a> | <a href="{$filebase}.xls?$date">XLS</a></p>];
+    $html ~= q:to/HEADER/;
         <table>
             <thead>
                 <tr>
