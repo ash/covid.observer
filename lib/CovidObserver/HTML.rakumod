@@ -437,13 +437,13 @@ sub daily-table($path, $chartdata, $population) is export {
                     <th>Confirmed<br/>cases</th>
                     <th>Daily<br/>growth, %</th>
                     <th>Recovered<br/>cases</th>
-                    <th>Failed<br/>cases</th>
+                    <th>Died<br/>cases</th>
                     <th>Active<br/>cases</th>
                     <th>Recovery<br/>rate, %</th>
                     <th>Mortality<br/>rate, %</th>
                     <th>Affected<br/>population, %</th>
-                    <th>1 confirmed<br/>per every</th>
-                    <th>1 failed<br/>per every</th>
+                    <th>Confirmed<br/>per million</th>
+                    <th>Died<br/>per million</th>
                     </tr>
                 </thead>
             <tbody>
@@ -508,16 +508,10 @@ sub daily-table($path, $chartdata, $population) is export {
                     }
                 }</td>
                 <td>{
-                    if $c {
-                        fmtnum(($population-n / $c).round())
-                    }
-                    else {'—'}
+                    sprintf('%.02f', $c / $population)
                 }</td>
                 <td>{
-                    if $f {
-                        fmtnum(($population-n / $f).round())
-                    }
-                    else {'—'}
+                    sprintf('%.02f', $f / $population)
                 }</td>
             </tr>
             TR

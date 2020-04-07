@@ -6,7 +6,7 @@ sub excel-table($path is copy, $chartdata, $population) is export {
     $path.=lc;
 
     my $csv = q:to/HEADER/;
-        "Date","Confirmed cases","Daily growth, %","Recovered cases","Fatal cases","Active cases","Recovery rate, %","Mortality rate, %","Affected population, %","1 confirmed per every","1 died per every"
+        "Date","Confirmed cases","Daily growth, %","Recovered cases","Fatal cases","Active cases","Recovery rate, %","Mortality rate, %","Affected population, %","1 confirmed per every","1 died per every","Confirmed per million","Died per million"
         HEADER
 
     my $dates        = $chartdata<table><dates>;
@@ -54,8 +54,11 @@ sub excel-table($path is copy, $chartdata, $population) is export {
             $one-failed-per = ($population-n / $f).round();
         }
 
+        my $confirmed-per-capita = $c / $population;
+        my $failed-per-capita = $f / $population;
+
         $csv ~= qq:to/ROW/;
-            $dates[$index],$c,$confirmed-rate,$r,$f,$a,$recovered-rate,$failed-rate,$percent,$one-confirmed-per,$one-failed-per
+            $dates[$index],$c,$confirmed-rate,$r,$f,$a,$recovered-rate,$failed-rate,$percent,$one-confirmed-per,$one-failed-per,$confirmed-per-capita,$failed-per-capita
             ROW
     }
 
