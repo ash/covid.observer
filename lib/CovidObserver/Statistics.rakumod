@@ -1050,7 +1050,7 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
                 "animation": false,
                 "scales": {
                     "yAxes": [{
-                        "type": "logarithmic",
+                        "type": "linear",
                         "ticks": {
                             callback: function(value, index, values) {
                                 value = value.toString();
@@ -1631,4 +1631,48 @@ sub per-capita-data($chartdata, $population-n) is export {
     }
 
     return @per-capita;
+}
+
+sub per-capita-graph(@per-capita) is export {
+    my @dates                 = @per-capita.reverse.map: *<date>;
+    my @confirmed-per-million = @per-capita.reverse.map({'%.3f'.sprintf($_<confirmed-per-million>)});
+    my @failed-per-million    = @per-capita.reverse.map({'%.3f'.sprintf($_<failed-per-million>)});
+
+    my $json = q:to/JSON/;
+        {
+            "type": "line",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET1,
+                    DATASET2
+                ]
+            },
+            "options": {
+                "animation": false
+            }
+        }
+        JSON
+
+    my %dataset1 =
+        label => "Confirmed cases per 1 million of population",
+        data => @confirmed-per-million,
+        fill => False,
+        borderColor => 'lightblue';
+
+    my %dataset2 =
+        label => "Fatal cases per 1 million population",
+        data => @failed-per-million,
+        fill => False,
+        borderColor => 'red';
+
+    my $dataset1 = to-json(%dataset1);
+    my $dataset2 = to-json(%dataset2);
+    my $labels = to-json(@dates);
+
+    $json ~~ s/DATASET1/$dataset1/;
+    $json ~~ s/DATASET2/$dataset2/;
+    $json ~~ s/LABELS/$labels/;
+
+    return $json;
 }

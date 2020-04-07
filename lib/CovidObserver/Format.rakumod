@@ -35,3 +35,7 @@ sub pm($n) is export {
         default    {return $fmt}
     }
 }
+
+sub smart-round($n) is export {
+    return $n < 10 ?? sprintf('%.02g', $n) !! fmtnum($n.round());
+}

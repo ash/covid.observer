@@ -18,6 +18,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
     my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$exclude);
     my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$exclude);
     my @per-capita = per-capita-data($chart2data, $world-population);
+    my $chart19data = per-capita-graph(@per-capita);
 
     my $table-path = 'world';
     $table-path ~= "-$exclude" if $exclude;
@@ -46,7 +47,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
             <div class="affected">
                 {
                     if $chart2data<confirmed> {
-                        'Affected 1 of every ' ~ fmtnum(($world-population / $chart2data<confirmed>).round())
+                        "Affected {smart-round(@per-capita[0]<confirmed-per-million>)} per million"
                     }
                     else {
                         'Nobody affected'
@@ -56,7 +57,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
             <div class="failed">
                 {
                     if $chart2data<failed> {
-                        'Failed to recover 1 of every ' ~ fmtnum(($world-population / $chart2data<failed>).round())
+                        "Died {smart-round(@per-capita[0]<failed-per-million-str>)} per million"
                     }
                 }
             </div>
@@ -78,7 +79,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
             <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
             <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><span class="updown"><sup>confirmed</sup><sub>{pm($chart2data<delta-confirmed>)}</sub></span></p>
             <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><span class="updown"><sup>recovered</sup><sub>{pm($chart2data<delta-recovered>)}</sub></span></p>
-            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><span class="updown"><sup>failed</sup><sub>{pm($chart2data<delta-failed>)}</sub></span></p>
+            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><span class="updown"><sup>fatal</sup><sub>{pm($chart2data<delta-failed>)}</sub></span></p>
             <p class="active"><span>{fmtnum($chart2data<active>)}</span><span class="updown"><sup>active</sup><sub>{pm($chart2data<delta-active>)}</sub></span></p>
         </div>
 
@@ -129,7 +130,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
-                    <input type="checkbox" id="logscale7" checked="checked" onclick="log_scale(this, 7)">
+                    <input type="checkbox" id="logscale7" onclick="log_scale(this, 7)">
                     <span class="toggle">
                         <span class="switch"></span>
                     </span>
@@ -142,6 +143,26 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
             </script>
             <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
             <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that fewer cases registered today than yesterday.</p>
+        </div>
+
+        <div id="block19">
+            <a name="per-capita"></a>
+            <h2>Per-capita values</h2>
+            <p>Here, the number of confirmations and deaths <i>per million of population</i> of the World is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
+            <canvas id="Chart19"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale19" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale19" onclick="log_scale(this, 19)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale19"> Logarithmic scale</label>
+            </p>
+            <script>
+                var ctx19 = document.getElementById('Chart19').getContext('2d');
+                chart[19] = new Chart(ctx19, $chart19data);
+            </script>
         </div>
 
         <div id="block11">
@@ -179,6 +200,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
     }
 
     my @per-capita = per-capita-data($chart2data, 1_000_000 * $population);
+    my $chart19data = per-capita-graph(@per-capita);
 
     my $table-path = $cc;
     $table-path ~= "-$exclude" if $exclude;
@@ -292,7 +314,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
             <div class="affected">
                 {
                     if $chart2data<confirmed> {
-                        'Affected 1 of every ' ~ fmtnum((1_000_000 * $population / $chart2data<confirmed>).round())
+                        "Affected {smart-round(@per-capita[0]<confirmed-per-million-str>)} per million"
                     }
                     else {
                         'Nobody affected'
@@ -302,7 +324,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
             <div class="failed">
                 {
                     if $chart2data<failed> {
-                        'Failed to recover 1 of every ' ~ fmtnum((1_000_000 * $population / $chart2data<failed>).round())
+                        "Died {smart-round(@per-capita[0]<failed-per-million-str>)} per million"
                     }
                 }
             </div>
@@ -328,7 +350,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
                     qq[<p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><span class="updown"><sup>recovered</sup><sub>{pm($chart2data<delta-recovered>)}</sub></span></p>]
                 }
             }
-            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><span class="updown"><sup>failed</sup><sub>{pm($chart2data<delta-failed>)}</sub></span></p>
+            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><span class="updown"><sup>fatal</sup><sub>{pm($chart2data<delta-failed>)}</sub></span></p>
             <p class="active"><span>{fmtnum($chart2data<active>)}</span><span class="updown"><sup>active</sup><sub>{pm($chart2data<delta-active>)}</sub></span></p>
         </div>
 
@@ -380,7 +402,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
-                    <input type="checkbox" id="logscale7" checked="checked" onclick="log_scale(this, 7)">
+                    <input type="checkbox" id="logscale7" onclick="log_scale(this, 7)">
                     <span class="toggle">
                         <span class="switch"></span>
                     </span>
@@ -397,6 +419,26 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
 
         $mortality-block
         $crude-block
+
+        <div id="block19">
+            <a name="per-capita"></a>
+            <h2>Per-capita values</h2>
+            <p>Here, the number of confirmations and deaths <i>per million of population</i> in {$proper-country-name}{$without-str} is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
+            <canvas id="Chart19"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale19" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale19" onclick="log_scale(this, 19)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale19"> Logarithmic scale</label>
+            </p>
+            <script>
+                var ctx19 = document.getElementById('Chart19').getContext('2d');
+                chart[19] = new Chart(ctx19, $chart19data);
+            </script>
+        </div>
 
         <div id="block11">
             <a name="table"></a>
@@ -577,6 +619,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
 
     my $population = %chart3<population>;
     my @per-capita = per-capita-data($chart2data, 1_000_000 * $population);
+    my $chart19data = per-capita-graph(@per-capita);
 
     my $table-path = %continents{$cont}.lc.subst(' ', '-');
     my $daily-table = daily-table($table-path, @per-capita);
@@ -601,7 +644,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             <div class="affected">
                 {
                     if $chart2data<confirmed> {
-                        'Affected 1 of every ' ~ fmtnum((1_000_000 * $population / $chart2data<confirmed>).round())
+                        "Affected {smart-round(@per-capita[0]<confirmed-per-million-str>)} per million"
                     }
                     else {
                         'Nobody affected'
@@ -611,7 +654,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             <div class="failed">
                 {
                     if $chart2data<failed> {
-                        'Failed to recover 1 of every ' ~ fmtnum((1_000_000 * $population / $chart2data<failed>).round())
+                        "Died {smart-round(@per-capita[0]<failed-per-million-str>)} per million"
                     }
                 }
             </div>
@@ -633,7 +676,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
             <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><span class="updown"><sup>confirmed</sup><sub>{pm($chart2data<delta-confirmed>)}</sub></span></p>
             <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><span class="updown"><sup>recovered</sup><sub>{pm($chart2data<delta-recovered>)}</sub></span></p>
-            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><span class="updown"><sup>failed</sup><sub>{pm($chart2data<delta-failed>)}</sub></span></p>
+            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><span class="updown"><sup>fatal</sup><sub>{pm($chart2data<delta-failed>)}</sub></span></p>
             <p class="active"><span>{fmtnum($chart2data<active>)}</span><span class="updown"><sup>active</sup><sub>{pm($chart2data<delta-active>)}</sub></span></p>
         </div>
 
@@ -684,7 +727,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
-                    <input type="checkbox" id="logscale7" checked="checked" onclick="log_scale(this, 7)">
+                    <input type="checkbox" id="logscale7" onclick="log_scale(this, 7)">
                     <span class="toggle">
                         <span class="switch"></span>
                     </span>
@@ -697,6 +740,26 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             </script>
             <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
             <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that fewer cases registered today than yesterday.</p>
+        </div>
+
+        <div id="block19">
+            <a name="per-capita"></a>
+            <h2>Per-capita values</h2>
+            <p>Here, the number of confirmations and deaths <i>per million of population</i> in {$continent-name} is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
+            <canvas id="Chart19"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale19" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale19" onclick="log_scale(this, 19)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale19"> Logarithmic scale</label>
+            </p>
+            <script>
+                var ctx19 = document.getElementById('Chart19').getContext('2d');
+                chart[19] = new Chart(ctx19, $chart19data);
+            </script>
         </div>
 
         <div id="block11">

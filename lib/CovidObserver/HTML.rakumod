@@ -32,7 +32,7 @@ sub html-template($path, $title, $content, $header = '') is export {
         </script>
         GA
 
-    my $anchor-prefix = $path.chars == 3 ?? '' !! '/';
+    my $anchor-prefix = $path.chars == 3 || $path ~~ / ^ '/' [europe|america|asia|oceania|africa|'-cn' | .. '/' .. ]/ ?? '' !! '/';
 
     my $new-prefix = $content ~~ /block16/ && $content ~~ /block18/ ?? '' !! '/it';
     # my $new-block = qq:to/BLOCK/;
@@ -69,7 +69,7 @@ sub html-template($path, $title, $content, $header = '') is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=30">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=31">
             <style>
                 $style
             </style>
@@ -101,6 +101,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                             <a href="{$anchor-prefix}#new">New daily cases</a>
                             <a href="{$anchor-prefix}#daily">Daily flow</a>
                             <a href="{$anchor-prefix}#speed">Daily speed</a>
+                            <a href="{$anchor-prefix}#per-capita">Per-capita values</a>
                             <a href="{$anchor-prefix}#table">Table data</a>
                             {
                                 if $path.chars == 3 {
