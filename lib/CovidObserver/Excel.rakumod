@@ -19,38 +19,43 @@ sub excel-table($path is copy, $chartdata, $population) is export {
     for +$chartdata<table><dates> -1 ... 0 -> $index  {
         last unless $confirmed[$index];
 
+        my $c = $confirmed[$index] // 0;
+        my $f = $failed[$index] // 0;
+        my $r = $recovered[$index] // 0;
+        my $a = $active[$index] // 0;
+
         my $confirmed-rate = '';
         if $index {
             my $prev = $confirmed[$index - 1];
             if $prev {
-                $confirmed-rate = 100 * ($confirmed[$index] - $prev) / $prev;
+                $confirmed-rate = 100 * ($c - $prev) / $prev;
             }
         }
 
         my $recovered-rate = '';
-        if $confirmed[$index] {
-            $recovered-rate = 100 * $recovered[$index] / $confirmed[$index];
+        if $c {
+            $recovered-rate = 100 * $r / $c;
         }
 
         my $failed-rate = '';
-        if $confirmed[$index] {
-            $failed-rate = 100 * $failed[$index] / $confirmed[$index];
+        if $c {
+            $failed-rate = 100 * $f / $c;
         }
 
-        my $percent = 100 * $confirmed[$index] / $population-n;
+        my $percent = 100 * $c / $population-n;
 
         my $one-confirmed-per = '';
-        if $confirmed[$index] {
-            $one-confirmed-per = ($population-n / $confirmed[$index]).round();
+        if $c {
+            $one-confirmed-per = ($population-n / $c).round();
         }
 
         my $one-failed-per = '';
-        if $failed[$index] {
-            $one-failed-per = ($population-n / $failed[$index]).round();
+        if $f {
+            $one-failed-per = ($population-n / $f).round();
         }
 
         $csv ~= qq:to/ROW/;
-            $dates[$index],$confirmed[$index],$confirmed-rate,$recovered[$index],$failed[$index],$active[$index],$recovered-rate,$failed-rate,$percent,$one-confirmed-per,$one-failed-per
+            $dates[$index],$c,$confirmed-rate,$r,$f,$a,$recovered-rate,$failed-rate,$percent,$one-confirmed-per,$one-failed-per
             ROW
     }
 

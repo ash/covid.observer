@@ -459,6 +459,11 @@ sub daily-table($path, $chartdata, $population) is export {
     for +$chartdata<table><dates> -1 ... 0 -> $index  {
         last unless $confirmed[$index];
 
+        my $c = $confirmed[$index] // 0;
+        my $f = $failed[$index] // 0;
+        my $r = $recovered[$index] // 0;
+        my $a = $active[$index] // 0;
+
         $html ~= qq:to/TR/;
             <tr>
                 <td class="date">{
@@ -467,34 +472,34 @@ sub daily-table($path, $chartdata, $population) is export {
                     $date ~~ s/', '\d\d\d\d$//;
                     $date
                 }</td>
-                <td>{fmtnum($confirmed[$index])}</td>
+                <td>{fmtnum($c)}</td>
                 <td>{
                     if $index {
                         my $prev = $confirmed[$index - 1];
                         if $prev {
-                            sprintf('%.1f&thinsp;%%', 100 * ($confirmed[$index] - $prev) / $prev)
+                            sprintf('%.1f&thinsp;%%', 100 * ($c - $prev) / $prev)
                         }
                         else {'—'}
                     }
                     else {'—'}
                 }</td>
-                <td>{fmtnum($recovered[$index])}</td>
-                <td>{fmtnum($failed[$index])}</td>
-                <td>{fmtnum($active[$index])}</td>
+                <td>{fmtnum($r)}</td>
+                <td>{fmtnum($f)}</td>
+                <td>{fmtnum($a)}</td>
                 <td>{
-                    if $confirmed[$index] {
-                        sprintf('%0.1f&thinsp;%%', 100 * $recovered[$index] / $confirmed[$index])
+                    if $c {
+                        sprintf('%0.1f&thinsp;%%', 100 * $r / $c)
                     }
                     else {''}
                 }</td>
                 <td>{
-                    if $confirmed[$index] {
-                        sprintf('%0.1f&thinsp;%%', 100 * $failed[$index] / $confirmed[$index])
+                    if $c {
+                        sprintf('%0.1f&thinsp;%%', 100 * $f / $c)
                     }
                     else {''}
                 }</td>
                 <td>{
-                    my $percent = '%.2g'.sprintf(100 * $confirmed[$index] / $population-n);
+                    my $percent = '%.2g'.sprintf(100 * $c / $population-n);
                     if $percent ~~ /e/ {
                         '&lt;&thinsp;0.001&thinsp;%'
                     }
@@ -503,14 +508,14 @@ sub daily-table($path, $chartdata, $population) is export {
                     }
                 }</td>
                 <td>{
-                    if $confirmed[$index] {
-                        fmtnum(($population-n / $confirmed[$index]).round())
+                    if $c {
+                        fmtnum(($population-n / $c).round())
                     }
                     else {'—'}
                 }</td>
                 <td>{
-                    if $failed[$index] {
-                        fmtnum(($population-n / $failed[$index]).round())
+                    if $f {
+                        fmtnum(($population-n / $f).round())
                     }
                     else {'—'}
                 }</td>
