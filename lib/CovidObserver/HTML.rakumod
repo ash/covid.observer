@@ -404,7 +404,7 @@ sub daily-table($path, @per-capita) is export {
                     <th>Confirmed<br/>cases</th>
                     <th>Daily<br/>growth, %</th>
                     <th>Recovered<br/>cases</th>
-                    <th>Died<br/>cases</th>
+                    <th>Fatal<br/>cases</th>
                     <th>Active<br/>cases</th>
                     <th>Recovery<br/>rate, %</th>
                     <th>Mortality<br/>rate, %</th>

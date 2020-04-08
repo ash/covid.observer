@@ -177,14 +177,6 @@ multi sub MAIN('fetch') {
     }
 }
 
-sub date2yyyymmdd($date) {
-    my ($month, $day, $year) = $date.split('/');
-    $year += 2000;
-    my $yyyymmdd = '%i%02i%02i'.sprintf($year, $month, $day);
-
-    return $yyyymmdd;
-}
-
 #| Generate web pages based on the current data from the database
 multi sub MAIN('generate') {
     my %countries = get-countries();

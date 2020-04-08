@@ -2,6 +2,14 @@ unit module CovidObserver::Format;
 
 use DateTime::Format;
 
+sub date2yyyymmdd($date) is export {
+    my ($month, $day, $year) = $date.split('/');
+    $year += 2000;
+    my $yyyymmdd = '%i%02i%02i'.sprintf($year, $month, $day);
+
+    return $yyyymmdd;
+}
+
 sub fmtdate($date) is export {
     my ($year, $month, $day) = $date.split('-');
     $day ~~ s/^0//;
