@@ -582,6 +582,21 @@ div.new {
     div.new {
         padding-top: 2em;
     }
+
+    table.compare h4 {
+        font-size: 80%;
+    }
+    table.compare p {
+        font-size: 80%;
+    }
+    table.compare td {
+        padding: 0 0 0 0.5em;
+    }
+    div.mini {
+        position: relative;
+        height: 5em;
+        width: 5em;
+    }
 }
 
 
