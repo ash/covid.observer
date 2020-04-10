@@ -9,7 +9,7 @@ use CovidObserver::Excel;
 use CovidObserver::Format;
 use JSON::Tiny;
 
-sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude?) is export {
+sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude?, :$skip-excel = False) is export {
     my $without-str = $exclude ?? " excluding %countries{$exclude}<country>" !! '';
     say "Generating world data{$without-str}...";
 
@@ -25,7 +25,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
     $table-path.=subst('/', '.');
 
     my $daily-table = daily-table($table-path, @per-capita);
-    excel-table($table-path, @per-capita);
+    excel-table($table-path, @per-capita) unless $skip-excel;
 
     my $country-list = country-list(%countries, :$exclude);
     my $continent-list = continent-list();
@@ -47,7 +47,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
             <div class="affected">
                 {
                     if $chart2data<confirmed> {
-                        "Affected {smart-round(@per-capita[0]<confirmed-per-million>)} per million"
+                        "Affected {smart-round(@per-capita[0]<confirmed-per1000>)} per 1000 people"
                     }
                     else {
                         'Nobody affected'
@@ -57,7 +57,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
             <div class="failed">
                 {
                     if $chart2data<failed> {
-                        "Died {smart-round(@per-capita[0]<failed-per-million-str>)} per million"
+                        "Died {smart-round(@per-capita[0]<failed-per1000-str>)} per 1000 people"
                     }
                 }
             </div>
@@ -126,11 +126,11 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
         <div id="block7">
             <a name="speed"></a>
             <h2>Daily Speed</h2>
-            <p>This graph shows the speed of growth (in %) over time. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
+            <p>This graph shows the speed of growth (in %) over time. The only parameter here is the number of confirmed cases.</p>
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
-                    <input type="checkbox" id="logscale7" onclick="log_scale(this, 7)">
+                    <input type="checkbox" id="logscale7" checked="checked" onclick="log_scale(this, 7)">
                     <span class="toggle">
                         <span class="switch"></span>
                     </span>
@@ -148,7 +148,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
         <div id="block19">
             <a name="per-capita"></a>
             <h2>Per capita values</h2>
-            <p>Here, the number of confirmations and deaths <i>per million of population</i> of the World is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
+            <p>Here, the number of confirmations and deaths <i>per 1000 of population</i> of the World is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
             <canvas id="Chart19"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale19" data-size="xs" data-style="rounded" data-color="blue">
@@ -180,9 +180,10 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
     html-template("/$exclude-path", "World statistics$without-str", $content);
 }
 
-sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$exclude?, :%mortality?, :%crude?) is export {
+sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$exclude?, :%mortality?, :%crude?, :$skip-excel = False) is export {
     my $without-str = $exclude ?? " excluding %countries{$exclude}<country>" !! '';
     say "Generating {$cc}{$without-str}...";
+
     my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc, :$exclude);
     my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc, :$exclude);
     my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$cc, :$exclude);
@@ -202,12 +203,16 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
     my @per-capita = per-capita-data($chart2data, 1_000_000 * $population);
     my $chart19data = per-capita-graph(@per-capita);
 
+    my %country-stats := {
+        chart-daily => $chart2data,
+    };
+
     my $table-path = $cc;
     $table-path ~= "-$exclude" if $exclude;
     $table-path.=subst('/', '.');
 
     my $daily-table = daily-table($table-path, @per-capita);
-    excel-table($table-path, @per-capita);
+    excel-table($table-path, @per-capita) unless $skip-excel;
 
     my $population-str = $population <= 1
         ?? sprintf('%i thousand', (1000 * $population).round)
@@ -314,7 +319,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
             <div class="affected">
                 {
                     if $chart2data<confirmed> {
-                        "Affected {smart-round(@per-capita[0]<confirmed-per-million-str>)} per million"
+                        "Affected {smart-round(@per-capita[0]<confirmed-per1000-str>)} per 1000 people"
                     }
                     else {
                         'Nobody affected'
@@ -324,7 +329,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
             <div class="failed">
                 {
                     if $chart2data<failed> {
-                        "Died {smart-round(@per-capita[0]<failed-per-million-str>)} per million"
+                        "Died {smart-round(@per-capita[0]<failed-per1000-str>)} per 1000 people"
                     }
                 }
             </div>
@@ -398,11 +403,11 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
         <div id="block7">
             <a name="speed"></a>
             <h2>Daily Speed</h2>
-            <p>This graph shows the speed of growth (in %) over time in {$proper-country-name}{$without-str}. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
+            <p>This graph shows the speed of growth (in %) over time in {$proper-country-name}{$without-str}. The only parameter here is the number of confirmed cases..</p>
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
-                    <input type="checkbox" id="logscale7" onclick="log_scale(this, 7)">
+                    <input type="checkbox" id="logscale7" checked="checked" onclick="log_scale(this, 7)">
                     <span class="toggle">
                         <span class="switch"></span>
                     </span>
@@ -423,7 +428,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
         <div id="block19">
             <a name="per-capita"></a>
             <h2>Per capita values</h2>
-            <p>Here, the number of confirmations and deaths <i>per million of population</i> in {$proper-country-name}{$without-str} is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
+            <p>Here, the number of confirmations and deaths <i>per 1000 of population</i> in {$proper-country-name}{$without-str} is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
             <canvas id="Chart19"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale19" data-size="xs" data-style="rounded" data-color="blue">
@@ -461,6 +466,8 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
     }
 
     html-template($url, "Coronavirus in {$proper-country-name}{$without-str}", $content);
+
+    return %country-stats;
 }
 
 sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) is export {
@@ -476,6 +483,14 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) is ex
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus in different countries</h1>
+
+            <p class="center">
+                <a href="/compare">Compare</a>
+                |
+                <a href="/per-million">Per capita</a>
+                |
+                <b>Affected countries</b>
+            </p>
 
         <div id="block5">
             <h2>Number of Countries Affected</h2>
@@ -543,6 +558,8 @@ sub generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals, :$mo
     my $content = qq:to/HTML/;
         <h1>Coronavirus per capita {$in}</h1>
         <p class="center">
+            <a href="/compare/">Compare</a>
+            |
             {$path eq '/per-million' ?? '<b>Countries</b>' !! '<a href="/per-million/">Countries</a>'}
             |
             {$path eq '/per-million/us' ?? '<b>US states</b>' !! '<a href="/per-million/us/">US states</a>'}
@@ -609,7 +626,7 @@ sub generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals, :$mo
     html-template($path, 'Coronavirus per million of population', $content);
 }
 
-sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals) is export {
+sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals, :$skip-excel = False) is export {
     say "Generating continent $cont...";
 
     my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$cont);
@@ -623,7 +640,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
 
     my $table-path = %continents{$cont}.lc.subst(' ', '-');
     my $daily-table = daily-table($table-path, @per-capita);
-    excel-table($table-path, @per-capita);
+    excel-table($table-path, @per-capita) unless $skip-excel;
 
     my $country-list = country-list(%countries, :$cont);
     my $continent-list = continent-list($cont);
@@ -644,7 +661,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             <div class="affected">
                 {
                     if $chart2data<confirmed> {
-                        "Affected {smart-round(@per-capita[0]<confirmed-per-million-str>)} per million"
+                        "Affected {smart-round(@per-capita[0]<confirmed-per1000-str>)} per 1000 people"
                     }
                     else {
                         'Nobody affected'
@@ -654,7 +671,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             <div class="failed">
                 {
                     if $chart2data<failed> {
-                        "Died {smart-round(@per-capita[0]<failed-per-million-str>)} per million"
+                        "Died {smart-round(@per-capita[0]<failed-per1000-str>)} per 1000 people"
                     }
                 }
             </div>
@@ -723,11 +740,11 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
         <div id="block7">
             <a name="speed"></a>
             <h2>Daily Speed</h2>
-            <p>This graph shows the speed of growth (in %) over time in {$continent-name}. The main three parameters are the number of confirmed cases, the number of recoveries and failures. The orange line is the speed of changing of the number of active cases (i.e., of those, who are still ill).</p>
+            <p>This graph shows the speed of growth (in %) over time in {$continent-name}. The only parameter here is the number of confirmed cases.</p>
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
-                    <input type="checkbox" id="logscale7" onclick="log_scale(this, 7)">
+                    <input type="checkbox" id="logscale7" checked="checked" onclick="log_scale(this, 7)">
                     <span class="toggle">
                         <span class="switch"></span>
                     </span>
@@ -745,7 +762,7 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
         <div id="block19">
             <a name="per-capita"></a>
             <h2>Per capita values</h2>
-            <p>Here, the number of confirmations and deaths <i>per million of population</i> in {$continent-name} is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
+            <p>Here, the number of confirmations and deaths <i>per 1000 of population</i> in {$continent-name} is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
             <canvas id="Chart19"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale19" data-size="xs" data-style="rounded" data-color="blue">
@@ -809,7 +826,7 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) is 
                 </label>
                 <label for="logscale6"> Logarithmic scale</label>
             </p>
-            <p>1. Note that only countries with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
+            <p>1. Note that only countries with more than 1000 population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
             <p>2. The line for the country is drawn only if it reaches at least 85% of the corresponding maximum parameter in China.</p>
             <script>
                 var ctx6 = document.getElementById('Chart6').getContext('2d');
@@ -912,6 +929,34 @@ sub generate-scattered-age(%countries, %per-day, %totals, %daily-totals) is expo
         HTML
 
     html-template('/vs-age', 'Coronavirus vs Life Expectancy', $content);
+}
+
+sub generate-scattered-density(%countries, %per-day, %totals, %daily-totals) is export {
+    say "Generating cases vs density...";
+
+    my $chart20data = scattered-density-graph(%countries, %per-day, %totals, %daily-totals);
+
+    my $country-list = country-list(%countries);
+    my $continent-list = continent-list();
+
+    my $content = qq:to/HTML/;
+        <h1>Coronavirus vs Population Density</h1>
+
+        <div id="block3">
+            <p>Each point on this graph reflects a single country. The blue dots are the absolute number of confirmed cases, the red ones are the fraction of people failed to recover. Move the cursor over the dot to see the name of the country. Note that only the countires with more than one million of population are shown.</p>
+            <canvas id="Chart20"></canvas>
+            <script>
+                var ctx20 = document.getElementById('Chart20').getContext('2d');
+                chart[20] = Chart.Scatter(ctx20, $chart20data);
+            </script>
+        </div>
+
+        $continent-list
+        $country-list
+
+        HTML
+
+    html-template('/vs-density', 'Coronavirus vs Population Density', $content);
 }
 
 sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
@@ -1141,7 +1186,7 @@ sub generate-common-start-stats(%countries, %per-day, %totals, %daily-totals) is
                 </label>
                 <label for="logscale6"> Logarithmic scale</label>
             </p>
-            <p>1. Note that only countries with more than 1 million population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
+            <p>1. Note that only countries with more than 1000 population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
             <p>2. The line for the country is drawn only if it reaches at least 85% of the corresponding maximum parameter in China.</p>
             <script>
                 var ctx15 = document.getElementById('Chart15').getContext('2d');
@@ -1259,4 +1304,150 @@ sub generate-world-map(%countries, %per-day, %totals, %daily-totals, %levels) is
         HTML
 
     html-template('/map', 'Coronavirus world map', $content, $header);
+}
+
+sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) is export {
+    say 'Generating comparison...';
+
+    my $path = '/compare';
+    $path = '/' ~ $prefix.lc ~ $path if $prefix;
+    $path ~= '/all' if !$limit && !$prefix;
+
+    my $content = q:to/HTML/;
+            <script>
+                var smallOptions = {
+                    animation: false,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            stacked: true,
+                            ticks: {
+                                display: false
+                            },
+                            gridLines: {
+                                display: false,
+                                drawBorder: false
+                            }
+                        }],
+                        yAxes: [{
+                            stacked: true,
+                            ticks: {
+                                display: false,
+                                min: 0
+                            },
+                            gridLines: {
+                                drawTicks: false,
+                                drawBorder: false,
+                                lineWidth: 0,
+                                zeroLineColor: '#eeeeee'
+                            }
+                        }]
+                    }
+                }
+            </script>
+
+        HTML
+
+        $content ~= qq:to/HTML/;
+            <h1>
+                {
+                    if    $path eq '/compare'     {'Compare the countries<br/>affected by coronavirus'  }
+                    elsif $path eq '/compare/all' {'Compare all countries<br/>affected by coronavirus'  }
+                    elsif $path eq '/us/compare'  {'Compare the US states<br/>affected by coronavirus'  }
+                    elsif $path eq '/cn/compare'  {'Compare China provinces<br/>affected by coronavirus'}
+                }
+            </h1>
+
+            <p class="center">
+                {$path eq '/compare' ?? '<b>Compare countries</b>' !! '<a href="/compare/">Compare countries</a>'}
+                |
+                <a href="/per-million/">Per capita</a>
+                |
+                <a href="/countries/">Affected countries</a>
+                |
+                {$path eq '/us/compare' ?? '<b>US states</b>' !! '<a href="/us/compare/">US states</a>'}
+                |
+                {$path eq '/cn/compare' ?? '<b>China provinces</b>' !! '<a href="/cn/compare/">China provinces</a>'}
+            </p>
+
+            {qq[<p>On this page, the most affected $limit countries are listed sorted by the number of confirmed cases. You can click on the country name to see more details about the country. The numbers below the name of the country are the numbers of confirmed (black), recovered (green, if known), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per country.</p><p>Visit <a href="/compare/all/">a separate page</a> to see the comparison of all countries. The green and red arrows next to the country name display the change of the number of new confirmed cases for the last two days.</p>] if $path eq '/compare'}
+
+            {qq[<p>On this page, all the countries affected by coronavirus are listed sorted by the number of confirmed cases. You can click on the country name to see more details about the country. The numbers below the name of the country are the numbers of confirmed (black), recovered (green, if known), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day.  Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per country.</p><p>The green and red arrows next to the country name display the change of the number of new confirmed cases for the last two days.</p>] if $path eq '/compare/all'}
+
+            {'<p>On this page, the US states are listed sorted by the number of confirmed cases. You can click on the state name to see more details about it. The numbers below the state name are the numbers of confirmed (black) and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per state.</p><p>The green and red arrows next to the state name display the change of the number of new confirmed cases for the last two days.' if $path eq '/us/compare'}
+
+            {'<p>On this page, China provinces and regions are listed sorted by the number of confirmed cases. You can click on the name to see the more details about the region. The numbers below are the numbers of confirmed (black), recovered (green, if known), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per region.</p><p>The green and red arrows next to the region name display the change of the number of new confirmed cases for the last two days.' if $path eq '/cn/compare'}
+
+            <table class="compare">
+                <thead>
+                    <tr>
+                        <th>Country</th>
+                        <th>Cumulative cases</th>
+                        <th>New daily cases</th>
+                    </tr>
+                </thead>
+                <tbody>
+        HTML
+
+    my $count = 0;
+    for %country-stats.sort: -*.value<chart-daily><confirmed> -> %c {
+        my $cc = %c.key;
+
+        if $prefix {
+            next unless $cc ~~ / $prefix '/' /;
+        }
+        else {
+            next if $cc ~~ / '/' /;
+        }
+
+        if $limit {
+            last if ++$count > $limit;
+        }
+
+        my %data = %country-stats{$cc}<chart-daily>;
+
+        my $id = $cc.subst('/', '');
+        my $json = %data<json-small>;
+        my $json-delta = %data<delta-json-small>;
+
+        $content ~= qq:to/HTML/;
+            <tr>
+                <td class="h3">
+                    <h4>
+                        <a href="/{$cc.lc}">{%countries{$cc}<country>}</a>
+                        {arrow(%countries, $cc)}
+                    </h4>
+                    <p>
+                        {fmtnum(%data<confirmed>)}<br/>
+                        {qq[<span class="recovered">{fmtnum(%data<recovered>)}</span><br/>] if %data<recovered>}
+                        <span class="failed">{fmtnum(%data<failed>)}</span>
+                    </p>
+                </td>
+
+                <td>
+                    <div class="mini"><canvas id="ChartA_$id"></canvas></div>
+                    <script>new Chart(document.getElementById('ChartA_$id').getContext('2d'), $json);</script>
+                </td>
+                <td>
+                    <div class="mini"><canvas id="ChartB_$id"></canvas></div>
+                    <script>new Chart(document.getElementById('ChartB_$id').getContext('2d'), $json-delta);</script>
+                </td>
+            </tr>
+            HTML
+    }
+
+    my $continent-list = continent-list();
+
+    $content ~= qq:to/HTML/;
+            </tbody>
+        </table>
+
+        $continent-list
+
+        HTML
+
+    html-template($path, 'Compare the countries with coronavirus', $content);
 }

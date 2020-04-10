@@ -147,6 +147,11 @@ p.right {
     padding-left: 2%;
     padding-right: 2%;
 }
+#block20 {
+    margin-bottom: 5%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
 h1 {
     font-weight: normal;
     font-size: 400%;
@@ -230,7 +235,8 @@ a[target="_blank"]::after {
     padding-right: 2%;
     margin-bottom: 10%;
 }
-#block11 table {
+#block11 table,
+table.compare {
     margin-left: auto;
     margin-right: auto;
     border-collapse: collapse;
@@ -247,7 +253,8 @@ a[target="_blank"]::after {
     text-align: left;
     padding: 0.3em 1em;
 }
-#block11 table th {
+#block11 table th,
+table.compare th {
     text-align: right;
     padding: 0.5em 1em;
     border-bottom: 1px solid #333333;
@@ -255,6 +262,10 @@ a[target="_blank"]::after {
     top: 0;
     background: #f3f3f3;
     vertical-align: top;
+    z-index: 20;    
+}
+table.compare th {
+    text-align: center;
 }
 #block13 {
     margin-bottom: 10%;
@@ -334,6 +345,42 @@ div.clear {
 }
 .L10 {
     background-color: #d71c1c;
+}
+.recovered {
+    color: green;
+}
+.failed {
+    color: red;
+}
+table.compare {
+    margin: auto;
+}
+table.compare tr {
+    vertical-align: top;
+}
+table.compare td.h3 {
+    text-align: left;
+}
+table.compare td.h3 a {
+    color: #333333;
+    text-decoration: none;
+}
+table.compare td.h3 a:hover {
+    color: #333333;
+    border-bottom: 1px solid #333333;
+}
+table.compare td {
+    padding: 1em;
+}
+table.compare td p {
+    text-align: left;
+    padding: 0;
+    margin: 0.5em 0 0 0;
+}
+div.mini {
+    position: relative;
+    height: 10em;
+    width: 20em;
 }
 
 #block13 div.dashboard div.L0 h5,

@@ -50,10 +50,10 @@ sub html-template($path, $title, $content, $header = '') is export {
     #     BLOCK
     my $new-block = qq:to/BLOCK/;
         <div>
-            <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/map/">World coronavirus map</a></span></p>
+            <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/compare/">Compare countries</a></span></p>
         </div>
     BLOCK
-    $new-block = '' if $path eq '/map';
+    $new-block = '' if $path ~~ /compare/;
 
     my $timestamp = DateTime.now.truncated-to('hour');
     my $template = qq:to/HTML/;
@@ -69,7 +69,7 @@ sub html-template($path, $title, $content, $header = '') is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=31">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=33">
             <style>
                 $style
             </style>
@@ -113,6 +113,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                                 }
                             }
                             <a href="/vs-age">Cases vs life expectancy</a>
+                            <!--a href="/vs-density">Cases vs population density</a-->
                         </div>
                     </li>
 
@@ -144,6 +145,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                         <div class="dropdown-content">
                             <a href="{$anchor-prefix}#countries">List of countries</a>
                             <a href="/countries">Affected countries</a>
+                            <a href="/compare">Compare countries</a>
                             <a href="/per-million">Sorted per million affected</a>
                             <a href="/vs-china">Countries vs China</a>
                         </div>
@@ -157,6 +159,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                             <a href="/-cn">World excluding China</a>
                             <a href="/cn/-hb">China excluding Hubei</a>
                             <a href="/vs-china">Countries vs China</a>
+                            <a href="/cn/compare">Compare provinces</a>
                             <a href="/per-million/cn">Provinces sorted per capita</a>
                         </div>
                     </li>
@@ -166,6 +169,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                         <div class="dropdown-content">
                             <a href="/us">Cumulative data</a>
                             <a href="/us#states">US states</a>
+                            <a href="/us/compare">Compare the states</a>
                             <a href="/per-million/us">States sorted per capita</a>
                         </div>
                     </li>
@@ -205,7 +209,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                     <div class="whatsapp">Send</div>
                 </div>
                 <p>Based on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
-                <p>This website presents the very same data as the JHU’s <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">original dashboard</a> but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
+                <p>This website presents the very same data as the JHU’s <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">original dashboard</a> but from a less-panic perspective. Updated daily around 8 a.m. Central European time.</p>
                 <p>Read the <a href="https://andrewshitov.com/category/covid-19/">Technology blog</a>. Look at the source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
                 <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Twitter: <a href="https://twitter.com/andrewshitov">\@andrewshitov</a>. Contact <a href="mailto:andy@shitov.ru">by e-mail</a>.</p>
             </div>
@@ -219,6 +223,14 @@ sub html-template($path, $title, $content, $header = '') is export {
     my $fh = $io.open(:w);
     $fh.say: $template;
     $fh.close;
+}
+
+sub arrow(%countries, $cc-code) is export {
+    do given %countries{$cc-code}<direction> {
+        when Order::Less {' <span class="down">▼</span>'}
+        when Order::More {' <span class="up">▲</span>'}
+        default {''};
+    }
 }
 
 sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
@@ -238,14 +250,6 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
         return False;
     }
 
-    sub arrow($cc-code) {
-        do given %countries{$cc-code}<direction> {
-            when Order::Less {' <span class="down">▼</span>'}
-            when Order::More {' <span class="up">▲</span>'}
-            default {''};
-        }
-    }
-
     my $us_html = '';
     my $cn_html = '';
     for get-known-countries() -> $cc-code {
@@ -259,7 +263,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
 
                 my $state = %countries{$cc-code}<country>;
                 $state ~~ s/US'/'//;
-                $us_html ~= qq{<p$is_current><a href="/$path">} ~ $state ~ '</a>' ~ arrow($cc-code) ~ '</p>';
+                $us_html ~= qq{<p$is_current><a href="/$path">} ~ $state ~ '</a>' ~ arrow(%countries, $cc-code) ~ '</p>';
             }
         }
         elsif $cc-code ~~ /CN'/'/ {
@@ -273,7 +277,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
 
                 my $region = %countries{$cc-code}<country>;
                 $region ~~ s/'China/'//;
-                $cn_html ~= qq{<p$is_current><a href="/$path">} ~ $region ~ '</a>' ~ arrow($cc-code) ~ '</p>';
+                $cn_html ~= qq{<p$is_current><a href="/$path">} ~ $region ~ '</a>' ~ arrow(%countries, $cc-code) ~ '</p>';
             }
         }
         else {
@@ -282,7 +286,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
             if $exclude && $exclude eq $cc-code {
                 $is_current = ' class="excluded"';
             }
-            $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc-code}<country> ~ '</a>' ~ arrow($cc-code) ~ '</p>';
+            $html ~= qq{<p$is_current><a href="/$path">} ~ %countries{$cc-code}<country> ~ '</a>' ~ arrow(%countries, $cc-code) ~ '</p>';
         }
     }
 
@@ -409,8 +413,8 @@ sub daily-table($path, @per-capita) is export {
                     <th>Recovery<br/>rate, %</th>
                     <th>Mortality<br/>rate, %</th>
                     <th>Affected<br/>population, %</th>
-                    <th>Confirmed<br/>per million</th>
-                    <th>Died<br/>per million</th>
+                    <th>Confirmed<br/>per 1000</th>
+                    <th>Died<br/>per 1000</th>
                     </tr>
                 </thead>
             <tbody>
@@ -428,8 +432,8 @@ sub daily-table($path, @per-capita) is export {
                 <td>{%day<recovered-rate-str>}</td>
                 <td>{%day<failed-rate-str>}</td>
                 <td>{%day<percent-str>}</td>
-                <td>{%day<confirmed-per-million-str>}</td>
-                <td>{%day<failed-per-million-str>}</td>
+                <td>{%day<confirmed-per1000-str>}</td>
+                <td>{%day<failed-per1000-str>}</td>
             </tr>
             TR
     }

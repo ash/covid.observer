@@ -144,9 +144,24 @@ sub parse-population() is export {
         }
     }
 
+    say "Total surface area...";
+    # From https://unstats.un.org/unsd/environment/totalarea.htm
+    my %area;
+    my @area = csv(in => 'data/total-surface-area.csv', sep => "\t");
+    for @area -> @data {
+        my ($country, $area) = @data;
+        next unless $area;
+
+        my $cc = country2cc($country);
+        next unless $cc;
+
+        %area{$cc} = $area;
+    }
+
     return
-        population => %population,
         countries  => %countries,
+        population => %population,
+        area       => %area,
         continent  => %continent,
         age        => %age,
         mortality  => %mortality,
@@ -194,11 +209,13 @@ sub country2cc($country is copy, :$silent = False) is export {
         'Republic of the Congo' => 'CG',
         'East Timor' => 'TL',
         'West Bank and Gaza' => 'IL',
-        'Falkland Islands (Islas Malvinas)' => 'FK';
+        'Falkland Islands (Islas Malvinas)' => 'FK',
+        'Falkland Islands (Malvinas)' => 'FK';
 
     $country = 'Lao People\'s Democratic Republic' if $country eq 'Lao People\'s Dem. Rep.';
     $country = 'Iran' if $country eq 'Iran (Islamic Republic of)';
     $country = 'South Korea' if $country eq 'Republic of Korea';
+    $country = 'South Korea' if $country eq 'Korea (Republic of)';
     $country = 'Czech Republic' if $country eq 'Czechia';
     $country = 'Venezuela' if $country ~~ /Venezuela/;
     $country = 'Moldova' if $country eq 'Republic of Moldova';
@@ -206,6 +223,7 @@ sub country2cc($country is copy, :$silent = False) is export {
     $country = 'Tanzania' if $country eq 'United Rep. of Tanzania';
     $country = 'Micronesia' if $country ~~ /Micronesia/;
     $country = 'North Macedonia' if $country ~~ /'North Macedonia'/;
+    $country = 'North Macedonia' if $country eq 'The Former Yugoslav Rep. of Macedonia';
     $country = 'United Kingdom' if $country ~~ /'United Kingdom of Great Britain'/;
     $country = 'Saint Martin' if $country ~~ / 'St. Martin' | 'St Martin' /;
     $country = 'Hong Kong' if $country ~~ /'Hong Kong SAR'/;

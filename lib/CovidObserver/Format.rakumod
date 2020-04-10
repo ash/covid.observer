@@ -45,5 +45,23 @@ sub pm($n) is export {
 }
 
 sub smart-round($n) is export {
-    return $n < 10 ?? sprintf('%.02g', $n) !! fmtnum($n.round());
+    $n ~~ /'0.' ('0'*)/;
+
+    if $/[0] {
+        my $zeros = $/[0].chars;
+        return sprintf("%.{$zeros + 2}f", $n);
+    }
+    else {
+        if $n < 10 {
+            return sprintf("%.2f", $n);
+        }
+        elsif $n < 100 {
+            return sprintf("%.1f", $n);
+        }
+        else {
+            return fmtnum($n.round());
+        }
+    }
+
+    return $n; # should not be reached
 }

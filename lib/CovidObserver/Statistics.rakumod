@@ -18,7 +18,7 @@ sub geo-sanity() is export {
 }
 
 sub get-countries() is export {
-    my $sth = dbh.prepare('select cc, country, continent, population, life_expectancy from countries');
+    my $sth = dbh.prepare('select cc, country, continent, population, life_expectancy, area from countries');
     $sth.execute();
 
     my %countries;
@@ -30,7 +30,8 @@ sub get-countries() is export {
             country => $country,
             population => %row<population>,
             continent => %row<continent>,
-            age => %row<life_expectancy>;
+            age => %row<life_expectancy>,
+            area => %row<area>;
         %countries{%row<cc>} = %data;
     }
     $sth.finish();
@@ -513,10 +514,30 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
         }
         JSON
 
+    my $json-small = q:to/JSON/;
+        {
+            type: "bar",
+            data: {
+                labels: LABELS,
+                datasets: [
+                    DATASET3,
+                    DATASET2,
+                    DATASET1
+                ]
+            },
+            options: smallOptions
+        }
+        JSON
+
     $json ~~ s/DATASET1/$dataset1/;
     $json ~~ s/DATASET2/$dataset2/;
     $json ~~ s/DATASET3/$dataset3/;
     $json ~~ s/LABELS/$labels/;
+
+    $json-small ~~ s/DATASET1/$dataset1/;
+    $json-small ~~ s/DATASET2/$dataset2/;
+    $json-small ~~ s/DATASET3/$dataset3/;
+    $json-small ~~ s/LABELS/$labels/;
 
     # Deltas
     my @delta-confirmed = @confirmed[1..*] >>->> @confirmed;
@@ -571,22 +592,48 @@ sub chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
         }
         JSON
 
+    my $delta-json-small = q:to/JSON/;
+        {
+            type: "bar",
+            data: {
+                labels: LABELS,
+                datasets: [
+                    DATASET2,
+                    DATASET3,
+                    DATASET1,
+                    DATASET0
+                ]
+            },
+            options: smallOptions
+        }
+        JSON
+
     $delta-json ~~ s/DATASET0/$delta-dataset0/;
     $delta-json ~~ s/DATASET1/$delta-dataset1/;
     $delta-json ~~ s/DATASET2/$delta-dataset2/;
     $delta-json ~~ s/DATASET3/$delta-dataset3/;
     $delta-json ~~ s/LABELS/$labels/;
 
+    $delta-json-small ~~ s/DATASET0/$delta-dataset0/;
+    $delta-json-small ~~ s/DATASET1/$delta-dataset1/;
+    $delta-json-small ~~ s/DATASET2/$delta-dataset2/;
+    $delta-json-small ~~ s/DATASET3/$delta-dataset3/;
+    $delta-json-small ~~ s/LABELS/$labels/;
+
     my %return =
         date => @dates[*-1],
 
         json => $json,
+        json-small => $json-small,
+
         confirmed => @confirmed[*-1],
         failed => @failed[*-1],
         recovered => @recovered[*-1],
         active => @active[*-1],        
 
         delta-json => $delta-json,
+        delta-json-small => $delta-json-small,
+
         delta-confirmed => @delta-confirmed[*-1],
         delta-failed => @delta-failed[*-1],
         delta-recovered => @delta-recovered[*-1],
@@ -1010,29 +1057,29 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
         borderColor => 'lightblue';
     my $dataset0 = to-json(%dataset0);
 
-    my %dataset1 =
-        label => 'Recovered',
-        data => trim-data(moving-average(@recovered, $avg-width), $trim-left),
-        fill => False,
-        lineTension => 0,
-        borderColor => 'green';
-    my $dataset1 = to-json(%dataset1);
+    # my %dataset1 =
+    #     label => 'Recovered',
+    #     data => trim-data(moving-average(@recovered, $avg-width), $trim-left),
+    #     fill => False,
+    #     lineTension => 0,
+    #     borderColor => 'green';
+    # my $dataset1 = to-json(%dataset1);
 
-    my %dataset2 =
-        label => 'Failed to recover',
-        data => trim-data(moving-average(@failed, $avg-width), $trim-left),
-        fill => False,
-        lineTension => 0,
-        borderColor => 'red';
-    my $dataset2 = to-json(%dataset2);
+    # my %dataset2 =
+    #     label => 'Failed to recover',
+    #     data => trim-data(moving-average(@failed, $avg-width), $trim-left),
+    #     fill => False,
+    #     lineTension => 0,
+    #     borderColor => 'red';
+    # my $dataset2 = to-json(%dataset2);
 
-    my %dataset3 =
-        label => 'Active cases',
-        data => trim-data(moving-average(@active, $avg-width), $trim-left),
-        fill => False,
-        lineTension => 0,
-        borderColor => 'orange';
-    my $dataset3 = to-json(%dataset3);
+    # my %dataset3 =
+    #     label => 'Active cases',
+    #     data => trim-data(moving-average(@active, $avg-width), $trim-left),
+    #     fill => False,
+    #     lineTension => 0,
+    #     borderColor => 'orange';
+    # my $dataset3 = to-json(%dataset3);
 
     my $json = q:to/JSON/;
         {
@@ -1040,17 +1087,14 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
             "data": {
                 "labels": LABELS,
                 "datasets": [
-                    DATASET0,
-                    DATASET2,
-                    DATASET3,
-                    DATASET1
+                    DATASET0
                 ]
             },
             "options": {
                 "animation": false,
                 "scales": {
                     "yAxes": [{
-                        "type": "linear",
+                        "type": "logarithmic",
                         "ticks": {
                             callback: function(value, index, values) {
                                 value = value.toString();
@@ -1065,9 +1109,9 @@ sub daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc?, :$cont?, :$
         JSON
 
     $json ~~ s/DATASET0/$dataset0/;
-    $json ~~ s/DATASET1/$dataset1/;
-    $json ~~ s/DATASET2/$dataset2/;
-    $json ~~ s/DATASET3/$dataset3/;
+    # $json ~~ s/DATASET1/$dataset1/;
+    # $json ~~ s/DATASET2/$dataset2/;
+    # $json ~~ s/DATASET3/$dataset3/;
     $json ~~ s/LABELS/$labels/;
 
     return $json;
@@ -1130,13 +1174,13 @@ sub scattered-age-graph(%countries, %per-day, %totals, %daily-totals) is export 
     my $labels = to-json(@labels);
 
     my %dataset1 =
-        label => 'Life expectancy vs Confirmed cases',
+        label => 'Life expectancy vs confirmed cases',
         data => @dataset-confirmed,
         backgroundColor => '#3671e9';
     my $dataset1 = to-json(%dataset1);
 
     my %dataset2 =
-        label => 'Life expectancy vs Failed cases',
+        label => 'Life expectancy vs fatal cases',
         data => @dataset-failed,
         backgroundColor => 'red';
     my $dataset2 = to-json(%dataset2);
@@ -1164,6 +1208,13 @@ sub scattered-age-graph(%countries, %per-day, %totals, %daily-totals) is export 
                     xAxes: [
                         {
                             type: "linear",
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    var n = value.toString();
+                                    if (n.indexOf('e') != -1) return '';
+                                    else return n + '%';
+                                }
+                            },
                             scaleLabel: {
                                 display: true,
                                 labelString: "Life expextancy, in years"
@@ -1182,7 +1233,128 @@ sub scattered-age-graph(%countries, %per-day, %totals, %daily-totals) is export 
                             },
                             scaleLabel: {
                                 display: true,
-                                labelString: "The number of confirmed (blue) or failed (red) cases, in %"
+                                labelString: "The number of confirmed (blue) or fatal (red) cases, in %"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+        JSON
+
+    $json ~~ s/MAX/$max/;
+    $json ~~ s/LABELS/$labels/;
+    $json ~~ s/DATASET1/$dataset1/;
+    $json ~~ s/DATASET2/$dataset2/;
+
+    return $json;
+}
+
+sub scattered-density-graph(%countries, %per-day, %totals, %daily-totals) is export {
+    my @labels;
+    my @dataset-confirmed;
+    my @dataset-failed;
+
+    my $max = 0;
+    for %countries.keys -> $cc {
+        my $confirmed = %totals{$cc}<confirmed>;
+        next unless $confirmed;
+
+        next if %countries{$cc}<population> < 1;
+
+        my $area = %countries{$cc}<area>;
+        next unless $area;
+
+        my $density = 1_000_000 * %countries{$cc}<population> / $area;
+
+        my $failed = %totals{$cc}<failed>;
+
+        my $country = %countries{$cc}<country>;
+
+        # $confirmed /= 1_000_000 * %countries{$cc}<population> / 100;
+        # $failed    /= 1_000_000 * %countries{$cc}<population> / 100;
+
+        $max = $confirmed if $max < $confirmed;
+
+        @labels.push($country);
+
+        my %point-confirmed =
+            x => $density,
+            y => $confirmed;
+        push @dataset-confirmed, %point-confirmed;
+
+        my %point-failed =
+            x => $density,
+            y => $failed;
+        push @dataset-failed, %point-failed;
+    }
+
+    $max = sprintf('%.02f', $max);
+    my $labels = to-json(@labels);
+
+    my %dataset1 =
+        label => 'Population density vs confirmed cases',
+        data => @dataset-confirmed,
+        backgroundColor => '#3671e9';
+    my $dataset1 = to-json(%dataset1);
+
+    my %dataset2 =
+        label => 'Population density vs fatal cases',
+        data => @dataset-failed,
+        backgroundColor => 'red';
+    my $dataset2 = to-json(%dataset2);
+
+    my $json = q:to/JSON/;
+        {
+            "type": "scatter",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET1,
+                    DATASET2
+                ]
+            },
+            "options": {
+                "animation": false,
+                "tooltips": {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return data.labels[tooltipItem.index];
+                        }
+                    }
+                },
+                "scales": {
+                    xAxes: [
+                        {
+                            type: "logarithmic",
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    var n = value.toString();
+                                    if (n.indexOf('e') != -1) return '';
+                                    else return n;
+                                },
+                                minRotation: 35
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: "Population density, people / km2"
+                            }
+                        }
+                    ],
+                    yAxes: [
+                        {
+                            type: "logarithmic",
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    var n = value.toString();
+                                    if (n.indexOf('e') != -1) return '';
+                                    else return n;
+                                },
+                                minRotation: 35
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: "The number of confirmed (blue) or fatal (red) cases, in %"
                             }
                         }
                     ]
@@ -1524,12 +1696,12 @@ sub crude-graph($cc, %per-day, %crude, %countries, %totals) is export {
 }
 
 sub per-capita-data($chartdata, $population-n) is export {
-    my $dates          = $chartdata<table><dates>;
-    my $confirmed      = $chartdata<table><confirmed>;
-    my $failed         = $chartdata<table><failed>;
-    my $recovered      = $chartdata<table><recovered>;
-    my $active         = $chartdata<table><active>;
-    my $population-mln = $population-n / 1_000_000;
+    my $dates        = $chartdata<table><dates>;
+    my $confirmed    = $chartdata<table><confirmed>;
+    my $failed       = $chartdata<table><failed>;
+    my $recovered    = $chartdata<table><recovered>;
+    my $active       = $chartdata<table><active>;
+    my $population-t = $population-n / 1_000;
 
     my @per-capita;
     for +$chartdata<table><dates> -1 ... 0 -> $index  {
@@ -1586,11 +1758,11 @@ sub per-capita-data($chartdata, $population-n) is export {
             $one-failed-per-str = fmtnum($one-failed-per);
         }
 
-        my $confirmed-per-million = $c / $population-mln;
-        my $confirmed-per-million-str = sprintf('%.02f', $confirmed-per-million);
+        my $confirmed-per1000 = $c / $population-t;
+        my $confirmed-per1000-str = smart-round($confirmed-per1000);
 
-        my $failed-per-million = $f / $population-mln;
-        my $failed-per-million-str = sprintf('%.02f', $failed-per-million);
+        my $failed-per1000 = $f / $population-t;
+        my $failed-per1000-str = smart-round($failed-per1000);
 
         push @per-capita, {
             date => $dates[$index],
@@ -1623,10 +1795,10 @@ sub per-capita-data($chartdata, $population-n) is export {
             :$one-failed-per,
             :$one-failed-per-str,
 
-            :$confirmed-per-million,
-            :$confirmed-per-million-str,
-            :$failed-per-million,
-            :$failed-per-million-str,
+            :$confirmed-per1000,
+            :$confirmed-per1000-str,
+            :$failed-per1000,
+            :$failed-per1000-str,
         };
     }
 
@@ -1634,9 +1806,9 @@ sub per-capita-data($chartdata, $population-n) is export {
 }
 
 sub per-capita-graph(@per-capita) is export {
-    my @dates                 = @per-capita.reverse.map: *<date>;
-    my @confirmed-per-million = @per-capita.reverse.map({'%.3f'.sprintf($_<confirmed-per-million>)});
-    my @failed-per-million    = @per-capita.reverse.map({'%.3f'.sprintf($_<failed-per-million>)});
+    my @dates             = @per-capita.reverse.map: *<date>;
+    my @confirmed-per1000 = @per-capita.reverse.map({smart-round($_<confirmed-per1000>)});
+    my @failed-per1000    = @per-capita.reverse.map({smart-round($_<failed-per1000>)});
 
     my $json = q:to/JSON/;
         {
@@ -1655,14 +1827,14 @@ sub per-capita-graph(@per-capita) is export {
         JSON
 
     my %dataset1 =
-        label => "Confirmed cases per 1 million of population",
-        data => @confirmed-per-million,
+        label => "Confirmed cases per 1000 of population",
+        data => @confirmed-per1000,
         fill => False,
         borderColor => 'lightblue';
 
     my %dataset2 =
-        label => "Fatal cases per 1 million population",
-        data => @failed-per-million,
+        label => "Fatal cases per 1000 population",
+        data => @failed-per1000,
         fill => False,
         borderColor => 'red';
 
