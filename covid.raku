@@ -7,9 +7,10 @@ use CovidObserver::Statistics;
 use CovidObserver::DB;
 use CovidObserver::HTML;
 use CovidObserver::Generation;
+use CovidObserver::Format;
 
 #| Print SQL instructions to set up the database, tables and permissions.
-multi sub MAIN('setup', Bool :$force=False, Bool :$verbose=False) {
+multi sub MAIN('setup', Bool :$force = False, Bool :$verbose = False) {
     my $schema = q:to<EOSQL>;
         DROP DATABASE IF EXISTS covid;
         CREATE DATABASE IF NOT EXISTS covid;
@@ -29,7 +30,8 @@ multi sub MAIN('setup', Bool :$force=False, Bool :$verbose=False) {
           country varchar(50) DEFAULT NULL,
           continent char(2) DEFAULT '',
           population double DEFAULT 0,
-          life_expectancy double DEFAULT 0
+          life_expectancy double DEFAULT 0,
+          area int DEFAULT 0
         );
 
         DROP TABLE IF EXISTS daily_totals;
@@ -101,15 +103,16 @@ multi sub MAIN('population') {
     say "Updating database...";
 
     dbh.execute('delete from countries');
-    my $sth = dbh.prepare('insert into countries (cc, continent, country, population, life_expectancy) values (?, ?, ?, ?, ?)');
+    my $sth = dbh.prepare('insert into countries (cc, continent, country, population, life_expectancy, area) values (?, ?, ?, ?, ?, ?)');
     for %population<countries>.kv -> $cc, $country {
         my $n = %population<population>{$cc};
         my $age = %population<age>{$cc} || 0;
+        my $area = %population<area>{$cc} || 0;
 
         my $continent = $cc ~~ /'/'/ ?? '' !! %population<continent>{$cc};
         say "$cc, $continent, $country, $n";
 
-        $sth.execute($cc, $continent, $country, $n, $age);
+        $sth.execute($cc, $continent, $country, $n, $age, $area);
     }
     $sth.finish();
 
@@ -178,7 +181,7 @@ multi sub MAIN('fetch') {
 }
 
 #| Generate web pages based on the current data from the database
-multi sub MAIN('generate') {
+multi sub MAIN('generate', Bool :$skip-excel = False) {
     my %countries = get-countries();
 
     my %per-day = get-per-day-stats();
@@ -189,8 +192,8 @@ multi sub MAIN('generate') {
     my %mortality = get-mortality-data();
     my %crude = get-crude-data();
 
-    generate-world-stats(%countries, %per-day, %totals, %daily-totals);
-    generate-world-stats(%countries, %per-day, %totals, %daily-totals, exclude => 'CN');
+    generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$skip-excel);
+    generate-world-stats(%countries, %per-day, %totals, %daily-totals, exclude => 'CN', :$skip-excel);
 
     generate-countries-stats(%countries, %per-day, %totals, %daily-totals);
 
@@ -200,19 +203,28 @@ multi sub MAIN('generate') {
     generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals, mode => 'combined');
 
     generate-china-level-stats(%countries, %per-day, %totals, %daily-totals);
-    # # generate-common-start-stats(%countries, %per-day, %totals, %daily-totals);
+    # generate-common-start-stats(%countries, %per-day, %totals, %daily-totals);
 
+    my %country-stats;
     for get-known-countries() -> $cc {
-        generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :%mortality, :%crude);
+        %country-stats{$cc} = generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :%mortality, :%crude, :$skip-excel);
     }
+
+    generate-countries-compare(%country-stats, %countries, limit => 100);
+    generate-countries-compare(%country-stats, %countries);
+    generate-countries-compare(%country-stats, %countries, prefix => 'US');
+    generate-countries-compare(%country-stats, %countries, prefix => 'CN');
+
     generate-country-stats('CN', %countries, %per-day, %totals, %daily-totals, exclude => 'CN/HB');
     generate-continent-graph(%countries, %per-day, %totals, %daily-totals);
 
     for %continents.keys -> $cont {
-        generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals);
+        generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals, :$skip-excel);
     }
 
+
     generate-scattered-age(%countries, %per-day, %totals, %daily-totals);
+    generate-scattered-density(%countries, %per-day, %totals, %daily-totals);
 
     my %levels = generate-overview(%countries, %per-day, %totals, %daily-totals);
     generate-world-map(%countries, %per-day, %totals, %daily-totals, %levels);
