@@ -226,10 +226,12 @@ sub html-template($path, $title, $content, $header = '') is export {
 }
 
 sub arrow(%countries, $cc-code) is export {
-    do given %countries{$cc-code}<direction> {
-        when Order::Less {' <span class="down">▼</span>'}
-        when Order::More {' <span class="up">▲</span>'}
-        default {''};
+    do given %countries{$cc-code}<trend> {
+        when * >=  3 {' <span class="down">▼</span>'}
+        when * >   0 {' <span class="down">▽</span>'}
+        when * <= -3 {' <span class="up">▲</span>'  }
+        when * <   0 {' <span class="up">△</span>'  }
+        default      {''};
     }
 }
 
@@ -326,7 +328,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
             <div class="countries-list">
                 $html
             </div>
-            <p>The green and red arrows display the change of the number of new confirmed cases for the last two days.</p>
+            <p>The green and red arrows next to the country name display the trend of the new confirmed cases during the last week.</p>
         </div>
         HTML
 }

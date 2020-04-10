@@ -1453,16 +1453,21 @@ sub common-start(%countries, %per-day, %totals, %daily-totals) is export {
 }
 
 sub add-country-arrows(%countries, %per-day) is export {
-    my @dates = %per-day<CN>.keys.sort[*-3, *-2, *-1];
-
     for %per-day.keys -> $cc {
-        next unless %countries{$cc};
-        next unless %per-day{$cc}{@dates[2]};
+        my @dates = %per-day{$cc}.keys.sort.reverse;
 
-        my $delta1 = %per-day{$cc}{@dates[1]}<confirmed> - %per-day{$cc}{@dates[0]}<confirmed>;
-        my $delta2 = %per-day{$cc}{@dates[2]}<confirmed> - %per-day{$cc}{@dates[1]}<confirmed>;
-        my $direction = $delta2 <=> $delta1;
-        %countries{$cc}<direction> = $direction;
+        my $score = 0;
+        if @dates.elems > 7 {
+            my $prev = %per-day{$cc}{@dates[0]}<confirmed> - %per-day{$cc}{@dates[1]}<confirmed>;
+            for 1..7 -> $history {
+                my $curr = %per-day{$cc}{@dates[$history]}<confirmed> - %per-day{$cc}{@dates[$history + 1]}<confirmed>;
+                $score-- if $curr < $prev;
+                $score++ if $curr > $prev;
+                $prev = $curr;
+            }
+        }
+
+        %countries{$cc}<trend> = $score;
     }
 }
 
