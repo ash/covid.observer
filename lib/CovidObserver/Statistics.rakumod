@@ -138,19 +138,18 @@ sub countries-vs-china(%countries, %per-day, %totals, %daily-totals) is export {
     }
 
     my %max-cc;
-    # my $max = 0;
 
     my %data;
     for %date-cc.keys.sort -> $date {
         for %date-cc{$date}.keys -> $cc {
             next if $cc ~~ /'/'/ && $cc ne 'CN/HB';
             next unless %countries{$cc};
+            next unless %countries{$cc}<population>;
 
             my $confirmed = %date-cc{$date}{$cc} || 0;
             %data{$cc}{$date} = sprintf('%.6f', 100 * $confirmed / (1_000_000 * +%countries{$cc}<population>));
 
             %max-cc{$cc} = %data{$cc}{$date};# if %max-cc{$cc} < %data{$cc}{$date};
-            # $max = %max-cc{$cc} if $max < %max-cc{$cc};
         }
     }
 
