@@ -1315,7 +1315,7 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
 
     my $content = q:to/HTML/;
             <script>
-                var smallOptions = {
+                var smallOptionsA = {
                     animation: false,
                     maintainAspectRatio: false,
                     legend: {
@@ -1334,6 +1334,36 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
                         }],
                         yAxes: [{
                             stacked: true,
+                            ticks: {
+                                display: false,
+                                min: 0
+                            },
+                            gridLines: {
+                                drawTicks: false,
+                                drawBorder: false,
+                                lineWidth: 0,
+                                zeroLineColor: '#eeeeee'
+                            }
+                        }]
+                    }
+                }
+                var smallOptionsB = {
+                    animation: false,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                display: false
+                            },
+                            gridLines: {
+                                display: false,
+                                drawBorder: false
+                            }
+                        }],
+                        yAxes: [{
                             ticks: {
                                 display: false,
                                 min: 0
