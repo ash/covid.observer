@@ -327,6 +327,8 @@ sub countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals) is
         for %data{$date}.keys.sort -> $cc {
             next unless %countries{$cc};
             my $confirmed = %per-day{$cc}{$date}<confirmed>;
+            next unless %countries{$cc};
+
             @countries.push('<a href="/' ~ $cc.lc ~ '">' ~ %countries{$cc}<country> ~ "</a> ($confirmed)");
         }
 
@@ -1448,35 +1450,25 @@ sub common-start(%countries, %per-day, %totals, %daily-totals) is export {
 }
 
 sub add-country-arrows(%countries, %per-day) is export {
-    my @dates = %per-day<CN>.keys.sort[*-3, *-2, *-1];
-
     for %per-day.keys -> $cc {
-        next unless %countries{$cc};
-        next unless %per-day{$cc}{@dates[2]};
+        next unless %countries{$cc}<country>; # Run ./covid.raku sanity to find such cases
 
-        my $delta1 = %per-day{$cc}{@dates[1]}<confirmed> - %per-day{$cc}{@dates[0]}<confirmed>;
-        my $delta2 = %per-day{$cc}{@dates[2]}<confirmed> - %per-day{$cc}{@dates[1]}<confirmed>;
-        my $direction = $delta2 <=> $delta1;
-        %countries{$cc}<trend> = $direction;
+        my @dates = %per-day{$cc}.keys.sort.reverse;
+
+        my $score = 0;
+        if @dates.elems > 7 {
+            my $curr = %per-day{$cc}{@dates[0]}<confirmed> - %per-day{$cc}{@dates[1]}<confirmed>;
+            for 1..7 -> $history {
+                my $prev = (%per-day{$cc}{@dates[$history]}<confirmed> - %per-day{$cc}{@dates[$history + 1]}<confirmed>);
+                my $d = $prev ?? ($curr - $prev) / $prev !! 0;
+
+                $score += $d;
+                $prev = $curr;
+            }
+        }
+
+        %countries{$cc}<trend> = $score;
     }
-
-    # for %per-day.keys -> $cc {
-    #     my @dates = %per-day{$cc}.keys.sort.reverse;
-
-    #     my $score = 0;
-    #     if @dates.elems > 7 {
-    #         my $prev = %per-day{$cc}{@dates[0]}<confirmed> - %per-day{$cc}{@dates[1]}<confirmed>;
-    #         for 1..7 -> $history {
-    #             my $curr = (%per-day{$cc}{@dates[$history]}<confirmed> - %per-day{$cc}{@dates[$history + 1]}<confirmed>);
-    #             my $d = $prev ?? $curr / $prev !! 0;
-    #             $score-- if $d < 1;
-    #             $score++ if $d > 1;
-    #             $prev = $curr;
-    #         }
-    #     }
-
-    #     %countries{$cc}<trend> = $score;
-    # }
 }
 
 sub mortality-graph($cc, %per-day, %mortality, %crude, %countries, %totals) is export {

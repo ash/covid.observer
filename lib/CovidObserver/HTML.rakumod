@@ -227,13 +227,15 @@ sub html-template($path, $title, $content, $header = '') is export {
 
 sub arrow(%countries, $cc-code) is export {
     do given %countries{$cc-code}<trend> {
-        # when * >=  3 {' <span class="down">▼</span>' ~ %countries{$cc-code}<trend>}
-        # when * >   0 {' <span class="down">▽</span>' ~ %countries{$cc-code}<trend>}
-        # when * <= -3 {' <span class="up">▲</span>'   ~ %countries{$cc-code}<trend>}
-        # when * <   0 {' <span class="up">△</span>'   ~ %countries{$cc-code}<trend>}
-        when Order::Less {' <span class="down">▼</span>'}
-        when Order::More {' <span class="up">▲</span>'}
-        default      {''};
+        when * >=  10 {' <span class="up">▲▲</span>'}
+        when * >=  3  {' <span class="up">▲</span>'}
+        when * >   0  {' <span class="up">△</span>'}
+        when * <= -10 {' <span class="down">▼▼</span>'}
+        when * <= -3  {' <span class="down">▼</span>'}
+        when * <   0  {' <span class="down">▽</span>'}
+        # when Order::Less {' <span class="down">▼</span>'}
+        # when Order::More {' <span class="up">▲</span>'}
+        default       {''};
     }
 }
 
