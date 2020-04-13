@@ -188,6 +188,8 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
 
     my $chart7data = daily-speed(%CO, :$cc, :$exclude);
 
+    my $chart21data = daily-tests(%CO, :$cc);
+
     my $country-name = %CO<countries>{$cc}<country>;
     my $population = +%CO<countries>{$cc}<population>;
 
@@ -214,7 +216,15 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
         !! sprintf('%i million', $population.round);
 
     my $proper-country-name = $country-name;
-    $proper-country-name = "the $country-name" if $cc ~~ /[US|GB|NL|DO|CZ|BS|GM|CD|CG]$/ || ($cc ~~ /^RU/ && $country-name ~~ /Republic/);
+    my $title-name = $country-name;
+    if $title-name ~~ / '/' / {
+        $title-name = $title-name.split('/').reverse.join(', '); #'
+    }
+
+    if $cc ~~ /[US|GB|NL|DO|CZ|BS|GM|CD|CG]$/ || ($cc ~~ /^RU/ && $country-name ~~ /Republic/) {
+        $proper-country-name = "the $country-name";
+        $title-name = "the $title-name";
+    }
 
     my $per-region-link = per-region($cc);
     if $cc eq 'NL' {
@@ -308,7 +318,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
     }
 
     my $content = qq:to/HTML/;
-        <h1>Coronavirus in {$proper-country-name}{$without-str}</h1>
+        <h1>Coronavirus in {$title-name}{$without-str}</h1>
         $per-region-link
 
         <div id="block2">
@@ -402,7 +412,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
         <div id="block7">
             <a name="speed"></a>
             <h2>Daily Speed</h2>
-            <p>This graph shows the speed of growth (in %) over time in {$proper-country-name}{$without-str}. The only parameter here is the number of confirmed cases..</p>
+            <p>This graph shows the speed of growth (in %) over time in {$proper-country-name}{$without-str}. The only parameter here is the number of confirmed cases.</p>
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
@@ -420,6 +430,32 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
             <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
             <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that fewer cases registered today than yesterday.</p>
         </div>
+
+        {
+            if $chart21data {
+                qq[
+                    <div id="block21">
+                        <a name="tests"></a>
+                        <h2>Tests performed</h2>
+                        <p>This graph shows the total number of tests performed in {$proper-country-name}{$without-str}. This graph does not reflect the outcome of the test cases.</p>
+                        <canvas id="Chart21"></canvas>
+                        <p class="left">
+                            <label class="toggle-switchy" for="logscale21" data-size="xs" data-style="rounded" data-color="blue">
+                                <input type="checkbox" id="logscale21" onclick="log_scale(this, 21)">
+                                <span class="toggle">
+                                    <span class="switch"></span>
+                                </span>
+                            </label>
+                            <label for="logscale21"> Logarithmic scale</label>
+                        </p>
+                        <script>
+                            var ctx21 = document.getElementById('Chart21').getContext('2d');
+                            chart[21] = new Chart(ctx21, $chart21data);
+                        </script>
+                    </div>
+                ]
+            }
+        }
 
         $mortality-block
         $crude-block
@@ -463,7 +499,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
         $url = '/' ~ $cc.lc;
     }
 
-    html-template($url, "Coronavirus in {$proper-country-name}{$without-str}", $content);
+    html-template($url, "Coronavirus in {$title-name}{$without-str}", $content);
 
     return %country-stats;
 }

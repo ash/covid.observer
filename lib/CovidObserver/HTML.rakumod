@@ -70,7 +70,7 @@ sub html-template($path, $title, $content, $header = '') is export {
 
             <script src="/Chart.min.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="/main.css?v=33">
+            <link rel="stylesheet" type="text/css" href="/main.css?v=34">
             <style>
                 $style
             </style>
@@ -111,6 +111,13 @@ sub html-template($path, $title, $content, $header = '') is export {
                                         <a href="#weekly">Weekly levels</a>
                                         <a href="#crude">Crude deaths</a>
                                         LINKS
+                                }
+                            }
+                            {
+                                if $path eq '/ru' {
+                                    q:to/LINKS/;
+                                        <a href="#tests">Tests performed</a>
+                                    LINKS
                                 }
                             }
                             <a href="/vs-age">Cases vs life expectancy</a>

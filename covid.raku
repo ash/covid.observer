@@ -84,9 +84,13 @@ multi sub MAIN('fetch') {
 
     say 'Importing RU data...';
     my $latest-ru-date = read-ru-data(%stats); # modifies
+    read-ru-tests(%stats);
 
+    say "Computing aggregates...";
     data-count-totals(%stats, {World => $latest-jhu-date, RU => $latest-ru-date});
     import-stats-data(%stats);
+    import-tests-data(%stats);
+
 
     dbh.execute('delete from calendar');
     my $sth = dbh.prepare('insert into calendar (cc, date) values (?, ?)');
@@ -96,38 +100,6 @@ multi sub MAIN('fetch') {
 
     say "Latest JHU data on $latest-jhu-date";
     say "Latest RU data on $latest-ru-date";
-}
-
-sub import-stats-data(%stats) {
-    for %stats<confirmed><per-day>.keys -> $cc {
-        my @values;
-        for %stats<confirmed><per-day>{$cc}.keys -> $date {
-            my $confirmed = %stats<confirmed><per-day>{$cc}{$date} || 0;
-            my $failed = %stats<failed><per-day>{$cc}{$date} || 0;
-            my $recovered = %stats<recovered><per-day>{$cc}{$date} || 0;
-
-            @values.push("('$cc','{date2yyyymmdd($date)}',$confirmed,$failed,$recovered)");  # Safe here
-        }
-
-        my $values-sql = join ',', @values;
-        my $sth = dbh.prepare("insert into per_day (cc, date, confirmed, failed, recovered) values $values-sql");
-        $sth.execute();
-        $sth.finish();
-
-        $sth = dbh.prepare('insert into totals (cc, confirmed, failed, recovered) values (?, ?, ?, ?)');
-        $sth.execute($cc, %stats<confirmed><total>{$cc}, %stats<failed><total>{$cc}, %stats<recovered><total>{$cc});
-        $sth.finish();
-    }
-
-    for %stats<confirmed><daily-total>.keys -> $date {
-        my $confirmed = %stats<confirmed><daily-total>{$date} || 0;
-        my $failed = %stats<failed><daily-total>{$date} || 0;
-        my $recovered = %stats<recovered><daily-total>{$date} || 0;
-
-        my $sth = dbh.prepare('insert into daily_totals (date, confirmed, failed, recovered) values (?, ?, ?, ?)');
-        $sth.execute(date2yyyymmdd($date), $confirmed, $failed, $recovered);
-        $sth.finish();
-    }
 }
 
 #| Generate web pages based on the current data from the database
@@ -143,6 +115,7 @@ multi sub MAIN('generate', Bool :$skip-excel = False) {
     my %crude = get-crude-data();
 
     my %calendar = get-calendar();
+    my %tests = get-tests();
 
     my %CO =
         countries    => %countries,
@@ -150,6 +123,7 @@ multi sub MAIN('generate', Bool :$skip-excel = False) {
         totals       => %totals,
         daily-totals => %daily-totals,
         calendar     => %calendar,
+        tests        => %tests,
     ;
 
     generate-world-stats(%CO, :$skip-excel);

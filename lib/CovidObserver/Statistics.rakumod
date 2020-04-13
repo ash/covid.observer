@@ -147,6 +147,19 @@ sub get-calendar() is export {
     return %calendar;
 }
 
+sub get-tests() is export {
+    my $sth = dbh.prepare('select cc, date, tests from tests');
+    $sth.execute();
+
+    my %tests;
+    for $sth.allrows(:array-of-hash) -> %row {
+        %tests{%row<cc>}{%row<date>} = %row<tests>;
+    }
+    $sth.finish();
+
+    return %tests;
+}
+
 sub countries-vs-china(%CO) is export {
     my %date-cc;
     for %CO<per-day>.keys -> $cc {
@@ -1904,6 +1917,46 @@ sub per-capita-graph(@per-capita) is export {
 
     $json ~~ s/DATASET1/$dataset1/;
     $json ~~ s/DATASET2/$dataset2/;
+    $json ~~ s/LABELS/$labels/;
+
+    return $json;
+}
+
+sub daily-tests(%CO, :$cc) is export {
+    return Nil unless %CO<tests>{$cc}:exists;
+
+    my @dates;
+    my @tests;
+    for %CO<tests>{$cc}.keys.sort -> $date {
+        @dates.push($date);
+        @tests.push(%CO<tests>{$cc}{$date});
+    }
+
+    my $json = q:to/JSON/;
+        {
+            "type": "line",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET
+                ]
+            },
+            "options": {
+                "animation": false
+            }
+        }
+        JSON
+
+    my %dataset =
+        label => "Tests performed",
+        data => @tests,
+        fill => False,
+        borderColor => '#99cc00';
+
+    my $dataset = to-json(%dataset);
+    my $labels = to-json(@dates);
+
+    $json ~~ s/DATASET/$dataset/;
     $json ~~ s/LABELS/$labels/;
 
     return $json;

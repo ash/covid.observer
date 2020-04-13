@@ -6,6 +6,8 @@ use IO::String;
 
 use CovidObserver::Population;
 use CovidObserver::Geo;
+use CovidObserver::DB;
+use CovidObserver::Format;
 
 sub read-jhu-data(%stats) is export {
     my %dates;
@@ -156,6 +158,8 @@ sub read-ru-data(%stats) is export {
     my %raw;
     my %us-recovered;
     for dir('series/ru', test => /'.csv'$/).sort(~*.path) -> $path {
+        next if $path ~~ /tests/;
+
         $path.path ~~ / 'ru-' \d\d(\d\d) '-' (\d\d) '-' (\d\d) '.csv' /;
         my $year  = ~$/[0];
         my $month = ~$/[1];
@@ -211,6 +215,15 @@ sub read-ru-data(%stats) is export {
     return %dates.keys.sort[*-1];
 }
 
+sub read-ru-tests(%stats) is export {
+    my %dates;
+
+    my @tests = csv(in => 'series/ru/ru-tests.csv');
+    for @tests -> ($date, $tests) {
+        %stats<tests><RU>{$date} = $tests;
+    }
+}
+
 sub data-count-totals(%stats, %stop-date) is export {
     my %dates;
     my %cc;
@@ -264,4 +277,48 @@ sub data-count-totals(%stats, %stop-date) is export {
             last if $date eq $stop-date;
         }
     }
+}
+
+sub import-stats-data(%stats) is export {
+    for %stats<confirmed><per-day>.keys -> $cc {
+        my @values;
+        for %stats<confirmed><per-day>{$cc}.keys -> $date {
+            my $confirmed = %stats<confirmed><per-day>{$cc}{$date} || 0;
+            my $failed = %stats<failed><per-day>{$cc}{$date} || 0;
+            my $recovered = %stats<recovered><per-day>{$cc}{$date} || 0;
+
+            @values.push("('$cc','{date2yyyymmdd($date)}',$confirmed,$failed,$recovered)");  # Safe here
+        }
+
+        my $values-sql = join ',', @values;
+        my $sth = dbh.prepare("insert into per_day (cc, date, confirmed, failed, recovered) values $values-sql");
+        $sth.execute();
+        $sth.finish();
+
+        $sth = dbh.prepare('insert into totals (cc, confirmed, failed, recovered) values (?, ?, ?, ?)');
+        $sth.execute($cc, %stats<confirmed><total>{$cc}, %stats<failed><total>{$cc}, %stats<recovered><total>{$cc});
+        $sth.finish();
+    }
+
+    for %stats<confirmed><daily-total>.keys -> $date {
+        my $confirmed = %stats<confirmed><daily-total>{$date} || 0;
+        my $failed = %stats<failed><daily-total>{$date} || 0;
+        my $recovered = %stats<recovered><daily-total>{$date} || 0;
+
+        my $sth = dbh.prepare('insert into daily_totals (date, confirmed, failed, recovered) values (?, ?, ?, ?)');
+        $sth.execute(date2yyyymmdd($date), $confirmed, $failed, $recovered);
+        $sth.finish();
+    }
+}
+
+sub import-tests-data(%stats) is export {
+    dbh.execute('delete from tests');
+
+    my $sth = dbh.prepare('insert into tests (cc, date, tests) values (?, ?, ?)');
+    for %stats<tests>.keys -> $cc {
+        for %stats<tests>{$cc}.keys -> $date {
+            $sth.execute($cc, date2yyyymmdd($date), %stats<tests>{$cc}{$date});
+        }
+    }
+    $sth.finish();
 }
