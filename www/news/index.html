@@ -17,7 +17,7 @@
 
     <script src="/Chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/main.css?v=30">
+    <link rel="stylesheet" type="text/css" href="/main.css?v=33">
     <style>
         
     </style>
@@ -37,7 +37,7 @@ function log_scale_horizontal(input, n) {
 
     </script>
 
-    <script src="/countries.js?v=2020-04-07T02:00:00+02:00" type="text/javascript"></script>
+    <script src="/countries.js?v=2020-04-13T02:00:00+02:00" type="text/javascript"></script>
     <script src="/autocomplete.js?v=2" type="text/javascript"></script>
 
     <link rel="stylesheet" type="text/css" href="/likely.css">
@@ -60,15 +60,18 @@ function log_scale_horizontal(input, n) {
                     <a href="/#new">New daily cases</a>
                     <a href="/#daily">Daily flow</a>
                     <a href="/#speed">Daily speed</a>
+                    <a href="/#per-capita">Per capita values</a>
                     <a href="/#table">Table data</a>
                     
                     <a href="/vs-age">Cases vs life expectancy</a>
+                    <!--a href="/vs-density">Cases vs population density</a-->
                 </div>
             </li>
 
             <li class="dropdown">
                 <a href="javascript: void(0)" class="dropbtn">World</a>
                 <div class="dropdown-content">
+                    <a href="/">World numbers</a>
                     <a href="/overview">Overview</a>
                     <a href="/map">World map</a>
                     <a href="/-cn">World excluding China</a>
@@ -93,6 +96,7 @@ function log_scale_horizontal(input, n) {
                 <div class="dropdown-content">
                     <a href="/#countries">List of countries</a>
                     <a href="/countries">Affected countries</a>
+                    <a href="/compare">Compare countries</a>
                     <a href="/per-million">Sorted per million affected</a>
                     <a href="/vs-china">Countries vs China</a>
                 </div>
@@ -106,7 +110,17 @@ function log_scale_horizontal(input, n) {
                     <a href="/-cn">World excluding China</a>
                     <a href="/cn/-hb">China excluding Hubei</a>
                     <a href="/vs-china">Countries vs China</a>
+                    <a href="/cn/compare">Compare provinces</a>
                     <a href="/per-million/cn">Provinces sorted per capita</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">Russia</a>
+                <div class="dropdown-content">
+                    <a href="/ru">Cumulative data</a>
+                    <a href="/ru#regions">Regions</a>
+                    <a href="/ru/compare">Compare regions</a>
                 </div>
             </li>
 
@@ -115,6 +129,7 @@ function log_scale_horizontal(input, n) {
                 <div class="dropdown-content">
                     <a href="/us">Cumulative data</a>
                     <a href="/us#states">US states</a>
+                    <a href="/us/compare">Compare the states</a>
                     <a href="/per-million/us">States sorted per capita</a>
                 </div>
             </li>
@@ -142,7 +157,7 @@ function log_scale_horizontal(input, n) {
     </script>
 
         <div>
-        <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/map/">World coronavirus map</a></span></p>
+        <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/compare/">Compare countries</a></span></p>
     </div>
 
 
@@ -186,6 +201,37 @@ function log_scale_horizontal(input, n) {
 </style>
 
 <div style="padding-bottom: 3em">
+    <h3><br/>April 13, 2020</h3>
+    <p>The Russian Federation got separate pages for each of its <a href="/ru/#regions">regions</a>. The data is collected from a separate <a href="/sources/">official data source</a>, and it may include more recent data than those of the JHU. To compare the situation in different regions, visit the <a href="/ru/compare/">comparison page</a>.</p>
+
+    <h3><br/>April 11, 2020</h3>
+    <p><a href="/#countries">The red and green arrows</a> displaying the trend in the change of the new confirmed daily cases is more granual now and includes five different indicator levels. Instead of taking the last two days only, the trend checker looks at the values during the recent seven days.</p>
+    <p>
+        <a href="/#countries"><img src="/i/trend.png"/></a>
+    </p>
+
+    <h3><br/>April 10, 2020</h3>
+    <p>A new set of pages published on the site where you can <a href="/compare/">compare the countries</a> affected by coronavirus. For each country, there are a brief overview of the current numbers together with a couple of graphs: the absolute numbers of the confirmed, recovered, and fatal cases and the graph depicting the amount of new cases per day. Separate pages are dedicated to the <a href="/us/compare/">US states</a> and <a href="/cn/compare/">China provinces</a>.</p>
+    <p>
+        <a href="/compare/"><img src="/i/compare.png"/></a>
+    </p>
+
+    <!-- <h3><br/>April 9, 2020</h3>
+    <p>A <a href="/vs-density">scattered graph</a> showning the number of confirmed and fatal cases against the density of population in each country has been added to the site. It sesms that there is no instant and obvious correlation between these numbers.</p>
+    <p>
+        <a href="/vs-density"><img src="/i/vs-density.png"/></a>
+    </p> -->
+
+    <h3><br/>April 9, 2020</h3>
+    <p>The per-million per capita values are replaces with per-thousand values. This change helps to avoid the weird-looking huge numbers for smaller countries where there are fewer than a million people. With this change, the numbers are displayed in the same scale as the <a href="/jp/#crude">crude country-level graphs</a>.</p>
+
+    <h3><br/>April 8, 2020</h3>
+    <p>Per capita (in fact, per-million) data are added at all levels of the site: World, continents, countries, and regions. These are the numbers of confirmed and fatal cases per each million of population (of the World, or country, etc.). For the countries that have fewer than a million of population, the same scale is used so that you can compare different countires without the need to re-normalise the numbers. The per capita values are also added to the top block of data on the corresponding pages, to the table representation (including the CSV and XLS exports), and as a <a href="/#per-capita">separate graph</a> on each page. Don’t forget that there is a separate <a href="/per-million">set of pages</a> to compare the countries based on per-capita values.</p>
+    <p>
+        For example, <a href="/it/#per-capita">per-million timeline in Italy</a>:<br/>
+        <a href="/it/#per-capita"><img src="/i/per-capita-graph.png"/></a>
+    </p>
+
     <h3><br/>April 7, 2020</h3>
     <p>Table data on all pages (World, continents, countries, and regions) are now available for downloading in the CSV and XLS formats.</p>
 
@@ -201,8 +247,8 @@ function log_scale_horizontal(input, n) {
         <a href="/map"><img src="/i/map.png"/></a>
     </p>
 
-    <h3>April 5, 2020</h3>
-    <p>Per-capita bar graphs are split into four groups with two graphs in each:</p>
+    <br/>
+    <p>Per capita bar graphs are split into four groups with two graphs in each:</p>
     <ol>
         <li><a href="/per-million/">Countries only</a> sorted by the number of <a href="/per-million/#confirmed">confirmed</a> or <a href="/per-million/#failed">failed</a> cases</li>
         <li><a href="/per-million/us/">US states</a>&nbsp;— <a href="/per-million/us/#confirmed">confirmed</a> or <a href="/per-million/us/#failed">failed</a></li>
@@ -239,8 +285,8 @@ function log_scale_horizontal(input, n) {
     <h3><br/>March 29, 2020</h3>
     <p>A blog post ‘<a href="https://andrewshitov.com/2020/03/29/on-computing-the-number-of-recoveries/">On computing the number of recoveries</a>’ published in the Tech blog.</p>
 
-    <h3><br/>March 29, 2020</h3>
-    <p>The graph comparing per-capita cases in different countries <a href="/per-million/">is more visible now</a> in the site structure. Also, it now comes together with a co-graph sorted by <a href="/per-million/#failed">failures per-capita</a>.</p>
+    <br/>
+    <p>The graph comparing per capita cases in different countries <a href="/per-million/">is more visible now</a> in the site structure. Also, it now comes together with a co-graph sorted by <a href="/per-million/#failed">failures per capita</a>.</p>
     <p>
         <a href="/per-million/"><img src="/i/per-capita.png"/></a>
     </p>
@@ -271,7 +317,7 @@ function log_scale_horizontal(input, n) {
         <a href="/vs-age/"><img src="/i/vs-age.png"/></a>
     </p>
 
-    <h3><br/>March 22, 2020</h3>
+    <br/>
     <p>Using the logarithmic scale switches, you can see the details of all charts. For example, you can notice that China numbers outside of Hubei are growing, e.g., <a href="/cn/bj/">in Beijing</a>. See also: <a href="/cn/#speed">Daily speed in China</a>.</p>
     <p>
         <img src="/i/china-outside-hubei.png"/>
@@ -332,7 +378,7 @@ function log_scale_horizontal(input, n) {
             <div class="whatsapp">Send</div>
         </div>
         <p>Based on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
-        <p>This website presents the very same data as the JHU’s <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">original dashboard</a> but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
+        <p>This website presents the very same data as the JHU’s <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">original dashboard</a> but from a less-panic perspective. Updated daily around 8 a.m. Central European time.</p>
         <p>Read the <a href="https://andrewshitov.com/category/covid-19/">Technology blog</a>. Look at the source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
         <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Twitter: <a href="https://twitter.com/andrewshitov">@andrewshitov</a>. Contact <a href="mailto:andy@shitov.ru">by e-mail</a>.</p>
     </div>
