@@ -15,6 +15,8 @@ sub read-jhu-data(%stats) is export {
 
     my %raw;
     my %us-recovered;
+
+    # csse_covid_19_data files
     for dir('COVID-19/csse_covid_19_data/csse_covid_19_daily_reports', test => /'.csv'$/).sort(~*.path) -> $path {
         $path.path ~~ / (\d\d) '-' (\d\d) '-' \d\d(\d\d) '.csv' /;
         my $month = ~$/[0];
@@ -122,6 +124,52 @@ sub read-jhu-data(%stats) is export {
         }
     }
 
+    # Read separate files for the US (since April 12, 2020)
+    # These numbers will override those from the files in 'csse_covid_19_daily_reports'.
+    say 'Reading US data...';
+    for dir('COVID-19/csse_covid_19_data/csse_covid_19_daily_reports_us', test => /'.csv'$/).sort(~*.path) -> $path {
+        $path.path ~~ / (\d\d) '-' (\d\d) '-' \d\d(\d\d) '.csv' /;
+        my $month = ~$/[0];
+        my $day   = ~$/[1];
+        my $year  = ~$/[2];
+        my $date = "$month/$day/$year"; # TODO
+        %dates{$date} = 1;
+
+        for csv(in => $path.path, headers => 'auto') -> $item {
+            my $country = $item<Country_Region>;
+            unless $country eq 'US' {
+                say 'ERROR: Non-US data in a US file';
+                next;
+            }
+            my $region = $item<Province_State>;
+
+            my $confirmed = $item<Confirmed> || 0;
+            my $recovered = $item<Recovered> || 0;
+            my $failed = $item<Deaths> || 0;
+            my $tests = $item<People_Tested> || 0;
+
+            my $cc = 'US';
+            my $region-cc = state2code($region);
+            unless $region-cc {
+                say "WARNING: State code not found for US/$region";
+                next;
+            }
+            $region-cc = 'US/' ~ $region-cc;
+
+            %cc{$cc} = 1;
+            %cc{$region-cc} = 1;
+
+            # Only regions are updates, as the global US data have been read already
+            %raw{$cc}{$region-cc}{$date}<confirmed> = $confirmed;
+            %raw{$cc}{$region-cc}{$date}<failed>    = $failed;
+            %raw{$cc}{$region-cc}{$date}<recovered> = $recovered;
+
+            # Aggregating tests for the whole US too, as they only come from the *_us files.
+            %stats<tests>{$cc}{$date} += $tests;
+            %stats<tests>{$region-cc}{$date} = $tests;
+        }
+    }
+
     # Count per-day data
     for %raw.keys -> $cc { # only countries
         for %raw{$cc}.keys -> $region-cc { # regions or '' for countries without them
@@ -188,8 +236,6 @@ sub read-ru-data(%stats) is export {
         }
     }
 
-    # %raw<RU2>:delete;
-
     # Count per-day data
     for %raw.keys -> $cc { # only countries
         for %raw{$cc}.keys -> $region-cc { # regions or '' for countries without them
@@ -215,12 +261,14 @@ sub read-ru-data(%stats) is export {
     return %dates.keys.sort[*-1];
 }
 
-sub read-ru-tests(%stats) is export {
+sub read-tests(%stats) is export {
     my %dates;
 
-    my @tests = csv(in => 'series/ru/ru-tests.csv');
-    for @tests -> ($date, $tests) {
-        %stats<tests><RU>{$date} = $tests;
+    for <RU UA> -> $cc {
+        my @tests = csv(in => "series/$cc/{$cc}-tests.csv".lc);
+        for @tests -> ($date, $tests) {
+            %stats<tests>{$cc}{$date} = $tests;
+        }
     }
 }
 

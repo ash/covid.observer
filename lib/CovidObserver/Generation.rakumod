@@ -226,7 +226,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
         $title-name = "the $title-name";
     }
 
-    my $per-region-link = per-region($cc);
+    my $per-region-link = per-region(%CO, $cc);
     if $cc eq 'NL' {
         $per-region-link ~= q:to/LINKS/;
             <p>Note: The numbers for <a href="/aw">Aruba</a>, <a href="/cw">Curaçao</a>, and <a href="/sx">Sint Maarten</a> are not included in the statistics for the Netherlands.</p>
@@ -436,7 +436,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
                 qq[
                     <div id="block21">
                         <a name="tests"></a>
-                        <h2>Tests performed</h2>
+                        <h2>{fmtnum($chart21data<tests>)} tests performed</h2>
                         <p>This graph shows the total number of tests performed in {$proper-country-name}{$without-str}. This graph does not reflect the outcome of the test cases.</p>
                         <canvas id="Chart21"></canvas>
                         <p class="left">
@@ -450,7 +450,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
                         </p>
                         <script>
                             var ctx21 = document.getElementById('Chart21').getContext('2d');
-                            chart[21] = new Chart(ctx21, $chart21data);
+                            chart[21] = new Chart(ctx21, $chart21data<json>);
                         </script>
                     </div>
                 ]

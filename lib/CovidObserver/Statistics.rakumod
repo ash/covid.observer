@@ -814,7 +814,8 @@ sub countries-per-capita(%CO, :$limit = 50, :$param = 'confirmed', :$mode = '', 
     my $dataset2 = to-json(%dataset2);
 
     my %dataset3 =
-        label => $cc-only !~~ /US/ ?? 'Active cases' !! 'Active or recovered cases',
+        # label => $cc-only !~~ /US/ ?? 'Active cases' !! 'Active or recovered cases',
+        label => 'Active cases',
         data => @active,
         backgroundColor => 'orange';
     my $dataset3 = to-json(%dataset3);
@@ -851,12 +852,12 @@ sub countries-per-capita(%CO, :$limit = 50, :$param = 'confirmed', :$mode = '', 
         }
         JSON
 
-    if $cc-only !~~ /US/ {
+    # if $cc-only !~~ /US/ {
         $json ~~ s/DATASET1/$dataset1/;
-    }
-    else {
-        $json ~~ s/DATASET1//;
-    }
+    # }
+    # else {
+    #     $json ~~ s/DATASET1//;
+    # }
 
     $json ~~ s/DATASET2/$dataset2/;
     $json ~~ s/DATASET3/$dataset3/;
@@ -1959,5 +1960,8 @@ sub daily-tests(%CO, :$cc) is export {
     $json ~~ s/DATASET/$dataset/;
     $json ~~ s/LABELS/$labels/;
 
-    return $json;
+    return {
+        json => $json,
+        tests => @tests[*-1],
+    };
 }

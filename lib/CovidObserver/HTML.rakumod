@@ -114,7 +114,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                                 }
                             }
                             {
-                                if $path eq '/ru' {
+                                if $path eq '/ru' || $path eq '/ua' || $path ~~ /^ '/us' / {
                                     q:to/LINKS/;
                                         <a href="#tests">Tests performed</a>
                                     LINKS
@@ -402,14 +402,14 @@ sub continent-list($cont?) is export {
         HTML
 }
 
-sub per-region($cc) is export {
+sub per-region(%CO, $cc) is export {
     state %links =
         CN => {
             link => '/cn/#regions',
             title => 'China provinces and regions'
         },
         US => {
-            link => '/us/#regions',
+            link => '/us/#states',
             title => 'US states'
         },
         RU => {
@@ -437,14 +437,20 @@ sub per-region($cc) is export {
             title => 'Division per communes (Belgian institute for health)'
         };
 
-    return '' unless %links{$cc};
-
     my $html = '';
 
-    my $link = %links{$cc}<link>;
-    my $target = $link ~~ /^ '/' / ?? '' !! ' target="_blank"';
+    if %links{$cc} {
+        my $link = %links{$cc}<link>;
+        my $target = $link ~~ /^ '/' / ?? '' !! ' target="_blank"';
 
-    $html ~= qq{<p class="center"><a href="$link"$target>} ~ %links{$cc}<title> ~ '</a></p>';
+        $html ~= qq{<p class="center"><a href="$link"$target>} ~ %links{$cc}<title> ~ '</a></p>';
+    }
+
+    if $cc ~~ / [US|RU|CN] '/' / {
+        my $country-name = %CO<countries>{$cc}<country>;
+        $country-name = "the $country-name" if $cc ~~ /US|RU/;
+        $html ~~ qq{<p class="center"><a href="/{$cc.lc}/">Cumulative data in {$country-name}</a></p>};
+    }
 
     return $html;
 }

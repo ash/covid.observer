@@ -84,9 +84,11 @@ multi sub MAIN('fetch') {
 
     say 'Importing RU data...';
     my $latest-ru-date = read-ru-data(%stats); # modifies
-    read-ru-tests(%stats);
 
-    say "Computing aggregates...";
+    say 'Importing tests...';
+    read-tests(%stats);
+
+    say 'Computing aggregates...';
     data-count-totals(%stats, {World => $latest-jhu-date, RU => $latest-ru-date});
     import-stats-data(%stats);
     import-tests-data(%stats);
