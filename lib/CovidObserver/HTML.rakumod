@@ -1,6 +1,7 @@
 unit module CovidObserver::HTML;
 
 use CovidObserver::Population;
+use CovidObserver::Geo;
 use CovidObserver::Statistics;
 use CovidObserver::Format;
 
@@ -165,6 +166,15 @@ sub html-template($path, $title, $content, $header = '') is export {
                     </li>
 
                     <li class="dropdown">
+                        <a href="javascript: void(0)" class="dropbtn">Russia</a>
+                        <div class="dropdown-content">
+                            <a href="/ru">Cumulative data</a>
+                            <a href="/ru#regions">Regions</a>
+                            <a href="/ru/compare">Compare regions</a>
+                        </div>
+                    </li>
+
+                    <li class="dropdown">
                         <a href="javascript: void(0)" class="dropbtn">US</a>
                         <div class="dropdown-content">
                             <a href="/us">Cumulative data</a>
@@ -247,6 +257,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
         if $cc {
             return True if $cc ~~ /US/ && $cc-code eq 'US';
             return True if $cc ~~ /CN/ && $cc-code eq 'CN';
+            return True if $cc ~~ /RU/ && $cc-code eq 'RU';
             return $cc eq $cc-code;
         }
         if $cont {
@@ -256,8 +267,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
         return False;
     }
 
-    my $us_html = '';
-    my $cn_html = '';
+    my $regions-html = '';
     for get-known-countries() -> $cc-code {
         next unless %countries{$cc-code};
 
@@ -269,7 +279,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
 
                 my $state = %countries{$cc-code}<country>;
                 $state ~~ s/US'/'//;
-                $us_html ~= qq{<p$is_current><a href="/$path">} ~ $state ~ '</a>' ~ arrow(%countries, $cc-code) ~ '</p>';
+                $regions-html ~= qq{<p$is_current><a href="/$path">} ~ $state ~ '</a>' ~ arrow(%countries, $cc-code) ~ '</p>';
             }
         }
         elsif $cc-code ~~ /CN'/'/ {
@@ -283,7 +293,21 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
 
                 my $region = %countries{$cc-code}<country>;
                 $region ~~ s/'China/'//;
-                $cn_html ~= qq{<p$is_current><a href="/$path">} ~ $region ~ '</a>' ~ arrow(%countries, $cc-code) ~ '</p>';
+                $regions-html ~= qq{<p$is_current><a href="/$path">} ~ $region ~ '</a>' ~ arrow(%countries, $cc-code) ~ '</p>';
+            }
+        }
+        elsif $cc-code ~~ /RU'/'/ {
+            if $cc && $cc ~~ /RU/ {
+                my $path = $cc-code.lc;
+
+                my $is_current = current-country($cc-code) ??  ' class="current"' !! '';
+                if $exclude && $exclude eq $cc-code {
+                    $is_current = ' class="excluded"';
+                }
+
+                my $region = %countries{$cc-code}<country>;
+                $region ~~ s/'Russia/'//;
+                $regions-html ~= qq{<p$is_current><a href="/$path">} ~ $region ~ '</a>' ~ arrow(%countries, $cc-code) ~ '</p>';
             }
         }
         else {
@@ -296,39 +320,50 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
         }
     }
 
-    if $cc && $cc ~~ /US/ {
-        $us_html = qq:to/USHTML/;
-            <a name="states"></a>
-            <h2>Coronavirus in the USA</h2>
-            <p><a href="/us/#">Cumulative USA statistics</a></p>
-            <div class="countries-list">
-                $us_html
-            </div>
-        USHTML
+    if $cc {
+        if $cc ~~ /US/ {
+            $regions-html = qq:to/USHTML/;
+                <a name="states"></a>
+                <h2>Coronavirus in the USA</h2>
+                <p class="center"><a href="/us/#">Cumulative USA statistics</a></p>
+                <div class="countries-list">
+                    $regions-html
+                </div>
+            USHTML
+        }
+        elsif $cc ~~ /CN/ {
+            $regions-html = qq:to/CNHTML/;
+                <a name="regions"></a>
+                <h2>Coronavirus in China</h2>
+                <p class="center"><a href="/cn/#">Cumulative China statistics</a></p>
+                <p class="center"><a href="/cn/-hb">China excluding Hubei</a></p>
+                <div class="countries-list">
+                    $regions-html
+                </div>
+            CNHTML
+        }
+        elsif $cc ~~ /RU/ {
+            $regions-html = qq:to/RUHTML/;
+                <a name="regions"></a>
+                <h2>Coronavirus in Russia</h2>
+                <p class="center"><a href="/ru/#">Cumulative Russian statistics</a></p>
+                <div class="countries-list">
+                    $regions-html
+                </div>
+            RUHTML
+        }
     }
 
-    if $cc && $cc ~~ /CN/ {
-        $cn_html = qq:to/CNHTML/;
-            <a name="regions"></a>
-            <h2>Coronavirus in China</h2>
-            <p><a href="/cn/#">Cumulative China statistics</a></p>
-            <p><a href="/cn/-hb">China excluding Hubei</a></p>
-            <div class="countries-list">
-                $cn_html
-            </div>
-        CNHTML
-    }
+    my $continent-list = continent-list($cont ?? $cont !! $cc ?? %countries{$cc}<continent> !! Any);
 
     return qq:to/HTML/;
         <div class="countries">
-            $us_html
-            $cn_html
+            $regions-html
+
+            $continent-list
+
             <a name="countries"></a>
             <h2>Statistics per Country</h2>
-            <p><a href="/">The whole world</a></p>
-            <p><a href="/-cn">World excluding China</a></p>
-            <p><a href="/countries">More statistics on countries</a></p>
-            <p><a href="/vs-china">Countries vs China</a></p>
             <div class="countries-list">
                 $html
             </div>
@@ -351,14 +386,11 @@ sub continent-list($cont?) is export {
     }
 
     return qq:to/HTML/;
-        <div class="countries">
-            <a name="continents"></a>
-            <h2>Statistics per Continent</h2>
-            <p><a href="/continents">Spread over the continents timeline</a></p>
+        <a name="continents"></a>
+        <h2>Statistics per Continent</h2>
 
-            <div class="countries-list">
-                $html
-            </div>
+        <div class="countries-list">
+            $html
         </div>
         HTML
 }
@@ -366,17 +398,21 @@ sub continent-list($cont?) is export {
 sub per-region($cc) is export {
     state %links =
         CN => {
-            link => 'https://covid.observer/cn#regions',
+            link => '/cn/#regions',
             title => 'China provinces and regions'
         },
         US => {
-            link => 'https://covid.observer/us#states',
+            link => '/us/#regions',
             title => 'US states'
         },
         RU => {
-            link => 'https://yandex.ru/web-maps/covid19',
-            title => 'Official data: Карта распространения коронавируса в России'
-        },
+                link => '/ru/#regions',
+                title => 'Regions of the Russian Federation'
+            },
+            # {
+            #     link => 'https://стопкоронавирус.рф',
+            #     title => 'Official data: стопкоронавирус.рф'
+            # }
         NL => {
             link => 'https://www.rivm.nl/coronavirus-kaart-van-nederland-per-gemeente',
             title => 'Official data: Coronavirus kaart van Nederland per gemeente'
@@ -396,10 +432,14 @@ sub per-region($cc) is export {
 
     return '' unless %links{$cc};
 
-    my $target = %links{$cc}<link> ~~ /^ 'https://covid.observer/' / ?? '' !! ' target="_blank"';
+    my $html = '';
+
     my $link = %links{$cc}<link>;
-    my $title = %links{$cc}<title>;
-    return qq{<p><a href="$link"$target>} ~ $title ~ '</a></p>';
+    my $target = $link ~~ /^ '/' / ?? '' !! ' target="_blank"';
+
+    $html ~= qq{<p class="center"><a href="$link"$target>} ~ %links{$cc}<title> ~ '</a></p>';
+
+    return $html;
 }
 
 sub daily-table($path, @per-capita) is export {

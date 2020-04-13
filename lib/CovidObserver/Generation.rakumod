@@ -3,20 +3,21 @@ unit module CovidObserver::Generation;
 use JSON::Tiny;
 
 use CovidObserver::Population;
+use CovidObserver::Geo;
 use CovidObserver::Statistics;
 use CovidObserver::HTML;
 use CovidObserver::Excel;
 use CovidObserver::Format;
 use JSON::Tiny;
 
-sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude?, :$skip-excel = False) is export {
-    my $without-str = $exclude ?? " excluding %countries{$exclude}<country>" !! '';
+sub generate-world-stats(%CO, :$exclude?, :$skip-excel = False) is export {
+    my $without-str = $exclude ?? " excluding %CO<countries>{$exclude}<country>" !! '';
     say "Generating world data{$without-str}...";
 
-    my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$exclude);
-    my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, :$exclude);
-    my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$exclude);
-    my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$exclude);
+    my $chart1data = chart-pie(%CO, :$exclude);
+    my $chart2data = chart-daily(%CO, :$exclude);
+    my $chart3 = number-percent(%CO, :$exclude);
+    my $chart7data = daily-speed(%CO, :$exclude);
     my @per-capita = per-capita-data($chart2data, $world-population);
     my $chart19data = per-capita-graph(@per-capita);
 
@@ -27,9 +28,6 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
     my $daily-table = daily-table($table-path, @per-capita);
     excel-table($table-path, @per-capita) unless $skip-excel;
 
-    my $country-list = country-list(%countries, :$exclude);
-    my $continent-list = continent-list();
-
     my $content = qq:to/HTML/;
         <h1>COVID-19 World Statistics{$without-str}</h1>
 
@@ -38,7 +36,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
             <div id="percent">$chart3&thinsp;%</div>
             <p class="center">This is the part of confirmed infection cases against the total {
                 if $exclude {
-                    sprintf('%.1f', ($world-population / 1_000_000 - %countries{$exclude}<population>) / 1000)
+                    sprintf('%.1f', ($world-population / 1_000_000 - %CO<countries>{$exclude}<population>) / 1000)
                 }
                 else {
                     '7.8'
@@ -171,8 +169,7 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
             $daily-table
         </div>
 
-        $continent-list
-        $country-list
+        {country-list(%CO<countries>, :$exclude)}
 
         HTML
 
@@ -180,24 +177,22 @@ sub generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$exclude
     html-template("/$exclude-path", "World statistics$without-str", $content);
 }
 
-sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$exclude?, :%mortality?, :%crude?, :$skip-excel = False) is export {
-    my $without-str = $exclude ?? " excluding %countries{$exclude}<country>" !! '';
+sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-excel = False) is export {
+    #countries, %per-day, %totals, %daily-totals
+    my $without-str = $exclude ?? " excluding %CO<countries>{$exclude}<country>" !! '';
     say "Generating {$cc}{$without-str}...";
 
-    my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$cc, :$exclude);
-    my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, :$cc, :$exclude);
-    my $chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$cc, :$exclude);
+    my $chart1data = chart-pie(%CO, :$cc, :$exclude);
+    my $chart2data = chart-daily(%CO, :$cc, :$exclude);
+    my $chart3 = number-percent(%CO, :$cc, :$exclude);
 
-    my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$cc, :$exclude);
+    my $chart7data = daily-speed(%CO, :$cc, :$exclude);
 
-    my $country-list = country-list(%countries, :$cc, :$exclude);
-    my $continent-list = continent-list(%countries{$cc}<continent>);
-
-    my $country-name = %countries{$cc}<country>;
-    my $population = +%countries{$cc}<population>;
+    my $country-name = %CO<countries>{$cc}<country>;
+    my $population = +%CO<countries>{$cc}<population>;
 
     if $exclude {
-        $population -= %countries{$exclude}<population>;
+        $population -= %CO<countries>{$exclude}<population>;
     }
 
     my @per-capita = per-capita-data($chart2data, 1_000_000 * $population);
@@ -219,7 +214,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
         !! sprintf('%i million', $population.round);
 
     my $proper-country-name = $country-name;
-    $proper-country-name = "the $country-name" if $cc ~~ /[US|GB|NL|DO|CZ|BS|GM|CD|CG]$/;
+    $proper-country-name = "the $country-name" if $cc ~~ /[US|GB|NL|DO|CZ|BS|GM|CD|CG]$/ || ($cc ~~ /^RU/ && $country-name ~~ /Republic/);
 
     my $per-region-link = per-region($cc);
     if $cc eq 'NL' {
@@ -230,31 +225,35 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
 
     my $mortality-block = '';
     if %mortality {
-        my $chart16data = mortality-graph($cc, %per-day, %mortality, %crude, %countries, %totals);
+        my $chart16data = mortality-graph($cc, %CO, %mortality, %crude);
         if $chart16data {
-            $mortality-block = qq:to/HTML/;
-                <div id="block16">
-                    <a name="mortality"></a>
-                    <h2>Mortality Level</h2>
-                    <p>The gray bars on this graph display the absolute number of deaths that happen in {$proper-country-name} every month during the recent five years of <a href="/sources">available data</a>. The red bars are the absolute numbers of people died due to the COVID-19 infection.</p>
-                    {'<p>Note that the vertical axis is drawn in logarithmic scale by default.</p>' if $chart16data<scale> eq 'logarithmic'}
-                    {'<p>As there is no monthly data available for ' ~ $proper-country-name ~ ', the gray bars are the average numbers obtained via the <a href="#crude">crude</a> death values known for this country for the recent five years of the available dataset.</p>' if $chart16data<is-averaged>}
-                    <canvas id="Chart16"></canvas>
-                    <p class="left">
-                        <label class="toggle-switchy" for="logscale16" data-size="xs" data-style="rounded" data-color="blue">
-                            <input type="checkbox" id="logscale16" {'checked="checked"' if $chart16data<scale> eq 'logarithmic'} onclick="log_scale(this, 16)">
-                            <span class="toggle">
-                                <span class="switch"></span>
-                            </span>
-                        </label>
-                        <label for="logscale16"> Logarithmic scale</label>
-                    </p>
-                    <script>
-                        var ctx16 = document.getElementById('Chart16').getContext('2d');
-                        chart[16] = new Chart(ctx16, $chart16data<monthly>);
-                    </script>
-                </div>
+            if $cc !~~ / '/' / {
+                $mortality-block ~= qq:to/HTML/;
+                    <div id="block16">
+                        <a name="mortality"></a>
+                        <h2>Mortality Level</h2>
+                        <p>The gray bars on this graph display the absolute number of deaths that happen in {$proper-country-name} every month during the recent five years of <a href="/sources">available data</a>. The red bars are the absolute numbers of people died due to the COVID-19 infection.</p>
+                        {'<p>Note that the vertical axis is drawn in logarithmic scale by default.</p>' if $chart16data<scale> eq 'logarithmic'}
+                        {'<p>As there is no monthly data available for ' ~ $proper-country-name ~ ', the gray bars are the average numbers obtained via the <a href="#crude">crude</a> death values known for this country for the recent five years of the available dataset.</p>' if $chart16data<is-averaged>}
+                        <canvas id="Chart16"></canvas>
+                        <p class="left">
+                            <label class="toggle-switchy" for="logscale16" data-size="xs" data-style="rounded" data-color="blue">
+                                <input type="checkbox" id="logscale16" {'checked="checked"' if $chart16data<scale> eq 'logarithmic'} onclick="log_scale(this, 16)">
+                                <span class="toggle">
+                                    <span class="switch"></span>
+                                </span>
+                            </label>
+                            <label for="logscale16"> Logarithmic scale</label>
+                        </p>
+                        <script>
+                            var ctx16 = document.getElementById('Chart16').getContext('2d');
+                            chart[16] = new Chart(ctx16, $chart16data<monthly>);
+                        </script>
+                    </div>
+                    HTML
+            }
 
+            $mortality-block ~= qq:to/HTML/;
                 <div id="block16a">
                     <a name="weekly"></a>
                     <h2>Weekly Levels</h2>
@@ -280,7 +279,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
 
     my $crude-block = '';
     if %crude {
-        my $chart18data = crude-graph($cc, %per-day, %crude, %countries, %totals);
+        my $chart18data = crude-graph($cc, %CO, %crude);
         if $chart18data {
             $crude-block = qq:to/HTML/;
                 <div id="block18">
@@ -451,8 +450,7 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
             $daily-table
         </div>
 
-        $continent-list
-        $country-list
+        {country-list(%CO<countries>, :$cc, :$exclude)}
 
         HTML
 
@@ -470,14 +468,11 @@ sub generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :$
     return %country-stats;
 }
 
-sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) is export {
+sub generate-countries-stats(%CO) is export {
     say 'Generating countries data...';
 
-    my %chart5data = countries-first-appeared(%countries, %per-day, %totals, %daily-totals);
-    my $countries-appeared = countries-appeared-this-day(%countries, %per-day, %totals, %daily-totals);
-
-    my $country-list = country-list(%countries);
-    my $continent-list = continent-list();
+    my %chart5data = countries-first-appeared(%CO);
+    my $countries-appeared = countries-appeared-this-day(%CO);
 
     my $percent = sprintf('%.1f', 100 * %chart5data<current-n> / %chart5data<total-countries>);
 
@@ -518,23 +513,20 @@ sub generate-countries-stats(%countries, %per-day, %totals, %daily-totals) is ex
             $countries-appeared
         </div>
 
-        $continent-list
-        $country-list
+        {country-list(%CO<countries>)}
 
         HTML
 
     html-template('/countries', 'Coronavirus in different countries', $content);
 }
 
-sub generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals, :$mode = '', :$cc-only = '') is export {
+sub generate-per-capita-stats(%CO, :$mode = '', :$cc-only = '') is export {
+    #countries, %per-day, %totals, %daily-totals
     say 'Generating per-capita data...';
 
     my $N = 100;
-    my $chart4data = countries-per-capita(%countries, %per-day, %totals, %daily-totals, limit => $N, :$mode, :$cc-only);
-    my $chart14data = countries-per-capita(%countries, %per-day, %totals, %daily-totals, limit => $N, param => 'failed', :$mode, :$cc-only);
-
-    my $country-list = country-list(%countries);
-    my $continent-list = continent-list();
+    my $chart4data = countries-per-capita(%CO, limit => $N, :$mode, :$cc-only);
+    my $chart14data = countries-per-capita(%CO, limit => $N, param => 'failed', :$mode, :$cc-only);
 
     my $in = '';
     my $topNconfirmations = "Top $N confirmations";
@@ -618,21 +610,20 @@ sub generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals, :$mo
             </script>
         </div>
 
-        $continent-list
-        $country-list
+        {country-list(%CO<countries>)}
 
         HTML
 
     html-template($path, 'Coronavirus per million of population', $content);
 }
 
-sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals, :$skip-excel = False) is export {
+sub generate-continent-stats($cont, %CO, :$skip-excel = False) is export {
     say "Generating continent $cont...";
 
-    my $chart1data = chart-pie(%countries, %per-day, %totals, %daily-totals, :$cont);
-    my $chart2data = chart-daily(%countries, %per-day, %totals, %daily-totals, :$cont);
-    my %chart3 = number-percent(%countries, %per-day, %totals, %daily-totals, :$cont);
-    my $chart7data = daily-speed(%countries, %per-day, %totals, %daily-totals, :$cont);
+    my $chart1data = chart-pie(%CO, :$cont);
+    my $chart2data = chart-daily(%CO, :$cont);
+    my %chart3 = number-percent(%CO, :$cont);
+    my $chart7data = daily-speed(%CO, :$cont);
 
     my $population = %chart3<population>;
     my @per-capita = per-capita-data($chart2data, 1_000_000 * $population);
@@ -641,9 +632,6 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
     my $table-path = %continents{$cont}.lc.subst(' ', '-');
     my $daily-table = daily-table($table-path, @per-capita);
     excel-table($table-path, @per-capita) unless $skip-excel;
-
-    my $country-list = country-list(%countries, :$cont);
-    my $continent-list = continent-list($cont);
 
     my $percent-str = %chart3<percent> ~ '&thinsp;%';
     my $population-str = $population.round() ~ ' million';
@@ -785,21 +773,17 @@ sub generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals
             $daily-table
         </div>
 
-        $continent-list
-        $country-list
+        {country-list(%CO<countries>, :$cont)}
 
         HTML
 
     html-template("/$continent-url", "Coronavirus in $continent-name", $content);
 }
 
-sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) is export {
+sub generate-china-level-stats(%CO) is export {
     say 'Generating stats vs China...';
 
-    my $chart6data = countries-vs-china(%countries, %per-day, %totals, %daily-totals);
-
-    my $country-list = country-list(%countries);
-    my $continent-list = continent-list();
+    my $chart6data = countries-vs-china(%CO);
 
     my $content = qq:to/HTML/;
         <h1>Countries vs China</h1>
@@ -834,19 +818,15 @@ sub generate-china-level-stats(%countries, %per-day, %totals, %daily-totals) is 
             </script>
         </div>
 
-        $continent-list
-        $country-list
+        {country-list(%CO<countries>)}
 
         HTML
 
     html-template('/vs-china', 'Countries vs China', $content);
 }
 
-sub generate-continent-graph(%countries, %per-day, %totals, %daily-totals) is export {
-    my $chart8data = continent-joint-graph(%countries, %per-day, %totals, %daily-totals);
-
-    my $country-list = country-list(%countries);
-    my $continent-list = continent-list();
+sub generate-continent-graph(%CO) is export {
+    my $chart8data = continent-joint-graph(%CO);
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus Spread over the Continents</h1>
@@ -895,21 +875,17 @@ sub generate-continent-graph(%countries, %per-day, %totals, %daily-totals) is ex
             </script>
         </div>
 
-        $continent-list
-        $country-list
+        {country-list(%CO<countries>)}
 
         HTML
 
     html-template('/continents', 'Coronavirus over the Continents', $content);
 }
 
-sub generate-scattered-age(%countries, %per-day, %totals, %daily-totals) is export {
+sub generate-scattered-age(%CO) is export {
     say "Generating cases vs age...";
 
-    my $chart11data = scattered-age-graph(%countries, %per-day, %totals, %daily-totals);
-
-    my $country-list = country-list(%countries);
-    my $continent-list = continent-list();
+    my $chart11data = scattered-age-graph(%CO);
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus vs Life Expectancy</h1>
@@ -923,21 +899,17 @@ sub generate-scattered-age(%countries, %per-day, %totals, %daily-totals) is expo
             </script>
         </div>
 
-        $continent-list
-        $country-list
+        {country-list(%CO<countries>)}
 
         HTML
 
     html-template('/vs-age', 'Coronavirus vs Life Expectancy', $content);
 }
 
-sub generate-scattered-density(%countries, %per-day, %totals, %daily-totals) is export {
+sub generate-scattered-density(%CO) is export {
     say "Generating cases vs density...";
 
-    my $chart20data = scattered-density-graph(%countries, %per-day, %totals, %daily-totals);
-
-    my $country-list = country-list(%countries);
-    my $continent-list = continent-list();
+    my $chart20data = scattered-density-graph(%CO);
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus vs Population Density</h1>
@@ -951,15 +923,14 @@ sub generate-scattered-density(%countries, %per-day, %totals, %daily-totals) is 
             </script>
         </div>
 
-        $continent-list
-        $country-list
+        {country-list(%CO<countries>)}
 
         HTML
 
     html-template('/vs-density', 'Coronavirus vs Population Density', $content);
 }
 
-sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
+sub generate-overview(%CO) is export {
     say "Generating dashboard overview...";
 
     my %delta;
@@ -967,7 +938,7 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
     my %failed;
     my @max;
 
-    my @dates = %daily-totals.keys.sort;
+    my @dates = %CO<daily-totals>.keys.sort.grep: * le %CO<calendar><World>;
     my $days = @dates.elems - 2;
 
     my @display-dates;
@@ -981,13 +952,13 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
 
         @display-dates.push("'" ~ fmtdate(@dates[$day]) ~ "'");
 
-        my @recent-dates = %daily-totals.keys.sort[$day - 1, $day];
+        my @recent-dates = %CO<daily-totals>.keys.sort[$day - 1, $day];
 
-        for %per-day.keys -> $cc {
+        for %CO<per-day>.keys -> $cc {
             next if $cc ~~ /'/'/;
 
-            my $prev = %per-day{$cc}{@recent-dates[0]};
-            my $curr = %per-day{$cc}{@recent-dates[1]};
+            my $prev = %CO<per-day>{$cc}{@recent-dates[0]};
+            my $curr = %CO<per-day>{$cc}{@recent-dates[1]};
 
             %delta{$cc}     //= [];
             %confirmed{$cc} //= [];
@@ -1018,7 +989,7 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
 
 
         my $dashboard = '';
-        for %countries.sort: *.value<country> -> $c {
+        for %CO<countries>.sort: *.value<country> -> $c {
             my $cc = $c.key;
             my $country = $c.value<country>;
             next if $cc ~~ /'/'/;
@@ -1054,9 +1025,6 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
 
         @dashboard.push($dashboard);
     }
-
-    my $country-list = country-list(%countries);
-    my $continent-list = continent-list();
 
     my $content = qq:to/HTML/;
         <h1>Coronavirus World Overview</h1>
@@ -1107,8 +1075,7 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
             \}
         </script>
 
-        $continent-list
-        $country-list
+        {country-list(%CO<countries>)}
 
         HTML
 
@@ -1117,14 +1084,15 @@ sub generate-overview(%countries, %per-day, %totals, %daily-totals) is export {
     return %levels;
 }
 
-sub generate-js-countries(%countries, %per-day, %totals, %daily-totals) is export {
+sub generate-js-countries(%CO) is export {
+    #%countries, %per-day, %totals, %daily-totals
     say "Generating a new JS country list...";
 
     my @countries;
-    for %countries.sort: *.value<country> -> $c {
+    for %CO<countries>.sort: *.value<country> -> $c {
         my $cc = $c.key;
         next if $cc ~~ /'/'/;
-        next unless %per-day{$cc};
+        next unless %CO<per-day>{$cc};
 
         my $country = $c.value<country>;
         $country ~~ s:g/\'/\\'/;
@@ -1132,10 +1100,10 @@ sub generate-js-countries(%countries, %per-day, %totals, %daily-totals) is expor
         @countries.push("['$cc','$country']");
     }
 
-    for %countries.sort: *.value<country> -> $c {
+    for %CO<countries>.sort: *.value<country> -> $c {
         my $cc = $c.key;
         next unless $cc ~~ /'/'/;
-        next unless %per-day{$cc};
+        next unless %CO<per-day>{$cc};
 
         my $country = $c.value<country>;
         $country ~~ s:g/\'/\\'/;
@@ -1153,56 +1121,52 @@ sub generate-js-countries(%countries, %per-day, %totals, %daily-totals) is expor
     $fh.close;
 }
 
-sub generate-common-start-stats(%countries, %per-day, %totals, %daily-totals) is export {
-    say 'Generating common start graph...';
+# sub generate-common-start-stats(%countries, %per-day, %totals, %daily-totals) is export {
+#     say 'Generating common start graph...';
 
-    my $chart15data = common-start(%countries, %per-day, %totals, %daily-totals);
+#     my $chart15data = common-start(%countries, %per-day, %totals, %daily-totals);
 
-    my $country-list = country-list(%countries);
-    my $continent-list = continent-list();
+#     my $content = qq:to/HTML/;
+#         <h1>Countries vs China</h1>
 
-    my $content = qq:to/HTML/;
-        <h1>Countries vs China</h1>
+#         <script>
+#             var randomColorGenerator = function () \{
+#                 return '#' + (Math.random().toString(16) + '0000000').slice(2, 8);
+#             \};
+#         </script>
 
-        <script>
-            var randomColorGenerator = function () \{
-                return '#' + (Math.random().toString(16) + '0000000').slice(2, 8);
-            \};
-        </script>
+#         <div id="block6">
+#             <h2>Confirmed population timeline</h2>
+#             <p>On this graph, you see how the fraction (in %) of the confirmed infection cases changes over time in different countries.</p>
+#             <p>The almost-horizontal red line in the bottom part of the graph line displays <a href="/cn">China</a>. The number of confirmed infections in China almost stopped growing. Note the top line reflecting the most suffered province of China, <a href="/cn/hb">Hubei</a>, where the spread is also almost stopped.</p>
+#             <p>Click on the bar in the legend to turn the line off and on.</p>
+#             <br/>
+#             <canvas id="Chart6"></canvas>
+#             <p class="left">
+#                 <label class="toggle-switchy" for="logscale6" data-size="xs" data-style="rounded" data-color="blue">
+#                     <input type="checkbox" id="logscale6" onclick="log_scale(this, 6)">
+#                     <span class="toggle">
+#                         <span class="switch"></span>
+#                     </span>
+#                 </label>
+#                 <label for="logscale6"> Logarithmic scale</label>
+#             </p>
+#             <p>1. Note that only countries with more than 1000 population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
+#             <p>2. The line for the country is drawn only if it reaches at least 85% of the corresponding maximum parameter in China.</p>
+#             <script>
+#                 var ctx15 = document.getElementById('Chart15').getContext('2d');
+#                 chart[15] = new Chart(ctx15, $chart15data);
+#             </script>
+#         </div>
 
-        <div id="block6">
-            <h2>Confirmed population timeline</h2>
-            <p>On this graph, you see how the fraction (in %) of the confirmed infection cases changes over time in different countries.</p>
-            <p>The almost-horizontal red line in the bottom part of the graph line displays <a href="/cn">China</a>. The number of confirmed infections in China almost stopped growing. Note the top line reflecting the most suffered province of China, <a href="/cn/hb">Hubei</a>, where the spread is also almost stopped.</p>
-            <p>Click on the bar in the legend to turn the line off and on.</p>
-            <br/>
-            <canvas id="Chart6"></canvas>
-            <p class="left">
-                <label class="toggle-switchy" for="logscale6" data-size="xs" data-style="rounded" data-color="blue">
-                    <input type="checkbox" id="logscale6" onclick="log_scale(this, 6)">
-                    <span class="toggle">
-                        <span class="switch"></span>
-                    </span>
-                </label>
-                <label for="logscale6"> Logarithmic scale</label>
-            </p>
-            <p>1. Note that only countries with more than 1000 population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
-            <p>2. The line for the country is drawn only if it reaches at least 85% of the corresponding maximum parameter in China.</p>
-            <script>
-                var ctx15 = document.getElementById('Chart15').getContext('2d');
-                chart[15] = new Chart(ctx15, $chart15data);
-            </script>
-        </div>
+#         {country-list(%countries)}
 
-        $continent-list
-        $country-list
+#         HTML
 
-        HTML
+#     html-template('/start', 'Coronavirus in different countries if it would have started at the same day', $content);
+# }
 
-    html-template('/start', 'Coronavirus in different countries if it would have started at the same day', $content);
-}
-
-sub generate-world-map(%countries, %per-day, %totals, %daily-totals, %levels) is export {
+sub generate-world-map(%CO, %levels) is export {
     say "Generating World map...";
 
     my $header = q:to/HEAD/;
@@ -1220,18 +1184,18 @@ sub generate-world-map(%countries, %per-day, %totals, %daily-totals, %levels) is
     my @color = '#93bb2b', '#cfcc26', '#d4bf26', '#d4bf25', '#d7ab24',
                 '#d79323', '#d77820', '#d75c20', '#d7421e', '#d72b1d', '#d71c1c';
 
-    for %totals.keys -> $cc {
+    for %CO<totals>.keys -> $cc {
         next unless $cc.chars == 2;
 
-        next unless %countries{$cc}:exists;
-        my $population = 1_000_000 * %countries{$cc}<population>;
+        next unless %CO<countries>{$cc}:exists;
+        my $population = 1_000_000 * %CO<countries>{$cc}<population>;
         next unless $population;
 
-        my $confirmed = %totals{$cc}<confirmed> || 0;
+        my $confirmed = %CO<totals>{$cc}<confirmed> || 0;
         my $percent = sprintf('%2f', (100 * $confirmed / $population));
 
-        my $failed = %totals{$cc}<failed> || 0;
-        my $recovered = %totals{$cc}<recovered> || 0;
+        my $failed = %CO<totals>{$cc}<failed> || 0;
+        my $recovered = %CO<totals>{$cc}<recovered> || 0;
 
         @confirmed.push($confirmed);
         @failed.push($failed);
@@ -1298,8 +1262,7 @@ sub generate-world-map(%countries, %per-day, %totals, %daily-totals, %levels) is
         <div id="svgMap"></div>
         $script
 
-        {continent-list()}
-        {country-list(%countries)}
+        {country-list(%CO<countries>)}
 
         HTML
 
@@ -1387,7 +1350,8 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
                     if    $path eq '/compare'     {'Compare the countries<br/>affected by coronavirus'  }
                     elsif $path eq '/compare/all' {'Compare all countries<br/>affected by coronavirus'  }
                     elsif $path eq '/us/compare'  {'Compare the US states<br/>affected by coronavirus'  }
-                    elsif $path eq '/cn/compare'  {'Compare China provinces<br/>affected by coronavirus'}
+                    elsif $path eq '/cn/compare'  {'Compare China‘s provinces<br/>affected by coronavirus'}
+                    elsif $path eq '/ru/compare'  {'Compare Russia‘s regions<br/>affected by coronavirus'}
                 }
             </h1>
 
@@ -1397,10 +1361,13 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
                 <a href="/per-million/">Per capita</a>
                 |
                 <a href="/countries/">Affected countries</a>
-                |
+            </p>
+            <p class="center">
                 {$path eq '/us/compare' ?? '<b>US states</b>' !! '<a href="/us/compare/">US states</a>'}
                 |
-                {$path eq '/cn/compare' ?? '<b>China provinces</b>' !! '<a href="/cn/compare/">China provinces</a>'}
+                {$path eq '/cn/compare' ?? '<b>China‘s provinces</b>' !! '<a href="/cn/compare/">China‘s provinces</a>'}
+                |
+                {$path eq '/ru/compare' ?? '<b>Russia‘s regions</b>' !! '<a href="/ru/compare/">Russia’s regions</a>'}
             </p>
 
             {qq[<p>On this page, the most affected $limit countries are listed sorted by the number of confirmed cases. You can click on the country name to see more details about the country. The numbers below the name of the country are the numbers of confirmed (black), recovered (green, if known), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per country.</p><p>Visit <a href="/compare/all/">a separate page</a> to see the comparison of all countries. The green and red arrows next to the country name display the trend of the new confirmed cases during the last week.</p>] if $path eq '/compare'}
@@ -1411,10 +1378,14 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
 
             {'<p>On this page, China provinces and regions are listed sorted by the number of confirmed cases. You can click on the name to see the more details about the region. The numbers below are the numbers of confirmed (black), recovered (green, if known), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per region.</p><p>The green and red arrows next to the region name display the trend of the new confirmed cases during the last week.' if $path eq '/cn/compare'}
 
+            {'<p>On this page, the regions of the Russian Federation are listed sorted by the number of confirmed cases. You can click on the name to see the more details about the region. The numbers below are the numbers of confirmed (black), recovered (green), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per region.</p><p>The green and red arrows next to the region name display the trend of the new confirmed cases during the last week.' if $path eq '/ru/compare'}
+
             <table class="compare">
                 <thead>
                     <tr>
-                        <th>Country</th>
+                        <th>{
+                            $path eq '/compare' ?? 'Country' !! 'Region'
+                        }</th>
                         <th>Cumulative cases</th>
                         <th>New daily cases</th>
                     </tr>
@@ -1443,11 +1414,14 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
         my $json = %data<json-small>;
         my $json-delta = %data<delta-json-small>;
 
+        %countries{$cc}<country> ~~ /^ .+ '/' (.+) $/;
+        my $country-or-region-name = $/[0] // %countries{$cc}<country>;
+
         $content ~= qq:to/HTML/;
             <tr>
                 <td class="h3">
                     <h4>
-                        <a href="/{$cc.lc}">{%countries{$cc}<country>}</a>
+                        <a href="/{$cc.lc}">{$country-or-region-name}</a>
                         {arrow(%countries, $cc)}
                     </h4>
                     <p>
@@ -1469,13 +1443,12 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
             HTML
     }
 
-    my $continent-list = continent-list();
 
     $content ~= qq:to/HTML/;
             </tbody>
         </table>
 
-        $continent-list
+        {continent-list()}
 
         HTML
 

@@ -2,6 +2,7 @@
 
 use lib 'lib';
 use CovidObserver::Population;
+use CovidObserver::Geo;
 use CovidObserver::Data;
 use CovidObserver::Statistics;
 use CovidObserver::DB;
@@ -16,16 +17,17 @@ multi sub MAIN('population') {
     say "Updating database...";
 
     dbh.execute('delete from countries');
-    my $sth = dbh.prepare('insert into countries (cc, continent, country, population, life_expectancy, area) values (?, ?, ?, ?, ?, ?)');
+    my $sth = dbh.prepare('insert into countries (cc, continent, country, population, life_expectancy, area, name_ru) values (?, ?, ?, ?, ?, ?, ?)');
     for %population<countries>.kv -> $cc, $country {
         my $n = %population<population>{$cc};
         my $age = %population<age>{$cc} || 0;
         my $area = %population<area>{$cc} || 0;
+        my $name_ru = %population<translation><ru>{$cc} || '';
 
         my $continent = $cc ~~ /'/'/ ?? '' !! %population<continent>{$cc};
-        say "$cc, $continent, $country, $n";
+        # say "$cc, $continent, $country, $n";
 
-        $sth.execute($cc, $continent, $country, $n, $age, $area);
+        $sth.execute($cc, $continent, $country, $n, $age, $area, $name_ru);
     }
     $sth.finish();
 
@@ -54,14 +56,49 @@ multi sub MAIN('population') {
 
 #| Fetch the latest COVID-19 data from JHU and rebuild the database
 multi sub MAIN('fetch') {
-    my %stats = read-covid-data();
-
     say "Updating database...";
-
     dbh.execute('delete from per_day');
     dbh.execute('delete from totals');
     dbh.execute('delete from daily_totals');
 
+    my %stats =
+        confirmed => {
+            per-day     => {},
+            total       => {},
+            daily-total => {},
+        },
+        failed => {
+            per-day     => {},
+            total       => {},
+            daily-total => {},
+        },
+        recovered => {
+            per-day     => {},
+            total       => {},
+            daily-total => {},
+        }
+    ;
+
+    say "Importing JHU's data...";
+    my $latest-jhu-date = read-jhu-data(%stats); # modifies
+
+    say 'Importing RU data...';
+    my $latest-ru-date = read-ru-data(%stats); # modifies
+
+    data-count-totals(%stats, {World => $latest-jhu-date, RU => $latest-ru-date});
+    import-stats-data(%stats);
+
+    dbh.execute('delete from calendar');
+    my $sth = dbh.prepare('insert into calendar (cc, date) values (?, ?)');
+    $sth.execute('World', date2yyyymmdd($latest-jhu-date));
+    $sth.execute('RU', date2yyyymmdd($latest-ru-date));
+    $sth.finish();
+
+    say "Latest JHU data on $latest-jhu-date";
+    say "Latest RU data on $latest-ru-date";
+}
+
+sub import-stats-data(%stats) {
     for %stats<confirmed><per-day>.keys -> $cc {
         my @values;
         for %stats<confirmed><per-day>{$cc}.keys -> $date {
@@ -105,50 +142,66 @@ multi sub MAIN('generate', Bool :$skip-excel = False) {
     my %mortality = get-mortality-data();
     my %crude = get-crude-data();
 
-    generate-world-stats(%countries, %per-day, %totals, %daily-totals, :$skip-excel);
-    generate-world-stats(%countries, %per-day, %totals, %daily-totals, exclude => 'CN', :$skip-excel);
+    my %calendar = get-calendar();
 
-    generate-countries-stats(%countries, %per-day, %totals, %daily-totals);
+    my %CO =
+        countries    => %countries,
+        per-day      => %per-day,
+        totals       => %totals,
+        daily-totals => %daily-totals,
+        calendar     => %calendar,
+    ;
 
-    generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals);
-    generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals, cc-only => 'US');
-    generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals, cc-only => 'CN');
-    generate-per-capita-stats(%countries, %per-day, %totals, %daily-totals, mode => 'combined');
+    generate-world-stats(%CO, :$skip-excel);
+    generate-world-stats(%CO, exclude => 'CN', :$skip-excel);
 
-    generate-china-level-stats(%countries, %per-day, %totals, %daily-totals);
+    generate-countries-stats(%CO);
+
+    generate-per-capita-stats(%CO);
+    generate-per-capita-stats(%CO, cc-only => 'US');
+    generate-per-capita-stats(%CO, cc-only => 'CN');
+    generate-per-capita-stats(%CO, mode => 'combined');
+
+    generate-china-level-stats(%CO);
     # generate-common-start-stats(%countries, %per-day, %totals, %daily-totals);
 
     my %country-stats;
     for get-known-countries() -> $cc {
-        %country-stats{$cc} = generate-country-stats($cc, %countries, %per-day, %totals, %daily-totals, :%mortality, :%crude, :$skip-excel);
+        %country-stats{$cc} = generate-country-stats($cc, %CO, :%mortality, :%crude, :$skip-excel);
     }
 
     generate-countries-compare(%country-stats, %countries, limit => 100);
     generate-countries-compare(%country-stats, %countries);
     generate-countries-compare(%country-stats, %countries, prefix => 'US');
     generate-countries-compare(%country-stats, %countries, prefix => 'CN');
+    generate-countries-compare(%country-stats, %countries, prefix => 'RU');
 
-    generate-country-stats('CN', %countries, %per-day, %totals, %daily-totals, exclude => 'CN/HB');
-    generate-continent-graph(%countries, %per-day, %totals, %daily-totals);
+    generate-country-stats('CN', %CO, exclude => 'CN/HB');
+    generate-continent-graph(%CO);
 
     for %continents.keys -> $cont {
-        generate-continent-stats($cont, %countries, %per-day, %totals, %daily-totals, :$skip-excel);
+        generate-continent-stats($cont, %CO, :$skip-excel);
     }
 
 
-    generate-scattered-age(%countries, %per-day, %totals, %daily-totals);
-    generate-scattered-density(%countries, %per-day, %totals, %daily-totals);
+    generate-scattered-age(%CO);
+    generate-scattered-density(%CO);
 
-    my %levels = generate-overview(%countries, %per-day, %totals, %daily-totals);
-    generate-world-map(%countries, %per-day, %totals, %daily-totals, %levels);
+    my %levels = generate-overview(%CO);
+    generate-world-map(%CO, %levels);
 
-    generate-js-countries(%countries, %per-day, %totals, %daily-totals);
+    generate-js-countries(%CO);
 
     geo-sanity();
+    about-pages();
 }
 
 #| Re-generate the "About" section pages
 multi sub MAIN('about') {
+    about-pages();
+}
+
+sub about-pages() {
     html-template('/about', 'About the project', 'html/about.html'.IO.slurp);
     html-template('/sources', 'Data sources', 'html/sources.html'.IO.slurp);
     html-template('/news', 'Covid.observer news and updates', 'html/news.html'.IO.slurp);

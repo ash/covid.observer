@@ -5,31 +5,9 @@ use Text::CSV;
 use IO::String;
 
 use CovidObserver::Population;
+use CovidObserver::Geo;
 
-# constant %covid-sources is export =
-#     confirmed => 'https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv',
-#     failed    => 'https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv',
-#     recovered => 'https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv';
-
-sub read-covid-data() is export {
-    my %stats =
-        confirmed => {
-            per-day     => {},
-            total       => {},
-            daily-total => {},
-        },
-        failed => {
-            per-day     => {},
-            total       => {},
-            daily-total => {},
-        },
-        recovered => {
-            per-day     => {},
-            total       => {},
-            daily-total => {},
-        }
-    ;
-
+sub read-jhu-data(%stats) is export {
     my %dates;
     my %cc;
 
@@ -40,7 +18,7 @@ sub read-covid-data() is export {
         my $month = ~$/[0];
         my $day   = ~$/[1];
         my $year  = ~$/[2];
-        my $date = "$month/$day/$year";
+        my $date = "$month/$day/$year"; # TODO
         %dates{$date} = 1;
 
         my $data = $path.slurp;
@@ -54,10 +32,18 @@ sub read-covid-data() is export {
             my $region = '';
 
             if @headers[0] ne 'FIPS' {
-                $country = @row[1] || '';
-                $region  = @row[0] || '';
+                if $date ne '04/12/20' { # TODO switch to column names (if that helps)
+                    $country = @row[1] || '';
+                    $region  = @row[0] || '';
 
-                ($confirmed, $failed, $recovered) = @row[3..5];
+                    ($confirmed, $failed, $recovered) = @row[3..5];
+                }
+                else {
+                    $country = @row[1] || '';
+                    $region  = @row[0] || '';
+
+                    ($confirmed, $failed, $recovered) = @row[5..7];
+                }
             }
             else {
                 $country = @row[3] || '';
@@ -96,6 +82,8 @@ sub read-covid-data() is export {
 
             my $cc = country2cc($country);
             next unless $cc;
+
+            next if $cc eq 'RU'; # Processed from a separate data source
 
             my $region-cc = '';
 
@@ -158,137 +146,122 @@ sub read-covid-data() is export {
         %stats<recovered><per-day><US>{$date} = %us-recovered{$date};
     }
 
+    return %dates.keys.sort[*-1];
+}
+
+sub read-ru-data(%stats) is export {
+    my %dates;
+    my %cc;
+
+    my %raw;
+    my %us-recovered;
+    for dir('series/ru', test => /'.csv'$/).sort(~*.path) -> $path {
+        $path.path ~~ / 'ru-' \d\d(\d\d) '-' (\d\d) '-' (\d\d) '.csv' /;
+        my $year  = ~$/[0];
+        my $month = ~$/[1];
+        my $day   = ~$/[2];
+        my $date = "$month/$day/$year"; # TODO
+        %dates{$date} = 1;
+
+        my $data = $path.slurp;
+        my $fh = IO::String.new($data);
+
+        my $csv = Text::CSV.new(sep => "\t");
+
+        my $cc = 'RU'; # Should replaces JHU's data
+        while my @row = $csv.getline($fh) {
+            my ($region, $confirmed, $recovered, $failed) = @row;
+
+            my $region-cc = ru-region-to-code($region);
+            $region-cc = "RU/$region-cc";
+
+            %cc{$cc} = 1;
+            %cc{$region-cc} = 1;
+
+            %raw{$cc}{$region-cc}{$date}<confirmed> = $confirmed // 0;
+            %raw{$cc}{$region-cc}{$date}<failed>    = $failed // 0;
+            %raw{$cc}{$region-cc}{$date}<recovered> = $recovered // 0;
+        }
+    }
+
+    # %raw<RU2>:delete;
+
+    # Count per-day data
+    for %raw.keys -> $cc { # only countries
+        for %raw{$cc}.keys -> $region-cc { # regions or '' for countries without them
+            for %raw{$cc}{$region-cc}.keys -> $date {
+                my $confirmed = %raw{$cc}{$region-cc}{$date}<confirmed>;
+                my $failed    = %raw{$cc}{$region-cc}{$date}<failed>;
+                my $recovered = %raw{$cc}{$region-cc}{$date}<recovered>;
+
+                if $region-cc {
+                    %stats<confirmed><per-day>{$region-cc}{$date} = $confirmed;
+                    %stats<failed><per-day>{$region-cc}{$date}    = $failed;
+                    %stats<recovered><per-day>{$region-cc}{$date} = $recovered;
+                }
+
+                # += if there's a region, otherwise bare =
+                %stats<confirmed><per-day>{$cc}{$date} += $confirmed;
+                %stats<failed><per-day>{$cc}{$date}    += $failed;
+                %stats<recovered><per-day>{$cc}{$date} += $recovered;
+            }
+        }
+    }
+
+    return %dates.keys.sort[*-1];
+}
+
+sub data-count-totals(%stats, %stop-date) is export {
+    my %dates;
+    my %cc;
+
+    # Find all dates and all countries from all existing datasets
+    for %stats<confirmed><per-day>.keys -> $cc {
+        %cc{$cc} = 1;
+
+        my $stop-date = $cc ne 'RU' ?? %stop-date<World> !! %stop-date<RU>;
+        for %stats<confirmed><per-day>{$cc}.keys.sort -> $date {
+            %dates{$date} = 1;
+
+            last if $date eq $stop-date;
+        }
+    }
+
     # Fill zeroes for missing dates/countries
-    for %dates.keys -> $date {
-        for %cc.keys -> $cc { # including regions
+    for %cc.keys -> $cc { # including regions
+        my $stop-date = $cc ne 'RU' ?? %stop-date<World> !! %stop-date<RU>;
+
+        for %dates.keys.sort -> $date {
             %stats<confirmed><per-day>{$cc}{$date} //= 0;
             %stats<failed><per-day>{$cc}{$date}    //= 0;
             %stats<recovered><per-day>{$cc}{$date} //= 0;
+
+            last if $date eq $stop-date;
         }
     }
 
     # Count totals
-    for %cc.keys -> $cc { # including regions    
-        # Take the last day, basically
-        my $date = %dates.keys.sort[*-1];
+    for %cc.keys -> $cc { # including regions
+        my $date = $cc ne 'RU' ?? %stop-date<World> !! %stop-date<RU>;
+
         %stats<confirmed><total>{$cc} = %stats<confirmed><per-day>{$cc}{$date};
         %stats<failed><total>{$cc}    = %stats<failed><per-day>{$cc}{$date};
         %stats<recovered><total>{$cc} = %stats<recovered><per-day>{$cc}{$date};
     }
 
     # Count totals per day
-    for %dates.keys.sort -> $date {
-        for %cc.keys -> $cc { 
-            # only countries
-            next if $cc ~~ /'/'/;
+    for %cc.keys -> $cc {
+        # only countries
+        next if $cc ~~ /'/'/;
 
+        my $stop-date = $cc ne 'RU' ?? %stop-date<World> !! %stop-date<RU>;
+
+        for %dates.keys.sort -> $date {
             %stats<confirmed><daily-total>{$date} += %stats<confirmed><per-day>{$cc}{$date};
             %stats<failed><daily-total>{$date}    += %stats<failed><per-day>{$cc}{$date};
             %stats<recovered><daily-total>{$date} += %stats<recovered><per-day>{$cc}{$date};
+
+            last if $date eq $stop-date;
         }
     }
-
-    return %stats;
 }
-
-# sub fetch-covid-data() is export {
-#     my $ua = HTTP::UserAgent.new;
-#     $ua.timeout = 30;
-
-#     my %stats;
-
-#     for %covid-sources.kv -> $type, $url {
-#         say "Getting '$type'...";
-
-#         my $response = $ua.get($url);
-
-#         if $response.is-success {
-#             say "Processing '$type'...";
-#             %stats{$type} = extract-covid-data($response.content);
-#         }
-#         else {
-#             die $response.status-line;
-#         }
-#     }
-
-#     return %stats;
-# }
-
-# sub extract-covid-data($data) is export {
-#     my $csv = Text::CSV.new;
-#     my $fh = IO::String.new($data);
-
-#     my @headers = $csv.getline($fh);
-#     my @dates = @headers[4..*];
-
-#     my %per-day;
-#     my %total;
-#     my %daily-per-country;
-#     my %daily-total;
-
-#     while my @row = $csv.getline($fh) {
-#         my $country = @row[1] || '';
-
-#         if $country eq 'Netherlands' {
-#             $country = @row[0] || '';
-#         }
-
-#         my $cc = country2cc($country);
-#         next unless $cc;
-
-#         for @dates Z @row[4..*] -> ($date, $n) {
-#             %per-day{$cc}{$date} += $n;
-#             %daily-per-country{$date}{$cc} += $n;
-
-#             %total{$cc} = %per-day{$cc}{$date};
-#         }
-
-#         if $cc eq 'US' {
-#             my $state = @row[0];
-
-#             if $state && $state !~~ /Princess/ && $state !~~ /','/ && $state ne 'US' { # What is 'US/US'?
-#                 my $state-cc = state2code($state);
-#                 unless $state-cc {
-#                     say "WARNING: State code not found for US/$state";
-#                     next;
-#                 }
-#                 $state-cc = 'US/' ~ $state-cc;
-
-#                 for @dates Z @row[4..*] -> ($date, $n) {
-#                     %per-day{$state-cc}{$date} += $n;
-#                     %daily-per-country{$date}{$state-cc} += $n;
-
-#                     %total{$state-cc} = %per-day{$state-cc}{$date};
-#                 }
-#             }
-#         }
-
-#         if $cc eq 'CN' {
-#             my $region = @row[0];
-
-#             if $region {
-#                 my $region-cc = 'CN/' ~ chinese-region-to-code($region);
-
-#                 for @dates Z @row[4..*] -> ($date, $n) {
-#                     %per-day{$region-cc}{$date} += $n;
-#                     %daily-per-country{$date}{$region-cc} += $n;
-
-#                     %total{$region-cc} = %per-day{$region-cc}{$date};
-#                 }
-#             }
-#         }
-#     }
-
-#     for %daily-per-country.kv -> $date, %per-country {
-#         %daily-total{$date} = 0 unless %daily-total{$date}:exists;
-#         for %per-country.keys -> $cc {
-#             next if $cc ~~ /'/'/;
-#             %daily-total{$date} += %per-country{$cc};
-#         }
-#     }
-
-#     return
-#         per-day => %per-day,
-#         total => %total,
-#         daily-total => %daily-total;
-# }

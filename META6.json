@@ -10,7 +10,8 @@
     "Locale::US",
     "DBIish",
     "JSON::Tiny",
-    "Text::CSV"
+    "Text::CSV",
+    "DateTime::Format"
   ],
   "description" : "COVID-19 Observer website",
   "license" : "",
