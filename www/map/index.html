@@ -17,7 +17,7 @@
 
     <script src="/Chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/main.css?v=30">
+    <link rel="stylesheet" type="text/css" href="/main.css?v=33">
     <style>
         
     </style>
@@ -37,7 +37,7 @@ function log_scale_horizontal(input, n) {
 
     </script>
 
-    <script src="/countries.js?v=2020-04-07T02:00:00+02:00" type="text/javascript"></script>
+    <script src="/countries.js?v=2020-04-13T02:00:00+02:00" type="text/javascript"></script>
     <script src="/autocomplete.js?v=2" type="text/javascript"></script>
 
     <link rel="stylesheet" type="text/css" href="/likely.css">
@@ -62,15 +62,18 @@ function log_scale_horizontal(input, n) {
                     <a href="/#new">New daily cases</a>
                     <a href="/#daily">Daily flow</a>
                     <a href="/#speed">Daily speed</a>
+                    <a href="/#per-capita">Per capita values</a>
                     <a href="/#table">Table data</a>
                     
                     <a href="/vs-age">Cases vs life expectancy</a>
+                    <!--a href="/vs-density">Cases vs population density</a-->
                 </div>
             </li>
 
             <li class="dropdown">
                 <a href="javascript: void(0)" class="dropbtn">World</a>
                 <div class="dropdown-content">
+                    <a href="/">World numbers</a>
                     <a href="/overview">Overview</a>
                     <a href="/map">World map</a>
                     <a href="/-cn">World excluding China</a>
@@ -95,6 +98,7 @@ function log_scale_horizontal(input, n) {
                 <div class="dropdown-content">
                     <a href="/#countries">List of countries</a>
                     <a href="/countries">Affected countries</a>
+                    <a href="/compare">Compare countries</a>
                     <a href="/per-million">Sorted per million affected</a>
                     <a href="/vs-china">Countries vs China</a>
                 </div>
@@ -108,7 +112,17 @@ function log_scale_horizontal(input, n) {
                     <a href="/-cn">World excluding China</a>
                     <a href="/cn/-hb">China excluding Hubei</a>
                     <a href="/vs-china">Countries vs China</a>
+                    <a href="/cn/compare">Compare provinces</a>
                     <a href="/per-million/cn">Provinces sorted per capita</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">Russia</a>
+                <div class="dropdown-content">
+                    <a href="/ru">Cumulative data</a>
+                    <a href="/ru#regions">Regions</a>
+                    <a href="/ru/compare">Compare regions</a>
                 </div>
             </li>
 
@@ -117,6 +131,7 @@ function log_scale_horizontal(input, n) {
                 <div class="dropdown-content">
                     <a href="/us">Cumulative data</a>
                     <a href="/us#states">US states</a>
+                    <a href="/us/compare">Compare the states</a>
                     <a href="/per-million/us">States sorted per capita</a>
                 </div>
             </li>
@@ -143,7 +158,10 @@ function log_scale_horizontal(input, n) {
         autocomplete(document.getElementById("SearchBox"), countries);
     </script>
 
-    
+        <div>
+        <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/compare/">Compare countries</a></span></p>
+    </div>
+
 
     <h1>Coronavirus World Map</h1>
 
@@ -163,240 +181,241 @@ function log_scale_horizontal(input, n) {
                     name: 'Confirmed cases',
                     format: '{0}',
                     thousandSeparator: ',',
-                    thresholdMax: 366462,
+                    thresholdMax: 555161,
                     thresholdMin: 0
                 },
                 failed: {
                     name: 'Died',
                     format: '{0}',
                     thousandSeparator: ',',
-                    thresholdMax: 16523,
+                    thresholdMax: 22020,
                     thresholdMin: 0
                 },
                 recovered: {
                     name: 'Recovered',
                     format: '{0}',
                     thousandSeparator: ',',
-                    thresholdMax: 77310,
+                    thresholdMax: 77956,
                     thresholdMin: 0
                 },
                 percent: {
                     name: 'Affected population',
                     format: '{0} %',
-                    thresholdMax: 0.875000,
+                    thresholdMax: 1.050147,
                     thresholdMin: 0.000000
                 }
             },
             applyData: 'confirmed',
             values: {
-                BH: {confirmed: 756, failed: 4, recovered: 458, percent: 0.046064, color: '#d7ab24'},
-PT: {confirmed: 11730, failed: 311, recovered: 140, percent: 0.114705, color: '#d77820'},
-PG: {confirmed: 2, failed: 0, recovered: 0, percent: 0.000023, color: '#93bb2b'},
-NL: {confirmed: 18803, failed: 1867, recovered: 250, percent: 0.109978, color: '#d75c20'},
-FR: {confirmed: 98010, failed: 8911, recovered: 17250, percent: 0.150484, color: '#d7421e'},
-SE: {confirmed: 7206, failed: 477, recovered: 205, percent: 0.071799, color: '#d77820'},
-MT: {confirmed: 241, failed: 0, recovered: 5, percent: 0.054723, color: '#d4bf25'},
-BT: {confirmed: 5, failed: 0, recovered: 2, percent: 0.000655, color: '#93bb2b'},
-RS: {confirmed: 2200, failed: 58, recovered: 0, percent: 0.025079, color: '#d77820'},
-MC: {confirmed: 77, failed: 1, recovered: 4, percent: 0.197436, color: '#cfcc26'},
-IE: {confirmed: 5364, failed: 174, recovered: 25, percent: 0.109862, color: '#d77820'},
-MQ: {confirmed: 151, failed: 4, recovered: 50, percent: 0.040202, color: '#cfcc26'},
-GI: {confirmed: 109, failed: 0, recovered: 52, percent: 0.323442, color: '#d4bf26'},
-GH: {confirmed: 214, failed: 5, recovered: 31, percent: 0.000704, color: '#93bb2b'},
-UZ: {confirmed: 457, failed: 2, recovered: 30, percent: 0.001386, color: '#d79323'},
-MG: {confirmed: 82, failed: 0, recovered: 2, percent: 0.000304, color: '#d4bf26'},
-GM: {confirmed: 4, failed: 1, recovered: 2, percent: 0.000170, color: '#93bb2b'},
-HN: {confirmed: 298, failed: 22, recovered: 6, percent: 0.003058, color: '#d4bf25'},
-IQ: {confirmed: 1031, failed: 64, recovered: 344, percent: 0.002623, color: '#d7ab24'},
-PH: {confirmed: 3660, failed: 163, recovered: 73, percent: 0.003385, color: '#d77820'},
-TR: {confirmed: 30217, failed: 649, recovered: 1326, percent: 0.036219, color: '#d7421e'},
-ZW: {confirmed: 10, failed: 1, recovered: 0, percent: 0.000068, color: '#93bb2b'},
-MS: {confirmed: 6, failed: 0, recovered: 0, percent: 0.120000, color: '#93bb2b'},
-LC: {confirmed: 14, failed: 0, recovered: 1, percent: 0.007659, color: '#93bb2b'},
-SZ: {confirmed: 10, failed: 0, recovered: 4, percent: 0.000871, color: '#93bb2b'},
-LK: {confirmed: 178, failed: 5, recovered: 38, percent: 0.000835, color: '#cfcc26'},
-BF: {confirmed: 364, failed: 18, recovered: 108, percent: 0.001791, color: '#d4bf25'},
-CN: {confirmed: 82665, failed: 3335, recovered: 77310, percent: 0.005766, color: '#d7ab24'},
-RW: {confirmed: 105, failed: 0, recovered: 4, percent: 0.000832, color: '#93bb2b'},
-CO: {confirmed: 1579, failed: 46, recovered: 88, percent: 0.003137, color: '#d7ab24'},
-ET: {confirmed: 44, failed: 2, recovered: 4, percent: 0.000039, color: '#93bb2b'},
-BG: {confirmed: 549, failed: 22, recovered: 39, percent: 0.007843, color: '#d4bf25'},
-CF: {confirmed: 8, failed: 0, recovered: 0, percent: 0.000169, color: '#93bb2b'},
-EG: {confirmed: 1322, failed: 85, recovered: 259, percent: 0.001317, color: '#d79323'},
-AT: {confirmed: 12297, failed: 220, recovered: 3463, percent: 0.137318, color: '#d79323'},
-BS: {confirmed: 29, failed: 5, recovered: 4, percent: 0.007445, color: '#93bb2b'},
-GD: {confirmed: 12, failed: 0, recovered: 0, percent: 0.010714, color: '#93bb2b'},
-KY: {confirmed: 39, failed: 1, recovered: 1, percent: 0.060092, color: '#cfcc26'},
-PF: {confirmed: 42, failed: 0, recovered: 0, percent: 0.015038, color: '#93bb2b'},
-MM: {confirmed: 22, failed: 1, recovered: 0, percent: 0.000041, color: '#93bb2b'},
-MW: {confirmed: 5, failed: 0, recovered: 0, percent: 0.000027, color: '#93bb2b'},
-YT: {confirmed: 147, failed: 2, recovered: 14, percent: 0.055222, color: '#93bb2b'},
-SO: {confirmed: 7, failed: 0, recovered: 1, percent: 0.000045, color: '#93bb2b'},
-RO: {confirmed: 4057, failed: 176, recovered: 406, percent: 0.020951, color: '#d79323'},
-AL: {confirmed: 377, failed: 21, recovered: 116, percent: 0.013086, color: '#d4bf25'},
-IM: {confirmed: 139, failed: 1, recovered: 55, percent: 0.164303, color: '#d4bf26'},
-ES: {confirmed: 136675, failed: 13341, recovered: 40437, percent: 0.292436, color: '#d7421e'},
-BZ: {confirmed: 7, failed: 1, recovered: 0, percent: 0.001793, color: '#cfcc26'},
-AF: {confirmed: 367, failed: 11, recovered: 18, percent: 0.000965, color: '#d4bf25'},
-KH: {confirmed: 114, failed: 0, recovered: 53, percent: 0.000691, color: '#93bb2b'},
-SD: {confirmed: 12, failed: 2, recovered: 2, percent: 0.000028, color: '#93bb2b'},
-TZ: {confirmed: 24, failed: 1, recovered: 3, percent: 0.000041, color: '#cfcc26'},
-GY: {confirmed: 31, failed: 4, recovered: 8, percent: 0.003960, color: '#d4bf26'},
-EH: {confirmed: 4, failed: 0, recovered: 0, percent: 0.000687, color: '#93bb2b'},
-CR: {confirmed: 467, failed: 2, recovered: 18, percent: 0.009252, color: '#d4bf26'},
-HU: {confirmed: 744, failed: 38, recovered: 67, percent: 0.007682, color: '#d4bf26'},
-KR: {confirmed: 10284, failed: 186, recovered: 6598, percent: 0.020076, color: '#d7ab24'},
-IS: {confirmed: 1562, failed: 6, recovered: 460, percent: 0.460767, color: '#d7ab24'},
-BN: {confirmed: 135, failed: 1, recovered: 82, percent: 0.031156, color: '#93bb2b'},
-SV: {confirmed: 69, failed: 4, recovered: 5, percent: 0.001069, color: '#d4bf26'},
-UG: {confirmed: 52, failed: 0, recovered: 0, percent: 0.000117, color: '#93bb2b'},
-GB: {confirmed: 51931, failed: 5380, recovered: 162, percent: 0.076900, color: '#d7421e'},
-GP: {confirmed: 135, failed: 7, recovered: 31, percent: 0.033742, color: '#93bb2b'},
-GQ: {confirmed: 16, failed: 0, recovered: 3, percent: 0.001180, color: '#93bb2b'},
-ML: {confirmed: 47, failed: 5, recovered: 9, percent: 0.000239, color: '#cfcc26'},
-AZ: {confirmed: 641, failed: 7, recovered: 44, percent: 0.006380, color: '#d7ab24'},
-GW: {confirmed: 18, failed: 0, recovered: 0, percent: 0.000937, color: '#93bb2b'},
-EE: {confirmed: 1108, failed: 19, recovered: 62, percent: 0.083585, color: '#d4bf26'},
-PK: {confirmed: 3766, failed: 53, recovered: 259, percent: 0.001739, color: '#d77820'},
-AG: {confirmed: 15, failed: 0, recovered: 0, percent: 0.015448, color: '#93bb2b'},
-MZ: {confirmed: 10, failed: 0, recovered: 1, percent: 0.000033, color: '#93bb2b'},
-MY: {confirmed: 3793, failed: 62, recovered: 1241, percent: 0.011872, color: '#d79323'},
-MU: {confirmed: 244, failed: 7, recovered: 7, percent: 0.019217, color: '#d4bf25'},
-NC: {confirmed: 18, failed: 0, recovered: 1, percent: 0.006365, color: '#93bb2b'},
-MV: {confirmed: 19, failed: 0, recovered: 13, percent: 0.003578, color: '#93bb2b'},
-DE: {confirmed: 103374, failed: 1810, recovered: 28700, percent: 0.123776, color: '#d7421e'},
-PS: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
-LB: {confirmed: 541, failed: 19, recovered: 60, percent: 0.007891, color: '#d4bf25'},
-MK: {confirmed: 570, failed: 23, recovered: 30, percent: 0.027358, color: '#d4bf25'},
-GL: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
-LU: {confirmed: 2843, failed: 41, recovered: 500, percent: 0.461751, color: '#d7ab24'},
-PM: {confirmed: 1, failed: 0, recovered: 0, percent: 0.017241, color: '#93bb2b'},
-CM: {confirmed: 658, failed: 9, recovered: 17, percent: 0.002543, color: '#d4bf26'},
-CW: {confirmed: 13, failed: 1, recovered: 5, percent: 0.007956, color: '#cfcc26'},
-XK: {confirmed: 145, failed: 1, recovered: 23, percent: 0.008009, color: '#93bb2b'},
-SG: {confirmed: 1375, failed: 6, recovered: 344, percent: 0.023689, color: '#d7ab24'},
-HR: {confirmed: 1222, failed: 16, recovered: 130, percent: 0.029586, color: '#d7ab24'},
-PR: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
-DK: {confirmed: 4875, failed: 187, recovered: 1489, percent: 0.084461, color: '#d77820'},
-NO: {confirmed: 5865, failed: 76, recovered: 32, percent: 0.109037, color: '#d79323'},
-BA: {confirmed: 674, failed: 29, recovered: 47, percent: 0.020418, color: '#d4bf25'},
-KW: {confirmed: 665, failed: 1, recovered: 103, percent: 0.015807, color: '#d79323'},
-MO: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
-JM: {confirmed: 58, failed: 3, recovered: 8, percent: 0.001967, color: '#93bb2b'},
-TW: {confirmed: 373, failed: 5, recovered: 57, percent: 0.001569, color: '#d4bf26'},
-SM: {confirmed: 266, failed: 32, recovered: 35, percent: 0.784661, color: '#93bb2b'},
-LR: {confirmed: 14, failed: 3, recovered: 3, percent: 0.000284, color: '#93bb2b'},
-AI: {confirmed: 3, failed: 0, recovered: 0, percent: 0.020134, color: '#93bb2b'},
-JP: {confirmed: 3654, failed: 85, recovered: 575, percent: 0.002880, color: '#d77820'},
-FK: {confirmed: 2, failed: 0, recovered: 0, percent: 0.058858, color: '#93bb2b'},
-BM: {confirmed: 39, failed: 2, recovered: 17, percent: 0.062400, color: '#cfcc26'},
-HT: {confirmed: 24, failed: 1, recovered: 0, percent: 0.000213, color: '#cfcc26'},
-AM: {confirmed: 833, failed: 8, recovered: 62, percent: 0.028164, color: '#d4bf26'},
-SA: {confirmed: 2605, failed: 38, recovered: 551, percent: 0.007602, color: '#d79323'},
-BJ: {confirmed: 26, failed: 1, recovered: 5, percent: 0.000220, color: '#cfcc26'},
-TN: {confirmed: 596, failed: 22, recovered: 5, percent: 0.005096, color: '#d4bf25'},
-ER: {confirmed: 31, failed: 0, recovered: 0, percent: 0.000886, color: '#cfcc26'},
-NA: {confirmed: 16, failed: 0, recovered: 3, percent: 0.000641, color: '#93bb2b'},
-JO: {confirmed: 349, failed: 6, recovered: 126, percent: 0.003455, color: '#cfcc26'},
-HK: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
-BW: {confirmed: 6, failed: 1, recovered: 0, percent: 0.000260, color: '#93bb2b'},
-GT: {confirmed: 70, failed: 3, recovered: 15, percent: 0.000398, color: '#d4bf26'},
-NE: {confirmed: 253, failed: 10, recovered: 26, percent: 0.001085, color: '#d7ab24'},
-FO: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
-QA: {confirmed: 1832, failed: 4, recovered: 131, percent: 0.064687, color: '#d79323'},
-SL: {confirmed: 6, failed: 0, recovered: 0, percent: 0.000077, color: '#93bb2b'},
-CA: {confirmed: 16563, failed: 339, recovered: 3256, percent: 0.044273, color: '#d75c20'},
-VN: {confirmed: 245, failed: 0, recovered: 95, percent: 0.000254, color: '#cfcc26'},
-LY: {confirmed: 19, failed: 1, recovered: 1, percent: 0.000280, color: '#93bb2b'},
-AR: {confirmed: 1554, failed: 48, recovered: 325, percent: 0.003470, color: '#d79323'},
-CD: {confirmed: 161, failed: 18, recovered: 5, percent: 0.000186, color: '#d4bf26'},
-BR: {confirmed: 12161, failed: 564, recovered: 127, percent: 0.005762, color: '#d75c20'},
-BE: {confirmed: 20814, failed: 1632, recovered: 3986, percent: 0.180375, color: '#d75c20'},
-AD: {confirmed: 525, failed: 21, recovered: 31, percent: 0.680934, color: '#d4bf25'},
-TD: {confirmed: 9, failed: 0, recovered: 0, percent: 0.000056, color: '#93bb2b'},
-SI: {confirmed: 1021, failed: 30, recovered: 102, percent: 0.049117, color: '#d4bf25'},
-BY: {confirmed: 700, failed: 13, recovered: 53, percent: 0.007406, color: '#d79323'},
-NG: {confirmed: 238, failed: 5, recovered: 35, percent: 0.000118, color: '#d4bf26'},
-AO: {confirmed: 16, failed: 2, recovered: 2, percent: 0.000050, color: '#cfcc26'},
-LT: {confirmed: 843, failed: 15, recovered: 8, percent: 0.030548, color: '#d4bf25'},
-BD: {confirmed: 123, failed: 12, recovered: 33, percent: 0.000075, color: '#d4bf25'},
-LI: {confirmed: 77, failed: 1, recovered: 55, percent: 0.202632, color: '#93bb2b'},
-CL: {confirmed: 4815, failed: 37, recovered: 728, percent: 0.025406, color: '#d77820'},
-LA: {confirmed: 12, failed: 0, recovered: 0, percent: 0.000167, color: '#93bb2b'},
-IN: {confirmed: 4778, failed: 136, recovered: 375, percent: 0.000350, color: '#d75c20'},
-CV: {confirmed: 7, failed: 1, recovered: 1, percent: 0.001273, color: '#93bb2b'},
-TT: {confirmed: 105, failed: 8, recovered: 1, percent: 0.007527, color: '#93bb2b'},
-NZ: {confirmed: 1106, failed: 1, recovered: 176, percent: 0.023123, color: '#d7ab24'},
-CU: {confirmed: 350, failed: 9, recovered: 18, percent: 0.003088, color: '#d4bf25'},
-DZ: {confirmed: 1423, failed: 173, recovered: 90, percent: 0.003305, color: '#d79323'},
-ZA: {confirmed: 1686, failed: 12, recovered: 95, percent: 0.002879, color: '#d4bf25'},
-GU: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
-ME: {confirmed: 233, failed: 2, recovered: 1, percent: 0.037102, color: '#d4bf25'},
-GR: {confirmed: 1755, failed: 79, recovered: 269, percent: 0.016757, color: '#d4bf25'},
-BL: {confirmed: 6, failed: 0, recovered: 1, percent: 0.061268, color: '#93bb2b'},
-TG: {confirmed: 58, failed: 3, recovered: 23, percent: 0.000718, color: '#d4bf25'},
-DO: {confirmed: 1828, failed: 86, recovered: 33, percent: 0.017022, color: '#d7ab24'},
-PE: {confirmed: 2561, failed: 92, recovered: 997, percent: 0.007877, color: '#d79323'},
-AE: {confirmed: 2076, failed: 11, recovered: 167, percent: 0.021248, color: '#d79323'},
-MX: {confirmed: 2143, failed: 94, recovered: 633, percent: 0.001680, color: '#d79323'},
-OM: {confirmed: 331, failed: 2, recovered: 61, percent: 0.006653, color: '#d4bf25'},
-VG: {confirmed: 3, failed: 0, recovered: 0, percent: 0.010000, color: '#93bb2b'},
-GN: {confirmed: 128, failed: 0, recovered: 5, percent: 0.001002, color: '#d4bf26'},
-AW: {confirmed: 71, failed: 0, recovered: 2, percent: 0.066792, color: '#d4bf26'},
-SS: {confirmed: 1, failed: 0, recovered: 0, percent: 0.000009, color: '#93bb2b'},
-DM: {confirmed: 15, failed: 0, recovered: 1, percent: 0.020891, color: '#93bb2b'},
-UA: {confirmed: 1319, failed: 38, recovered: 28, percent: 0.002998, color: '#d4bf26'},
-AU: {confirmed: 5797, failed: 40, recovered: 1080, percent: 0.023001, color: '#d79323'},
-TH: {confirmed: 2220, failed: 26, recovered: 793, percent: 0.003188, color: '#d7ab24'},
-NI: {confirmed: 6, failed: 1, recovered: 0, percent: 0.000092, color: '#93bb2b'},
-IT: {confirmed: 132547, failed: 16523, recovered: 22837, percent: 0.218905, color: '#d7421e'},
-CH: {confirmed: 21657, failed: 765, recovered: 8056, percent: 0.252078, color: '#d77820'},
-PY: {confirmed: 113, failed: 5, recovered: 12, percent: 0.001604, color: '#d4bf26'},
-RE: {confirmed: 349, failed: 0, recovered: 40, percent: 0.039262, color: '#d4bf26'},
-KZ: {confirmed: 662, failed: 6, recovered: 46, percent: 0.003568, color: '#d7ab24'},
-ID: {confirmed: 2491, failed: 209, recovered: 192, percent: 0.000920, color: '#d79323'},
-GE: {confirmed: 188, failed: 2, recovered: 39, percent: 0.004704, color: '#d4bf25'},
-FI: {confirmed: 2176, failed: 27, recovered: 300, percent: 0.039333, color: '#d79323'},
-IL: {confirmed: 9158, failed: 58, recovered: 609, percent: 0.107496, color: '#d77820'},
-KG: {confirmed: 216, failed: 4, recovered: 33, percent: 0.003367, color: '#d7ab24'},
-DJ: {confirmed: 90, failed: 0, recovered: 9, percent: 0.009244, color: '#d4bf25'},
-KN: {confirmed: 10, failed: 0, recovered: 0, percent: 0.018939, color: '#93bb2b'},
-CZ: {confirmed: 4822, failed: 78, recovered: 121, percent: 0.045111, color: '#d79323'},
-US: {confirmed: 366462, failed: 10780, recovered: 19581, percent: 0.111365, color: '#d71c1c'},
-GA: {confirmed: 24, failed: 1, recovered: 1, percent: 0.001105, color: '#cfcc26'},
-UY: {confirmed: 406, failed: 6, recovered: 104, percent: 0.011728, color: '#d4bf26'},
-LV: {confirmed: 542, failed: 1, recovered: 16, percent: 0.028426, color: '#d4bf26'},
-SY: {confirmed: 19, failed: 2, recovered: 2, percent: 0.000111, color: '#93bb2b'},
-KE: {confirmed: 158, failed: 6, recovered: 4, percent: 0.000301, color: '#d4bf25'},
-MR: {confirmed: 6, failed: 1, recovered: 2, percent: 0.000133, color: '#93bb2b'},
-RU: {confirmed: 6343, failed: 47, recovered: 406, percent: 0.004348, color: '#d75c20'},
-PL: {confirmed: 4413, failed: 107, recovered: 162, percent: 0.011648, color: '#d77820'},
-SK: {confirmed: 534, failed: 2, recovered: 8, percent: 0.009786, color: '#d7ab24'},
-TC: {confirmed: 8, failed: 1, recovered: 0, percent: 0.020942, color: '#cfcc26'},
+                CG: {confirmed: 60, failed: 5, recovered: 5, percent: 0.001115, color: '#93bb2b'},
+TW: {confirmed: 388, failed: 6, recovered: 109, percent: 0.001632, color: '#cfcc26'},
+IQ: {confirmed: 1352, failed: 76, recovered: 640, percent: 0.003439, color: '#d4bf25'},
+DE: {confirmed: 127854, failed: 3022, recovered: 60300, percent: 0.153087, color: '#d7421e'},
+MZ: {confirmed: 21, failed: 0, recovered: 2, percent: 0.000069, color: '#93bb2b'},
+YE: {confirmed: 1, failed: 0, recovered: 0, percent: 0.000003, color: '#93bb2b'},
+ID: {confirmed: 4241, failed: 373, recovered: 359, percent: 0.001567, color: '#d77820'},
+MM: {confirmed: 41, failed: 4, recovered: 2, percent: 0.000076, color: '#cfcc26'},
+CL: {confirmed: 7213, failed: 80, recovered: 2059, percent: 0.038059, color: '#d77820'},
+MV: {confirmed: 20, failed: 0, recovered: 14, percent: 0.003766, color: '#93bb2b'},
+TN: {confirmed: 707, failed: 31, recovered: 43, percent: 0.006045, color: '#d4bf25'},
 SC: {confirmed: 11, failed: 0, recovered: 0, percent: 0.011259, color: '#93bb2b'},
-BI: {confirmed: 3, failed: 0, recovered: 0, percent: 0.000026, color: '#93bb2b'},
-VE: {confirmed: 165, failed: 7, recovered: 65, percent: 0.000579, color: '#d4bf26'},
-IR: {confirmed: 60500, failed: 3739, recovered: 24236, percent: 0.072967, color: '#d7421e'},
-NP: {confirmed: 9, failed: 0, recovered: 1, percent: 0.000031, color: '#93bb2b'},
-BB: {confirmed: 60, failed: 2, recovered: 6, percent: 0.020906, color: '#cfcc26'},
-CG: {confirmed: 45, failed: 5, recovered: 2, percent: 0.000836, color: '#93bb2b'},
-SN: {confirmed: 226, failed: 2, recovered: 92, percent: 0.001387, color: '#cfcc26'},
-BQ: {confirmed: 2, failed: 0, recovered: 0, percent: 0.007692, color: '#93bb2b'},
-FJ: {confirmed: 14, failed: 0, recovered: 0, percent: 0.001573, color: '#cfcc26'},
-PA: {confirmed: 1988, failed: 54, recovered: 13, percent: 0.046816, color: '#d79323'},
-MN: {confirmed: 15, failed: 0, recovered: 2, percent: 0.000465, color: '#93bb2b'},
-EC: {confirmed: 3747, failed: 191, recovered: 100, percent: 0.021567, color: '#d7ab24'},
-ZM: {confirmed: 39, failed: 1, recovered: 5, percent: 0.000218, color: '#93bb2b'},
-BO: {confirmed: 183, failed: 11, recovered: 2, percent: 0.001589, color: '#d4bf25'},
-VA: {confirmed: 7, failed: 0, recovered: 0, percent: 0.875000, color: '#93bb2b'},
-TL: {confirmed: 1, failed: 0, recovered: 0, percent: 0.000077, color: '#93bb2b'},
-ST: {confirmed: 4, failed: 0, recovered: 0, percent: 0.001860, color: '#cfcc26'},
-SR: {confirmed: 10, failed: 1, recovered: 0, percent: 0.001720, color: '#93bb2b'},
-CY: {confirmed: 465, failed: 9, recovered: 45, percent: 0.038795, color: '#d4bf25'},
-SX: {confirmed: 69, failed: 8, recovered: 8, percent: 0.166321, color: '#d4bf26'},
-MA: {confirmed: 1120, failed: 80, recovered: 81, percent: 0.003071, color: '#d7ab24'},
-MD: {confirmed: 965, failed: 19, recovered: 37, percent: 0.023867, color: '#d7ab24'},
-GF: {confirmed: 72, failed: 0, recovered: 34, percent: 0.024759, color: '#d4bf26'}
+SK: {confirmed: 742, failed: 2, recovered: 23, percent: 0.013597, color: '#d4bf25'},
+PS: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
+UG: {confirmed: 54, failed: 0, recovered: 4, percent: 0.000122, color: '#93bb2b'},
+ZM: {confirmed: 43, failed: 2, recovered: 30, percent: 0.000241, color: '#cfcc26'},
+FK: {confirmed: 5, failed: 0, recovered: 1, percent: 0.147145, color: '#93bb2b'},
+TL: {confirmed: 2, failed: 0, recovered: 1, percent: 0.000155, color: '#93bb2b'},
+HK: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
+BZ: {confirmed: 14, failed: 2, recovered: 0, percent: 0.003586, color: '#93bb2b'},
+SY: {confirmed: 25, failed: 2, recovered: 5, percent: 0.000146, color: '#93bb2b'},
+JM: {confirmed: 69, failed: 4, recovered: 13, percent: 0.002340, color: '#cfcc26'},
+HN: {confirmed: 393, failed: 25, recovered: 7, percent: 0.004032, color: '#93bb2b'},
+AD: {confirmed: 638, failed: 29, recovered: 128, percent: 0.827497, color: '#d7ab24'},
+PT: {confirmed: 16585, failed: 504, recovered: 277, percent: 0.162181, color: '#d77820'},
+CR: {confirmed: 595, failed: 3, recovered: 56, percent: 0.011788, color: '#d4bf25'},
+VN: {confirmed: 262, failed: 0, recovered: 144, percent: 0.000272, color: '#cfcc26'},
+ST: {confirmed: 4, failed: 0, recovered: 0, percent: 0.001860, color: '#93bb2b'},
+ZW: {confirmed: 14, failed: 3, recovered: 0, percent: 0.000096, color: '#93bb2b'},
+RW: {confirmed: 126, failed: 0, recovered: 25, percent: 0.000998, color: '#d4bf26'},
+SV: {confirmed: 125, failed: 6, recovered: 21, percent: 0.001937, color: '#d4bf26'},
+BJ: {confirmed: 35, failed: 1, recovered: 5, percent: 0.000297, color: '#93bb2b'},
+HR: {confirmed: 1600, failed: 23, recovered: 373, percent: 0.038738, color: '#d7ab24'},
+IN: {confirmed: 9205, failed: 331, recovered: 1080, percent: 0.000674, color: '#d77820'},
+SM: {confirmed: 356, failed: 35, recovered: 53, percent: 1.050147, color: '#93bb2b'},
+GA: {confirmed: 49, failed: 1, recovered: 1, percent: 0.002255, color: '#cfcc26'},
+DJ: {confirmed: 214, failed: 2, recovered: 36, percent: 0.021980, color: '#d4bf25'},
+GR: {confirmed: 2114, failed: 98, recovered: 269, percent: 0.020184, color: '#d4bf25'},
+KZ: {confirmed: 951, failed: 10, recovered: 99, percent: 0.005126, color: '#d7ab24'},
+EG: {confirmed: 2065, failed: 159, recovered: 589, percent: 0.002057, color: '#d79323'},
+KG: {confirmed: 377, failed: 5, recovered: 54, percent: 0.005876, color: '#d7ab24'},
+SR: {confirmed: 10, failed: 1, recovered: 4, percent: 0.001720, color: '#93bb2b'},
+SD: {confirmed: 19, failed: 2, recovered: 2, percent: 0.000044, color: '#93bb2b'},
+BT: {confirmed: 5, failed: 0, recovered: 2, percent: 0.000655, color: '#93bb2b'},
+IS: {confirmed: 1701, failed: 8, recovered: 889, percent: 0.501770, color: '#d4bf26'},
+BI: {confirmed: 5, failed: 0, recovered: 0, percent: 0.000043, color: '#93bb2b'},
+LB: {confirmed: 630, failed: 20, recovered: 80, percent: 0.009189, color: '#d4bf26'},
+ET: {confirmed: 71, failed: 3, recovered: 10, percent: 0.000063, color: '#cfcc26'},
+CN: {confirmed: 83134, failed: 3343, recovered: 77956, percent: 0.005798, color: '#d79323'},
+SI: {confirmed: 1205, failed: 53, recovered: 150, percent: 0.057969, color: '#d4bf25'},
+LV: {confirmed: 651, failed: 5, recovered: 16, percent: 0.034143, color: '#d4bf25'},
+PR: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
+QA: {confirmed: 2979, failed: 7, recovered: 275, percent: 0.105187, color: '#d79323'},
+SL: {confirmed: 10, failed: 0, recovered: 0, percent: 0.000128, color: '#cfcc26'},
+LY: {confirmed: 25, failed: 1, recovered: 9, percent: 0.000369, color: '#93bb2b'},
+SO: {confirmed: 25, failed: 1, recovered: 2, percent: 0.000162, color: '#cfcc26'},
+MS: {confirmed: 9, failed: 0, recovered: 0, percent: 0.180000, color: '#93bb2b'},
+MA: {confirmed: 1661, failed: 118, recovered: 177, percent: 0.004554, color: '#d79323'},
+AL: {confirmed: 446, failed: 23, recovered: 217, percent: 0.015481, color: '#d4bf26'},
+GP: {confirmed: 143, failed: 8, recovered: 67, percent: 0.035741, color: '#93bb2b'},
+TG: {confirmed: 76, failed: 3, recovered: 29, percent: 0.000940, color: '#93bb2b'},
+ER: {confirmed: 34, failed: 0, recovered: 0, percent: 0.000972, color: '#93bb2b'},
+RO: {confirmed: 6300, failed: 316, recovered: 852, percent: 0.032534, color: '#d77820'},
+EE: {confirmed: 1309, failed: 25, recovered: 98, percent: 0.098748, color: '#d4bf26'},
+FI: {confirmed: 2974, failed: 56, recovered: 300, percent: 0.053758, color: '#d7ab24'},
+FJ: {confirmed: 16, failed: 0, recovered: 0, percent: 0.001798, color: '#93bb2b'},
+LU: {confirmed: 3281, failed: 66, recovered: 500, percent: 0.532889, color: '#d4bf26'},
+CZ: {confirmed: 5991, failed: 138, recovered: 464, percent: 0.056047, color: '#d79323'},
+GD: {confirmed: 14, failed: 0, recovered: 0, percent: 0.012500, color: '#93bb2b'},
+BW: {confirmed: 13, failed: 1, recovered: 0, percent: 0.000564, color: '#93bb2b'},
+NZ: {confirmed: 1330, failed: 4, recovered: 471, percent: 0.027806, color: '#d4bf25'},
+AW: {confirmed: 92, failed: 0, recovered: 32, percent: 0.086548, color: '#93bb2b'},
+NI: {confirmed: 9, failed: 1, recovered: 4, percent: 0.000137, color: '#93bb2b'},
+NA: {confirmed: 16, failed: 0, recovered: 3, percent: 0.000641, color: '#93bb2b'},
+RE: {confirmed: 389, failed: 0, recovered: 40, percent: 0.043762, color: '#93bb2b'},
+AM: {confirmed: 1013, failed: 13, recovered: 197, percent: 0.034250, color: '#d7ab24'},
+AF: {confirmed: 607, failed: 18, recovered: 32, percent: 0.001596, color: '#d7ab24'},
+BR: {confirmed: 22192, failed: 1223, recovered: 173, percent: 0.010515, color: '#d75c20'},
+VE: {confirmed: 181, failed: 9, recovered: 93, percent: 0.000635, color: '#d4bf26'},
+HU: {confirmed: 1410, failed: 99, recovered: 118, percent: 0.014559, color: '#d7ab24'},
+CW: {confirmed: 14, failed: 1, recovered: 8, percent: 0.008568, color: '#93bb2b'},
+TT: {confirmed: 113, failed: 8, recovered: 16, percent: 0.008100, color: '#93bb2b'},
+PF: {confirmed: 53, failed: 0, recovered: 0, percent: 0.018976, color: '#cfcc26'},
+KE: {confirmed: 197, failed: 8, recovered: 25, percent: 0.000375, color: '#d4bf26'},
+SS: {confirmed: 4, failed: 0, recovered: 0, percent: 0.000036, color: '#93bb2b'},
+KR: {confirmed: 10512, failed: 214, recovered: 7368, percent: 0.020521, color: '#d4bf25'},
+CY: {confirmed: 633, failed: 11, recovered: 65, percent: 0.052812, color: '#d4bf25'},
+BQ: {confirmed: 3, failed: 0, recovered: 0, percent: 0.011538, color: '#93bb2b'},
+ZA: {confirmed: 2173, failed: 25, recovered: 410, percent: 0.003711, color: '#d79323'},
+UA: {confirmed: 2777, failed: 83, recovered: 89, percent: 0.006312, color: '#d79323'},
+MR: {confirmed: 7, failed: 1, recovered: 2, percent: 0.000155, color: '#93bb2b'},
+BF: {confirmed: 497, failed: 27, recovered: 161, percent: 0.002446, color: '#d4bf26'},
+LR: {confirmed: 50, failed: 5, recovered: 3, percent: 0.001013, color: '#cfcc26'},
+CM: {confirmed: 820, failed: 12, recovered: 98, percent: 0.003169, color: '#93bb2b'},
+IT: {confirmed: 156363, failed: 19899, recovered: 34211, percent: 0.258237, color: '#d7421e'},
+KY: {confirmed: 53, failed: 1, recovered: 6, percent: 0.081664, color: '#d4bf26'},
+GF: {confirmed: 86, failed: 0, recovered: 51, percent: 0.029574, color: '#cfcc26'},
+FO: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
+KN: {confirmed: 12, failed: 0, recovered: 0, percent: 0.022727, color: '#93bb2b'},
+NC: {confirmed: 18, failed: 0, recovered: 1, percent: 0.006365, color: '#93bb2b'},
+MK: {confirmed: 828, failed: 34, recovered: 41, percent: 0.039741, color: '#d7ab24'},
+SE: {confirmed: 10483, failed: 899, recovered: 381, percent: 0.104450, color: '#d77820'},
+ES: {confirmed: 166831, failed: 17209, recovered: 62391, percent: 0.356959, color: '#d7421e'},
+GL: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
+PY: {confirmed: 134, failed: 6, recovered: 22, percent: 0.001902, color: '#93bb2b'},
+DO: {confirmed: 2967, failed: 173, recovered: 131, percent: 0.027628, color: '#d79323'},
+EC: {confirmed: 7466, failed: 333, recovered: 501, percent: 0.042973, color: '#d79323'},
+DM: {confirmed: 16, failed: 0, recovered: 8, percent: 0.022284, color: '#93bb2b'},
+PK: {confirmed: 5230, failed: 91, recovered: 1028, percent: 0.002415, color: '#d79323'},
+UY: {confirmed: 480, failed: 7, recovered: 231, percent: 0.013866, color: '#93bb2b'},
+ML: {confirmed: 105, failed: 9, recovered: 22, percent: 0.000534, color: '#d4bf25'},
+CF: {confirmed: 8, failed: 0, recovered: 0, percent: 0.000169, color: '#93bb2b'},
+RS: {confirmed: 3630, failed: 80, recovered: 0, percent: 0.041381, color: '#d79323'},
+JO: {confirmed: 389, failed: 7, recovered: 201, percent: 0.003851, color: '#d4bf26'},
+FR: {confirmed: 132591, failed: 14393, recovered: 27186, percent: 0.203580, color: '#d7421e'},
+MD: {confirmed: 1662, failed: 31, recovered: 94, percent: 0.041105, color: '#d79323'},
+KW: {confirmed: 1234, failed: 1, recovered: 142, percent: 0.029331, color: '#d7ab24'},
+IM: {confirmed: 228, failed: 2, recovered: 112, percent: 0.269504, color: '#cfcc26'},
+BD: {confirmed: 621, failed: 34, recovered: 39, percent: 0.000381, color: '#d79323'},
+BM: {confirmed: 57, failed: 4, recovered: 29, percent: 0.091200, color: '#d4bf26'},
+MQ: {confirmed: 155, failed: 6, recovered: 50, percent: 0.041267, color: '#93bb2b'},
+JP: {confirmed: 6748, failed: 108, recovered: 762, percent: 0.005319, color: '#d77820'},
+BO: {confirmed: 300, failed: 24, recovered: 2, percent: 0.002606, color: '#d4bf25'},
+LI: {confirmed: 79, failed: 1, recovered: 55, percent: 0.207895, color: '#93bb2b'},
+PA: {confirmed: 3234, failed: 79, recovered: 23, percent: 0.076159, color: '#d79323'},
+GI: {confirmed: 129, failed: 0, recovered: 84, percent: 0.382789, color: '#93bb2b'},
+UZ: {confirmed: 865, failed: 4, recovered: 66, percent: 0.002623, color: '#d7ab24'},
+XK: {confirmed: 283, failed: 7, recovered: 58, percent: 0.015631, color: '#93bb2b'},
+BN: {confirmed: 136, failed: 1, recovered: 106, percent: 0.031387, color: '#93bb2b'},
+DK: {confirmed: 6369, failed: 273, recovered: 2291, percent: 0.110345, color: '#d79323'},
+HT: {confirmed: 33, failed: 3, recovered: 0, percent: 0.000293, color: '#93bb2b'},
+CD: {confirmed: 234, failed: 20, recovered: 16, percent: 0.000270, color: '#d4bf26'},
+BA: {confirmed: 1009, failed: 39, recovered: 193, percent: 0.030566, color: '#d7ab24'},
+IR: {confirmed: 71686, failed: 4474, recovered: 43894, percent: 0.086458, color: '#d75c20'},
+MX: {confirmed: 4219, failed: 273, recovered: 1772, percent: 0.003307, color: '#d77820'},
+PG: {confirmed: 2, failed: 0, recovered: 0, percent: 0.000023, color: '#93bb2b'},
+GQ: {confirmed: 21, failed: 0, recovered: 3, percent: 0.001549, color: '#cfcc26'},
+NO: {confirmed: 6525, failed: 128, recovered: 32, percent: 0.121307, color: '#d79323'},
+RU: {confirmed: 15770, failed: 130, recovered: 1291, percent: 0.010811, color: '#d75c20'},
+AO: {confirmed: 19, failed: 2, recovered: 4, percent: 0.000060, color: '#93bb2b'},
+SN: {confirmed: 280, failed: 2, recovered: 171, percent: 0.001718, color: '#cfcc26'},
+TR: {confirmed: 56956, failed: 1198, recovered: 3446, percent: 0.068268, color: '#d7421e'},
+BB: {confirmed: 71, failed: 4, recovered: 11, percent: 0.024739, color: '#cfcc26'},
+IL: {confirmed: 11435, failed: 105, recovered: 1685, percent: 0.134223, color: '#d77820'},
+EH: {confirmed: 6, failed: 0, recovered: 0, percent: 0.001030, color: '#cfcc26'},
+GH: {confirmed: 566, failed: 8, recovered: 4, percent: 0.001861, color: '#d79323'},
+YT: {confirmed: 196, failed: 3, recovered: 59, percent: 0.073629, color: '#93bb2b'},
+BG: {confirmed: 675, failed: 29, recovered: 68, percent: 0.009643, color: '#d4bf25'},
+GW: {confirmed: 38, failed: 0, recovered: 0, percent: 0.001978, color: '#93bb2b'},
+SA: {confirmed: 4462, failed: 59, recovered: 761, percent: 0.013021, color: '#d77820'},
+PM: {confirmed: 1, failed: 0, recovered: 0, percent: 0.017241, color: '#93bb2b'},
+AG: {confirmed: 21, failed: 2, recovered: 0, percent: 0.021627, color: '#93bb2b'},
+LK: {confirmed: 210, failed: 7, recovered: 56, percent: 0.000985, color: '#d4bf26'},
+AI: {confirmed: 3, failed: 0, recovered: 0, percent: 0.020134, color: '#93bb2b'},
+PL: {confirmed: 6674, failed: 232, recovered: 439, percent: 0.017615, color: '#d77820'},
+BH: {confirmed: 1136, failed: 6, recovered: 558, percent: 0.069218, color: '#d7ab24'},
+BS: {confirmed: 46, failed: 8, recovered: 5, percent: 0.011810, color: '#93bb2b'},
+GY: {confirmed: 45, failed: 6, recovered: 8, percent: 0.005749, color: '#93bb2b'},
+NE: {confirmed: 529, failed: 12, recovered: 75, percent: 0.002269, color: '#d7ab24'},
+LA: {confirmed: 19, failed: 0, recovered: 0, percent: 0.000265, color: '#93bb2b'},
+CH: {confirmed: 25415, failed: 1106, recovered: 12700, percent: 0.295819, color: '#d77820'},
+NP: {confirmed: 12, failed: 0, recovered: 1, percent: 0.000042, color: '#cfcc26'},
+VG: {confirmed: 3, failed: 0, recovered: 2, percent: 0.010000, color: '#93bb2b'},
+OM: {confirmed: 599, failed: 4, recovered: 109, percent: 0.012040, color: '#d7ab24'},
+NL: {confirmed: 25587, failed: 2737, recovered: 250, percent: 0.149657, color: '#d75c20'},
+AT: {confirmed: 13945, failed: 350, recovered: 6987, percent: 0.155721, color: '#d79323'},
+BE: {confirmed: 29647, failed: 3600, recovered: 6463, percent: 0.256922, color: '#d75c20'},
+BL: {confirmed: 6, failed: 0, recovered: 4, percent: 0.061268, color: '#93bb2b'},
+GE: {confirmed: 257, failed: 3, recovered: 67, percent: 0.006430, color: '#d4bf25'},
+MT: {confirmed: 378, failed: 3, recovered: 44, percent: 0.085831, color: '#d4bf26'},
+CV: {confirmed: 8, failed: 1, recovered: 1, percent: 0.001455, color: '#93bb2b'},
+GN: {confirmed: 250, failed: 0, recovered: 17, percent: 0.001958, color: '#93bb2b'},
+GT: {confirmed: 155, failed: 5, recovered: 19, percent: 0.000882, color: '#d4bf25'},
+KH: {confirmed: 122, failed: 0, recovered: 77, percent: 0.000740, color: '#cfcc26'},
+BY: {confirmed: 2578, failed: 26, recovered: 203, percent: 0.027273, color: '#d77820'},
+SG: {confirmed: 2532, failed: 8, recovered: 560, percent: 0.043623, color: '#d79323'},
+SX: {confirmed: 82, failed: 11, recovered: 16, percent: 0.197657, color: '#93bb2b'},
+TH: {confirmed: 2551, failed: 38, recovered: 1218, percent: 0.003664, color: '#d4bf25'},
+CU: {confirmed: 669, failed: 18, recovered: 92, percent: 0.005903, color: '#d7ab24'},
+TZ: {confirmed: 32, failed: 3, recovered: 5, percent: 0.000055, color: '#93bb2b'},
+GB: {confirmed: 84710, failed: 10621, recovered: 392, percent: 0.125440, color: '#d7421e'},
+GM: {confirmed: 9, failed: 1, recovered: 2, percent: 0.000383, color: '#93bb2b'},
+AR: {confirmed: 2142, failed: 90, recovered: 468, percent: 0.004783, color: '#d79323'},
+NG: {confirmed: 323, failed: 10, recovered: 85, percent: 0.000161, color: '#d4bf26'},
+PH: {confirmed: 4648, failed: 297, recovered: 197, percent: 0.004299, color: '#d79323'},
+TD: {confirmed: 18, failed: 0, recovered: 2, percent: 0.000113, color: '#d4bf26'},
+CA: {confirmed: 24299, failed: 713, recovered: 7123, percent: 0.064951, color: '#d75c20'},
+MY: {confirmed: 4683, failed: 76, recovered: 2108, percent: 0.014657, color: '#d79323'},
+VA: {confirmed: 8, failed: 0, recovered: 2, percent: 1.000000, color: '#93bb2b'},
+MG: {confirmed: 106, failed: 0, recovered: 20, percent: 0.000393, color: '#cfcc26'},
+PE: {confirmed: 7519, failed: 193, recovered: 1798, percent: 0.023128, color: '#d77820'},
+SZ: {confirmed: 14, failed: 0, recovered: 7, percent: 0.001219, color: '#cfcc26'},
+DZ: {confirmed: 1914, failed: 293, recovered: 591, percent: 0.004446, color: '#d7ab24'},
+AE: {confirmed: 4123, failed: 22, recovered: 680, percent: 0.042198, color: '#d77820'},
+MC: {confirmed: 93, failed: 1, recovered: 6, percent: 0.238462, color: '#93bb2b'},
+MU: {confirmed: 324, failed: 9, recovered: 42, percent: 0.025518, color: '#d4bf26'},
+AZ: {confirmed: 1098, failed: 11, recovered: 250, percent: 0.010928, color: '#d7ab24'},
+TC: {confirmed: 9, failed: 1, recovered: 0, percent: 0.023560, color: '#93bb2b'},
+LC: {confirmed: 15, failed: 0, recovered: 4, percent: 0.008206, color: '#93bb2b'},
+US: {confirmed: 555161, failed: 22020, recovered: 32988, percent: 0.168709, color: '#d71c1c'},
+IE: {confirmed: 9655, failed: 334, recovered: 25, percent: 0.197747, color: '#d77820'},
+ME: {confirmed: 272, failed: 3, recovered: 5, percent: 0.043312, color: '#d4bf26'},
+LT: {confirmed: 1053, failed: 23, recovered: 97, percent: 0.038158, color: '#d4bf25'},
+MW: {confirmed: 13, failed: 2, recovered: 0, percent: 0.000070, color: '#93bb2b'},
+MO: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
+GU: {confirmed: 0, failed: 0, recovered: 0, percent: 0.000000, color: 'gray'},
+CO: {confirmed: 2776, failed: 109, recovered: 270, percent: 0.005515, color: '#d7ab24'},
+AU: {confirmed: 6315, failed: 60, recovered: 1806, percent: 0.025056, color: '#d4bf26'},
+MN: {confirmed: 16, failed: 0, recovered: 4, percent: 0.000496, color: '#93bb2b'}
             }
         }
     });
@@ -405,27 +424,21 @@ GF: {confirmed: 72, failed: 0, recovered: 34, percent: 0.024759, color: '#d4bf26
 
 <div class="countries">
     
-    
-    <a name="countries"></a>
-    <h2>Statistics per Country</h2>
-    <p><a href="/">The whole world</a></p>
-    <p><a href="/-cn">World excluding China</a></p>
-    <p><a href="/countries">More statistics on countries</a></p>
-    <p><a href="/vs-china">Countries vs China</a></p>
-    <div class="countries-list">
-        <a name="countries"></a><p class="current"><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a> <span class="down">▼</span></p><p><a href="/al">Albania</a> <span class="down">▼</span></p><p><a href="/dz">Algeria</a> <span class="up">▲</span></p><p><a href="/ad">Andorra</a> <span class="down">▼</span></p><p><a href="/ao">Angola</a> <span class="down">▼</span></p><p><a href="/ai">Anguilla</a></p><p><a href="/ag">Antigua and Barbuda</a></p><p><a href="/ar">Argentina</a> <span class="up">▲</span></p><p><a href="/am">Armenia</a> <span class="down">▼</span></p><p><a href="/aw">Aruba</a> <span class="up">▲</span></p><p><a href="/au">Australia</a> <span class="down">▼</span></p><p><a href="/at">Austria</a> <span class="down">▼</span></p><p><a href="/az">Azerbaijan</a> <span class="down">▼</span></p><p><a href="/bs">Bahamas</a> <span class="up">▲</span></p><p><a href="/bh">Bahrain</a> <span class="up">▲</span></p><p><a href="/bd">Bangladesh</a> <span class="up">▲</span></p><p><a href="/bb">Barbados</a></p><p><a href="/by">Belarus</a> <span class="up">▲</span></p><p><a href="/be">Belgium</a> <span class="down">▼</span></p><p><a href="/bz">Belize</a> <span class="up">▲</span></p><p><a href="/bj">Benin</a> <span class="down">▼</span></p><p><a href="/bm">Bermuda</a></p><p><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a> <span class="up">▲</span></p><p><a href="/bq">Bonaire, St. Eustatius & Saba</a></p><p><a href="/ba">Bosnia and Herzegovina</a> <span class="down">▼</span></p><p><a href="/bw">Botswana</a> <span class="down">▼</span></p><p><a href="/br">Brazil</a> <span class="up">▲</span></p><p><a href="/vg">British Virgin Islands</a></p><p><a href="/bn">Brunei Darussalam</a></p><p><a href="/bg">Bulgaria</a> <span class="down">▼</span></p><p><a href="/bf">Burkina Faso</a> <span class="down">▼</span></p><p><a href="/bi">Burundi</a></p><p><a href="/cv">Cabo Verde</a></p><p><a href="/kh">Cambodia</a></p><p><a href="/cm">Cameroon</a> <span class="down">▼</span></p><p><a href="/ca">Canada</a> <span class="down">▼</span></p><p><a href="/ky">Cayman Islands</a> <span class="up">▲</span></p><p><a href="/cf">Central African Republic</a></p><p><a href="/td">Chad</a></p><p><a href="/cl">Chile</a> <span class="up">▲</span></p><p><a href="/cn">China</a> <span class="up">▲</span></p><p><a href="/hk">China, Hong Kong SAR</a></p><p><a href="/mo">China, Macao SAR</a></p><p><a href="/co">Colombia</a> <span class="up">▲</span></p><p><a href="/cg">Congo</a> <span class="down">▼</span></p><p><a href="/cr">Costa Rica</a> <span class="down">▼</span></p><p><a href="/hr">Croatia</a> <span class="down">▼</span></p><p><a href="/cu">Cuba</a> <span class="down">▼</span></p><p><a href="/cw">Curaçao</a> <span class="up">▲</span></p><p><a href="/cy">Cyprus</a> <span class="down">▼</span></p><p><a href="/cz">Czechia</a> <span class="up">▲</span></p><p><a href="/cd">Dem. Rep. of the Congo</a> <span class="up">▲</span></p><p><a href="/dk">Denmark</a> <span class="up">▲</span></p><p><a href="/dj">Djibouti</a> <span class="up">▲</span></p><p><a href="/dm">Dominica</a> <span class="up">▲</span></p><p><a href="/do">Dominican Republic</a> <span class="down">▼</span></p><p><a href="/ec">Ecuador</a> <span class="down">▼</span></p><p><a href="/eg">Egypt</a> <span class="up">▲</span></p><p><a href="/sv">El Salvador</a> <span class="up">▲</span></p><p><a href="/gq">Equatorial Guinea</a></p><p><a href="/er">Eritrea</a> <span class="up">▲</span></p><p><a href="/ee">Estonia</a> <span class="down">▼</span></p><p><a href="/sz">Eswatini</a> <span class="up">▲</span></p><p><a href="/et">Ethiopia</a> <span class="down">▼</span></p><p><a href="/fk">Falkland Islands</a> <span class="down">▼</span></p><p><a href="/fo">Faroe Islands</a></p><p><a href="/fj">Fiji</a> <span class="up">▲</span></p><p><a href="/fi">Finland</a> <span class="up">▲</span></p><p><a href="/fr">France</a> <span class="up">▲</span></p><p><a href="/gf">French Guiana</a> <span class="up">▲</span></p><p><a href="/pf">French Polynesia</a></p><p><a href="/ga">Gabon</a> <span class="up">▲</span></p><p><a href="/gm">Gambia</a></p><p><a href="/ge">Georgia</a> <span class="up">▲</span></p><p><a href="/de">Germany</a> <span class="down">▼</span></p><p><a href="/gh">Ghana</a> <span class="down">▼</span></p><p><a href="/gi">Gibraltar</a> <span class="up">▲</span></p><p><a href="/gr">Greece</a> <span class="down">▼</span></p><p><a href="/gl">Greenland</a></p><p><a href="/gd">Grenada</a></p><p><a href="/gp">Guadeloupe</a> <span class="down">▼</span></p><p><a href="/gu">Guam</a></p><p><a href="/gt">Guatemala</a> <span class="up">▲</span></p><p><a href="/gn">Guinea</a> <span class="down">▼</span></p><p><a href="/gw">Guinea-Bissau</a></p><p><a href="/gy">Guyana</a> <span class="up">▲</span></p><p><a href="/ht">Haiti</a> <span class="up">▲</span></p><p><a href="/va">Holy See</a></p><p><a href="/hn">Honduras</a> <span class="up">▲</span></p><p><a href="/hu">Hungary</a> <span class="down">▼</span></p><p><a href="/is">Iceland</a> <span class="up">▲</span></p><p><a href="/in">India</a> <span class="up">▲</span></p><p><a href="/id">Indonesia</a> <span class="up">▲</span></p><p><a href="/ir">Iran</a> <span class="down">▼</span></p><p><a href="/iq">Iraq</a> <span class="down">▼</span></p><p><a href="/ie">Ireland</a> <span class="down">▼</span></p><p><a href="/im">Isle of Man</a> <span class="up">▲</span></p><p><a href="/il">Israel</a> <span class="down">▼</span></p><p><a href="/it">Italy</a> <span class="down">▼</span></p><p><a href="/jm">Jamaica</a> <span class="down">▼</span></p><p><a href="/jp">Japan</a> <span class="up">▲</span></p><p><a href="/jo">Jordan</a> <span class="down">▼</span></p><p><a href="/kz">Kazakhstan</a> <span class="up">▲</span></p><p><a href="/ke">Kenya</a></p><p><a href="/xk">Kosovo</a> <span class="down">▼</span></p><p><a href="/kw">Kuwait</a> <span class="up">▲</span></p><p><a href="/kg">Kyrgyzstan</a> <span class="up">▲</span></p><p><a href="/la">Lao People's Dem. Rep.</a></p><p><a href="/lv">Latvia</a> <span class="down">▼</span></p><p><a href="/lb">Lebanon</a> <span class="up">▲</span></p><p><a href="/lr">Liberia</a> <span class="down">▼</span></p><p><a href="/ly">Libya</a> <span class="up">▲</span></p><p><a href="/li">Liechtenstein</a></p><p><a href="/lt">Lithuania</a> <span class="down">▼</span></p><p><a href="/lu">Luxembourg</a> <span class="down">▼</span></p><p><a href="/mg">Madagascar</a> <span class="up">▲</span></p><p><a href="/mw">Malawi</a> <span class="up">▲</span></p><p><a href="/my">Malaysia</a> <span class="down">▼</span></p><p><a href="/mv">Maldives</a></p><p><a href="/ml">Mali</a> <span class="down">▼</span></p><p><a href="/mt">Malta</a></p><p><a href="/mq">Martinique</a> <span class="down">▼</span></p><p><a href="/mr">Mauritania</a></p><p><a href="/mu">Mauritius</a> <span class="down">▼</span></p><p><a href="/yt">Mayotte</a> <span class="down">▼</span></p><p><a href="/mx">Mexico</a> <span class="up">▲</span></p><p><a href="/md">Moldova</a> <span class="down">▼</span></p><p><a href="/mc">Monaco</a> <span class="down">▼</span></p><p><a href="/mn">Mongolia</a> <span class="up">▲</span></p><p><a href="/me">Montenegro</a> <span class="up">▲</span></p><p><a href="/ms">Montserrat</a></p><p><a href="/ma">Morocco</a> <span class="down">▼</span></p><p><a href="/mz">Mozambique</a></p><p><a href="/mm">Myanmar</a> <span class="up">▲</span></p><p><a href="/na">Namibia</a> <span class="down">▼</span></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a> <span class="down">▼</span></p><p><a href="/nc">New Caledonia</a> <span class="down">▼</span></p><p><a href="/nz">New Zealand</a> <span class="down">▼</span></p><p><a href="/ni">Nicaragua</a> <span class="down">▼</span></p><p><a href="/ne">Niger</a> <span class="up">▲</span></p><p><a href="/ng">Nigeria</a> <span class="down">▼</span></p><p><a href="/mk">North Macedonia</a> <span class="down">▼</span></p><p><a href="/no">Norway</a> <span class="up">▲</span></p><p><a href="/om">Oman</a> <span class="up">▲</span></p><p><a href="/pk">Pakistan</a> <span class="up">▲</span></p><p><a href="/pa">Panama</a> <span class="up">▲</span></p><p><a href="/pg">Papua New Guinea</a> <span class="up">▲</span></p><p><a href="/py">Paraguay</a> <span class="up">▲</span></p><p><a href="/pe">Peru</a> <span class="down">▼</span></p><p><a href="/ph">Philippines</a> <span class="up">▲</span></p><p><a href="/pl">Poland</a> <span class="down">▼</span></p><p><a href="/pt">Portugal</a> <span class="down">▼</span></p><p><a href="/pr">Puerto Rico</a></p><p><a href="/qa">Qatar</a> <span class="down">▼</span></p><p><a href="/re">Réunion</a> <span class="down">▼</span></p><p><a href="/ro">Romania</a> <span class="down">▼</span></p><p><a href="/ru">Russian Federation</a> <span class="up">▲</span></p><p><a href="/rw">Rwanda</a> <span class="down">▼</span></p><p><a href="/bl">Saint Barthélemy</a></p><p><a href="/kn">Saint Kitts and Nevis</a> <span class="down">▼</span></p><p><a href="/lc">Saint Lucia</a></p><p><a href="/pm">Saint Pierre and Miquelon</a> <span class="down">▼</span></p><p><a href="/sm">San Marino</a> <span class="down">▼</span></p><p><a href="/st">Sao Tome and Principe</a> <span class="up">▲</span></p><p><a href="/sa">Saudi Arabia</a> <span class="down">▼</span></p><p><a href="/sn">Senegal</a> <span class="up">▲</span></p><p><a href="/rs">Serbia</a> <span class="up">▲</span></p><p><a href="/sc">Seychelles</a> <span class="up">▲</span></p><p><a href="/sl">Sierra Leone</a> <span class="down">▼</span></p><p><a href="/sg">Singapore</a> <span class="down">▼</span></p><p><a href="/sx">Sint Maarten</a> <span class="up">▲</span></p><p><a href="/sk">Slovakia</a> <span class="up">▲</span></p><p><a href="/si">Slovenia</a> <span class="up">▲</span></p><p><a href="/so">Somalia</a></p><p><a href="/za">South Africa</a> <span class="down">▼</span></p><p><a href="/kr">South Korea</a> <span class="down">▼</span></p><p><a href="/ss">South Sudan</a> <span class="down">▼</span></p><p><a href="/es">Spain</a> <span class="down">▼</span></p><p><a href="/lk">Sri Lanka</a> <span class="down">▼</span></p><p><a href="/ps">State of Palestine</a></p><p><a href="/sd">Sudan</a> <span class="down">▼</span></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a> <span class="down">▼</span></p><p><a href="/ch">Switzerland</a> <span class="down">▼</span></p><p><a href="/sy">Syrian Arab Republic</a> <span class="down">▼</span></p><p><a href="/tw">Taiwan</a> <span class="up">▲</span></p><p><a href="/tz">Tanzania</a></p><p><a href="/th">Thailand</a> <span class="down">▼</span></p><p><a href="/tl">Timor-Leste</a></p><p><a href="/tg">Togo</a> <span class="up">▲</span></p><p><a href="/tt">Trinidad and Tobago</a></p><p><a href="/tn">Tunisia</a> <span class="up">▲</span></p><p><a href="/tr">Turkey</a> <span class="up">▲</span></p><p><a href="/tc">Turks and Caicos Islands</a> <span class="up">▲</span></p><p><a href="/ug">Uganda</a> <span class="down">▼</span></p><p><a href="/ua">Ukraine</a> <span class="down">▼</span></p><p><a href="/ae">United Arab Emirates</a> <span class="down">▼</span></p><p><a href="/gb">United Kingdom</a> <span class="down">▼</span></p><p><a href="/us">United States of America</a> <span class="up">▲</span></p><p><a href="/uy">Uruguay</a> <span class="up">▲</span></p><p><a href="/uz">Uzbekistan</a> <span class="up">▲</span></p><p><a href="/ve">Venezuela</a> <span class="up">▲</span></p><p><a href="/vn">Viet Nam</a> <span class="up">▲</span></p><p><a href="/eh">Western Sahara</a> <span class="down">▼</span></p><p><a href="/zm">Zambia</a></p><p><a href="/zw">Zimbabwe</a> <span class="up">▲</span></p>
-    </div>
-    <p>The green and red arrows display the change of the number of new confirmed cases for the last two days.</p>
+
+    <a name="continents"></a>
+<h2>Statistics per Continent</h2>
+
+<div class="countries-list">
+    <p class="current"><a href="/">Whole world</a></p><p><a href="/africa">Africa</a></p><p><a href="/asia">Asia</a></p><p><a href="/europe">Europe</a></p><p><a href="/north-america">North America</a></p><p><a href="/oceania">Oceania</a></p><p><a href="/south-america">South America</a></p>
 </div>
 
-<div class="countries">
-    <a name="continents"></a>
-    <h2>Statistics per Continent</h2>
-    <p><a href="/continents">Spread over the continents timeline</a></p>
 
+    <a name="countries"></a>
+    <h2>Statistics per Country</h2>
     <div class="countries-list">
-        <p class="current"><a href="/">Whole world</a></p><p><a href="/africa">Africa</a></p><p><a href="/asia">Asia</a></p><p><a href="/europe">Europe</a></p><p><a href="/north-america">North America</a></p><p><a href="/oceania">Oceania</a></p><p><a href="/south-america">South America</a></p>
+        <a name="countries"></a><p class="current"><a href="/">Whole world</a></p><p><a href="/af">Afghanistan</a> <span class="up">▲</span></p><p><a href="/al">Albania</a> <span class="up">△</span></p><p><a href="/dz">Algeria</a> <span class="up">△</span></p><p><a href="/ad">Andorra</a> <span class="up">▲</span></p><p><a href="/ao">Angola</a> <span class="down">▼</span></p><p><a href="/ai">Anguilla</a></p><p><a href="/ag">Antigua and Barbuda</a> <span class="down">▽</span></p><p><a href="/ar">Argentina</a> <span class="up">▲</span></p><p><a href="/am">Armenia</a> <span class="up">▲</span></p><p><a href="/aw">Aruba</a> <span class="down">▼</span></p><p><a href="/au">Australia</a> <span class="down">▼</span></p><p><a href="/at">Austria</a> <span class="down">▼</span></p><p><a href="/az">Azerbaijan</a> <span class="down">▼</span></p><p><a href="/bs">Bahamas</a> <span class="down">▼</span></p><p><a href="/bh">Bahrain</a> <span class="up">▲▲</span></p><p><a href="/bd">Bangladesh</a> <span class="up">▲▲</span></p><p><a href="/bb">Barbados</a> <span class="up">▲</span></p><p><a href="/by">Belarus</a> <span class="up">▲</span></p><p><a href="/be">Belgium</a> <span class="up">△</span></p><p><a href="/bz">Belize</a> <span class="down">▽</span></p><p><a href="/bj">Benin</a> <span class="down">▼</span></p><p><a href="/bm">Bermuda</a> <span class="up">▲</span></p><p><a href="/bt">Bhutan</a></p><p><a href="/bo">Bolivia</a> <span class="up">▲</span></p><p><a href="/bq">Bonaire, St. Eustatius & Saba</a></p><p><a href="/ba">Bosnia and Herzegovina</a> <span class="up">▲</span></p><p><a href="/bw">Botswana</a> <span class="down">▽</span></p><p><a href="/br">Brazil</a> <span class="up">△</span></p><p><a href="/vg">British Virgin Islands</a></p><p><a href="/bn">Brunei Darussalam</a> <span class="down">▽</span></p><p><a href="/bg">Bulgaria</a> <span class="down">▽</span></p><p><a href="/bf">Burkina Faso</a> <span class="down">▽</span></p><p><a href="/bi">Burundi</a> <span class="down">▽</span></p><p><a href="/cv">Cabo Verde</a> <span class="down">▽</span></p><p><a href="/kh">Cambodia</a> <span class="up">△</span></p><p><a href="/cm">Cameroon</a> <span class="down">▼</span></p><p><a href="/ca">Canada</a> <span class="down">▽</span></p><p><a href="/ky">Cayman Islands</a> <span class="up">△</span></p><p><a href="/cf">Central African Republic</a></p><p><a href="/td">Chad</a> <span class="up">▲▲</span></p><p><a href="/cl">Chile</a> <span class="down">▽</span></p><p><a href="/cn">China</a> <span class="up">▲</span></p><p><a href="/hk">China, Hong Kong SAR</a></p><p><a href="/mo">China, Macao SAR</a></p><p><a href="/co">Colombia</a> <span class="down">▼</span></p><p><a href="/cg">Congo</a> <span class="down">▽</span></p><p><a href="/cr">Costa Rica</a> <span class="down">▽</span></p><p><a href="/hr">Croatia</a> <span class="up">△</span></p><p><a href="/cu">Cuba</a> <span class="up">△</span></p><p><a href="/cw">Curaçao</a> <span class="down">▽</span></p><p><a href="/cy">Cyprus</a> <span class="down">▽</span></p><p><a href="/cz">Czechia</a> <span class="down">▽</span></p><p><a href="/cd">Dem. Rep. of the Congo</a> <span class="down">▽</span></p><p><a href="/dk">Denmark</a> <span class="down">▽</span></p><p><a href="/dj">Djibouti</a> <span class="up">△</span></p><p><a href="/dm">Dominica</a> <span class="down">▽</span></p><p><a href="/do">Dominican Republic</a> <span class="up">△</span></p><p><a href="/ec">Ecuador</a> <span class="up">△</span></p><p><a href="/eg">Egypt</a> <span class="up">△</span></p><p><a href="/sv">El Salvador</a> <span class="up">▲</span></p><p><a href="/gq">Equatorial Guinea</a> <span class="up">△</span></p><p><a href="/er">Eritrea</a> <span class="down">▼</span></p><p><a href="/ee">Estonia</a> <span class="down">▼</span></p><p><a href="/sz">Eswatini</a> <span class="up">△</span></p><p><a href="/et">Ethiopia</a> <span class="down">▽</span></p><p><a href="/fk">Falkland Islands</a> <span class="down">▽</span></p><p><a href="/fo">Faroe Islands</a></p><p><a href="/fj">Fiji</a> <span class="down">▼</span></p><p><a href="/fi">Finland</a> <span class="down">▽</span></p><p><a href="/fr">France</a> <span class="down">▽</span></p><p><a href="/gf">French Guiana</a> <span class="down">▽</span></p><p><a href="/pf">French Polynesia</a> <span class="up">△</span></p><p><a href="/ga">Gabon</a> <span class="down">▽</span></p><p><a href="/gm">Gambia</a> <span class="down">▽</span></p><p><a href="/ge">Georgia</a> <span class="up">▲</span></p><p><a href="/de">Germany</a> <span class="down">▽</span></p><p><a href="/gh">Ghana</a> <span class="up">▲▲</span></p><p><a href="/gi">Gibraltar</a> <span class="down">▼</span></p><p><a href="/gr">Greece</a> <span class="down">▽</span></p><p><a href="/gl">Greenland</a></p><p><a href="/gd">Grenada</a> <span class="down">▽</span></p><p><a href="/gp">Guadeloupe</a> <span class="down">▼</span></p><p><a href="/gu">Guam</a></p><p><a href="/gt">Guatemala</a> <span class="up">▲</span></p><p><a href="/gn">Guinea</a> <span class="down">▼</span></p><p><a href="/gw">Guinea-Bissau</a> <span class="down">▼</span></p><p><a href="/gy">Guyana</a> <span class="down">▼</span></p><p><a href="/ht">Haiti</a> <span class="down">▼</span></p><p><a href="/va">Holy See</a> <span class="down">▽</span></p><p><a href="/hn">Honduras</a> <span class="down">▼</span></p><p><a href="/hu">Hungary</a> <span class="up">▲</span></p><p><a href="/is">Iceland</a> <span class="down">▼</span></p><p><a href="/in">India</a> <span class="up">△</span></p><p><a href="/id">Indonesia</a> <span class="up">▲</span></p><p><a href="/ir">Iran</a> <span class="down">▽</span></p><p><a href="/iq">Iraq</a> <span class="down">▽</span></p><p><a href="/ie">Ireland</a> <span class="up">▲</span></p><p><a href="/im">Isle of Man</a> <span class="down">▼</span></p><p><a href="/il">Israel</a> <span class="up">△</span></p><p><a href="/it">Italy</a> <span class="up">△</span></p><p><a href="/jm">Jamaica</a> <span class="up">△</span></p><p><a href="/jp">Japan</a> <span class="up">▲</span></p><p><a href="/jo">Jordan</a> <span class="up">△</span></p><p><a href="/kz">Kazakhstan</a> <span class="up">▲</span></p><p><a href="/ke">Kenya</a> <span class="up">△</span></p><p><a href="/xk">Kosovo</a> <span class="down">▼</span></p><p><a href="/kw">Kuwait</a> <span class="down">▽</span></p><p><a href="/kg">Kyrgyzstan</a> <span class="up">▲▲</span></p><p><a href="/la">Lao People's Dem. Rep.</a> <span class="down">▽</span></p><p><a href="/lv">Latvia</a> <span class="up">▲</span></p><p><a href="/lb">Lebanon</a> <span class="up">△</span></p><p><a href="/lr">Liberia</a> <span class="down">▽</span></p><p><a href="/ly">Libya</a> <span class="down">▽</span></p><p><a href="/li">Liechtenstein</a> <span class="down">▽</span></p><p><a href="/lt">Lithuania</a> <span class="down">▽</span></p><p><a href="/lu">Luxembourg</a> <span class="down">▼</span></p><p><a href="/mg">Madagascar</a> <span class="down">▽</span></p><p><a href="/mw">Malawi</a> <span class="down">▽</span></p><p><a href="/my">Malaysia</a> <span class="up">△</span></p><p><a href="/mv">Maldives</a></p><p><a href="/ml">Mali</a> <span class="up">▲▲</span></p><p><a href="/mt">Malta</a> <span class="down">▼</span></p><p><a href="/mq">Martinique</a> <span class="down">▼</span></p><p><a href="/mr">Mauritania</a> <span class="down">▽</span></p><p><a href="/mu">Mauritius</a> <span class="up">△</span></p><p><a href="/yt">Mayotte</a> <span class="down">▼</span></p><p><a href="/mx">Mexico</a> <span class="up">△</span></p><p><a href="/md">Moldova</a> <span class="down">▽</span></p><p><a href="/mc">Monaco</a> <span class="down">▼</span></p><p><a href="/mn">Mongolia</a> <span class="down">▽</span></p><p><a href="/me">Montenegro</a> <span class="up">△</span></p><p><a href="/ms">Montserrat</a> <span class="down">▽</span></p><p><a href="/ma">Morocco</a> <span class="up">△</span></p><p><a href="/mz">Mozambique</a> <span class="down">▽</span></p><p><a href="/mm">Myanmar</a> <span class="up">▲</span></p><p><a href="/na">Namibia</a> <span class="down">▽</span></p><p><a href="/np">Nepal</a></p><p><a href="/nl">Netherlands</a> <span class="up">△</span></p><p><a href="/nc">New Caledonia</a> <span class="down">▽</span></p><p><a href="/nz">New Zealand</a> <span class="down">▼</span></p><p><a href="/ni">Nicaragua</a></p><p><a href="/ne">Niger</a> <span class="down">▽</span></p><p><a href="/ng">Nigeria</a> <span class="down">▼</span></p><p><a href="/mk">North Macedonia</a> <span class="up">▲</span></p><p><a href="/no">Norway</a> <span class="down">▽</span></p><p><a href="/om">Oman</a> <span class="up">▲</span></p><p><a href="/pk">Pakistan</a> <span class="down">▽</span></p><p><a href="/pa">Panama</a> <span class="up">▲</span></p><p><a href="/pg">Papua New Guinea</a> <span class="down">▽</span></p><p><a href="/py">Paraguay</a> <span class="down">▼</span></p><p><a href="/pe">Peru</a> <span class="up">△</span></p><p><a href="/ph">Philippines</a> <span class="up">▲</span></p><p><a href="/pl">Poland</a> <span class="down">▽</span></p><p><a href="/pt">Portugal</a> <span class="down">▽</span></p><p><a href="/pr">Puerto Rico</a></p><p><a href="/qa">Qatar</a> <span class="up">△</span></p><p><a href="/re">Réunion</a> <span class="down">▼</span></p><p><a href="/ro">Romania</a> <span class="up">△</span></p><p><a href="/ru">Russian Federation</a> <span class="up">▲</span></p><p><a href="/rw">Rwanda</a> <span class="up">▲</span></p><p><a href="/bl">Saint Barthélemy</a></p><p><a href="/kn">Saint Kitts and Nevis</a> <span class="down">▼</span></p><p><a href="/lc">Saint Lucia</a> <span class="down">▽</span></p><p><a href="/pm">Saint Pierre and Miquelon</a> <span class="down">▽</span></p><p><a href="/sm">San Marino</a> <span class="down">▼</span></p><p><a href="/st">Sao Tome and Principe</a> <span class="down">▽</span></p><p><a href="/sa">Saudi Arabia</a> <span class="up">▲</span></p><p><a href="/sn">Senegal</a> <span class="down">▼</span></p><p><a href="/rs">Serbia</a> <span class="up">△</span></p><p><a href="/sc">Seychelles</a> <span class="down">▽</span></p><p><a href="/sl">Sierra Leone</a> <span class="up">△</span></p><p><a href="/sg">Singapore</a> <span class="up">▲</span></p><p><a href="/sx">Sint Maarten</a> <span class="down">▼</span></p><p><a href="/sk">Slovakia</a> <span class="down">▽</span></p><p><a href="/si">Slovenia</a> <span class="down">▽</span></p><p><a href="/so">Somalia</a> <span class="up">△</span></p><p><a href="/za">South Africa</a> <span class="up">▲▲</span></p><p><a href="/kr">South Korea</a> <span class="down">▽</span></p><p><a href="/ss">South Sudan</a> <span class="down">▼</span></p><p><a href="/es">Spain</a> <span class="down">▽</span></p><p><a href="/lk">Sri Lanka</a> <span class="up">▲▲</span></p><p><a href="/ps">State of Palestine</a></p><p><a href="/sd">Sudan</a> <span class="down">▼</span></p><p><a href="/sr">Suriname</a></p><p><a href="/se">Sweden</a> <span class="down">▽</span></p><p><a href="/ch">Switzerland</a> <span class="down">▼</span></p><p><a href="/sy">Syrian Arab Republic</a> <span class="down">▽</span></p><p><a href="/tw">Taiwan</a> <span class="up">△</span></p><p><a href="/tz">Tanzania</a> <span class="down">▼</span></p><p><a href="/th">Thailand</a> <span class="down">▽</span></p><p><a href="/tl">Timor-Leste</a> <span class="down">▽</span></p><p><a href="/tg">Togo</a> <span class="down">▼</span></p><p><a href="/tt">Trinidad and Tobago</a> <span class="down">▽</span></p><p><a href="/tn">Tunisia</a> <span class="up">▲</span></p><p><a href="/tr">Turkey</a> <span class="up">△</span></p><p><a href="/tc">Turks and Caicos Islands</a> <span class="down">▽</span></p><p><a href="/ug">Uganda</a> <span class="down">▽</span></p><p><a href="/ua">Ukraine</a> <span class="up">▲▲</span></p><p><a href="/ae">United Arab Emirates</a> <span class="up">△</span></p><p><a href="/gb">United Kingdom</a> <span class="up">△</span></p><p><a href="/us">United States of America</a> <span class="down">▽</span></p><p><a href="/uy">Uruguay</a> <span class="down">▼▼</span></p><p><a href="/uz">Uzbekistan</a> <span class="up">▲</span></p><p><a href="/ve">Venezuela</a> <span class="up">▲</span></p><p><a href="/vn">Viet Nam</a> <span class="up">▲</span></p><p><a href="/eh">Western Sahara</a> <span class="down">▽</span></p><p><a href="/ye">Yemen</a> <span class="down">▽</span></p><p><a href="/zm">Zambia</a> <span class="up">△</span></p><p><a href="/zw">Zimbabwe</a> <span class="down">▼</span></p>
     </div>
+    <p>The green and red arrows next to the country name display the trend of the new confirmed cases during the last week.</p>
 </div>
 
 
@@ -440,7 +453,7 @@ GF: {confirmed: 72, failed: 0, recovered: 34, percent: 0.024759, color: '#d4bf26
             <div class="whatsapp">Send</div>
         </div>
         <p>Based on <a href="https://github.com/CSSEGISandData/COVID-19">data</a> collected by the Johns Hopkins University Center for Systems Science and Engineering.</p>
-        <p>This website presents the very same data as the JHU’s <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">original dashboard</a> but from a less-panic perspective. Updated daily around 8 a.m. European time.</p>
+        <p>This website presents the very same data as the JHU’s <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">original dashboard</a> but from a less-panic perspective. Updated daily around 8 a.m. Central European time.</p>
         <p>Read the <a href="https://andrewshitov.com/category/covid-19/">Technology blog</a>. Look at the source code: <a href="https://github.com/ash/covid.observer">GitHub</a>. Powered by <a href="https://raku.org">Raku</a>.</p>
         <p>Created by <a href="https://andrewshitov.com">Andrew Shitov</a>. Twitter: <a href="https://twitter.com/andrewshitov">@andrewshitov</a>. Contact <a href="mailto:andy@shitov.ru">by e-mail</a>.</p>
     </div>
