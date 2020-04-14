@@ -1,0 +1,86 @@
+code	name	name_ru	area	population
+01	Republic of Adygea	Республика Адыгея	7792	463088
+04	Altai Republic	Республика Алтай	92903	220181
+02	Republic of Bashkortostan	Республика Башкортостан	142947	4038151
+03	Republic of Buryatia	Республика Бурятия	351334	985937
+05	Republic of Dagestan	Республика Дагестан	50270	3110858
+06	Republic of Ingushetia	Республика Ингушетия	3123	507061
+07	Kabardino-Balkar Republic	Кабардино-Балкарская Республика	12470	868350
+08	Republic of Kalmykia	Республика Калмыкия	74731	271135
+09	Karachay-Cherkess Republic	Карачаево-Черкесская Республика	14277	465528
+10	Republic of Karelia	Республика Карелия	180520	614064
+11	Komi Republic	Республика Коми	416774	820473
+91	Republic of Crimea	Республика Крым	26081	1912622
+12	Mari El Republic	Республика Марий Эл	23375	679417
+13	Republic of Mordovia	Республика Мордовия	26128	790197
+14	Sakha (Yakutia) Republic	Республика Саха (Якутия)	3083523	971996
+15	Republic of North Ossetia-Alania	Республика Северная Осетия	7987	696837
+16	Republic of Tatarstan	Республика Татарстан	67847	3902642
+17	Tuva Republic	Республика Тыва	168604	327383
+18	Udmurt Republic	Удмуртская Республика	42061	1500955
+19	Republic of Khakassia	Республика Хакасия	61569	534262
+20	Chechen Republic	Чеченская Республика	16165	1478726
+21	Chuvash Republic	Чувашская Республика	18343	1217818
+22	Altai Krai	Алтайский край	167996	2317153
+75	Zabaykalsky Krai	Забайкальский край	431892	1059700
+41	Kamchatka Krai	Камчатский край	464275	313016
+23	Krasnodar Krai	Краснодарский край	75485	5675462
+24	Krasnoyarsk Krai	Красноярский край	2366797	2866255
+59	Perm Krai	Пермский край	160236	2599260
+25	Primorsky Krai	Приморский край	164673	1895868
+26	Stavropol Krai	Ставропольский край	66160	2803573
+27	Khabarovsk Krai	Хабаровский край	787633	1315643
+28	Amur Oblast	Амурская область	361908	790044
+29	Arkhangelsk Oblast	Архангельская область	589913	1136535
+30	Astrakhan Oblast	Астраханская область	49024	1005782
+31	Belgorod Oblast	Белгородская область	27134	1549151
+32	Bryansk Oblast	Брянская область	34857	1192491
+33	Vladimir Oblast	Владимирская область	29084	1358416
+34	Volgograd Oblast	Волгоградская область	112877	2491036
+35	Vologda Oblast	Вологодская область	144527	1160445
+36	Voronezh Oblast	Воронежская область	52216	2324205
+37	Ivanovo Oblast	Ивановская область	21437	997135
+38	Irkutsk Oblast	Иркутская область	774846	2391193
+39	Kaliningrad Oblast	Калининградская область	15125	1012512
+40	Kaluga Oblast	Калужская область	29777	1002575
+42	Kemerovo Oblast	Кемеровская область - Кузбасс	95725	2657854
+43	Kirov Oblast	Кировская область	120374	1262402
+44	Kostroma Oblast	Костромская область	60211	633385
+45	Kurgan Oblast	Курганская область	71488	827166
+46	Kursk Oblast	Курская область	29997	1104008
+47	Leningrad Oblast	Ленинградская область	83908	1875872
+48	Lipetsk Oblast	Липецкая область	24047	1139371
+49	Magadan Oblast	Магаданская область	462464	140149
+50	Moscow Oblast	Московская область	44329	7690863
+51	Murmansk Oblast	Мурманская область	144902	741404
+52	Nizhny Novgorod Oblast	Нижегородская область	76624	3202946
+53	Novgorod Oblast	Новгородская область	54501	596508
+54	Novosibirsk Oblast	Новосибирская область	177756	2798170
+55	Omsk Oblast	Омская область	141140	1926665
+56	Orenburg Oblast	Оренбургская область	123702	1956835
+57	Oryol Oblast	Орловская область	24652	733498
+58	Penza Oblast	Пензенская область	43352	1305563
+60	Pskov Oblast	Псковская область	55399	626115
+61	Rostov Oblast	Ростовская область	100967	4197821
+62	Ryazan Oblast	Рязанская область	39605	1108847
+63	Samara Oblast	Самарская область	53565	3179532
+64	Saratov Oblast	Саратовская область	101240	2421895
+65	Sakhalin Oblast	Сахалинская область	87101	488257
+66	Sverdlovsk Oblast	Свердловская область	194307	4310681
+67	Smolensk Oblast	Смоленская область	49779	934889
+68	Tambov Oblast	Тамбовская область	34462	1006748
+69	Tver Oblast	Тверская область	84201	1260379
+70	Tomsk Oblast	Томская область	314391	1079271
+71	Tula Oblast	Тульская область	25679	1466127
+72	Tyumen Oblast	Тюменская область	1464173	3756536
+73	Ulyanovsk Oblast	Ульяновская область	37181	1229824
+74	Chelyabinsk Oblast	Челябинская область	88529	3466369
+76	Yaroslavl Oblast	Ярославская область	36177	1253389
+77	Moscow	Москва	2561	12678079
+78	Saint Petersburg	Санкт-Петербург	1403	5398064
+92	Sevastopol	Севастополь	864	449138
+79	Jewish Autonomous Oblast	Еврейская АО	36271	158305
+83	Nenets Autonomous Okrug	Ненецкий АО	176810	44111
+86	Khanty–Mansi Autonomous Okrug – Yugra	Ханты-Мансийский АО — Югра	534801	1674676
+87	Chukotka Autonomous Okrug	Чукотский АО	721481	50288
+89	Yamalo-Nenets Autonomous Okrug	Ямало-Ненецкий АО	769250	544444
