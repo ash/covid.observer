@@ -49,12 +49,13 @@ sub html-template($path, $title, $content, $header = '') is export {
     #         <p class="center">Compare the COVID-19 influence with the previous years.</p>
     #     </div>
     #     BLOCK
-    my $new-block = qq:to/BLOCK/;
-        <div>
-            <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/compare/">Compare countries</a></span></p>
-        </div>
-    BLOCK
-    $new-block = '' if $path ~~ /compare/;
+    # my $new-block = qq:to/BLOCK/;
+    #     <div>
+    #         <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/compare/">Compare countries</a></span></p>
+    #     </div>
+    # BLOCK
+    # $new-block = '' if $path ~~ /compare/;
+    my $new-block = '';
 
     my $timestamp = DateTime.now.truncated-to('hour');
     my $template = qq:to/HTML/;
@@ -92,7 +93,6 @@ sub html-template($path, $title, $content, $header = '') is export {
             <div class="menu" id="mainmenu">
                 <ul>
                     <li><a href="/">Home</a></li>
-                    <li><a href="/map">Map</a></li>
 
                     <li class="dropdown">
                         <a href="javascript: void(0)" class="dropbtn" style="cursor: normal">Statistics</a>
@@ -128,9 +128,9 @@ sub html-template($path, $title, $content, $header = '') is export {
                     <li class="dropdown">
                         <a href="javascript: void(0)" class="dropbtn">World</a>
                         <div class="dropdown-content">
+                            <a href="/map">World Map</a>
                             <a href="/">World numbers</a>
                             <a href="/overview">Overview</a>
-                            <a href="/map">World map</a>
                             <a href="/-cn">World excluding China</a>
                         </div>
                     </li>

@@ -317,6 +317,13 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
         }
     }
 
+    my $tests-fraction = 0;
+    if %CO<tests>{$cc} {
+        my @test-dates = %CO<tests>{$cc}.keys.sort;
+        my $tests = %CO<tests>{$cc}{@test-dates[*-1]};
+        $tests-fraction = smart-round(100 * $tests / (1_000_000 * $population));
+    }
+
     my $content = qq:to/HTML/;
         <h1>Coronavirus in {$title-name}{$without-str}</h1>
         $per-region-link
@@ -325,6 +332,9 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
             <h2>Affected Population</h2>
             <div id="percent">$chart3&thinsp;%</div>
             <p class="center">This is the part of confirmed infection cases against the total $population-str of its population.</p>
+
+            {qq{<p class="center"><b>$tests-fraction&thinsp;% of the whole population tested</b></p>} if $tests-fraction}
+
             <div class="affected">
                 {
                     if $chart2data<confirmed> {
@@ -437,7 +447,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
                     <div id="block21">
                         <a name="tests"></a>
                         <h2>{fmtnum($chart21data<tests>)} tests performed</h2>
-                        <p>This graph shows the total number of tests performed in {$proper-country-name}{$without-str}. This graph does not reflect the outcome of the test cases.</p>
+                        <p>This graph shows the total number of tests performed in {$proper-country-name}{$without-str}. This graph does not reflect the outcome of the test cases. $tests-fraction&thinsp;% of the whole population have been tested.</p>
                         <canvas id="Chart21"></canvas>
                         <p class="left">
                             <label class="toggle-switchy" for="logscale21" data-size="xs" data-style="rounded" data-color="blue">
