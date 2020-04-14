@@ -277,6 +277,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
     my $regions-html = '';
     for get-known-countries() -> $cc-code {
         next unless %countries{$cc-code};
+        next if $cc-code ~~ /^ [HK|MO] $/;
 
         if $cc-code ~~ /US'/'/ {
             if $cc && $cc ~~ /US/ {

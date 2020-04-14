@@ -36,7 +36,7 @@ sub read-jhu-data(%stats) is export {
             my $region = '';
 
             if @headers[0] ne 'FIPS' {
-                if $date ne '04/12/20' { # TODO switch to column names (if that helps)
+                if $date lt '04/12/20' { # TODO switch to column names (if that helps)
                     $country = @row[1] || '';
                     $region  = @row[0] || '';
 
@@ -113,6 +113,13 @@ sub read-jhu-data(%stats) is export {
             }
             
             next if $cc eq 'US' && $region-cc eq '';
+
+            # Before March 11, HK and MO were attributed as countries in the source data.
+            # Since March 11 they are listed as China's regions.
+            if $cc ~~ /HK|MO/ {
+                $region-cc = "CN/$cc";
+                $cc = 'CN';
+            }
 
             %cc{$cc} = 1;
             %cc{$region-cc} = 1 if $region-cc;
