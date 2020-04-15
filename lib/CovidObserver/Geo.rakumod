@@ -194,6 +194,8 @@ sub ru-region-to-code($region is copy) is export {
         %regions{'Республика Ингушетия'} = '06';
         %regions{'Еврейская автономная область'} = 79;
         %regions{'Ямало-Ненецкий автономный округ'} = 89;
+        %regions{'Ненецкий автономный округ'} = 83;
+        %regions{'Чукотский автономный округ'} = 87;
     }
 
     say "WARNING: Region code not found for $region" unless %regions{$region};
