@@ -436,7 +436,12 @@ sub per-region(%CO, $cc) is export {
         BE => {
             link => 'https://epistat.wiv-isp.be/Covid/',
             title => 'Division per communes (Belgian institute for health)'
-        };
+        },
+        FR => {
+            link => 'https://dashboard.covid19.data.gouv.fr',
+            title => 'L’information officielle sur la progression de l’épidémie en France'
+        }
+        ;
 
     my $html = '';
 
