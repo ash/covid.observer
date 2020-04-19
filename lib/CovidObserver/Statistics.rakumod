@@ -19,21 +19,23 @@ sub geo-sanity() is export {
 }
 
 sub get-countries() is export {
-    my $sth = dbh.prepare('select cc, country, continent, population, life_expectancy, area from countries');
+    my $sth = dbh.prepare('select cc, country, continent, population, life_expectancy, name_ru, name_in_ru area from countries');
     $sth.execute();
 
     my %countries;
     for $sth.allrows(:array-of-hash) -> %row {
         my $country = %row<country>;
-        $country = "US/$country" if %row<cc> ~~ /US'/'/;
-        $country = "China/$country" if %row<cc> ~~ /'CN/'/;
-        $country = "Russia/$country" if %row<cc> ~~ /'RU/'/;
+        # $country = "US/$country" if %row<cc> ~~ /US'/'/;
+        # $country = "China/$country" if %row<cc> ~~ /'CN/'/;
+        # $country = "Russia/$country" if %row<cc> ~~ /'RU/'/;
         my %data =
             country => $country,
             population => %row<population>,
             continent => %row<continent>,
             age => %row<life_expectancy>,
-            area => %row<area>;
+            area => %row<area>,
+            name-ru => %row<name_ru>,
+            name-in-ru => %row<name_in_ru>;
         %countries{%row<cc>} = %data;
     }
     $sth.finish();
@@ -41,17 +43,25 @@ sub get-countries() is export {
     return %countries;
 }
 
-sub get-known-countries() is export {
-    my $sth = dbh.prepare('select distinct countries.cc, countries.country from totals join countries on countries.cc = totals.cc order by countries.country');
-    $sth.execute();
+sub get-known-countries($lang = 'country') is export {
+    state %cache;
 
-    my @countries;
-    for $sth.allrows() -> @row {
-        @countries.push(@row[0]);
+    my $field = $lang eq 'ru' ?? 'name_ru' !! 'country';
+
+    if %cache{$field}:!exists {
+        my $sth = dbh.prepare("select distinct countries.cc, countries.$field from totals join countries on countries.cc = totals.cc order by countries.$field");
+        $sth.execute();
+
+        %cache{$field} = Array.new;
+        for $sth.allrows() -> @row {
+            %cache{$field}.push(@row[0]);
+        }
+        $sth.finish();
+
+        %cache{$field} = %cache{$field};
     }
-    $sth.finish();
 
-    return @countries;    
+    return %cache{$field};
 }
 
 sub get-total-stats() is export {
@@ -358,7 +368,7 @@ sub countries-appeared-this-day(%CO) is export {
     }
     $sth.finish();
 
-    my $html;    
+    my $html;
     for %data.keys.sort.reverse -> $date {
         next if $date gt %CO<calendar><World>;
 
@@ -370,7 +380,7 @@ sub countries-appeared-this-day(%CO) is export {
             my $confirmed = %CO<per-day>{$cc}{$date}<confirmed>;
             next unless %CO<countries>{$cc};
 
-            @countries.push('<a href="/' ~ $cc.lc ~ '">' ~ %CO<countries>{$cc}<country> ~ "</a> ($confirmed)");
+            @countries.push('<a href="/' ~ $cc.lc ~ '/LNG">' ~ %CO<countries>{$cc}<country> ~ "</a> ($confirmed)");
         }
 
         $html ~= @countries.join(', ');
@@ -756,7 +766,8 @@ multi sub number-percent(%CO, :$cont!) is export {
 
 sub countries-per-capita(%CO, :$limit = 50, :$param = 'confirmed', :$mode = '', :$cc-only = '') is export {
     my %per-mln;
-    for get-known-countries() -> $cc {
+    my $known-countries = get-known-countries();
+    for @$known-countries -> $cc {
         if $cc-only {
             next unless $cc ~~ /^ $cc-only '/' /;
         }

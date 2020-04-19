@@ -1,0 +1,263 @@
+About	Проект
+About the project	Информация о проекте (англ.)
+Active	Активно
+Affected	Затронуто
+Affected World Population	Охваченное население Земли
+Affected countries	Охват по странам
+Affected ｢1｣ per 1000 people	Пострадало ｢1｣ чел. на 1000 населения
+Africa	Африка
+Apr ｢1｣	｢1｣ апр
+Asia	Азия
+COVID-19 World Statistics	Всемирная статистика COVID-19
+CSV	CSV
+Active[*br/*]cases	Активные[*br/*]случаи
+Affected[*br/*]population, %	Охвачен&shy;ное[*br/*]население, %
+Confirmed[*br/*]cases	Подтверж&shy;денные[*br/*]случаи
+Confirmed[*br/*]per 1000	Подтверж&shy;денно[*br/*]на 1000
+Daily[*br/*]growth, %	Дневной[*br/*]при&shy;рост, %
+Died[*br/*]per 1000	Умерло[*br/*]на 1000
+Fatal[*br/*]cases	Фатальных[*br/*]случаев
+Mortality[*br/*]rate, %	Уровень[*br/*]смерт&shy;ности, %
+Recovered[*br/*]cases	Выздоро&shy;вев&shy;ших
+Recovery[*br/*]rate, %	Уровень[*br/*]выз&shy;до&shy;ров&shy;ления, %
+Cases vs life expectancy	Зависимость от продолжительности жизни
+China excluding Hubei	Китай без учета Хубэй
+China provinces	Провинции Китая
+Compare countries	Сравнение стран
+Compare provinces	Сравнение провинций
+Compare regions	Сравнение регионов
+Compare the states	Сравнение штатов
+Continents	Континенты
+Countries	Страны
+Countries vs China	Страны в сравнении с Китаем
+Created by	Создал
+Cumulative data	Суммарные данные
+Daily Flow	Данные по дням
+Daily Speed	Скорость прироста по дням
+Daily flow	Данные по дням
+Daily speed	Скорость прироста по дням
+Data sources	Источники данных	 (англ.)
+Date	Дата
+Died ｢1｣ per 1000 people	Умерло ｢1｣ чел. на 1000 населения
+Download as	Загрузить как
+Europe	Европа
+Feb ｢1｣	｢1｣ фев
+GitHub	GitHub
+Here, the number of confirmations and deaths	Число подтверждений и смертей
+Home	Начало
+Jan ｢1｣	｢1｣ янв
+Link	Сослаться
+List of countries	Список стран
+Logarithmic scale	Логарифмическая шкала
+Mar ｢1｣	｢1｣ мар
+New Confirmed Cases	Новые случаи
+New daily cases	Новые случаи по дням
+North America	Северная Америка
+Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that fewer cases registered today than yesterday.	Примечание. Если скорость положительна, значит число случаев увеличивается ото дня ко дню. Если линия в целом направлена вниз, то скорость снижается, и, хотя может быть больше случаев по сравнению с предыдущим днем, общей тренд — на снижение. Если скорость отрицательная, то в этот день зафиксировано меньше случаев, чем в предыдущий.
+Oceania	Океания
+Overview	Обзор
+Per capita values	Значения на душу населения
+Provinces sorted per capita	Отсортированные провинции
+Raku	Raku
+Raw Daily Numbers	Таблица значений
+Raw Numbers on April ｢1｣	Данные на ｢1｣ апреля
+Raw numbers	Показатели
+Read the	Читайте
+Recovery Pie	Диаграмма восстановления
+Recovery pie	Диаграмма восстановления
+Regions	Регионы
+Russia	Россия
+Send	Отправить
+Share	Расшарить
+Sorted per million affected	Страны по охвату на душу населения
+South America	Южная Америка
+Spread over the continents	Распределение по континентам
+States sorted per capita	Штаты США по охвату на душу населения
+Statistics	Статистика
+Statistics per Continent	Статистика по континентам
+Statistics per Country	Статистика по странам
+Table data	Таблица
+Tech blog	Технический блог (англ.)
+Technology blog	Технический блог
+The green and red arrows next to the country name display the trend of the new confirmed cases during the last week.	Зеленые и красные стрелки рядом с названием стран отражают тренд по новым подтвержденным случаям за последнюю неделю.
+The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the World. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.	Высота отдельного столбика на графике — это общее число людей, пострадавших от коронавируса в мире｢1｣. Она включает три части: число выздоровевших, умерших и число тех, кто сейчас болеет.
+The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the World excluding China. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.	Высота отдельного столбика на графике — это общее число людей, пострадавших от коронавируса в мире без учета Китая. Она включает три части: число выздоровевших, умерших и число тех, кто сейчас болеет.
+The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world.	Суммарно, вся диаграмма отражает общее число подтвержденных случаев заражения короновирусом во всем мире.
+This graph shows the number of new cases by day. The lightblue bars are the number of the new total confirmed cases appeared that day.	График показывает число новых случаев по дням. Светло-синие столбцы — число новых случаев, зарегистрированных в данный день.
+This graph shows the speed of growth (in %) over time. The only parameter here is the number of confirmed cases.	Этот график показывает скорость роста (в процентах) со временем. Единственный параметр здесь — число подтвержденных случаев.
+This is the part of confirmed infection cases against the total 7.8 billion of the world population.	Это — часть подтвержденных случаев относительно общего числа населения Земли в 7,8 миллиардов.
+Tweet	Твитнуть
+US	США
+US states	Штаты США
+What’s new	Новости проекта (англ.)
+Whole world	Весь мир
+World	Мир
+World Map	Карта мира
+World excluding China	Мир без учета Китай
+World numbers	Числа по миру
+World statistics | Coronavirus COVID-19 Observer	Всемирная статистика по коронавирусу COVID-19 | Вестник коронавируса
+XLS	XLS
+active	активно
+by e-mail	по электронной почте
+confirmed	подтверждено
+data	данные
+fatal	умерло
+original dashboard	оригинальный дашборд
+per 1000 of population	на 1000 населения
+population	население
+recovered	выздоровело
+world	мир
+Based on [*a href="https://github.com/CSSEGISandData/COVID-19"*]data[*/a*] collected by the Johns Hopkins University Center for Systems Science and Engineering.	Основано на [*a href="https://github.com/CSSEGISandData/COVID-19"*]данных[*/a*], собранных Университетским центром системной науки и техники имени Джонса Хопкинса.
+Created by [*a href="https://andrewshitov.com"*]Andrew Shitov[*/a*]. Twitter: [*a href="https://twitter.com/andrewshitov"*]@andrewshitov[*/a*]. Contact [*a href="mailto:andy@shitov.ru"*]by e-mail[*/a*].	Сайт создан [*a href="https://new.shitov.ru/"*]Андреем Шитовым[*/a*]. Твиттер: [*a href="https://twitter.com/andrewshitov"*]@andrewshitov[*/a*]. Связь [*a href="mailto:andy@shitov.ru"*]по электронной почте[*/a*].
+Read the [*a href="https://andrewshitov.com/category/covid-19/"*]Technology blog[*/a*]. Look at the source code: [*a href="https://github.com/ash/covid.observer"*]GitHub[*/a*]. Powered by [*a href="https://raku.org"*]Raku[*/a*].	Читайте [*a href="https://andrewshitov.com/category/covid-19/"*]технический блог[*/a*] (англ.). Искходный код: [*a href="https://github.com/ash/covid.observer"*]GitHub[*/a*]. Язык программирования [*a href="https://raku.org"*]Raku[*/a*].
+This website presents the very same data as the JHU’s [*a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6"*]original dashboard[*/a*] but from a less-panic perspective. Updated daily around 8 a.m. Central European time.	На этом сайте те же самые общеизвестные данные показаны в менее драматическом свете, чем на [*a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6"*]оригинальном дашборде[*/a*] университета Джонса Хопкинса. Обновляется около 9-10 утра по московскому времени.
+English	Английский
+Russian (beta)	Русский (бета)
+Language	Язык
+Affected World Population excluding China	Охваченное население Земли без учета Китай
+COVID-19 World Statistics excluding China	Статистика COVID-19 по миру без учета Китая
+The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world excluding China.	Суммарно, вся диаграмма отражает общее число подтвержденных случаев заражения короновирусом во всем мире без учета Китая.
+This is the part of confirmed infection cases against the total ｢1｣ billion of the world population excluding China.	Это — часть подтвержденных случаев относительно общего числа населения Земли без учета Китая (всего ｢1｣ миллиардов).
+World statistics excluding China | Coronavirus COVID-19 Observer	Всемирная статистика по коронавирусу COVID-19 без Китая | Вестник коронавируса
+world excluding China	мир без учета Китая
+COVID-19 World Statistics  excluding China
+｢1｣ countires are affected, which is ｢2｣ from the total ｢3｣ countries.	Число охваченных стран: ｢1｣. Это составляет ｢2｣ из общего числа стран (｢3｣).
+Compare	Сравнение
+Coronavirus in different countries	Коронавирус в разных странах
+Coronavirus in different countries | Coronavirus COVID-19 Observer	Коронавирус в разных странах | Вестник коронавируса COVID-19
+Countries or Regions Appeared This Day	В какой день какие страны и регионы появились
+Number of Countries Affected	Число затронутых стран
+On this graph, you can see how many countries did have data about confirmed coronavirus invection for a given date over the last months.	На этом графике показано, в скольких странах зафиксированы случаи заражения коронавирусом на данные день за последние несколько месяцев.
+Per capita	На душу населения
+This list gives you the overview of when the first confirmed case was reported in the given country. Or, you can see here, which countries entered the chart in the recent days. The number in parentheses is the number of confirmed cases in that country on that date.	В этом списке отмечено, когда был зафиксирован первый случай коронавируса в данной стране или регионе. Иными словами, здесь видно, когда на карте коронавирусной инфекции появилась новая территория. Число в скобках — число случаев, отмеченных в первый день.
+Combined	Вместе
+Coronavirus per capita	Коронавирус на душу населения
+Coronavirus per million of population | Coronavirus COVID-19 Observer	Коронавирус на миллион населения | Вестник коронавируса COVID-19
+Sorted by	Сортировка:
+The ｢1｣ most affected countries with more than one million of population are shown only.	Здесь показаны ｢1｣ стран с наибольшим числом случаев коронавируса. Отобраны только страны, в которых население превышает один миллион.
+This graph shows the number of affected people per each million of the population. The length of a bar per country is proportional to the number of confirmed cases per million.	Этот график показывает число охваченных коронавирусом людей на каждый миллион населения. Длина столбца в каждой стране пропорциональна числу подтвержденных случаев (на миллион).
+Top 100 confirmations per million	Топ 100 подтвержденных случаев на миллион населения
+Top 100 failures per million	Топ 100 летальных исходов на миллон населения
+confirmed cases	подтвержденные случаи
+failed cases	летальные исходы
+Confirmations per million	Подтвержденные случаи на миллион
+Failures per million	Летальные случаи на миллион
+Coronavirus per million of population | Coronavirus COVID-19 Observer	Коронавирус на миллион населения | Вестник коронавируса COVID-19
+This graph shows the number of affected people per each million of the population. The length of a bar per country is proportional to the number of confirmed cases per million.	На этом графике показано число охваченного коронавирусом населения на каждый миллион. Длина полоски пропорциональна числу подтвержденных случаев в стране в пересчете на миллион населения.
+This graph shows the relative number of people who could not recover from the disease. The data are the same as on the [*a href="#confirmed"*]graph above[*/a*] but sorted by the number of failures.	На этом графике показано относительное число случаев с летальным исходом (в пересчете на один миллион населения). Здесь отражены те же данные, что и [*a href="#confirmed"*]на графике выше[*/a*], но сортировка идет по числу летальных исходов.
+Top 100 confirmations per million	Топ 100 подтвержденных на миллион
+Top 100 failures per million	Топ 100 летальных исходов на миллион
+confirmed cases	подтвержденные случаи
+failed cases	летальные исходы
+Confirmations per million	Подтверждения на миллион
+Coronavirus per capita in the USA	Коронавирус на душу населения в США
+Failures per million	Летальные исходы на миллион
+Coronavirus per capita in China	Коронавирус на душу населения в Китае
+1. Note that only countries with more than 1000 population are taken into account. The smaller countries such as [*a href="/va/LNG"*]Vatican[*/a*] or [*a href="/sm/LNG"*]San Marino[*/a*] would have shown too high nimbers due to their small population.	1. На графике нет стран с населением меньше 1000 человек. Для небольших стран (например, для [*a href="/va/LNG"*]Ватикана[*/a*] или [*a href="/sm/LNG"*]Сан-Марино[*/a*) показатели будут неоправданно высокими. 
+2. The line for the country is drawn only if it reaches at least 85% of the corresponding maximum parameter in China.	2. Страна показана на графике только в том случае, если она достигает не меньше 85% от числа случаев в Китае.
+Click on the bar in the legend to turn the line off and on.	Нажмите на страну в легенде, чтобы выключить или включить ее.
+Confirmed population timeline	Изменение подтвержденных случаев со временем
+Countries vs China | Coronavirus COVID-19 Observer	Страны в сравнении с Китаем | Вестник коронавируса COVID-19
+On this graph, you see how the fraction (in %) of the confirmed infection cases changes over time in different countries.	На этих графиках показано изменение доли (в процентах) числа подтвержденных случаев инфекции коронавирусом в разных странах.
+The almost-horizontal red line in the bottom part of the graph line displays [*a href="/cn/LNG"*]China[*/a*]. The number of confirmed infections in China almost stopped growing. Note the top line reflecting the most suffered province of China, [*a href="/cn/hb/LNG"*]Hubei[*/a*], where the spread is also almost stopped.	Почти горизонтальная красная линия внизу графика — это [*a href="/cn/LNG"*]Китай[*/a*]. Выше — линия для наиболее пострадавшей провинции Китая [*a href="/cn/hb/LNG"*]Хубэя[*/a*], где распростравение коронавируса фактически прекратилось.
+Affected Population	Затронутое население
+As there is no monthly data available ｢1｣, the gray bars are the average numbers obtained via the
+Coronavirus ｢1｣	Коронавирус ｢1｣
+Coronavirus ｢1｣ | Coronavirus COVID-19 Observer	Коронавирус ｢1｣ | Вестник коронавируса COVID-19
+Crude deaths	Общий коэффициент смертности
+Crude mortality rate is the number of people died in a country within a year per each 1000 of population.	Общий коэффициент смертности показывает число скончавшихся за год людей в пересчете на одну тысячу населения страны.
+Crude rates	Общей уровень смертности
+Mortality Level	Уровень смертности
+Mortality level	Уровень смертности
+Note that the vertical axis is drawn in logarithmic scale by default.	Обратите внимание, что вертикальная ось по умолчанию показана в логарифмическом масштабе.
+The whole pie reflects the total number of confirmed cases of people infected by coronavirus ｢1｣.	Вся диаграмма отражает общее число подтвержденных случаев ｢1｣.
+Weekly Levels	Недельный уровень
+Weekly levels	Недельный уровень
+Here, the crude rate ｢1｣ is shown for the last 50 years. The red bar against 2020 is the number of people died due to COVID-19 per each 1000 people. Thus, you can directly compare the two parameters.	Здесь показан общий уровень смертности ｢1｣ за последние 50 лет. Красный столбец, соответствующий 2020-му году, — число летальных случаев, связанных с COVID-19, в пересчете на 1000 населения. Иными словами, возможно напрямую сравнивать два параметра.
+The height of a single bar is the total number of people suffered from Coronavirus ｢1｣ and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.	Высота отдельнолго столбца — это общее число людей с подтвержденным заражением коронавирусом ｢1｣. Оно включает три части: число выздоровевших и тех, кто скончался, и число людей, которые находятся в активной фазе болезни.
+This graph draws the number of deaths ｢1｣ connected to the COVID-19 infection aggregated by weeks of 2020.	Этот график показывает суммарное число летальных случаев ｢1｣, вызванных COVID-19 в 2020 году.
+This graph shows the speed of growth (in %) over time ｢1｣. The only parameter here is the number of confirmed cases.	Здесь показано изменение скорости прироста (в процентах) ｢1｣. Параметр, отмеченный на графике, — число подтвержденных случаев.
+Coronavirus in the USA	Коронавирус в США
+Cumulative USA statistics	Общая статистика по США
+Tests performed	Проведенных тестов
+This graph shows the total number of tests performed in ｢1｣. This graph does not reflect the outcome of the test cases. ｢2｣ of the whole population have been tested.	Здесь показано общее число проведенных тестов ｢1｣. График не дает информации о результате тестов. Протестировано ｢2｣ от общего населения.
+｢1｣ of the whole population tested	Протестировано ｢1｣ от всего населения.
+｢1｣ tests performed	Протестировано ｢1｣
+Coronavirus in Russia	Коронавирус в России
+Cumulative Russian statistics	Общаяя статистика по России
+This is the part of confirmed infection cases against the total ｢1｣ million of its population.	Это — часть заразившегося числа людей от общего населения в ｢1｣ млн.
+This is the part of confirmed infection cases against the total ｢1｣ thousand of its population.	Это — часть заразившегося числа людей от общего населения в ｢1｣ тыс.
+As there is no monthly data available ｢1｣, the gray bars are the average numbers obtained via the [*a href="#crude"*]crude[*/a*] death values known for this country for the recent five years of the available dataset.	Из-за того, что отсутствуют помесячные данные для этой страны, серые столбцы соответствуют средним числам, полученным из [*a href="#crude"*]общего уровня[*/a*] смертности за последние несколько лет доступных данных.
+The gray bars on this graph display the absolute number of deaths that happen ｢1｣ every month during the recent five years of [*a href="/sources/LNG"*]available data[*/a*]. The red bars are the absolute numbers of people died due to the COVID-19 infection.	Серые столбцы на графике показывают абсолютное число смертей ｢1｣ за месяц в течение последних пяти лет [*a href="/sources/LNG"*]доступных данных[*/a*]. Красный столбец — это абсолютное число летальных исходов, связанных с COVID-19.
+Here, the number of confirmations and deaths [*i*]per 1000 of population[*/i*] ｢1｣ is shown. These numbers is a better choice when comparing different countries than absolute numbers.	Здесь показано число летальных случаев [*i*]на 1000 населения[*/i*] ｢1｣. Этот параметр удобен тем, что его можно непосредственно сравнивать для разных стран.
+Coronavirus in China	Коронавирус в Китае
+Cumulative China statistics	Общая статистика по Китаю
+Division per communes (Belgian institute for health)	Данные по коммунам (на сайте Минздрава Бельгии)
+Official data: Casos confirmados de COVID-19 a nivel nacional	Официальные данные: Casos confirmados de COVID-19 a nivel nacional
+China provinces and regions	Провинции и регионы Китая
+Nobody affected	Все живы
+L’information officielle sur la progression de l’épidémie en France	L’information officielle sur la progression de l’épidémie en France
+Official Statistics by the Ministry of Health and Family Welfare	Официальная статистика: the Ministry of Health and Family Welfare
+Note: The numbers for [*a href="/aw/LNG"*]Aruba[*/a], [*a href="/cw/LNG"*]Curaçao[*/a*], and [*a href="/sx/LNG"*]Sint Maarten[*/a*] are not included in the statistics for the Netherlands.	Примечание. Данные по [*a href="/aw/LNG"*]Арубе[*/a], [*a href="/cw/LNG"*]Кюрасао[*/a*] и [*a href="/sx/LNG"*]Синт-Мартену[*/a*] не включены в статистику по Нидерландам.
+Official data: Coronavirus kaart van Nederland per gemeente	Официальные данные: Coronavirus kaart van Nederland per gemeente
+Regions of the Russian Federation	Регионы РФ
+the United States of America	США
+in China excluding Hubei	в Китае не считая Хубэй
+Russian Federation excluding Moscow	РФ не считая Москву
+in Russian Federation excluding Moscow	в РФ не считая Москву
+Active Cases Timeline	Таймлайн числа активных случаев
+Active cases	Активные случаи
+Confirmed Cases Timeline	Таймлайн числа подтвержденных случаев
+Confirmed cases	Подтвержденные случаи
+Coronavirus Spread over the Continents	Распределение коронавируса по континентам
+Coronavirus over the Continents | Coronavirus COVID-19 Observer	Коронавирус на разных континентах | Вестник коронавируса COVID-19
+This bar chart displays the timeline of the number of confirmed cases. The gold bars are those reflecting [*a href="/asia/LNG"*]Asia[*/a*]. The blue bars correspond to the number of confirmed cases in [*a href="/europe/LNG"*]Europe[*/a*], and the violet bars—[*a href="/north-america/LNG"*]North America[*/a*].	Здесь показано изменение числа подтвержденных случаев со временем. Золотистые столбцы отражают [*a href="/asia/LNG"*]Азию[*/a*]. Синие — [*a href="/europe/LNG"*]Европу[*/a*], фиолетовые — [*a href="/north-america/LNG"*]Северную Америку[*/a*].
+This bar chart displays the timeline of the number of active cases (thus, confirmed minus failed to recovered minus recovered). The blue bars correspond to the number of confirmed cases in [*a href="/europe/LNG"*]Europe[*/a*], and the violet bars—[*a href="/north-america/LNG"*]North America[*/a*].	Здесь показано изменение числа активных случаев (то есть, число подтвержденных случаев за вычетом числа выздоровлений и летальных случаев) со временем. Золотистые столбцы отражают [*a href="/asia/LNG"*]Азию[*/a*]. Синие — [*a href="/europe/LNG"*]Европу[*/a*], фиолетовые — [*a href="/north-america/LNG"*]Северную Америку[*/a*].
+The height of a single bar is the total number of people suffered from Coronavirus in North America and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.	Высота отдельного столбца соответствует общему числу людей с подтвержденным диагнозом в Северной Америке. Это число включает три части: выздоровевшие люди, летальные исходы и число людей с болезнью в активной фазе.
+This is the part of confirmed infection cases against the total ｢1｣ of its population.
+in North America	в Северной Америке
+The height of a single bar is the total number of people suffered from Coronavirus in South America and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.	Высота отдельного столбца соответствует общему числу людей с подтвержденным диагнозом в Южной Америке. Это число включает три части: выздоровевшие люди, летальные исходы и число людей с болезнью в активной фазе.
+in South America	в Южной Америке
+The height of a single bar is the total number of people suffered from Coronavirus in Africa and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.	Высота отдельного столбца соответствует общему числу людей с подтвержденным диагнозом в Африке. Это число включает три части: выздоровевшие люди, летальные исходы и число людей с болезнью в активной фазе.
+in Africa	в Африке
+The height of a single bar is the total number of people suffered from Coronavirus in Asia and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.	Высота отдельного столбца соответствует общему числу людей с подтвержденным диагнозом в Азии. Это число включает три части: выздоровевшие люди, летальные исходы и число людей с болезнью в активной фазе.
+in Asia	в Азии
+The height of a single bar is the total number of people suffered from Coronavirus in Oceania and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.	Высота отдельного столбца соответствует общему числу людей с подтвержденным диагнозом в Океании. Это число включает три части: выздоровевшие люди, летальные исходы и число людей с болезнью в активной фазе.
+in Oceania	в Океании
+The height of a single bar is the total number of people suffered from Coronavirus in Europe and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.	Высота отдельного столбца соответствует общему числу людей с подтвержденным диагнозом в Европе. Это число включает три части: выздоровевшие люди, летальные исходы и число людей с болезнью в активной фазе.
+in Europe	в Европе
+Coronavirus World Overview	Коронавирус в мире
+Coronavirus World Overview Dashboard | Coronavirus COVID-19 Observer	Коронавирус в мире | Вестник коронавируса COVID-19
+Cura\u00e7ao	Кюрасао
+Each cell here represents a country, and the colour of the cell reflects the number of new confirmed cases happened since yesterday.	Каждая ячейка соответствует одной стране, а цвет — числу новых подтвержденных случаях за последний день.
+R\u00e9union	Реюньон
+Saint Barth\u00e9lemy	Сен-Бартелеми
+The numbers shown are the total number of confirmed infections and the number of people failed to recover. Click on the cell to get more information about the country.	Показанные числа — общее число подтвержденных случаев и число летальных исходов. Кликните на ячейку, чтобы перейти к более детальной информации по стране.
+Coronavirus World Map	Карта коронавируса COVID-19
+Coronavirus world map | Coronavirus COVID-19 Observer	Карта коронавируса | Вестник коронавируса COVID-19
+The colour of the country reflects the number of new confirmed cases happened since yesterday. Click on the map to navigate to the country-level page to get more information about the country.	Цвет страны отражает число новых подтвержденных случаев со вчерашнего дня. Кликнете на карту, чтобы перейти к странице с детальной информацией по данной стране.
+About the project | Coronavirus COVID-19 Observer	О проекте «Вестник коронавируса»
+Data is updated daily at around 8 a.m. Central European Time.	Данные обновляются около 9-10 утра по московскому времени.
+China’s provinces	Провинции Китая
+Compare the countries[*br/*]affected by coronavirus	Сравнение стран, где есть коронавирус
+Compare the countries with coronavirus | Coronavirus COVID-19 Observer	Сравнение стран с коронавирусом | Вестник коронавируса COVID-19
+Country	Страна
+Cumulative cases	Число случаев
+On this page, the most affected ｢1｣ countries are listed sorted by the number of confirmed cases. You can click on the country name to see more details about the country. The numbers below the name of the country are the numbers of confirmed (black), recovered (green, if known), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per country.	На этой странице показаны ｢1｣ стран с наибольшим числом инфецированных людей. Кликните на название страны, чтобы перейти на страницу с более детальной информацией об этой стране. Числа под названием страны — число подтвержденных (черное) случаев, число выздоровевших (зеленое) и число летальных исходов (красное). Эти числа показаны в графике в средней колонке. График в правой колонке — число новых случаев в день. Перемещайте курсор над столбцами гистограмм, чтобы увидеть детали. Обратите внимание на то, что вертикальная ось имеет разный масштаб для разных стран.
+Russia’s regions	Регионы РФ
+Compare all countries[*br/*]affected by coronavirus	Сравнение стран, где есть коронавирус
+On this page, all the countries affected by coronavirus are listed sorted by the number of confirmed cases. You can click on the country name to see more details about the country. The numbers below the name of the country are the numbers of confirmed (black), recovered (green, if known), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day.  Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per country.	На этой странице показаны все страны, в которых зафиксированы случаи коронавирусной инфекции. Кликните на название страны, чтобы перейти на страницу с более детальной информацией об этой стране. Числа под названием страны — число подтвержденных (черное) случаев, число выздоровевших (зеленое) и число летальных исходов (красное). Эти числа показаны в графике в средней колонке. График в правой колонке — число новых случаев в день. Перемещайте курсор над столбцами гистограмм, чтобы увидеть детали. Обратите внимание на то, что вертикальная ось имеет разный масштаб для разных стран.
+Region	Регион
+Compare the US states[*br/*]affected by coronavirus	Сравнение штатов США, где есть коронавирус
+On this page, the US states are listed sorted by the number of confirmed cases. You can click on the state name to see more details about it. The numbers below the state name are the numbers of confirmed (black) and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per state.	На этой странице показаны все штаты США, в которых зафиксированы случаи коронавирусной инфекции. Кликните на название штата, чтобы перейти на страницу с более детальной информацией об этом штате. Числа под названием штата — число подтвержденных (черное) случаев, число выздоровевших (зеленое) и число летальных исходов (красное). Эти числа показаны в графике в средней колонке. График в правой колонке — число новых случаев в день. Перемещайте курсор над столбцами гистограмм, чтобы увидеть детали. Обратите внимание на то, что вертикальная ось имеет разный масштаб для разных штатов.
+The green and red arrows next to the state name display the trend of the new confirmed cases during the last week.	Зеленые и красные стрелки рядом с названием штата показывают тренд в числе новых подтвержденных случаев за последнюю неделю.
+Compare China’s provinces[*br/*]affected by coronavirus	Сравнение провинций Китая, где есть коронавирус
+On this page, China provinces and regions are listed sorted by the number of confirmed cases. You can click on the name to see the more details about the region. The numbers below are the numbers of confirmed (black), recovered (green, if known), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per region.	На этой странице показаны все провинции и территории Китая, где зафиксированы случаи коронавирусной инфекции. Кликните на название, чтобы перейти на страницу с более детальной информацией. Числа под названием региона — число подтвержденных (черное) случаев, число выздоровевших (зеленое) и число летальных исходов (красное). Эти числа показаны в графике в средней колонке. График в правой колонке — число новых случаев в день. Перемещайте курсор над столбцами гистограмм, чтобы увидеть детали. Обратите внимание на то, что вертикальная ось имеет разный масштаб для разных регионов.
+The green and red arrows next to the region name display the trend of the new confirmed cases during the last week.	Зеленые и красные стрелки рядом с названием региона показывают тренд в числе новых подтвержденных случаев за последнюю неделю. 
+Compare Russia’s regions[*br/*]affected by coronavirus	Сравнение регионов РФ, где есть коронавирус
+On this page, the regions of the Russian Federation are listed sorted by the number of confirmed cases. You can click on the name to see the more details about the region. The numbers below are the numbers of confirmed (black), recovered (green), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per region.	На этой странице показаны все регионы Российской Федерации, где зафиксированы случаи коронавирусной инфекции. Кликните на название области, края или республики, чтобы перейти на страницу с более детальной информацией. Числа под названием региона — число подтвержденных (черное) случаев, число выздоровевших (зеленое) и число летальных исходов (красное). Эти числа показаны в графике в средней колонке. График в правой колонке — число новых случаев в день. Перемещайте курсор над столбцами гистограмм, чтобы увидеть детали. Обратите внимание на то, что вертикальная ось имеет разный масштаб для разных регионов.
+Russia’s regions	Регионы РФ
+Coronavirus vs Life Expectancy	Коронавирус и продолжительность жизни
+Coronavirus vs Life Expectancy | Coronavirus COVID-19 Observer	Коронавирус и продолжительность жизни | Вестник коронавируса COVID-19
+Each point on this graph reflects a single country. The blue dots are the number of confirmed cases (in % to the total population of the country), the red ones are the fraction of people failed to recover (in % to the total population). Move the cursor over the dot to see the name of the country.	Каждая точка на графике соответствует отдельной стране. Синие точки — это число подтвержденных случаев (в процентах от общего населения страны), красные точки — доля умершего населения (в процентах от общего населения). Перемещайте курсор над графиком, чтобы увидеть название страны.
+Visit [*a href="/compare/all/LNG"*]a separate page[*/a*] to see the comparison of all countries. The green and red arrows next to the country name display the trend of the new confirmed cases during the last week.	Посетите [*a href="/compare/all/LNG"*]отдельную страницу[*/a*], чтобы посмотреть сравнение по всем странам. Зеленые и красные стрелки около названия страны показывают тренд в изменении числа новых подтвержденных случаев за последнюю неделю.

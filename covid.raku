@@ -17,7 +17,7 @@ multi sub MAIN('population') {
     say "Updating database...";
 
     dbh.execute('delete from countries');
-    my $sth = dbh.prepare('insert into countries (cc, continent, country, population, life_expectancy, area, name_ru) values (?, ?, ?, ?, ?, ?, ?)');
+    my $sth = dbh.prepare('insert into countries (cc, continent, country, population, life_expectancy, area, name_ru, name_in_ru) values (?, ?, ?, ?, ?, ?, ?, ?)');
     for %population<countries>.kv -> $cc, $country {
         my $n = %population<population>{$cc};
         my $age = %population<age>{$cc} || 0;
@@ -27,7 +27,13 @@ multi sub MAIN('population') {
         my $continent = $cc ~~ /'/'/ ?? '' !! %population<continent>{$cc};
         # say "$cc, $continent, $country, $n";
 
-        $sth.execute($cc, $continent, $country, $n, $age, $area, $name_ru);
+        my $name_in_ru = $name_ru ?? "в $name_ru" !! '';
+        if %population<cc-translation><ru>{$cc} {
+            $name_ru    = %population<cc-translation><ru>{$cc}[0];
+            $name_in_ru = %population<cc-translation><ru>{$cc}[1];
+        }
+
+        $sth.execute($cc, $continent, $country, $n, $age, $area, $name_ru, $name_in_ru);
     }
     $sth.finish();
 
@@ -52,6 +58,12 @@ multi sub MAIN('population') {
         }
     }
     $sth.finish();
+}
+
+#| Fetch and generate
+multi sub MAIN('update') {
+    MAIN('fetch');
+    MAIN('generate');
 }
 
 #| Fetch the latest COVID-19 data from JHU and rebuild the database
@@ -139,10 +151,11 @@ multi sub MAIN('generate', Bool :$skip-excel = False) {
     generate-per-capita-stats(%CO, mode => 'combined');
 
     generate-china-level-stats(%CO);
-    # generate-common-start-stats(%countries, %per-day, %totals, %daily-totals);
+    ## generate-common-start-stats(%countries, %per-day, %totals, %daily-totals);
 
     my %country-stats;
-    for get-known-countries() -> $cc {
+    my $known-countries = get-known-countries();
+    for @$known-countries -> $cc {
         %country-stats{$cc} = generate-country-stats($cc, %CO, :%mortality, :%crude, :$skip-excel);
     }
 
@@ -153,15 +166,16 @@ multi sub MAIN('generate', Bool :$skip-excel = False) {
     generate-countries-compare(%country-stats, %countries, prefix => 'RU');
 
     generate-country-stats('CN', %CO, exclude => 'CN/HB');
+    ## generate-country-stats('RU', %CO, exclude => 'RU/77');
+
     generate-continent-graph(%CO);
 
     for %continents.keys -> $cont {
         generate-continent-stats($cont, %CO, :$skip-excel);
     }
 
-
     generate-scattered-age(%CO);
-    generate-scattered-density(%CO);
+    ## generate-scattered-density(%CO);
 
     my %levels = generate-overview(%CO);
     generate-world-map(%CO, %levels);

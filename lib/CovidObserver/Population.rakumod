@@ -6,6 +6,7 @@ use Text::CSV;
 
 use CovidObserver::DB;
 use CovidObserver::Geo;
+use CovidObserver::Translation;
 
 constant $world-population is export = 7_800_000_000;
 
@@ -166,13 +167,25 @@ sub parse-population() is export {
         %area{$cc} = $area;
     }
 
+    say 'Reading country translations...';
+
+    my %cc-translation;
+    for %languages.keys -> $language {
+        my @translations = csv(in => "translations/{$language}-cc.csv", sep => "\t");
+        for @translations[1..*] -> @data {
+            my ($cc, $name, $in-name) = @data;
+            %cc-translation{$language}{$cc} = [$name, $in-name];
+        }
+    }
+
     return
-        countries   => %countries,
-        population  => %population,
-        area        => %area,
-        continent   => %continent,
-        age         => %age,
-        mortality   => %mortality,
-        crude       => %crude,
-        translation => %translation;
+        countries      => %countries,
+        population     => %population,
+        area           => %area,
+        continent      => %continent,
+        age            => %age,
+        mortality      => %mortality,
+        crude          => %crude,
+        translation    => %translation,
+        cc-translation => %cc-translation;
 }

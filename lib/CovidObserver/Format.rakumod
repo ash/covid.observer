@@ -23,7 +23,7 @@ sub fmtdate($date) is export {
         default      {$ending = 'th'}
     }
 
-    return strftime("%B {$day}<sup>{$ending}</sup>, %Y", $dt);
+    return strftime("%B ｢{$day}｣<!--sup>{$ending}</sup-->, %Y", $dt);
 }
 
 sub fmtnum($n is copy) is export {

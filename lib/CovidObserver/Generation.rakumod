@@ -36,7 +36,7 @@ sub generate-world-stats(%CO, :$exclude?, :$skip-excel = False) is export {
             <div id="percent">$chart3&thinsp;%</div>
             <p class="center">This is the part of confirmed infection cases against the total {
                 if $exclude {
-                    sprintf('%.1f', ($world-population / 1_000_000 - %CO<countries>{$exclude}<population>) / 1000)
+                    sprintf('｢%.1f｣', ($world-population / 1_000_000 - %CO<countries>{$exclude}<population>) / 1000)
                 }
                 else {
                     '7.8'
@@ -45,7 +45,7 @@ sub generate-world-stats(%CO, :$exclude?, :$skip-excel = False) is export {
             <div class="affected">
                 {
                     if $chart2data<confirmed> {
-                        "Affected {smart-round(@per-capita[0]<confirmed-per1000>)} per 1000 people"
+                        "Affected ｢{smart-round(@per-capita[0]<confirmed-per1000>)}｣ per 1000 people"
                     }
                     else {
                         'Nobody affected'
@@ -55,7 +55,7 @@ sub generate-world-stats(%CO, :$exclude?, :$skip-excel = False) is export {
             <div class="failed">
                 {
                     if $chart2data<failed> {
-                        "Died {smart-round(@per-capita[0]<failed-per1000-str>)} per 1000 people"
+                        "Died ｢{smart-round(@per-capita[0]<failed-per1000-str>)}｣ per 1000 people"
                     }
                 }
             </div>
@@ -84,7 +84,7 @@ sub generate-world-stats(%CO, :$exclude?, :$skip-excel = False) is export {
         <div id="block3">
             <a name="daily"></a>
             <h2>Daily Flow</h2>
-            <p>The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the world{$without-str}. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus confirmed to be infected in the World{$without-str}. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <canvas id="Chart2"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale2" data-size="xs" data-style="rounded" data-color="blue">
@@ -139,7 +139,6 @@ sub generate-world-stats(%CO, :$exclude?, :$skip-excel = False) is export {
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
-            <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
             <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that fewer cases registered today than yesterday.</p>
         </div>
 
@@ -212,8 +211,8 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
     excel-table($table-path, @per-capita) unless $skip-excel;
 
     my $population-str = $population <= 1
-        ?? sprintf('%i thousand', (1000 * $population).round)
-        !! sprintf('%i million', $population.round);
+        ?? sprintf('｢%i｣ thousand', (1000 * $population).round)
+        !! sprintf('｢%i｣ million', $population.round);
 
     my $proper-country-name = $country-name;
     my $title-name = $country-name;
@@ -229,7 +228,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
     my $per-region-link = per-region(%CO, $cc);
     if $cc eq 'NL' {
         $per-region-link ~= q:to/LINKS/;
-            <p>Note: The numbers for <a href="/aw">Aruba</a>, <a href="/cw">Curaçao</a>, and <a href="/sx">Sint Maarten</a> are not included in the statistics for the Netherlands.</p>
+            <p>Note: The numbers for [*a href="/aw/LNG"*]Aruba[*/a], [*a href="/cw/LNG"*]Curaçao[*/a*], and [*a href="/sx/LNG"*]Sint Maarten[*/a*] are not included in the statistics for the Netherlands.</p>
             LINKS
     }
 
@@ -242,9 +241,9 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
                     <div id="block16">
                         <a name="mortality"></a>
                         <h2>Mortality Level</h2>
-                        <p>The gray bars on this graph display the absolute number of deaths that happen in {$proper-country-name} every month during the recent five years of <a href="/sources">available data</a>. The red bars are the absolute numbers of people died due to the COVID-19 infection.</p>
+                        <p>The gray bars on this graph display the absolute number of deaths that happen ｢in {$proper-country-name}｣ every month during the recent five years of [*a href="/sources/LNG"*]available data[*/a*]. The red bars are the absolute numbers of people died due to the COVID-19 infection.</p>
                         {'<p>Note that the vertical axis is drawn in logarithmic scale by default.</p>' if $chart16data<scale> eq 'logarithmic'}
-                        {'<p>As there is no monthly data available for ' ~ $proper-country-name ~ ', the gray bars are the average numbers obtained via the <a href="#crude">crude</a> death values known for this country for the recent five years of the available dataset.</p>' if $chart16data<is-averaged>}
+                        {'<p>As there is no monthly data available ｢in ' ~ $proper-country-name ~ '｣, the gray bars are the average numbers obtained via the [*a href="#crude"*]crude[*/a*] death values known for this country for the recent five years of the available dataset.</p>' if $chart16data<is-averaged>}
                         <canvas id="Chart16"></canvas>
                         <p class="left">
                             <label class="toggle-switchy" for="logscale16" data-size="xs" data-style="rounded" data-color="blue">
@@ -267,7 +266,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
                 <div id="block16a">
                     <a name="weekly"></a>
                     <h2>Weekly Levels</h2>
-                    <p>This graph draws the number of deaths in {$proper-country-name} connected to the COVID-19 infection aggregated by weeks of 2020.</p>
+                    <p>This graph draws the number of deaths ｢in {$proper-country-name}｣ connected to the COVID-19 infection aggregated by weeks of 2020.</p>
                     <canvas id="Chart17"></canvas>
                     <p class="left">
                         <label class="toggle-switchy" for="logscale17" data-size="xs" data-style="rounded" data-color="blue">
@@ -296,7 +295,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
                     <a name="crude"></a>
                     <h2>Crude rates</h2>
                     <p>Crude mortality rate is the number of people died in a country within a year per each 1000 of population.</p>
-                    <p>Here, the crude rate for {$proper-country-name} is shown for the last 50 years. The red bar against 2020 is the number of people died due to COVID-19 per each 1000 people. Thus, you can directly compare the two parameters.</p>
+                    <p>Here, the crude rate ｢in {$proper-country-name}｣ is shown for the last 50 years. The red bar against 2020 is the number of people died due to COVID-19 per each 1000 people. Thus, you can directly compare the two parameters.</p>
                     {'<p>Note that the vertical axis is drawn in logarithmic scale by default.</p>' if $chart18data<scale> eq 'logarithmic'}
                     <canvas id="Chart18"></canvas>
                     <p class="left">
@@ -325,7 +324,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
     }
 
     my $content = qq:to/HTML/;
-        <h1>Coronavirus in {$title-name}{$without-str}</h1>
+        <h1>Coronavirus ｢in {$title-name}{$without-str}｣</h1>
         $per-region-link
 
         <div id="block2">
@@ -333,12 +332,12 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
             <div id="percent">$chart3&thinsp;%</div>
             <p class="center">This is the part of confirmed infection cases against the total $population-str of its population.</p>
 
-            {qq{<p class="center"><b>$tests-fraction&thinsp;% of the whole population tested</b></p>} if $tests-fraction}
+            {qq{<p class="center"><b>｢$tests-fraction&thinsp;%｣ of the whole population tested</b></p>} if $tests-fraction}
 
             <div class="affected">
                 {
                     if $chart2data<confirmed> {
-                        "Affected {smart-round(@per-capita[0]<confirmed-per1000-str>)} per 1000 people"
+                        "Affected ｢{smart-round(@per-capita[0]<confirmed-per1000-str>)}｣ per 1000 people"
                     }
                     else {
                         'Nobody affected'
@@ -348,7 +347,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
             <div class="failed">
                 {
                     if $chart2data<failed> {
-                        "Died {smart-round(@per-capita[0]<failed-per1000-str>)} per 1000 people"
+                        "Died ｢{smart-round(@per-capita[0]<failed-per1000-str>)}｣ per 1000 people"
                     }
                 }
             </div>
@@ -357,7 +356,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
         <div id="block1">
             <a name="recovery"></a>
             <h2>Recovery Pie</h2>
-            <p class="center">The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$proper-country-name}{$without-str}.</p>
+            <p class="center">The whole pie reflects the total number of confirmed cases of people infected by coronavirus ｢in {$proper-country-name}{$without-str}｣.</p>
             <canvas id="Chart1"></canvas>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
@@ -368,20 +367,20 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
         <div id="block9">
             <a name="raw"></a>
             <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
-            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><span class="updown"><sup>confirmed</sup><sub>{pm($chart2data<delta-confirmed>)}</sub></span></p>
+            <p class="confirmed"><span>｢{fmtnum($chart2data<confirmed>)}｣</span><span class="updown"><sup>confirmed</sup><sub>｢{pm($chart2data<delta-confirmed>)}｣</sub></span></p>
             {
                 if $chart2data<recovered> {
-                    qq[<p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><span class="updown"><sup>recovered</sup><sub>{pm($chart2data<delta-recovered>)}</sub></span></p>]
+                    qq[<p class="recovered"><span>｢{fmtnum($chart2data<recovered>)}｣</span><span class="updown"><sup>recovered</sup><sub>｢{pm($chart2data<delta-recovered>)}｣</sub></span></p>]
                 }
             }
-            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><span class="updown"><sup>fatal</sup><sub>{pm($chart2data<delta-failed>)}</sub></span></p>
-            <p class="active"><span>{fmtnum($chart2data<active>)}</span><span class="updown"><sup>active</sup><sub>{pm($chart2data<delta-active>)}</sub></span></p>
+            <p class="failed"><span>｢{fmtnum($chart2data<failed>)}｣</span><span class="updown"><sup>fatal</sup><sub>｢{pm($chart2data<delta-failed>)}｣</sub></span></p>
+            <p class="active"><span>｢{fmtnum($chart2data<active>)}｣</span><span class="updown"><sup>active</sup><sub>｢{pm($chart2data<delta-active>)}｣</sub></span></p>
         </div>
 
         <div id="block3">
             <a name="daily"></a>
             <h2>Daily Flow</h2>
-            <p>The height of a single bar is the total number of people suffered from Coronavirus in {$proper-country-name}{$without-str} and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
+            <p>The height of a single bar is the total number of people suffered from Coronavirus ｢in {$proper-country-name}{$without-str}｣ and confirmed to be infected. It includes three parts: those who could or could not recover and those who are currently in the active phase of the disease.</p>
             <canvas id="Chart2"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale2" data-size="xs" data-style="rounded" data-color="blue">
@@ -422,7 +421,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
         <div id="block7">
             <a name="speed"></a>
             <h2>Daily Speed</h2>
-            <p>This graph shows the speed of growth (in %) over time in {$proper-country-name}{$without-str}. The only parameter here is the number of confirmed cases.</p>
+            <p>This graph shows the speed of growth (in %) over time ｢in {$proper-country-name}{$without-str}｣. The only parameter here is the number of confirmed cases.</p>
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
@@ -437,7 +436,6 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
-            <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
             <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that fewer cases registered today than yesterday.</p>
         </div>
 
@@ -446,8 +444,8 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
                 qq[
                     <div id="block21">
                         <a name="tests"></a>
-                        <h2>{fmtnum($chart21data<tests>)} tests performed</h2>
-                        <p>This graph shows the total number of tests performed in {$proper-country-name}{$without-str}. This graph does not reflect the outcome of the test cases. $tests-fraction&thinsp;% of the whole population have been tested.</p>
+                        <h2>｢{fmtnum($chart21data<tests>)}｣ tests performed</h2>
+                        <p>This graph shows the total number of tests performed in ｢{$proper-country-name}{$without-str}｣. This graph does not reflect the outcome of the test cases. ｢$tests-fraction&thinsp;%｣ of the whole population have been tested.</p>
                         <canvas id="Chart21"></canvas>
                         <p class="left">
                             <label class="toggle-switchy" for="logscale21" data-size="xs" data-style="rounded" data-color="blue">
@@ -473,7 +471,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
         <div id="block19">
             <a name="per-capita"></a>
             <h2>Per capita values</h2>
-            <p>Here, the number of confirmations and deaths <i>per 1000 of population</i> in {$proper-country-name}{$without-str} is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
+            <p>Here, the number of confirmations and deaths [*i*]per 1000 of population[*/i*] ｢in {$proper-country-name}{$without-str}｣ is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
             <canvas id="Chart19"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale19" data-size="xs" data-style="rounded" data-color="blue">
@@ -509,7 +507,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
         $url = '/' ~ $cc.lc;
     }
 
-    html-template($url, "Coronavirus in {$title-name}{$without-str}", $content);
+    html-template($url, "Coronavirus ｢in {$title-name}{$without-str}｣", $content);
 
     return %country-stats;
 }
@@ -535,7 +533,7 @@ sub generate-countries-stats(%CO) is export {
 
         <div id="block5">
             <h2>Number of Countries Affected</h2>
-            <p>%chart5data<current-n> countires are affected, which is {$percent}&thinsp;\% from the total %chart5data<total-countries> countries.</p>
+            <p class="center">｢%chart5data<current-n>｣ countires are affected, which is ｢{$percent}&thinsp;\%｣ from the total ｢%chart5data<total-countries>｣ countries.</p>
             <canvas id="Chart5"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale5" data-size="xs" data-style="rounded" data-color="blue">
@@ -554,7 +552,7 @@ sub generate-countries-stats(%CO) is export {
         </div>
 
         <div id="block6">
-            <h2>Countries Appeared This Day</h2>
+            <h2>Countries or Regions Appeared This Day</h2>
             <p>This list gives you the overview of when the first confirmed case was reported in the given country. Or, you can see here, which countries entered the chart in the recent days. The number in parentheses is the number of confirmed cases in that country on that date.</p>
             $countries-appeared
         </div>
@@ -612,7 +610,7 @@ sub generate-per-capita-stats(%CO, :$mode = '', :$cc-only = '') is export {
             <h2>{$topNconfirmations} per million</h2>
             <p class="center">Sorted by <b>confirmed cases</b> | by <a href="#failed">failed cases</a></p>
             <p>This graph shows the number of affected people per each million of the population. The length of a bar per country is proportional to the number of confirmed cases per million.</p>
-            {"<p>The $N most affected countries with more than one million of population are shown only. </p>" unless $cc-only}
+            {"<p>The ｢$N｣ most affected countries with more than one million of population are shown only. </p>" unless $cc-only}
             <div style="height: {$N * 1.9}ex">
                 <canvas id="Chart4"></canvas>
             </div>
@@ -636,8 +634,8 @@ sub generate-per-capita-stats(%CO, :$mode = '', :$cc-only = '') is export {
             <h2>{$topNfailures} per million</h2>
             <p class="center">Sorted by <a href="#confirmed">confirmed cases</a> | by <b>failed cases</b></p>
 
-            <p>This graph shows the relative number of people who could not recover from the disease. The data are the same as on the <a href="#confirmed">graph above</a> but sorted by the number of failures.</p>
-            {"<p>The $N most affected countries with more than one million of population are shown only. </p>" unless $cc-only}
+            <p>This graph shows the relative number of people who could not recover from the disease. The data are the same as on the [*a href="#confirmed"*]graph above[*/a*] but sorted by the number of failures.</p>
+            {"<p>The ｢$N｣ most affected countries with more than one million of population are shown only. </p>" unless $cc-only}
             <div style="height: {$N * 1.9}ex">
                 <canvas id="Chart14"></canvas>
             </div>
@@ -680,13 +678,13 @@ sub generate-continent-stats($cont, %CO, :$skip-excel = False) is export {
     excel-table($table-path, @per-capita) unless $skip-excel;
 
     my $percent-str = %chart3<percent> ~ '&thinsp;%';
-    my $population-str = $population.round() ~ ' million';
+    my $population-str = '｢' ~ $population.round() ~ '｣ million';
 
     my $continent-name = %continents{$cont};
     my $continent-url = $continent-name.lc.subst(' ', '-');
 
     my $content = qq:to/HTML/;
-        <h1>Coronavirus in {$continent-name}</h1>
+        <h1>Coronavirus ｢in {$continent-name}｣</h1>
 
         <div id="block2">
             <h2>Affected Population</h2>
@@ -695,7 +693,7 @@ sub generate-continent-stats($cont, %CO, :$skip-excel = False) is export {
             <div class="affected">
                 {
                     if $chart2data<confirmed> {
-                        "Affected {smart-round(@per-capita[0]<confirmed-per1000-str>)} per 1000 people"
+                        "Affected ｢{smart-round(@per-capita[0]<confirmed-per1000-str>)}｣ per 1000 people"
                     }
                     else {
                         'Nobody affected'
@@ -705,7 +703,7 @@ sub generate-continent-stats($cont, %CO, :$skip-excel = False) is export {
             <div class="failed">
                 {
                     if $chart2data<failed> {
-                        "Died {smart-round(@per-capita[0]<failed-per1000-str>)} per 1000 people"
+                        "Died ｢{smart-round(@per-capita[0]<failed-per1000-str>)}｣ per 1000 people"
                     }
                 }
             </div>
@@ -714,7 +712,7 @@ sub generate-continent-stats($cont, %CO, :$skip-excel = False) is export {
         <div id="block1">
             <a name="recovery"></a>
             <h2>Recovery Pie</h2>
-            <p class="center">The whole pie reflects the total number of confirmed cases of people infected by coronavirus in {$continent-name}.</p>
+            <p class="center">The whole pie reflects the total number of confirmed cases of people infected by coronavirus ｢in {$continent-name}｣.</p>
             <canvas id="Chart1"></canvas>
             <script>
                 var ctx1 = document.getElementById('Chart1').getContext('2d');
@@ -725,10 +723,10 @@ sub generate-continent-stats($cont, %CO, :$skip-excel = False) is export {
         <div id="block9">
             <a name="raw"></a>
             <h2>Raw Numbers on {fmtdate($chart2data<date>)}</h2>
-            <p class="confirmed"><span>{fmtnum($chart2data<confirmed>)}</span><span class="updown"><sup>confirmed</sup><sub>{pm($chart2data<delta-confirmed>)}</sub></span></p>
-            <p class="recovered"><span>{fmtnum($chart2data<recovered>)}</span><span class="updown"><sup>recovered</sup><sub>{pm($chart2data<delta-recovered>)}</sub></span></p>
-            <p class="failed"><span>{fmtnum($chart2data<failed>)}</span><span class="updown"><sup>fatal</sup><sub>{pm($chart2data<delta-failed>)}</sub></span></p>
-            <p class="active"><span>{fmtnum($chart2data<active>)}</span><span class="updown"><sup>active</sup><sub>{pm($chart2data<delta-active>)}</sub></span></p>
+            <p class="confirmed"><span>｢{fmtnum($chart2data<confirmed>)}｣</span><span class="updown"><sup>confirmed</sup><sub>｢{pm($chart2data<delta-confirmed>)}｣</sub></span></p>
+            <p class="recovered"><span>｢{fmtnum($chart2data<recovered>)}｣</span><span class="updown"><sup>recovered</sup><sub>｢{pm($chart2data<delta-recovered>)}｣</sub></span></p>
+            <p class="failed"><span>｢{fmtnum($chart2data<failed>)}｣</span><span class="updown"><sup>fatal</sup><sub>｢{pm($chart2data<delta-failed>)}｣</sub></span></p>
+            <p class="active"><span>｢{fmtnum($chart2data<active>)}｣</span><span class="updown"><sup>active</sup><sub>｢{pm($chart2data<delta-active>)}｣</sub></span></p>
         </div>
 
         <div id="block3">
@@ -774,7 +772,7 @@ sub generate-continent-stats($cont, %CO, :$skip-excel = False) is export {
         <div id="block7">
             <a name="speed"></a>
             <h2>Daily Speed</h2>
-            <p>This graph shows the speed of growth (in %) over time in {$continent-name}. The only parameter here is the number of confirmed cases.</p>
+            <p>This graph shows the speed of growth (in %) over time ｢in {$continent-name}｣. The only parameter here is the number of confirmed cases.</p>
             <canvas id="Chart7"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
@@ -789,14 +787,13 @@ sub generate-continent-stats($cont, %CO, :$skip-excel = False) is export {
                 var ctx7 = document.getElementById('Chart7').getContext('2d');
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
-            <!--p>Note 1. In calculations, the 3-day moving average is used.</p-->
             <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that fewer cases registered today than yesterday.</p>
         </div>
 
         <div id="block19">
             <a name="per-capita"></a>
             <h2>Per capita values</h2>
-            <p>Here, the number of confirmations and deaths <i>per 1000 of population</i> in {$continent-name} is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
+            <p>Here, the number of confirmations and deaths <i>per 1000 of population</i> ｢in {$continent-name}｣ is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
             <canvas id="Chart19"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale19" data-size="xs" data-style="rounded" data-color="blue">
@@ -823,7 +820,7 @@ sub generate-continent-stats($cont, %CO, :$skip-excel = False) is export {
 
         HTML
 
-    html-template("/$continent-url", "Coronavirus in $continent-name", $content);
+    html-template("/$continent-url", "Coronavirus ｢in $continent-name｣", $content);
 }
 
 sub generate-china-level-stats(%CO) is export {
@@ -843,7 +840,7 @@ sub generate-china-level-stats(%CO) is export {
         <div id="block6">
             <h2>Confirmed population timeline</h2>
             <p>On this graph, you see how the fraction (in %) of the confirmed infection cases changes over time in different countries.</p>
-            <p>The almost-horizontal red line in the bottom part of the graph line displays <a href="/cn">China</a>. The number of confirmed infections in China almost stopped growing. Note the top line reflecting the most suffered province of China, <a href="/cn/hb">Hubei</a>, where the spread is also almost stopped.</p>
+            <p>The almost-horizontal red line in the bottom part of the graph line displays [*a href="/cn/LNG"*]China[*/a*]. The number of confirmed infections in China almost stopped growing. Note the top line reflecting the most suffered province of China, [*a href="/cn/hb/LNG"*]Hubei[*/a*], where the spread is also almost stopped.</p>
             <p>Click on the bar in the legend to turn the line off and on.</p>
             <br/>
             <canvas id="Chart6"></canvas>
@@ -856,7 +853,7 @@ sub generate-china-level-stats(%CO) is export {
                 </label>
                 <label for="logscale6"> Logarithmic scale</label>
             </p>
-            <p>1. Note that only countries with more than 1000 population are taken into account. The smaller countries such as <a href="/va">Vatican</a> or <a href="/sm">San Marino</a> would have shown too high nimbers due to their small population.</p>
+            <p>1. Note that only countries with more than 1000 population are taken into account. The smaller countries such as [*a href="/va/LNG"*]Vatican[*/a*] or [*a href="/sm/LNG"*]San Marino[*/a*] would have shown too high nimbers due to their small population.</p>
             <p>2. The line for the country is drawn only if it reaches at least 85% of the corresponding maximum parameter in China.</p>
             <script>
                 var ctx6 = document.getElementById('Chart6').getContext('2d');
@@ -880,9 +877,9 @@ sub generate-continent-graph(%CO) is export {
         <div id="block3">
             <a name="active"></a>
             <h2>Active Cases Timeline</h2>
-            <p><b>Active cases</b> | <a href="#confirmed">Confirmed cases</a></p>
+            <p class="center"><b>Active cases</b> | <a href="#confirmed">Confirmed cases</a></p>
 
-            <p>This bar chart displays the timeline of the number of active cases (thus, confirmed minus failed to recovered minus recovered). The gold bars are those reflecting <a href="/asia">Asia</a> (mostly, <a href="/cn">China</a>). The blue bars correspond to the number of active cases in <a href="/europe">Europe</a>.</p>
+            <p>This bar chart displays the timeline of the number of active cases (thus, confirmed minus failed to recovered minus recovered). The blue bars correspond to the number of confirmed cases in [*a href="/europe/LNG"*]Europe[*/a*], and the violet bars—[*a href="/north-america/LNG"*]North America[*/a*].</p>
             <canvas id="Chart8"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale8" data-size="xs" data-style="rounded" data-color="blue">
@@ -902,9 +899,9 @@ sub generate-continent-graph(%CO) is export {
         <div id="block16">
             <a name="confirmed"></a>
             <h2>Confirmed Cases Timeline</h2>
-            <p><a href="#active">Active cases</a> | <b>Confirmed cases</b></p>
+            <p class="center"><a href="#active">Active cases</a> | <b>Confirmed cases</b></p>
 
-            <p>This bar chart displays the timeline of the number of confirmed cases. The gold bars are those reflecting <a href="/asia">Asia</a> (mostly, <a href="/cn">China</a>). The blue bars correspond to the number of confirmed cases in <a href="/europe">Europe</a>.</p>
+            <p>This bar chart displays the timeline of the number of confirmed cases. The gold bars are those reflecting [*a href="/asia/LNG"*]Asia[*/a*]. The blue bars correspond to the number of confirmed cases in [*a href="/europe/LNG"*]Europe[*/a*], and the violet bars—[*a href="/north-america/LNG"*]North America[*/a*].</p>
             <canvas id="Chart16"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale16" data-size="xs" data-style="rounded" data-color="blue">
@@ -1393,30 +1390,30 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
         $content ~= qq:to/HTML/;
             <h1>
                 {
-                    if    $path eq '/compare'     {'Compare the countries<br/>affected by coronavirus'  }
-                    elsif $path eq '/compare/all' {'Compare all countries<br/>affected by coronavirus'  }
-                    elsif $path eq '/us/compare'  {'Compare the US states<br/>affected by coronavirus'  }
-                    elsif $path eq '/cn/compare'  {'Compare China‘s provinces<br/>affected by coronavirus'}
-                    elsif $path eq '/ru/compare'  {'Compare Russia‘s regions<br/>affected by coronavirus'}
+                    if    $path eq '/compare'     {'Compare the countries[*br/*]affected by coronavirus'  }
+                    elsif $path eq '/compare/all' {'Compare all countries[*br/*]affected by coronavirus'  }
+                    elsif $path eq '/us/compare'  {'Compare the US states[*br/*]affected by coronavirus'  }
+                    elsif $path eq '/cn/compare'  {'Compare China’s provinces[*br/*]affected by coronavirus'}
+                    elsif $path eq '/ru/compare'  {'Compare Russia’s regions[*br/*]affected by coronavirus'}
                 }
             </h1>
 
             <p class="center">
-                {$path eq '/compare' ?? '<b>Compare countries</b>' !! '<a href="/compare/">Compare countries</a>'}
+                {$path eq '/compare' ?? '<b>Compare countries</b>' !! '<a href="/compare/LNG">Compare countries</a>'}
                 |
-                <a href="/per-million/">Per capita</a>
+                <a href="/per-million/LNG">Per capita</a>
                 |
-                <a href="/countries/">Affected countries</a>
+                <a href="/countries/LNG">Affected countries</a>
             </p>
             <p class="center">
-                {$path eq '/us/compare' ?? '<b>US states</b>' !! '<a href="/us/compare/">US states</a>'}
+                {$path eq '/us/compare' ?? '<b>US states</b>' !! '<a href="/us/compare/LNG">US states</a>'}
                 |
-                {$path eq '/cn/compare' ?? '<b>China‘s provinces</b>' !! '<a href="/cn/compare/">China‘s provinces</a>'}
+                {$path eq '/cn/compare' ?? '<b>China’s provinces</b>' !! '<a href="/cn/compare/LNG">China’s provinces</a>'}
                 |
-                {$path eq '/ru/compare' ?? '<b>Russia‘s regions</b>' !! '<a href="/ru/compare/">Russia’s regions</a>'}
+                {$path eq '/ru/compare' ?? '<b>Russia’s regions</b>' !! '<a href="/ru/compare/LNG">Russia’s regions</a>'}
             </p>
 
-            {qq[<p>On this page, the most affected $limit countries are listed sorted by the number of confirmed cases. You can click on the country name to see more details about the country. The numbers below the name of the country are the numbers of confirmed (black), recovered (green, if known), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per country.</p><p>Visit <a href="/compare/all/">a separate page</a> to see the comparison of all countries. The green and red arrows next to the country name display the trend of the new confirmed cases during the last week.</p>] if $path eq '/compare'}
+            {qq[<p>On this page, the most affected ｢$limit｣ countries are listed sorted by the number of confirmed cases. You can click on the country name to see more details about the country. The numbers below the name of the country are the numbers of confirmed (black), recovered (green, if known), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per country.</p><p>Visit [*a href="/compare/all/LNG"*]a separate page[*/a*] to see the comparison of all countries. The green and red arrows next to the country name display the trend of the new confirmed cases during the last week.</p>] if $path eq '/compare'}
 
             {qq[<p>On this page, all the countries affected by coronavirus are listed sorted by the number of confirmed cases. You can click on the country name to see more details about the country. The numbers below the name of the country are the numbers of confirmed (black), recovered (green, if known), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day.  Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per country.</p><p>The green and red arrows next to the country name display the trend of the new confirmed cases during the last week.</p>] if $path eq '/compare/all'}
 
@@ -1493,8 +1490,6 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
     $content ~= qq:to/HTML/;
             </tbody>
         </table>
-
-        {continent-list()}
 
         HTML
 
