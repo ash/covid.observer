@@ -36,7 +36,7 @@ Daily Flow	Данные по дням
 Daily Speed	Скорость прироста по дням
 Daily flow	Данные по дням
 Daily speed	Скорость прироста по дням
-Data sources	Источники данных	 (англ.)
+Data sources	Источники данных (англ.)
 Date	Дата
 Died ｢1｣ per 1000 people	Умерло ｢1｣ чел. на 1000 населения
 Download as	Загрузить как
@@ -85,7 +85,7 @@ The height of a single bar is the total number of people suffered from Coronavir
 The whole pie reflects the total number of confirmed cases of people infected by coronavirus in the whole world.	Суммарно, вся диаграмма отражает общее число подтвержденных случаев заражения короновирусом во всем мире.
 This graph shows the number of new cases by day. The lightblue bars are the number of the new total confirmed cases appeared that day.	График показывает число новых случаев по дням. Светло-синие столбцы — число новых случаев, зарегистрированных в данный день.
 This graph shows the speed of growth (in %) over time. The only parameter here is the number of confirmed cases.	Этот график показывает скорость роста (в процентах) со временем. Единственный параметр здесь — число подтвержденных случаев.
-This is the part of confirmed infection cases against the total 7.8 billion of the world population.	Это — часть подтвержденных случаев относительно общего числа населения Земли в 7,8 миллиардов.
+This is the part of confirmed infection cases against the total 7.8 billion of the world population.	Это — часть подтвержденных случаев относительно общего числа населения Земли в 7.8 миллиардов.
 Tweet	Твитнуть
 US	США
 US states	Штаты США
@@ -166,7 +166,7 @@ Coronavirus ｢1｣	Коронавирус ｢1｣
 Coronavirus ｢1｣ | Coronavirus COVID-19 Observer	Коронавирус ｢1｣ | Вестник коронавируса COVID-19
 Crude deaths	Общий коэффициент смертности
 Crude mortality rate is the number of people died in a country within a year per each 1000 of population.	Общий коэффициент смертности показывает число скончавшихся за год людей в пересчете на одну тысячу населения страны.
-Crude rates	Общей уровень смертности
+Crude rates	Общий уровень смертности
 Mortality Level	Уровень смертности
 Mortality level	Уровень смертности
 Note that the vertical axis is drawn in logarithmic scale by default.	Обратите внимание, что вертикальная ось по умолчанию показана в логарифмическом масштабе.
@@ -198,7 +198,7 @@ China provinces and regions	Провинции и регионы Китая
 Nobody affected	Все живы
 L’information officielle sur la progression de l’épidémie en France	L’information officielle sur la progression de l’épidémie en France
 Official Statistics by the Ministry of Health and Family Welfare	Официальная статистика: the Ministry of Health and Family Welfare
-Note: The numbers for [*a href="/aw/LNG"*]Aruba[*/a], [*a href="/cw/LNG"*]Curaçao[*/a*], and [*a href="/sx/LNG"*]Sint Maarten[*/a*] are not included in the statistics for the Netherlands.	Примечание. Данные по [*a href="/aw/LNG"*]Арубе[*/a], [*a href="/cw/LNG"*]Кюрасао[*/a*] и [*a href="/sx/LNG"*]Синт-Мартену[*/a*] не включены в статистику по Нидерландам.
+Note: The numbers for [*a href="/aw/LNG"*]Aruba[*/a*], [*a href="/cw/LNG"*]Curaçao[*/a*], and [*a href="/sx/LNG"*]Sint Maarten[*/a*] are not included in the statistics for the Netherlands.	Примечание. Данные по [*a href="/aw/LNG"*]Арубе[*/a], [*a href="/cw/LNG"*]Кюрасао[*/a*] и [*a href="/sx/LNG"*]Синт-Мартену[*/a*] не включены в статистику по Нидерландам.
 Official data: Coronavirus kaart van Nederland per gemeente	Официальные данные: Coronavirus kaart van Nederland per gemeente
 Regions of the Russian Federation	Регионы РФ
 the United States of America	США
