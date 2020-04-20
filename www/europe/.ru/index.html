@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Коронавирус в Европе | Вестник коронавируса COVID-19</title>
+    <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon">
+
+    
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160707541-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-160707541-1');
+</script>
+
+
+    <script src="/Chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" type="text/css" href="/main.css?v=1587404916">
+    
+    <style>
+        
+    
+        
+    </style>
+
+    <script>
+        var chart = new Array();
+function log_scale(input, n) {
+    chart[n].options.scales.yAxes[0].type = input.checked ? 'logarithmic' : 'linear';
+    chart[n].update();
+    input.blur();
+}
+function log_scale_horizontal(input, n) {
+    chart[n].options.scales.xAxes[0].type = input.checked ? 'logarithmic' : 'linear';
+    chart[n].update();
+    input.blur();
+}
+
+    </script>
+
+    <script src="/countries.js?v=2020-04-20T23:00:00+02:00" type="text/javascript"></script>
+    <script src="/autocomplete.js?v=2" type="text/javascript"></script>
+
+    <link rel="stylesheet" type="text/css" href="/likely.css">
+    
+    <script src="/likely.js" type="text/javascript"></script>
+
+    
+</head>
+<body lang="ru">
+
+    
+
+    <div class="menu" id="mainmenu">
+        
+        <ul>
+            
+            <li><a href="/.ru/">Начало</a></li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn" style="cursor: normal">Статистика</a>
+                <div class="dropdown-content">
+                    
+                    <a href="#recovery">Диаграмма восстановления</a>
+                    <a href="#raw">Показатели</a>
+                    <a href="#new">Новые случаи по дням</a>
+                    <a href="#daily">Данные по дням</a>
+                    <a href="#speed">Скорость прироста по дням</a>
+                    <a href="#per-capita">Значения на душу населения</a>
+                    <a href="#table">Таблица</a>
+                    
+                    
+                    <a href="/vs-age/.ru/">Зависимость от продолжительности жизни</a>
+                    <!--a href="/vs-density/.ru/">Cases vs population density</a-->
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Мир</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/map/.ru/">Карта мира</a>
+                    <a href="/.ru/">Числа по миру</a>
+                    <a href="/overview/.ru/">Обзор</a>
+                    <a href="/-cn/.ru/">Мир без учета Китай</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Континенты</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/africa/.ru/">Африка</a>
+                    <a href="/asia/.ru/">Азия</a>
+                    <a href="/europe/.ru/">Европа</a>
+                    <a href="/north-america/.ru/">Северная Америка</a>
+                    <a href="/south-america/.ru/">Южная Америка</a>
+                    <a href="/oceania/.ru/">Океания</a>
+                    <a href="/continents/.ru/">Распределение по континентам</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Страны</a>
+                <div class="dropdown-content">
+                    
+                    <a href="#countries">Список стран</a>
+                    <a href="/countries/.ru/">Охват по странам</a>
+                    <a href="/compare/.ru/">Сравнение стран</a>
+                    <a href="/per-million/.ru/">Страны по охвату на душу населения</a>
+                    <a href="/vs-china/.ru/">Страны в сравнении с Китаем</a>
+                    <a href="/pie/.ru/">Распределение по странам</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Китай</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/cn/.ru/">Суммарные данные</a>
+                    <a href="/cn/.ru/#regions">Провинции Китая</a>
+                    <a href="/-cn/.ru/">Мир без учета Китай</a>
+                    <a href="/cn/-hb/.ru/">Китай без учета Хубэй</a>
+                    <a href="/vs-china/.ru/">Страны в сравнении с Китаем</a>
+                    <a href="/cn/compare/.ru/">Сравнение провинций</a>
+                    <a href="/per-million/cn/.ru/">Отсортированные провинции</a>
+                    <a href="/pie/cn/.ru/">Распределение по регионам</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Россия</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/ru/.ru/">Суммарные данные</a>
+                    <a href="/ru/.ru/#regions">Регионы</a>
+                    <a href="/ru/compare/.ru/">Сравнение регионов</a>
+                    <a href="/pie/ru/.ru/">Распределение по регионам</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">США</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/us/.ru/">Суммарные данные</a>
+                    <a href="/us/.ru/#states">Штаты США</a>
+                    <a href="/us/compare/.ru/">Сравнение штатов</a>
+                    <a href="/per-million/us/.ru/">Штаты США по охвату на душу населения</a>
+                    <a href="/pie/us/.ru/">Распределение по штатам</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Проект</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/news">Новости проекта (англ.)</a>
+                    <a href="/about">Информация о проекте (англ.)</a>
+                    <a href="/sources">Источники данных (англ.)</a>
+                    <a href="https://andrewshitov.com/category/covid-19/" target="_blank">Технический блог (англ.)</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Язык</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/">Английский</a>
+                    <a href="/.ru/">Русский (бета)</a>
+                </div>
+            </li>
+
+            <li class="searchbox">
+                
+                <div class="autocomplete">
+                    
+                    <input id="SearchBox" type="text" name="myCountry" placeholder="Find a country or region">
+                
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        autocomplete(document.getElementById("SearchBox"), countries);
+    </script>
+
+        <div>
+        
+        <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/pie/">Compare the countries on a pie diagram</a></span></p>
+    </div>
+
+
+    <h1>Коронавирус в Европе</h1>
+
+<div id="block2">
+    
+    <h2>Затронутое население</h2>
+    <div id="percent">0,17&thinsp;%</div>
+    <p class="center">Это — часть заразившегося числа людей от общего населения в 603 млн.</p>
+    <div class="affected">
+        Пострадало 1,74 чел. на 1000 населения
+    </div>
+    <div class="failed">
+        Умерло 0,17 чел. на 1000 населения
+    </div>
+</div>
+
+<div id="block1">
+    
+    <a name="recovery"></a>
+    <h2>Диаграмма восстановления</h2>
+    <p class="center">Вся диаграмма отражает общее число подтвержденных случаев в Европе.</p>
+    <canvas id="Chart1"></canvas>
+    <script>
+        var ctx1 = document.getElementById('Chart1').getContext('2d');
+        chart[1] = new Chart(ctx1, {
+    "type": "pie",
+    "data": {
+        "labels": ["Recovered 29%", "Failed to recover 10%", "Active cases 61%"],
+        "datasets": [
+            { "backgroundColor" : [ "green", "red", "orange" ], "data" : [ 305964, 101431, 638971 ], "label" : "Recovery statistics" }
+        ]
+    },
+    "options": {
+        "animation": false
+    }
+}
+);
+    </script>
+</div>
+
+<div id="block9">
+    
+    <a name="raw"></a>
+    <h2>Данные на 19 апреля<!--sup>th</sup-->, 2020</h2>
+    <p class="confirmed"><span>1.046.366</span><span class="updown"><sup>подтверждено</sup><sub>+29.471</sub></span></p>
+    <p class="recovered"><span>305.964</span><span class="updown"><sup>выздоровело</sup><sub>+10.562</sub></span></p>
+    <p class="failed"><span>101.431</span><span class="updown"><sup>умерло</sup><sub>+2.533</sub></span></p>
+    <p class="active"><span>638.971</span><span class="updown"><sup>активно</sup><sub>+16.376</sub></span></p>
+</div>
+
+<div id="block3">
+    
+    <a name="daily"></a>
+    <h2>Данные по дням</h2>
+    <p>Высота отдельного столбца соответствует общему числу людей с подтвержденным диагнозом в Европе. Это число включает три части: выздоровевшие люди, летальные исходы и число людей с болезнью в активной фазе.</p>
+    <canvas id="Chart2"></canvas>
+    <p class="left">
+        
+        <label class="toggle-switchy" for="logscale2" data-size="xs" data-style="rounded" data-color="blue">
+            
+            <input type="checkbox" id="logscale2" onclick="log_scale(this, 2)">
+            
+            <span class="toggle">
+                
+                <span class="switch"></span>
+            </span>
+        </label>
+        <label for="logscale2"> Логарифмическая шкала</label>
+    </p>
+    <script>
+        var ctx2 = document.getElementById('Chart2').getContext('2d');
+        chart[2] = new Chart(ctx2, {
+    "type": "bar",
+    "data": {
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24", "2020-03-25", "2020-03-26", "2020-03-27", "2020-03-28", "2020-03-29", "2020-03-30", "2020-03-31", "2020-04-01", "2020-04-02", "2020-04-03", "2020-04-04", "2020-04-05", "2020-04-06", "2020-04-07", "2020-04-08", "2020-04-09", "2020-04-10", "2020-04-11", "2020-04-12", "2020-04-13", "2020-04-14", "2020-04-15", "2020-04-16", "2020-04-17", "2020-04-18", "2020-04-19" ],
+        "datasets": [
+            { "backgroundColor" : "orange", "data" : [ 0, 0, 2, 3, 3, 3, 8, 10, 10, 16, 21, 23, 25, 26, 26, 26, 29, 34, 36, 41, 43, 40, 39, 39, 35, 28, 27, 16, 16, 16, 30, 70, 161, 236, 330, 484, 700, 984, 1347, 2042, 2483, 3069, 3901, 5117, 6716, 8703, 11058, 13620, 16821, 21154, 21877, 34968, 41992, 49504, 59261, 69038, 80770, 97760, 116463, 133876, 147932, 170201, 186439, 210180, 236648, 262977, 290104, 310461, 328833, 351775, 372806, 389869, 411032, 450339, 468537, 485118, 499742, 507546, 518562, 542507, 556570, 569063, 579698, 577252, 585742, 604658, 615506, 622595, 638971 ], "label" : "Active cases" },
+            { "label" : "Failed to recover", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 3, 4, 8, 11, 14, 19, 23, 31, 36, 55, 85, 114, 160, 216, 259, 411, 522, 716, 959, 963, 1531, 1812, 2294, 2802, 3389, 4010, 4872, 6058, 7487, 8788, 10332, 12089, 14171, 16389, 18950, 21659, 24190, 27023, 30238, 33619, 38067, 42222, 46143, 49174, 52591, 57350, 61208, 65747, 70007, 73391, 76645, 79847, 83155, 88025, 92003, 95967, 98898, 101431 ], "backgroundColor" : "red" },
+            { "label" : "Recovered", "backgroundColor" : "green", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 5, 5, 9, 16, 17, 28, 28, 28, 30, 31, 32, 31, 38, 41, 84, 85, 86, 123, 189, 202, 320, 458, 569, 676, 709, 818, 825, 1308, 1309, 1740, 2610, 2997, 3459, 4194, 5442, 5901, 6433, 8984, 12343, 14462, 19767, 23456, 29573, 36081, 42534, 48818, 58199, 66688, 78360, 91638, 102824, 113878, 122829, 130254, 146005, 167700, 184545, 195932, 209033, 219926, 229792, 240756, 255313, 272292, 286224, 295402, 305964 ] }
+        ]
+    },
+    "options": {
+        "animation": false,
+        "scales": {
+            "xAxes": [{
+                "stacked": true,
+            }],
+            "yAxes": [{
+                "stacked": true,
+                "ticks": {
+                    callback: function(value, index, values) {
+                        value = value.toString();
+                        if (value.length > 10) return '';
+                        return value;
+                    }
+                }
+            }]
+        }
+    }
+}
+);
+    </script>
+</div>
+
+<div id="block10">
+    
+    <a name="new"></a>
+    <h2>Новые случаи</h2>
+    <p>График показывает число новых случаев по дням. Светло-синие столбцы — число новых случаев, зарегистрированных в данный день.</p>
+    <canvas id="Chart10"></canvas>
+    <p class="left">
+        
+        <label class="toggle-switchy" for="logscale10" data-size="xs" data-style="rounded" data-color="blue">
+            
+            <input type="checkbox" id="logscale10" onclick="log_scale(this, 10)">
+            
+            <span class="toggle">
+                
+                <span class="switch"></span>
+            </span>
+        </label>
+        <label for="logscale10"> Логарифмическая шкала</label>
+    </p>
+    <script>
+        var ctx10 = document.getElementById('Chart10').getContext('2d');
+        chart[10] = new Chart(ctx10, {
+    "type": "bar",
+    "data": {
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24", "2020-03-25", "2020-03-26", "2020-03-27", "2020-03-28", "2020-03-29", "2020-03-30", "2020-03-31", "2020-04-01", "2020-04-02", "2020-04-03", "2020-04-04", "2020-04-05", "2020-04-06", "2020-04-07", "2020-04-08", "2020-04-09", "2020-04-10", "2020-04-11", "2020-04-12", "2020-04-13", "2020-04-14", "2020-04-15", "2020-04-16", "2020-04-17", "2020-04-18", "2020-04-19" ],
+        "datasets": [
+            { "backgroundColor" : "red", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 4, 3, 3, 5, 4, 8, 5, 19, 30, 29, 46, 56, 43, 152, 111, 194, 243, 4, 568, 281, 482, 508, 587, 621, 862, 1186, 1429, 1301, 1544, 1757, 2082, 2218, 2561, 2709, 2531, 2833, 3215, 3381, 4448, 4155, 3921, 3031, 3417, 4759, 3858, 4539, 4260, 3384, 3254, 3202, 3308, 4870, 3978, 3964, 2931, 2533 ], "label" : "Failed to recover" },
+            { "data" : [ 0, 0, 2, 1, 0, 0, 5, 2, 0, 6, 5, 2, 2, 1, 0, 0, 3, 5, 2, 5, 2, -3, -1, 0, -4, -7, -1, -11, 0, 0, 14, 40, 91, 75, 94, 154, 216, 284, 363, 695, 441, 586, 832, 1216, 1599, 1987, 2355, 2562, 3201, 4333, 723, 13091, 7024, 7512, 9757, 9777, 11732, 16990, 18703, 17413, 14056, 22269, 16238, 23741, 26468, 26329, 27127, 20357, 18372, 22942, 21031, 17063, 21163, 39307, 18198, 16581, 14624, 7804, 11016, 23945, 14063, 12493, 10635, -2446, 8490, 18916, 10848, 7089, 16376 ], "backgroundColor" : "orange", "label" : "Active cases" },
+            { "label" : "Recovered", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 1, 0, 4, 7, 1, 11, 0, 0, 2, 1, 1, -1, 7, 3, 43, 1, 1, 37, 66, 13, 118, 138, 111, 107, 33, 109, 7, 483, 1, 431, 870, 387, 462, 735, 1248, 459, 532, 2551, 3359, 2119, 5305, 3689, 6117, 6508, 6453, 6284, 9381, 8489, 11672, 13278, 11186, 11054, 8951, 7425, 15751, 21695, 16845, 11387, 13101, 10893, 9866, 10964, 14557, 16979, 13932, 9178, 10562 ], "backgroundColor" : "green" },
+            { "backgroundColor" : "lightblue", "data" : [ 0, 0, 2, 1, 0, 0, 5, 2, 0, 6, 5, 2, 2, 1, 0, 0, 3, 5, 2, 5, 2, 1, 0, 0, 1, 0, 0, 0, 0, 0, 17, 42, 93, 78, 104, 160, 264, 289, 372, 737, 526, 629, 979, 1400, 1766, 2137, 2540, 2782, 3402, 5059, 728, 14090, 8175, 8381, 10727, 11099, 13601, 18311, 20421, 21393, 18716, 25932, 23300, 29512, 34803, 35398, 36289, 29172, 30586, 34646, 36084, 34789, 36504, 54282, 30180, 27423, 35134, 33357, 32400, 39592, 30548, 26640, 23703, 11826, 27917, 39873, 28744, 19198, 29471 ], "label" : "Confirmed" }
+        ]
+    },
+    "options": {
+        "animation": false,
+    }
+}
+);
+    </script>
+</div>
+
+<div id="block7">
+    
+    <a name="speed"></a>
+    <h2>Скорость прироста по дням</h2>
+    <p>Здесь показано изменение скорости прироста (в процентах) в Европе. Параметр, отмеченный на графике, — число подтвержденных случаев.</p>
+    <canvas id="Chart7"></canvas>
+    <p class="left">
+        
+        <label class="toggle-switchy" for="logscale7" data-size="xs" data-style="rounded" data-color="blue">
+            
+            <input type="checkbox" id="logscale7" checked="checked" onclick="log_scale(this, 7)">
+            
+            <span class="toggle">
+                
+                <span class="switch"></span>
+            </span>
+        </label>
+        <label for="logscale7"> Логарифмическая шкала</label>
+    </p>
+    <script>
+        var ctx7 = document.getElementById('Chart7').getContext('2d');
+        chart[7] = new Chart(ctx7, {
+    "type": "line",
+    "data": {
+        "labels": [ "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24", "2020-03-25", "2020-03-26", "2020-03-27", "2020-03-28", "2020-03-29", "2020-03-30", "2020-03-31", "2020-04-01", "2020-04-02", "2020-04-03", "2020-04-04", "2020-04-05", "2020-04-06", "2020-04-07", "2020-04-08", "2020-04-09", "2020-04-10", "2020-04-11", "2020-04-12", "2020-04-13", "2020-04-14", "2020-04-15", "2020-04-16", "2020-04-17", "2020-04-18", "2020-04-19" ],
+        "datasets": [
+            { "data" : [ "0.00", "0.00", "166.67", "25.00", "0.00", "60.00", "31.25", "9.52", "8.70", "4.00", "0.00", "0.00", "11.54", "17.24", "5.88", "13.89", "4.88", "2.33", "0.00", "0.00", "2.27", "0.00", "0.00", "0.00", "0.00", "0.00", "37.78", "67.74", "89.42", "39.59", "37.82", "42.22", "48.98", "35.99", "34.07", "50.34", "23.90", "23.07", "29.17", "32.30", "30.79", "28.49", "26.35", "22.84", "22.74", "27.55", "3.11", "58.35", "21.38", "18.06", "19.58", "16.94", "17.75", "20.30", "18.82", "16.59", "12.45", "15.34", "11.95", "13.52", "14.04", "12.53", "11.41", "8.23", "7.98", "8.37", "8.04", "7.18", "7.03", "9.76", "4.94", "4.28", "5.26", "4.74", "4.40", "5.15", "3.78", "3.18", "2.74", "1.33", "3.10", "4.29", "2.97", "1.92", "2.90" ], "lineTension" : 0, "borderColor" : "lightblue", "label" : "Confirmed total", "fill" : false }
+        ]
+    },
+    "options": {
+        "animation": false,
+        "scales": {
+            "yAxes": [{
+                "type": "logarithmic",
+                "ticks": {
+                    callback: function(value, index, values) {
+                        value = value.toString();
+                        if (value.length > 10) return '';
+                        return value;
+                    }
+                }
+            }],
+        }
+    }
+}
+);
+    </script>
+    <p>Примечание. Если скорость положительна, значит число случаев увеличивается ото дня ко дню. Если линия в целом направлена вниз, то скорость снижается, и, хотя может быть больше случаев по сравнению с предыдущим днем, общей тренд — на снижение. Если скорость отрицательная, то в этот день зафиксировано меньше случаев, чем в предыдущий.</p>
+</div>
+
+<div id="block19">
+    
+    <a name="per-capita"></a>
+    <h2>Значения на душу населения</h2>
+    <p>Число подтверждений и смертей <i>на 1000 населения</i> ｢in Europe｣ is shown. These numbers is a better choice when comparing different countries than absolute numbers.</p>
+    <canvas id="Chart19"></canvas>
+    <p class="left">
+        
+        <label class="toggle-switchy" for="logscale19" data-size="xs" data-style="rounded" data-color="blue">
+            
+            <input type="checkbox" id="logscale19" onclick="log_scale(this, 19)">
+            
+            <span class="toggle">
+                
+                <span class="switch"></span>
+            </span>
+        </label>
+        <label for="logscale19"> Логарифмическая шкала</label>
+    </p>
+    <script>
+        var ctx19 = document.getElementById('Chart19').getContext('2d');
+        chart[19] = new Chart(ctx19, {
+    "type": "line",
+    "data": {
+        "labels": [ "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24", "2020-03-25", "2020-03-26", "2020-03-27", "2020-03-28", "2020-03-29", "2020-03-30", "2020-03-31", "2020-04-01", "2020-04-02", "2020-04-03", "2020-04-04", "2020-04-05", "2020-04-06", "2020-04-07", "2020-04-08", "2020-04-09", "2020-04-10", "2020-04-11", "2020-04-12", "2020-04-13", "2020-04-14", "2020-04-15", "2020-04-16", "2020-04-17", "2020-04-18", "2020-04-19" ],
+        "datasets": [
+            { "label" : "Confirmed cases per 1000 of population", "fill" : false, "borderColor" : "lightblue", "data" : [ "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00010", "0.00017", "0.00033", "0.00046", "0.00063", "0.00089", "0.0013", "0.0018", "0.0024", "0.0037", "0.0045", "0.0056", "0.0072", "0.0095", "0.012", "0.016", "0.020", "0.025", "0.030", "0.039", "0.040", "0.063", "0.077", "0.091", "0.11", "0.13", "0.15", "0.18", "0.21", "0.25", "0.28", "0.32", "0.36", "0.41", "0.47", "0.53", "0.59", "0.64", "0.69", "0.74", "0.80", "0.86", "0.92", "1.01", "1.06", "1.11", "1.17", "1.22", "1.28", "1.34", "1.39", "1.44", "1.47", "1.49", "1.54", "1.61", "1.65", "1.69", "1.74" ] },
+            { "borderColor" : "red", "fill" : false, "label" : "Fatal cases per 1000 population", "data" : [ "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00014", "0.00019", "0.00027", "0.00036", "0.00043", "0.00068", "0.00087", "0.0012", "0.0016", "0.0016", "0.0025", "0.0030", "0.0038", "0.0046", "0.0056", "0.0067", "0.0081", "0.010", "0.012", "0.015", "0.017", "0.020", "0.024", "0.027", "0.031", "0.036", "0.040", "0.045", "0.050", "0.056", "0.063", "0.070", "0.077", "0.082", "0.087", "0.095", "0.10", "0.11", "0.12", "0.12", "0.13", "0.13", "0.14", "0.15", "0.15", "0.16", "0.16", "0.17" ] }
+        ]
+    },
+    "options": {
+        "animation": false
+    }
+}
+);
+    </script>
+</div>
+
+<div id="block11">
+    
+    <a name="table"></a>
+    <h1>Таблица значений</h1>
+    <p class="right">Загрузить как <a href="/europe/europe-covid.observer.csv?2020-04-20">CSV</a> | <a href="/europe/europe-covid.observer.xls?2020-04-20">XLS</a></p><table>
+    
+    <thead>
+        
+        <tr>
+            
+            <th>Дата</th>
+            <th>Подтверж&shy;денные<br/>случаи</th>
+            <th>Дневной<br/>при&shy;рост, %</th>
+            <th>Выздоро&shy;вев&shy;ших</th>
+            <th>Фатальных<br/>случаев</th>
+            <th>Активные<br/>случаи</th>
+            <th>Уровень<br/>выз&shy;до&shy;ров&shy;ления, %</th>
+            <th>Уровень<br/>смерт&shy;ности, %</th>
+            <th>Охвачен&shy;ное<br/>население, %</th>
+            <th>Подтверж&shy;денно<br/>на 1000</th>
+            <th>Умерло<br/>на 1000</th>
+            </tr>
+        </thead>
+    <tbody>
+
+<tr>
+    
+    <td class="date">19 апр<!--sup>th</sup--></td>
+    <td>1.046.366</td>
+    <td>2,9&thinsp;%</td>
+    <td>305.964</td>
+    <td>101.431</td>
+    <td>638.971</td>
+    <td>29,2&thinsp;%</td>
+    <td>9,7&thinsp;%</td>
+    <td>0,17&thinsp;%</td>
+    <td>1,74</td>
+    <td>0,17</td>
+</tr>
+<tr>
+    
+    <td class="date">18 апр<!--sup>th</sup--></td>
+    <td>1.016.895</td>
+    <td>1,9&thinsp;%</td>
+    <td>295.402</td>
+    <td>98.898</td>
+    <td>622.595</td>
+    <td>29,0&thinsp;%</td>
+    <td>9,7&thinsp;%</td>
+    <td>0,17&thinsp;%</td>
+    <td>1,69</td>
+    <td>0,16</td>
+</tr>
+<tr>
+    
+    <td class="date">17 апр<!--sup>th</sup--></td>
+    <td>997.697</td>
+    <td>3,0&thinsp;%</td>
+    <td>286.224</td>
+    <td>95.967</td>
+    <td>615.506</td>
+    <td>28,7&thinsp;%</td>
+    <td>9,6&thinsp;%</td>
+    <td>0,17&thinsp;%</td>
+    <td>1,65</td>
+    <td>0,16</td>
+</tr>
+<tr>
+    
+    <td class="date">16 апр<!--sup>th</sup--></td>
+    <td>968.953</td>
+    <td>4,3&thinsp;%</td>
+    <td>272.292</td>
+    <td>92.003</td>
+    <td>604.658</td>
+    <td>28,1&thinsp;%</td>
+    <td>9,5&thinsp;%</td>
+    <td>0,16&thinsp;%</td>
+    <td>1,61</td>
+    <td>0,15</td>
+</tr>
+<tr>
+    
+    <td class="date">15 апр<!--sup>th</sup--></td>
+    <td>929.080</td>
+    <td>3,1&thinsp;%</td>
+    <td>255.313</td>
+    <td>88.025</td>
+    <td>585.742</td>
+    <td>27,5&thinsp;%</td>
+    <td>9,5&thinsp;%</td>
+    <td>0,15&thinsp;%</td>
+    <td>1,54</td>
+    <td>0,15</td>
+</tr>
+<tr>
+    
+    <td class="date">14 апр<!--sup>th</sup--></td>
+    <td>901.163</td>
+    <td>1,3&thinsp;%</td>
+    <td>240.756</td>
+    <td>83.155</td>
+    <td>577.252</td>
+    <td>26,7&thinsp;%</td>
+    <td>9,2&thinsp;%</td>
+    <td>0,15&thinsp;%</td>
+    <td>1,49</td>
+    <td>0,14</td>
+</tr>
+<tr>
+    
+    <td class="date">13 апр<!--sup>th</sup--></td>
+    <td>889.337</td>
+    <td>2,7&thinsp;%</td>
+    <td>229.792</td>
+    <td>79.847</td>
+    <td>579.698</td>
+    <td>25,8&thinsp;%</td>
+    <td>9,0&thinsp;%</td>
+    <td>0,15&thinsp;%</td>
+    <td>1,47</td>
+    <td>0,13</td>
+</tr>
+<tr>
+    
+    <td class="date">12 апр<!--sup>th</sup--></td>
+    <td>865.634</td>
+    <td>3,2&thinsp;%</td>
+    <td>219.926</td>
+    <td>76.645</td>
+    <td>569.063</td>
+    <td>25,4&thinsp;%</td>
+    <td>8,9&thinsp;%</td>
+    <td>0,14&thinsp;%</td>
+    <td>1,44</td>
+    <td>0,13</td>
+</tr>
+<tr>
+    
+    <td class="date">11 апр<!--sup>th</sup--></td>
+    <td>838.994</td>
+    <td>3,8&thinsp;%</td>
+    <td>209.033</td>
+    <td>73.391</td>
+    <td>556.570</td>
+    <td>24,9&thinsp;%</td>
+    <td>8,7&thinsp;%</td>
+    <td>0,14&thinsp;%</td>
+    <td>1,39</td>
+    <td>0,12</td>
+</tr>
+<tr>
+    
+    <td class="date">10 апр<!--sup>th</sup--></td>
+    <td>808.446</td>
+    <td>5,1&thinsp;%</td>
+    <td>195.932</td>
+    <td>70.007</td>
+    <td>542.507</td>
+    <td>24,2&thinsp;%</td>
+    <td>8,7&thinsp;%</td>
+    <td>0,13&thinsp;%</td>
+    <td>1,34</td>
+    <td>0,12</td>
+</tr>
+<tr>
+    
+    <td class="date">9 апр<!--sup>th</sup--></td>
+    <td>768.854</td>
+    <td>4,4&thinsp;%</td>
+    <td>184.545</td>
+    <td>65.747</td>
+    <td>518.562</td>
+    <td>24,0&thinsp;%</td>
+    <td>8,6&thinsp;%</td>
+    <td>0,13&thinsp;%</td>
+    <td>1,28</td>
+    <td>0,11</td>
+</tr>
+<tr>
+    
+    <td class="date">8 апр<!--sup>th</sup--></td>
+    <td>736.454</td>
+    <td>4,7&thinsp;%</td>
+    <td>167.700</td>
+    <td>61.208</td>
+    <td>507.546</td>
+    <td>22,8&thinsp;%</td>
+    <td>8,3&thinsp;%</td>
+    <td>0,12&thinsp;%</td>
+    <td>1,22</td>
+    <td>0,10</td>
+</tr>
+<tr>
+    
+    <td class="date">7 апр<!--sup>th</sup--></td>
+    <td>703.097</td>
+    <td>5,3&thinsp;%</td>
+    <td>146.005</td>
+    <td>57.350</td>
+    <td>499.742</td>
+    <td>20,8&thinsp;%</td>
+    <td>8,2&thinsp;%</td>
+    <td>0,12&thinsp;%</td>
+    <td>1,17</td>
+    <td>0,095</td>
+</tr>
+<tr>
+    
+    <td class="date">6 апр<!--sup>th</sup--></td>
+    <td>667.963</td>
+    <td>4,3&thinsp;%</td>
+    <td>130.254</td>
+    <td>52.591</td>
+    <td>485.118</td>
+    <td>19,5&thinsp;%</td>
+    <td>7,9&thinsp;%</td>
+    <td>0,11&thinsp;%</td>
+    <td>1,11</td>
+    <td>0,087</td>
+</tr>
+<tr>
+    
+    <td class="date">5 апр<!--sup>th</sup--></td>
+    <td>640.540</td>
+    <td>4,9&thinsp;%</td>
+    <td>122.829</td>
+    <td>49.174</td>
+    <td>468.537</td>
+    <td>19,2&thinsp;%</td>
+    <td>7,7&thinsp;%</td>
+    <td>0,11&thinsp;%</td>
+    <td>1,06</td>
+    <td>0,082</td>
+</tr>
+<tr>
+    
+    <td class="date">4 апр<!--sup>th</sup--></td>
+    <td>610.360</td>
+    <td>9,8&thinsp;%</td>
+    <td>113.878</td>
+    <td>46.143</td>
+    <td>450.339</td>
+    <td>18,7&thinsp;%</td>
+    <td>7,6&thinsp;%</td>
+    <td>0,1&thinsp;%</td>
+    <td>1,01</td>
+    <td>0,077</td>
+</tr>
+<tr>
+    
+    <td class="date">3 апр<!--sup>rd</sup--></td>
+    <td>556.078</td>
+    <td>7,0&thinsp;%</td>
+    <td>102.824</td>
+    <td>42.222</td>
+    <td>411.032</td>
+    <td>18,5&thinsp;%</td>
+    <td>7,6&thinsp;%</td>
+    <td>0,092&thinsp;%</td>
+    <td>0,92</td>
+    <td>0,070</td>
+</tr>
+<tr>
+    
+    <td class="date">2 апр<!--sup>nd</sup--></td>
+    <td>519.574</td>
+    <td>7,2&thinsp;%</td>
+    <td>91.638</td>
+    <td>38.067</td>
+    <td>389.869</td>
+    <td>17,6&thinsp;%</td>
+    <td>7,3&thinsp;%</td>
+    <td>0,086&thinsp;%</td>
+    <td>0,86</td>
+    <td>0,063</td>
+</tr>
+<tr>
+    
+    <td class="date">1 апр<!--sup>st</sup--></td>
+    <td>484.785</td>
+    <td>8,0&thinsp;%</td>
+    <td>78.360</td>
+    <td>33.619</td>
+    <td>372.806</td>
+    <td>16,2&thinsp;%</td>
+    <td>6,9&thinsp;%</td>
+    <td>0,08&thinsp;%</td>
+    <td>0,80</td>
+    <td>0,056</td>
+</tr>
+<tr>
+    
+    <td class="date">31 мар<!--sup>st</sup--></td>
+    <td>448.701</td>
+    <td>8,4&thinsp;%</td>
+    <td>66.688</td>
+    <td>30.238</td>
+    <td>351.775</td>
+    <td>14,9&thinsp;%</td>
+    <td>6,7&thinsp;%</td>
+    <td>0,074&thinsp;%</td>
+    <td>0,74</td>
+    <td>0,050</td>
+</tr>
+<tr>
+    
+    <td class="date">30 мар<!--sup>th</sup--></td>
+    <td>414.055</td>
+    <td>8,0&thinsp;%</td>
+    <td>58.199</td>
+    <td>27.023</td>
+    <td>328.833</td>
+    <td>14,1&thinsp;%</td>
+    <td>6,5&thinsp;%</td>
+    <td>0,069&thinsp;%</td>
+    <td>0,69</td>
+    <td>0,045</td>
+</tr>
+<tr>
+    
+    <td class="date">29 мар<!--sup>th</sup--></td>
+    <td>383.469</td>
+    <td>8,2&thinsp;%</td>
+    <td>48.818</td>
+    <td>24.190</td>
+    <td>310.461</td>
+    <td>12,7&thinsp;%</td>
+    <td>6,3&thinsp;%</td>
+    <td>0,064&thinsp;%</td>
+    <td>0,64</td>
+    <td>0,040</td>
+</tr>
+<tr>
+    
+    <td class="date">28 мар<!--sup>th</sup--></td>
+    <td>354.297</td>
+    <td>11,4&thinsp;%</td>
+    <td>42.534</td>
+    <td>21.659</td>
+    <td>290.104</td>
+    <td>12,0&thinsp;%</td>
+    <td>6,1&thinsp;%</td>
+    <td>0,059&thinsp;%</td>
+    <td>0,59</td>
+    <td>0,036</td>
+</tr>
+<tr>
+    
+    <td class="date">27 мар<!--sup>th</sup--></td>
+    <td>318.008</td>
+    <td>12,5&thinsp;%</td>
+    <td>36.081</td>
+    <td>18.950</td>
+    <td>262.977</td>
+    <td>11,3&thinsp;%</td>
+    <td>6,0&thinsp;%</td>
+    <td>0,053&thinsp;%</td>
+    <td>0,53</td>
+    <td>0,031</td>
+</tr>
+<tr>
+    
+    <td class="date">26 мар<!--sup>th</sup--></td>
+    <td>282.610</td>
+    <td>14,0&thinsp;%</td>
+    <td>29.573</td>
+    <td>16.389</td>
+    <td>236.648</td>
+    <td>10,5&thinsp;%</td>
+    <td>5,8&thinsp;%</td>
+    <td>0,047&thinsp;%</td>
+    <td>0,47</td>
+    <td>0,027</td>
+</tr>
+<tr>
+    
+    <td class="date">25 мар<!--sup>th</sup--></td>
+    <td>247.807</td>
+    <td>13,5&thinsp;%</td>
+    <td>23.456</td>
+    <td>14.171</td>
+    <td>210.180</td>
+    <td>9,5&thinsp;%</td>
+    <td>5,7&thinsp;%</td>
+    <td>0,041&thinsp;%</td>
+    <td>0,41</td>
+    <td>0,024</td>
+</tr>
+<tr>
+    
+    <td class="date">24 мар<!--sup>th</sup--></td>
+    <td>218.295</td>
+    <td>11,9&thinsp;%</td>
+    <td>19.767</td>
+    <td>12.089</td>
+    <td>186.439</td>
+    <td>9,1&thinsp;%</td>
+    <td>5,5&thinsp;%</td>
+    <td>0,036&thinsp;%</td>
+    <td>0,36</td>
+    <td>0,020</td>
+</tr>
+<tr>
+    
+    <td class="date">23 мар<!--sup>rd</sup--></td>
+    <td>194.995</td>
+    <td>15,3&thinsp;%</td>
+    <td>14.462</td>
+    <td>10.332</td>
+    <td>170.201</td>
+    <td>7,4&thinsp;%</td>
+    <td>5,3&thinsp;%</td>
+    <td>0,032&thinsp;%</td>
+    <td>0,32</td>
+    <td>0,017</td>
+</tr>
+<tr>
+    
+    <td class="date">22 мар<!--sup>nd</sup--></td>
+    <td>169.063</td>
+    <td>12,4&thinsp;%</td>
+    <td>12.343</td>
+    <td>8.788</td>
+    <td>147.932</td>
+    <td>7,3&thinsp;%</td>
+    <td>5,2&thinsp;%</td>
+    <td>0,028&thinsp;%</td>
+    <td>0,28</td>
+    <td>0,015</td>
+</tr>
+<tr>
+    
+    <td class="date">21 мар<!--sup>st</sup--></td>
+    <td>150.347</td>
+    <td>16,6&thinsp;%</td>
+    <td>8.984</td>
+    <td>7.487</td>
+    <td>133.876</td>
+    <td>6,0&thinsp;%</td>
+    <td>5,0&thinsp;%</td>
+    <td>0,025&thinsp;%</td>
+    <td>0,25</td>
+    <td>0,012</td>
+</tr>
+<tr>
+    
+    <td class="date">20 мар<!--sup>th</sup--></td>
+    <td>128.954</td>
+    <td>18,8&thinsp;%</td>
+    <td>6.433</td>
+    <td>6.058</td>
+    <td>116.463</td>
+    <td>5,0&thinsp;%</td>
+    <td>4,7&thinsp;%</td>
+    <td>0,021&thinsp;%</td>
+    <td>0,21</td>
+    <td>0,010</td>
+</tr>
+<tr>
+    
+    <td class="date">19 мар<!--sup>th</sup--></td>
+    <td>108.533</td>
+    <td>20,3&thinsp;%</td>
+    <td>5.901</td>
+    <td>4.872</td>
+    <td>97.760</td>
+    <td>5,4&thinsp;%</td>
+    <td>4,5&thinsp;%</td>
+    <td>0,018&thinsp;%</td>
+    <td>0,18</td>
+    <td>0,0081</td>
+</tr>
+<tr>
+    
+    <td class="date">18 мар<!--sup>th</sup--></td>
+    <td>90.222</td>
+    <td>17,8&thinsp;%</td>
+    <td>5.442</td>
+    <td>4.010</td>
+    <td>80.770</td>
+    <td>6,0&thinsp;%</td>
+    <td>4,4&thinsp;%</td>
+    <td>0,015&thinsp;%</td>
+    <td>0,15</td>
+    <td>0,0067</td>
+</tr>
+<tr>
+    
+    <td class="date">17 мар<!--sup>th</sup--></td>
+    <td>76.621</td>
+    <td>16,9&thinsp;%</td>
+    <td>4.194</td>
+    <td>3.389</td>
+    <td>69.038</td>
+    <td>5,5&thinsp;%</td>
+    <td>4,4&thinsp;%</td>
+    <td>0,013&thinsp;%</td>
+    <td>0,13</td>
+    <td>0,0056</td>
+</tr>
+<tr>
+    
+    <td class="date">16 мар<!--sup>th</sup--></td>
+    <td>65.522</td>
+    <td>19,6&thinsp;%</td>
+    <td>3.459</td>
+    <td>2.802</td>
+    <td>59.261</td>
+    <td>5,3&thinsp;%</td>
+    <td>4,3&thinsp;%</td>
+    <td>0,011&thinsp;%</td>
+    <td>0,11</td>
+    <td>0,0046</td>
+</tr>
+<tr>
+    
+    <td class="date">15 мар<!--sup>th</sup--></td>
+    <td>54.795</td>
+    <td>18,1&thinsp;%</td>
+    <td>2.997</td>
+    <td>2.294</td>
+    <td>49.504</td>
+    <td>5,5&thinsp;%</td>
+    <td>4,2&thinsp;%</td>
+    <td>0,0091&thinsp;%</td>
+    <td>0,091</td>
+    <td>0,0038</td>
+</tr>
+<tr>
+    
+    <td class="date">14 мар<!--sup>th</sup--></td>
+    <td>46.414</td>
+    <td>21,4&thinsp;%</td>
+    <td>2.610</td>
+    <td>1.812</td>
+    <td>41.992</td>
+    <td>5,6&thinsp;%</td>
+    <td>3,9&thinsp;%</td>
+    <td>0,0077&thinsp;%</td>
+    <td>0,077</td>
+    <td>0,0030</td>
+</tr>
+<tr>
+    
+    <td class="date">13 мар<!--sup>th</sup--></td>
+    <td>38.239</td>
+    <td>58,3&thinsp;%</td>
+    <td>1.740</td>
+    <td>1.531</td>
+    <td>34.968</td>
+    <td>4,6&thinsp;%</td>
+    <td>4,0&thinsp;%</td>
+    <td>0,0063&thinsp;%</td>
+    <td>0,063</td>
+    <td>0,0025</td>
+</tr>
+<tr>
+    
+    <td class="date">12 мар<!--sup>th</sup--></td>
+    <td>24.149</td>
+    <td>3,1&thinsp;%</td>
+    <td>1.309</td>
+    <td>963</td>
+    <td>21.877</td>
+    <td>5,4&thinsp;%</td>
+    <td>4,0&thinsp;%</td>
+    <td>0,004&thinsp;%</td>
+    <td>0,040</td>
+    <td>0,0016</td>
+</tr>
+<tr>
+    
+    <td class="date">11 мар<!--sup>th</sup--></td>
+    <td>23.421</td>
+    <td>27,6&thinsp;%</td>
+    <td>1.308</td>
+    <td>959</td>
+    <td>21.154</td>
+    <td>5,6&thinsp;%</td>
+    <td>4,1&thinsp;%</td>
+    <td>0,0039&thinsp;%</td>
+    <td>0,039</td>
+    <td>0,0016</td>
+</tr>
+<tr>
+    
+    <td class="date">10 мар<!--sup>th</sup--></td>
+    <td>18.362</td>
+    <td>22,7&thinsp;%</td>
+    <td>825</td>
+    <td>716</td>
+    <td>16.821</td>
+    <td>4,5&thinsp;%</td>
+    <td>3,9&thinsp;%</td>
+    <td>0,003&thinsp;%</td>
+    <td>0,030</td>
+    <td>0,0012</td>
+</tr>
+<tr>
+    
+    <td class="date">9 мар<!--sup>th</sup--></td>
+    <td>14.960</td>
+    <td>22,8&thinsp;%</td>
+    <td>818</td>
+    <td>522</td>
+    <td>13.620</td>
+    <td>5,5&thinsp;%</td>
+    <td>3,5&thinsp;%</td>
+    <td>0,0025&thinsp;%</td>
+    <td>0,025</td>
+    <td>0,00087</td>
+</tr>
+<tr>
+    
+    <td class="date">8 мар<!--sup>th</sup--></td>
+    <td>12.178</td>
+    <td>26,4&thinsp;%</td>
+    <td>709</td>
+    <td>411</td>
+    <td>11.058</td>
+    <td>5,8&thinsp;%</td>
+    <td>3,4&thinsp;%</td>
+    <td>0,002&thinsp;%</td>
+    <td>0,020</td>
+    <td>0,00068</td>
+</tr>
+<tr>
+    
+    <td class="date">7 мар<!--sup>th</sup--></td>
+    <td>9.638</td>
+    <td>28,5&thinsp;%</td>
+    <td>676</td>
+    <td>259</td>
+    <td>8.703</td>
+    <td>7,0&thinsp;%</td>
+    <td>2,7&thinsp;%</td>
+    <td>0,0016&thinsp;%</td>
+    <td>0,016</td>
+    <td>0,00043</td>
+</tr>
+<tr>
+    
+    <td class="date">6 мар<!--sup>th</sup--></td>
+    <td>7.501</td>
+    <td>30,8&thinsp;%</td>
+    <td>569</td>
+    <td>216</td>
+    <td>6.716</td>
+    <td>7,6&thinsp;%</td>
+    <td>2,9&thinsp;%</td>
+    <td>0,0012&thinsp;%</td>
+    <td>0,012</td>
+    <td>0,00036</td>
+</tr>
+<tr>
+    
+    <td class="date">5 мар<!--sup>th</sup--></td>
+    <td>5.735</td>
+    <td>32,3&thinsp;%</td>
+    <td>458</td>
+    <td>160</td>
+    <td>5.117</td>
+    <td>8,0&thinsp;%</td>
+    <td>2,8&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,0095</td>
+    <td>0,00027</td>
+</tr>
+<tr>
+    
+    <td class="date">4 мар<!--sup>th</sup--></td>
+    <td>4.335</td>
+    <td>29,2&thinsp;%</td>
+    <td>320</td>
+    <td>114</td>
+    <td>3.901</td>
+    <td>7,4&thinsp;%</td>
+    <td>2,6&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,0072</td>
+    <td>0,00019</td>
+</tr>
+<tr>
+    
+    <td class="date">3 мар<!--sup>rd</sup--></td>
+    <td>3.356</td>
+    <td>23,1&thinsp;%</td>
+    <td>202</td>
+    <td>85</td>
+    <td>3.069</td>
+    <td>6,0&thinsp;%</td>
+    <td>2,5&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,0056</td>
+    <td>0,00014</td>
+</tr>
+<tr>
+    
+    <td class="date">2 мар<!--sup>nd</sup--></td>
+    <td>2.727</td>
+    <td>23,9&thinsp;%</td>
+    <td>189</td>
+    <td>55</td>
+    <td>2.483</td>
+    <td>6,9&thinsp;%</td>
+    <td>2,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,0045</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">1 мар<!--sup>st</sup--></td>
+    <td>2.201</td>
+    <td>50,3&thinsp;%</td>
+    <td>123</td>
+    <td>36</td>
+    <td>2.042</td>
+    <td>5,6&thinsp;%</td>
+    <td>1,6&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,0037</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">29 фев<!--sup>th</sup--></td>
+    <td>1.464</td>
+    <td>34,1&thinsp;%</td>
+    <td>86</td>
+    <td>31</td>
+    <td>1.347</td>
+    <td>5,9&thinsp;%</td>
+    <td>2,1&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,0024</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">28 фев<!--sup>th</sup--></td>
+    <td>1.092</td>
+    <td>36,0&thinsp;%</td>
+    <td>85</td>
+    <td>23</td>
+    <td>984</td>
+    <td>7,8&thinsp;%</td>
+    <td>2,1&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,0018</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">27 фев<!--sup>th</sup--></td>
+    <td>803</td>
+    <td>49,0&thinsp;%</td>
+    <td>84</td>
+    <td>19</td>
+    <td>700</td>
+    <td>10,5&thinsp;%</td>
+    <td>2,4&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,0013</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">26 фев<!--sup>th</sup--></td>
+    <td>539</td>
+    <td>42,2&thinsp;%</td>
+    <td>41</td>
+    <td>14</td>
+    <td>484</td>
+    <td>7,6&thinsp;%</td>
+    <td>2,6&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00089</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">25 фев<!--sup>th</sup--></td>
+    <td>379</td>
+    <td>37,8&thinsp;%</td>
+    <td>38</td>
+    <td>11</td>
+    <td>330</td>
+    <td>10,0&thinsp;%</td>
+    <td>2,9&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00063</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">24 фев<!--sup>th</sup--></td>
+    <td>275</td>
+    <td>39,6&thinsp;%</td>
+    <td>31</td>
+    <td>8</td>
+    <td>236</td>
+    <td>11,3&thinsp;%</td>
+    <td>2,9&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00046</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">23 фев<!--sup>rd</sup--></td>
+    <td>197</td>
+    <td>89,4&thinsp;%</td>
+    <td>32</td>
+    <td>4</td>
+    <td>161</td>
+    <td>16,2&thinsp;%</td>
+    <td>2,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00033</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">22 фев<!--sup>nd</sup--></td>
+    <td>104</td>
+    <td>67,7&thinsp;%</td>
+    <td>31</td>
+    <td>3</td>
+    <td>70</td>
+    <td>29,8&thinsp;%</td>
+    <td>2,9&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00017</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">21 фев<!--sup>st</sup--></td>
+    <td>62</td>
+    <td>37,8&thinsp;%</td>
+    <td>30</td>
+    <td>2</td>
+    <td>30</td>
+    <td>48,4&thinsp;%</td>
+    <td>3,2&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00010</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">20 фев<!--sup>th</sup--></td>
+    <td>45</td>
+    <td>0,0&thinsp;%</td>
+    <td>28</td>
+    <td>1</td>
+    <td>16</td>
+    <td>62,2&thinsp;%</td>
+    <td>2,2&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">19 фев<!--sup>th</sup--></td>
+    <td>45</td>
+    <td>0,0&thinsp;%</td>
+    <td>28</td>
+    <td>1</td>
+    <td>16</td>
+    <td>62,2&thinsp;%</td>
+    <td>2,2&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">18 фев<!--sup>th</sup--></td>
+    <td>45</td>
+    <td>0,0&thinsp;%</td>
+    <td>28</td>
+    <td>1</td>
+    <td>16</td>
+    <td>62,2&thinsp;%</td>
+    <td>2,2&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">17 фев<!--sup>th</sup--></td>
+    <td>45</td>
+    <td>0,0&thinsp;%</td>
+    <td>17</td>
+    <td>1</td>
+    <td>27</td>
+    <td>37,8&thinsp;%</td>
+    <td>2,2&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">16 фев<!--sup>th</sup--></td>
+    <td>45</td>
+    <td>0,0&thinsp;%</td>
+    <td>16</td>
+    <td>1</td>
+    <td>28</td>
+    <td>35,6&thinsp;%</td>
+    <td>2,2&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">15 фев<!--sup>th</sup--></td>
+    <td>45</td>
+    <td>2,3&thinsp;%</td>
+    <td>9</td>
+    <td>1</td>
+    <td>35</td>
+    <td>20,0&thinsp;%</td>
+    <td>2,2&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">14 фев<!--sup>th</sup--></td>
+    <td>44</td>
+    <td>0,0&thinsp;%</td>
+    <td>5</td>
+    <td>0</td>
+    <td>39</td>
+    <td>11,4&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">13 фев<!--sup>th</sup--></td>
+    <td>44</td>
+    <td>0,0&thinsp;%</td>
+    <td>5</td>
+    <td>0</td>
+    <td>39</td>
+    <td>11,4&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">12 фев<!--sup>th</sup--></td>
+    <td>44</td>
+    <td>2,3&thinsp;%</td>
+    <td>4</td>
+    <td>0</td>
+    <td>40</td>
+    <td>9,1&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">11 фев<!--sup>th</sup--></td>
+    <td>43</td>
+    <td>4,9&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>43</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">10 фев<!--sup>th</sup--></td>
+    <td>41</td>
+    <td>13,9&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>41</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">9 фев<!--sup>th</sup--></td>
+    <td>36</td>
+    <td>5,9&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>36</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">8 фев<!--sup>th</sup--></td>
+    <td>34</td>
+    <td>17,2&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>34</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">7 фев<!--sup>th</sup--></td>
+    <td>29</td>
+    <td>11,5&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>29</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">6 фев<!--sup>th</sup--></td>
+    <td>26</td>
+    <td>0,0&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>26</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">5 фев<!--sup>th</sup--></td>
+    <td>26</td>
+    <td>0,0&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>26</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">4 фев<!--sup>th</sup--></td>
+    <td>26</td>
+    <td>4,0&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>26</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">3 фев<!--sup>rd</sup--></td>
+    <td>25</td>
+    <td>8,7&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>25</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">2 фев<!--sup>nd</sup--></td>
+    <td>23</td>
+    <td>9,5&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>23</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">1 фев<!--sup>st</sup--></td>
+    <td>21</td>
+    <td>31,3&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>21</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">31 янв<!--sup>st</sup--></td>
+    <td>16</td>
+    <td>60,0&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>16</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">30 янв<!--sup>th</sup--></td>
+    <td>10</td>
+    <td>0,0&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>10</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">29 янв<!--sup>th</sup--></td>
+    <td>10</td>
+    <td>25,0&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>10</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">28 янв<!--sup>th</sup--></td>
+    <td>8</td>
+    <td>166,7&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>8</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">27 янв<!--sup>th</sup--></td>
+    <td>3</td>
+    <td>0,0&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>3</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">26 янв<!--sup>th</sup--></td>
+    <td>3</td>
+    <td>0,0&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>3</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">25 янв<!--sup>th</sup--></td>
+    <td>3</td>
+    <td>50,0&thinsp;%</td>
+    <td>0</td>
+    <td>0</td>
+    <td>3</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+<tr>
+    
+    <td class="date">24 янв<!--sup>th</sup--></td>
+    <td>2</td>
+    <td>—</td>
+    <td>0</td>
+    <td>0</td>
+    <td>2</td>
+    <td>0,0&thinsp;%</td>
+    <td>0,0&thinsp;%</td>
+    <td>&lt;&thinsp;0,001&thinsp;%</td>
+    <td>0,00</td>
+    <td>0,00</td>
+</tr>
+</tbody></table>
+</div>
+
+
+
+    <a name="countries"></a>
+    <div class="countries">
+        
+
+        
+        
+
+        <a name="continents"></a>
+<h2>Статистика по континентам</h2>
+
+<div class="countries-list">
+    
+    <p><a href="/.ru/">Весь мир</a></p><p><a href="/africa/.ru/">Африка</a></p><p><a href="/asia/.ru/">Азия</a></p><p class="current"><a href="/europe/.ru/">Европа</a></p><p><a href="/north-america/.ru/">Северная Америка</a></p><p><a href="/oceania/.ru/">Океания</a></p><p><a href="/south-america/.ru/">Южная Америка</a></p>
+</div>
+
+
+        <a name="countries"></a>
+        <h2>Статистика по странам</h2>
+        <div class="countries-list">
+            
+            <p><a href="/au/.ru/">Австралия</a> <span class="down">▼</span></p><p class="current"><a href="/at/.ru/">Австрия</a> <span class="down">▽</span></p><p><a href="/az/.ru/">Азербайджан</a> <span class="down">▽</span></p><p class="current"><a href="/al/.ru/">Албания</a> <span class="up">△</span></p><p><a href="/dz/.ru/">Алжир</a> <span class="down">▽</span></p><p><a href="/ai/.ru/">Ангилья</a></p><p><a href="/ao/.ru/">Ангола</a> <span class="down">▽</span></p><p class="current"><a href="/ad/.ru/">Андорра</a> <span class="down">▽</span></p><p><a href="/ag/.ru/">Антигуа и Барбуда</a> <span class="down">▽</span></p><p><a href="/ar/.ru/">Аргентина</a> <span class="down">▽</span></p><p><a href="/am/.ru/">Армения</a> <span class="up">△</span></p><p><a href="/aw/.ru/">Аруба</a> <span class="down">▽</span></p><p><a href="/af/.ru/">Афганистан</a> <span class="up">△</span></p><p><a href="/bs/.ru/">Багамы</a> <span class="down">▼</span></p><p><a href="/bd/.ru/">Бангладеш</a> <span class="up">△</span></p><p><a href="/bb/.ru/">Барбадос</a> <span class="down">▼</span></p><p><a href="/bh/.ru/">Бахрейн</a> <span class="up">▲</span></p><p class="current"><a href="/by/.ru/">Беларусь</a> <span class="down">▼</span></p><p><a href="/bz/.ru/">Белиз</a> <span class="down">▽</span></p><p class="current"><a href="/be/.ru/">Бельгия</a> <span class="up">△</span></p><p><a href="/bj/.ru/">Бенин</a></p><p><a href="/bm/.ru/">Бермудские острова</a> <span class="down">▽</span></p><p class="current"><a href="/bg/.ru/">Болгария</a> <span class="down">▽</span></p><p><a href="/bo/.ru/">Боливия</a> <span class="down">▽</span></p><p><a href="/bq/.ru/">Бонэйр, Синт-Эстатиус и Саба</a> <span class="up">△</span></p><p class="current"><a href="/ba/.ru/">Босния и Герцеговина</a> <span class="down">▼</span></p><p><a href="/bw/.ru/">Ботсвана</a> <span class="up">△</span></p><p><a href="/br/.ru/">Бразилия</a> <span class="down">▽</span></p><p><a href="/bn/.ru/">Бруней-Даруссалам</a></p><p><a href="/bf/.ru/">Буркина-Фасо</a> <span class="up">△</span></p><p><a href="/bi/.ru/">Бурунди</a></p><p><a href="/bt/.ru/">Бутан</a></p><p class="current"><a href="/va/.ru/">Ватикан</a></p><p class="current"><a href="/gb/.ru/">Великобритания</a> <span class="up">△</span></p><p class="current"><a href="/hu/.ru/">Венгрия</a> <span class="up">△</span></p><p><a href="/ve/.ru/">Венесуэла</a> <span class="up">▲▲</span></p><p><a href="/vg/.ru/">Виргинские острова (Великобритания)</a> <span class="down">▽</span></p><p><a href="/tl/.ru/">Восточный Тимор</a> <span class="down">▽</span></p><p><a href="/vn/.ru/">Вьетнам</a> <span class="down">▼</span></p><p><a href="/ga/.ru/">Габон</a> <span class="down">▼</span></p><p><a href="/ht/.ru/">Гаити</a> <span class="up">▲</span></p><p><a href="/gy/.ru/">Гайана</a> <span class="down">▽</span></p><p><a href="/gm/.ru/">Гамбия</a></p><p><a href="/gh/.ru/">Гана</a> <span class="up">▲▲</span></p><p><a href="/gp/.ru/">Гваделупа</a> <span class="down">▽</span></p><p><a href="/gt/.ru/">Гватемала</a> <span class="up">▲▲</span></p><p><a href="/gn/.ru/">Гвинея</a> <span class="up">△</span></p><p><a href="/gw/.ru/">Гвинея-Бисау</a> <span class="up">△</span></p><p class="current"><a href="/de/.ru/">Германия</a> <span class="down">▽</span></p><p class="current"><a href="/gi/.ru/">Гибралтар</a> <span class="down">▽</span></p><p><a href="/hn/.ru/">Гондурас</a> <span class="up">▲▲</span></p><p><a href="/gd/.ru/">Гренада</a></p><p><a href="/gl/.ru/">Гренландия</a></p><p class="current"><a href="/gr/.ru/">Греция</a> <span class="down">▼</span></p><p><a href="/ge/.ru/">Джорджия</a> <span class="down">▼</span></p><p><a href="/gu/.ru/">Гуам</a></p><p class="current"><a href="/dk/.ru/">Дания</a> <span class="down">▽</span></p><p><a href="/dj/.ru/">Джибути</a> <span class="up">▲</span></p><p><a href="/dm/.ru/">Доминика</a></p><p><a href="/do/.ru/">Доминиканская Республика</a> <span class="up">▲</span></p><p><a href="/eg/.ru/">Египет</a> <span class="down">▽</span></p><p><a href="/zm/.ru/">Замбия</a> <span class="up">△</span></p><p><a href="/eh/.ru/">Западная Сахара</a> <span class="down">▽</span></p><p><a href="/zw/.ru/">Зимбабве</a> <span class="down">▼</span></p><p><a href="/il/.ru/">Израиль</a> <span class="down">▽</span></p><p><a href="/in/.ru/">Индия</a> <span class="up">▲</span></p><p><a href="/id/.ru/">Индонезия</a> <span class="down">▽</span></p><p><a href="/jo/.ru/">Иордания</a> <span class="up">△</span></p><p><a href="/iq/.ru/">Ирак</a> <span class="up">△</span></p><p><a href="/ir/.ru/">Иран</a> <span class="down">▽</span></p><p class="current"><a href="/ie/.ru/">Ирландия</a> <span class="down">▽</span></p><p class="current"><a href="/is/.ru/">Исландия</a> <span class="up">△</span></p><p class="current"><a href="/es/.ru/">Испания</a> <span class="up">▲▲</span></p><p class="current"><a href="/it/.ru/">Италия</a> <span class="down">▽</span></p><p><a href="/ye/.ru/">Йемен</a></p><p><a href="/cv/.ru/">Кабостроверде</a> <span class="up">△</span></p><p><a href="/kz/.ru/">Казахстан</a> <span class="down">▽</span></p><p><a href="/kh/.ru/">Камбоджа</a> <span class="down">▽</span></p><p><a href="/cm/.ru/">Камерун</a> <span class="down">▼</span></p><p><a href="/ca/.ru/">Канада</a> <span class="down">▽</span></p><p><a href="/qa/.ru/">Катар</a> <span class="up">▲</span></p><p><a href="/ke/.ru/">Кения</a> <span class="down">▽</span></p><p><a href="/cy/.ru/">Кипр</a> <span class="down">▼</span></p><p><a href="/kg/.ru/">Киргизия</a> <span class="up">▲▲</span></p><p><a href="/cn/.ru/">Китай</a> <span class="down">▼</span></p><p><a href="/co/.ru/">Колумбия</a> <span class="up">▲▲</span></p><p><a href="/cg/.ru/">Конго — Браззавиль</a> <span class="down">▽</span></p><p><a href="/cd/.ru/">Конго — Киншаса</a> <span class="up">▲▲</span></p><p class="current"><a href="/xk/.ru/">Косово</a> <span class="down">▼</span></p><p><a href="/cr/.ru/">Коста-Рика</a> <span class="down">▼</span></p><p><a href="/cu/.ru/">Куба</a> <span class="down">▽</span></p><p><a href="/kw/.ru/">Кувейт</a> <span class="up">▲</span></p><p><a href="/cw/.ru/">Кюрасао</a></p><p><a href="/la/.ru/">Лаос</a> <span class="down">▽</span></p><p class="current"><a href="/lv/.ru/">Латвия</a> <span class="up">▲▲</span></p><p><a href="/lr/.ru/">Либерия</a> <span class="up">▲</span></p><p><a href="/lb/.ru/">Ливан</a> <span class="down">▼</span></p><p><a href="/ly/.ru/">Ливия</a> <span class="up">△</span></p><p class="current"><a href="/lt/.ru/">Литва</a> <span class="up">▲▲</span></p><p class="current"><a href="/li/.ru/">Лихтенштейн</a></p><p class="current"><a href="/lu/.ru/">Люксембург</a> <span class="down">▽</span></p><p><a href="/mu/.ru/">Маврикий</a> <span class="up">△</span></p><p><a href="/mr/.ru/">Мавритания</a></p><p><a href="/mg/.ru/">Мадагаскар</a> <span class="down">▼</span></p><p><a href="/yt/.ru/">Майотта</a> <span class="up">△</span></p><p><a href="/mw/.ru/">Малави</a> <span class="down">▼</span></p><p><a href="/my/.ru/">Малайзия</a> <span class="down">▽</span></p><p><a href="/ml/.ru/">Мали</a> <span class="down">▽</span></p><p><a href="/mv/.ru/">Мальдивы</a> <span class="up">▲▲</span></p><p class="current"><a href="/mt/.ru/">Мальта</a> <span class="down">▼</span></p><p><a href="/ma/.ru/">Марокко</a> <span class="up">△</span></p><p><a href="/mq/.ru/">Мартиника</a> <span class="up">▲</span></p><p><a href="/mx/.ru/">Мексика</a> <span class="up">▲</span></p><p><a href="/mz/.ru/">Мозамбик</a> <span class="up">▲</span></p><p class="current"><a href="/md/.ru/">Молдова</a> <span class="down">▽</span></p><p class="current"><a href="/mc/.ru/">Монако</a> <span class="down">▽</span></p><p><a href="/mn/.ru/">Монголия</a> <span class="down">▽</span></p><p><a href="/ms/.ru/">Монтсеррат</a> <span class="down">▽</span></p><p><a href="/mm/.ru/">Мьянма (Бирме)</a> <span class="up">▲▲</span></p><p><a href="/na/.ru/">Намибия</a></p><p><a href="/np/.ru/">Непал</a> <span class="down">▼</span></p><p><a href="/ne/.ru/">Нигер</a> <span class="down">▽</span></p><p><a href="/ng/.ru/">Нигерия</a> <span class="up">▲▲</span></p><p class="current"><a href="/nl/.ru/">Нидерланды</a> <span class="up">△</span></p><p><a href="/ni/.ru/">Никарагуа</a></p><p><a href="/nz/.ru/">Новая Зеландия</a> <span class="down">▽</span></p><p><a href="/nc/.ru/">Новая Каледония</a></p><p class="current"><a href="/no/.ru/">Норвегия</a> <span class="down">▽</span></p><p><a href="/ae/.ru/">ОАЭ</a> <span class="up">△</span></p><p><a href="/om/.ru/">Оман</a> <span class="up">△</span></p><p class="current"><a href="/im/.ru/">Остров Мэн</a> <span class="down">▼</span></p><p><a href="/ky/.ru/">Острова Кайман</a> <span class="down">▼</span></p><p><a href="/tc/.ru/">Острова Тёркс и Кайкос</a> <span class="down">▼</span></p><p><a href="/pk/.ru/">Пакистан</a> <span class="up">▲▲</span></p><p><a href="/ps/.ru/">Палестинские территории</a></p><p><a href="/pa/.ru/">Панама</a> <span class="down">▼</span></p><p><a href="/pg/.ru/">Папуа — Новая Гвинея</a> <span class="down">▽</span></p><p><a href="/py/.ru/">Парагвай</a> <span class="up">△</span></p><p><a href="/pe/.ru/">Перу</a> <span class="up">△</span></p><p class="current"><a href="/pl/.ru/">Польша</a> <span class="up">▲</span></p><p class="current"><a href="/pt/.ru/">Португалия</a> <span class="up">△</span></p><p><a href="/pr/.ru/">Пуэрто-Рико</a></p><p><a href="/kr/.ru/">Республика Корея</a> <span class="down">▼</span></p><p><a href="/re/.ru/">Реюньон</a> <span class="down">▽</span></p><p><a href="/ru/.ru/">Россия</a> <span class="up">△</span></p><p><a href="/rw/.ru/">Руанда</a> <span class="up">▲</span></p><p class="current"><a href="/ro/.ru/">Румыния</a> <span class="down">▽</span></p><p><a href="/sv/.ru/">Сальвадор</a> <span class="up">△</span></p><p class="current"><a href="/sm/.ru/">Сан-Марино</a> <span class="up">△</span></p><p><a href="/st/.ru/">Сан-Томе и Принсипи</a></p><p><a href="/sa/.ru/">Саудовская Аравия</a> <span class="up">▲</span></p><p class="current"><a href="/mk/.ru/">Северная Македония</a> <span class="down">▽</span></p><p><a href="/sc/.ru/">Сейшельские Острова</a></p><p><a href="/bl/.ru/">Сен-Бартелеми</a></p><p><a href="/pm/.ru/">Сен-Пьер и Микелон</a></p><p><a href="/sn/.ru/">Сенегал</a> <span class="up">▲▲</span></p><p><a href="/kn/.ru/">Сент-Китс и Невис</a> <span class="down">▽</span></p><p><a href="/lc/.ru/">Сент-Люсия</a></p><p class="current"><a href="/rs/.ru/">Сербия</a> <span class="down">▽</span></p><p><a href="/sg/.ru/">Сингапур</a> <span class="up">△</span></p><p><a href="/sx/.ru/">Синт-Мартен</a> <span class="down">▽</span></p><p><a href="/sy/.ru/">Сирия</a> <span class="down">▽</span></p><p class="current"><a href="/sk/.ru/">Словакия</a> <span class="up">▲</span></p><p class="current"><a href="/si/.ru/">Словения</a> <span class="down">▽</span></p><p><a href="/us/.ru/">Соединенные Штаты Америки</a> <span class="down">▽</span></p><p><a href="/so/.ru/">Сомали</a> <span class="up">▲</span></p><p><a href="/sd/.ru/">Судан</a> <span class="down">▼</span></p><p><a href="/sr/.ru/">Суринам</a></p><p><a href="/sl/.ru/">Сьерра-Леоне</a> <span class="up">▲</span></p><p><a href="/th/.ru/">Таиланд</a> <span class="up">△</span></p><p><a href="/tw/.ru/">Тайвань</a> <span class="up">▲▲</span></p><p><a href="/tz/.ru/">Танзания</a> <span class="up">▲</span></p><p><a href="/tg/.ru/">Того</a> <span class="down">▼</span></p><p><a href="/tt/.ru/">Тринидад и Тобаго</a> <span class="down">▽</span></p><p><a href="/tn/.ru/">Тунис</a> <span class="down">▽</span></p><p><a href="/tr/.ru/">Турция</a> <span class="down">▽</span></p><p><a href="/ug/.ru/">Уганда</a> <span class="down">▼</span></p><p><a href="/uz/.ru/">Узбекистан</a> <span class="down">▽</span></p><p class="current"><a href="/ua/.ru/">Украина</a> <span class="down">▽</span></p><p><a href="/uy/.ru/">Уругвай</a> <span class="up">△</span></p><p class="current"><a href="/fo/.ru/">Фарерские острова</a></p><p><a href="/fj/.ru/">Фиджи</a> <span class="down">▽</span></p><p><a href="/ph/.ru/">Филиппины</a> <span class="down">▽</span></p><p class="current"><a href="/fi/.ru/">Финляндия</a> <span class="up">△</span></p><p><a href="/fk/.ru/">Фолклендские острова</a> <span class="down">▽</span></p><p class="current"><a href="/fr/.ru/">Франция</a> <span class="up">△</span></p><p><a href="/gf/.ru/">Французская Гвиана</a> <span class="down">▽</span></p><p><a href="/pf/.ru/">Французская Полинезия</a> <span class="down">▽</span></p><p class="current"><a href="/hr/.ru/">Хорватия</a> <span class="up">△</span></p><p><a href="/cf/.ru/">Центрально-Африканская Республика</a> <span class="down">▽</span></p><p><a href="/td/.ru/">Чад</a> <span class="down">▼</span></p><p class="current"><a href="/me/.ru/">Черногория</a> <span class="down">▼</span></p><p class="current"><a href="/cz/.ru/">Чехия</a> <span class="up">▲</span></p><p><a href="/cl/.ru/">Чили</a> <span class="down">▽</span></p><p class="current"><a href="/ch/.ru/">Швейцария</a> <span class="up">△</span></p><p class="current"><a href="/se/.ru/">Швеция</a> <span class="up">△</span></p><p><a href="/lk/.ru/">Шри-Ланка</a> <span class="up">▲</span></p><p><a href="/ec/.ru/">Эквадор</a> <span class="up">▲▲</span></p><p><a href="/gq/.ru/">Экваториальная Гвинея</a> <span class="down">▼</span></p><p><a href="/er/.ru/">Эритрея</a> <span class="down">▽</span></p><p><a href="/sz/.ru/">Эсватини</a> <span class="down">▼</span></p><p class="current"><a href="/ee/.ru/">Эстония</a> <span class="down">▽</span></p><p><a href="/et/.ru/">Эфиопия</a> <span class="down">▽</span></p><p><a href="/za/.ru/">Южно-Африканская Республика</a> <span class="down">▽</span></p><p><a href="/ss/.ru/">Южный Судан</a></p><p><a href="/jm/.ru/">Ямайка</a> <span class="up">△</span></p><p><a href="/jp/.ru/">Япония</a> <span class="down">▽</span></p>
+        </div>
+        <p>Зеленые и красные стрелки рядом с названием стран отражают тренд по новым подтвержденным случаям за последнюю неделю.</p>
+    </div>
+
+
+
+
+
+    <div id="about">
+        
+        <div class="likely" style="min-height: 50px">
+            
+            <div class="twitter">Твитнуть</div>
+            <div class="facebook">Расшарить</div>
+            <div class="linkedin">Сослаться</div>
+            <div class="telegram">Отправить</div>
+            <div class="whatsapp">Отправить</div>
+        </div>
+        <p>Основано на <a href="https://github.com/CSSEGISandData/COVID-19">данных</a>, собранных Университетским центром системной науки и техники имени Джонса Хопкинса.</p>
+        <p>На этом сайте те же самые общеизвестные данные показаны в менее драматическом свете, чем на <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">оригинальном дашборде</a> университета Джонса Хопкинса. Обновляется около 9-10 утра по московскому времени.</p>
+        <p>Читайте <a href="https://andrewshitov.com/category/covid-19/">технический блог</a> (англ.). Искходный код: <a href="https://github.com/ash/covid.observer">GitHub</a>. Язык программирования <a href="https://raku.org">Raku</a>.</p>
+        <p>Сайт создан <a href="https://new.shitov.ru/">Андреем Шитовым</a>. Твиттер: <a href="https://twitter.com/andrewshitov">@andrewshitov</a>. Связь <a href="mailto:andy@shitov.ru">по электронной почте</a>.</p>
+    </div>
+</body>
+</html>
+

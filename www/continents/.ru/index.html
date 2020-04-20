@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Коронавирус на разных континентах | Вестник коронавируса COVID-19</title>
+    <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon">
+
+    
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160707541-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-160707541-1');
+</script>
+
+
+    <script src="/Chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" type="text/css" href="/main.css?v=1587404916">
+    
+    <style>
+        
+    
+        
+    </style>
+
+    <script>
+        var chart = new Array();
+function log_scale(input, n) {
+    chart[n].options.scales.yAxes[0].type = input.checked ? 'logarithmic' : 'linear';
+    chart[n].update();
+    input.blur();
+}
+function log_scale_horizontal(input, n) {
+    chart[n].options.scales.xAxes[0].type = input.checked ? 'logarithmic' : 'linear';
+    chart[n].update();
+    input.blur();
+}
+
+    </script>
+
+    <script src="/countries.js?v=2020-04-20T23:00:00+02:00" type="text/javascript"></script>
+    <script src="/autocomplete.js?v=2" type="text/javascript"></script>
+
+    <link rel="stylesheet" type="text/css" href="/likely.css">
+    
+    <script src="/likely.js" type="text/javascript"></script>
+
+    
+</head>
+<body lang="ru">
+
+    
+
+    <div class="menu" id="mainmenu">
+        
+        <ul>
+            
+            <li><a href="/.ru/">Начало</a></li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn" style="cursor: normal">Статистика</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/.ru/#recovery">Диаграмма восстановления</a>
+                    <a href="/.ru/#raw">Показатели</a>
+                    <a href="/.ru/#new">Новые случаи по дням</a>
+                    <a href="/.ru/#daily">Данные по дням</a>
+                    <a href="/.ru/#speed">Скорость прироста по дням</a>
+                    <a href="/.ru/#per-capita">Значения на душу населения</a>
+                    <a href="/.ru/#table">Таблица</a>
+                    
+                    
+                    <a href="/vs-age/.ru/">Зависимость от продолжительности жизни</a>
+                    <!--a href="/vs-density/.ru/">Cases vs population density</a-->
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Мир</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/map/.ru/">Карта мира</a>
+                    <a href="/.ru/">Числа по миру</a>
+                    <a href="/overview/.ru/">Обзор</a>
+                    <a href="/-cn/.ru/">Мир без учета Китай</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Континенты</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/africa/.ru/">Африка</a>
+                    <a href="/asia/.ru/">Азия</a>
+                    <a href="/europe/.ru/">Европа</a>
+                    <a href="/north-america/.ru/">Северная Америка</a>
+                    <a href="/south-america/.ru/">Южная Америка</a>
+                    <a href="/oceania/.ru/">Океания</a>
+                    <a href="/continents/.ru/">Распределение по континентам</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Страны</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/.ru/#countries">Список стран</a>
+                    <a href="/countries/.ru/">Охват по странам</a>
+                    <a href="/compare/.ru/">Сравнение стран</a>
+                    <a href="/per-million/.ru/">Страны по охвату на душу населения</a>
+                    <a href="/vs-china/.ru/">Страны в сравнении с Китаем</a>
+                    <a href="/pie/.ru/">Распределение по странам</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Китай</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/cn/.ru/">Суммарные данные</a>
+                    <a href="/cn/.ru/#regions">Провинции Китая</a>
+                    <a href="/-cn/.ru/">Мир без учета Китай</a>
+                    <a href="/cn/-hb/.ru/">Китай без учета Хубэй</a>
+                    <a href="/vs-china/.ru/">Страны в сравнении с Китаем</a>
+                    <a href="/cn/compare/.ru/">Сравнение провинций</a>
+                    <a href="/per-million/cn/.ru/">Отсортированные провинции</a>
+                    <a href="/pie/cn/.ru/">Распределение по регионам</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Россия</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/ru/.ru/">Суммарные данные</a>
+                    <a href="/ru/.ru/#regions">Регионы</a>
+                    <a href="/ru/compare/.ru/">Сравнение регионов</a>
+                    <a href="/pie/ru/.ru/">Распределение по регионам</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">США</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/us/.ru/">Суммарные данные</a>
+                    <a href="/us/.ru/#states">Штаты США</a>
+                    <a href="/us/compare/.ru/">Сравнение штатов</a>
+                    <a href="/per-million/us/.ru/">Штаты США по охвату на душу населения</a>
+                    <a href="/pie/us/.ru/">Распределение по штатам</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Проект</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/news">Новости проекта (англ.)</a>
+                    <a href="/about">Информация о проекте (англ.)</a>
+                    <a href="/sources">Источники данных (англ.)</a>
+                    <a href="https://andrewshitov.com/category/covid-19/" target="_blank">Технический блог (англ.)</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Язык</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/">Английский</a>
+                    <a href="/.ru/">Русский (бета)</a>
+                </div>
+            </li>
+
+            <li class="searchbox">
+                
+                <div class="autocomplete">
+                    
+                    <input id="SearchBox" type="text" name="myCountry" placeholder="Find a country or region">
+                
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        autocomplete(document.getElementById("SearchBox"), countries);
+    </script>
+
+        <div>
+        
+        <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/pie/">Compare the countries on a pie diagram</a></span></p>
+    </div>
+
+
+    <h1>Распределение коронавируса по континентам</h1>
+
+<div id="block3">
+    
+    <a name="active"></a>
+    <h2>Таймлайн числа активных случаев</h2>
+    <p class="center"><b>Активные случаи</b> | <a href="#confirmed">Подтвержденные случаи</a></p>
+
+    <p>Здесь показано изменение числа активных случаев (то есть, число подтвержденных случаев за вычетом числа выздоровлений и летальных случаев) со временем. Золотистые столбцы отражают <a href="/asia/.ru/">Азию</a>. Синие — <a href="/europe/.ru/">Европу</a>, фиолетовые — <a href="/north-america/.ru/">Северную Америку</a>.</p>
+    <canvas id="Chart8"></canvas>
+    <p class="left">
+        
+        <label class="toggle-switchy" for="logscale8" data-size="xs" data-style="rounded" data-color="blue">
+            
+            <input type="checkbox" id="logscale8" onclick="log_scale(this, 8)">
+            
+            <span class="toggle">
+                
+                <span class="switch"></span>
+            </span>
+        </label>
+        <label for="logscale8"> Логарифмическая шкала</label>
+    </p>
+    <script>
+        var ctx8 = document.getElementById('Chart8').getContext('2d');
+        chart[8] = new Chart(ctx8, {
+    "type": "bar",
+    "data": {
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24", "2020-03-25", "2020-03-26", "2020-03-27", "2020-03-28", "2020-03-29", "2020-03-30", "2020-03-31", "2020-04-01", "2020-04-02", "2020-04-03", "2020-04-04", "2020-04-05", "2020-04-06", "2020-04-07", "2020-04-08", "2020-04-09", "2020-04-10", "2020-04-11", "2020-04-12", "2020-04-13", "2020-04-14", "2020-04-15", "2020-04-16", "2020-04-17", "2020-04-18", "2020-04-19" ],
+        "datasets": [
+            { "label" : "Africa", "backgroundColor" : "#f5494d", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 7, 10, 20, 23, 42, 42, 80, 77, 100, 88, 95, 138, 211, 277, 361, 441, 545, 701, 892, 1087, 1291, 1576, 2105, 2558, 3128, 3637, 3985, 4436, 4829, 5329, 5785, 6367, 7079, 7593, 8166, 8684, 9106, 9593, 10095, 10177, 10542, 10885, 11477, 12120, 12613, 12938, 13953, 14785, 15423 ] },
+            { "label" : "Asia", "data" : [ 509, 604, 875, 1348, 1997, 2769, 5320, 5884, 7896, 9456, 11450, 15906, 18780, 22494, 25892, 28640, 31538, 33570, 35870, 37597, 38797, 38710, 52465, 57023, 57625, 58182, 58303, 58196, 56737, 55103, 54996, 52506, 52225, 50723, 48716, 46993, 45198, 42787, 41155, 39809, 38300, 37510, 35860, 34612, 34670, 33972, 32807, 31902, 31139, 31012, 30905, 31157, 31461, 30240, 30185, 30131, 30890, 32071, 32395, 33334, 34301, 36043, 38459, 41516, 45146, 50317, 56166, 61859, 66316, 73586, 80320, 87699, 94463, 100514, 108909, 114159, 120265, 126600, 133747, 141386, 145859, 155011, 164809, 172940, 182955, 192639, 203127, 213071, 226949 ], "backgroundColor" : "#c7b53e" },
+            { "backgroundColor" : "#477ccc", "data" : [ 0, 0, 2, 3, 3, 3, 8, 10, 10, 16, 21, 23, 25, 26, 26, 26, 29, 34, 36, 41, 43, 40, 39, 39, 35, 28, 27, 16, 16, 16, 30, 70, 161, 236, 330, 484, 700, 984, 1347, 2042, 2483, 3069, 3901, 5117, 6716, 8703, 11058, 13620, 16821, 21154, 21877, 34968, 41992, 49504, 59261, 69038, 80770, 97760, 116463, 133876, 147932, 170201, 186439, 210180, 236648, 262977, 290104, 310461, 328833, 351775, 372806, 389869, 411032, 450339, 468537, 485118, 499742, 507546, 518562, 542507, 556570, 569063, 579698, 577252, 585742, 604658, 615506, 622595, 638971 ], "label" : "Europe" },
+            { "backgroundColor" : "#d256d7", "data" : [ 1, 1, 1, 2, 6, 6, 7, 7, 8, 9, 4, 4, 4, 4, 5, 5, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 7, 7, 7, 7, 6, 6, 6, 7, 8, 8, 7, 9, 18, 24, 27, 29, 35, 39, 54, 59, 77, 92, 949, 1307, 1710, 2324, 2909, 3756, 5076, 6989, 8589, 14652, 20342, 27247, 35960, 46327, 56808, 69284, 87917, 106128, 126414, 144990, 163862, 188439, 213001, 243344, 273998, 301573, 328673, 356040, 382784, 413411, 443551, 474617, 501307, 526995, 541715, 563353, 586127, 612777, 639056, 665339, 685369 ], "label" : "North America" },
+            { "label" : "South America", "backgroundColor" : "#35ad38", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 8, 8, 11, 16, 22, 34, 45, 66, 73, 95, 128, 146, 295, 362, 422, 646, 925, 1151, 1634, 2238, 2927, 4007, 4768, 5573, 6372, 7436, 8528, 9747, 10741, 11304, 12964, 15154, 17001, 18819, 20439, 22106, 23797, 25964, 30462, 33734, 38404, 40514, 42787, 45329, 44547, 37743, 38237, 42357, 46380, 41974 ] },
+            { "label" : "Oceania", "data" : [ 0, 0, 0, 4, 4, 5, 5, 5, 7, 7, 10, 10, 10, 11, 11, 12, 13, 13, 13, 13, 13, 13, 7, 7, 7, 7, 5, 5, 5, 5, 8, 11, 11, 11, 11, 11, 12, 13, 15, 16, 19, 28, 42, 35, 41, 45, 56, 71, 88, 109, 109, 182, 233, 282, 365, 442, 562, 686, 812, 1111, 1515, 1662, 2100, 2465, 2931, 3318, 3834, 4232, 4669, 4813, 5103, 5338, 5481, 5710, 5848, 5681, 5769, 5892, 5591, 5362, 5412, 5392, 5372, 4986, 4930, 4762, 3313, 2981, 2943 ], "backgroundColor" : "#40d8d3" }
+        ]
+    },
+    "options": {
+        "animation": false,
+    }
+}
+);
+    </script>
+</div>
+
+<div id="block16">
+    
+    <a name="confirmed"></a>
+    <h2>Таймлайн числа подтвержденных случаев</h2>
+    <p class="center"><a href="#active">Активные случаи</a> | <b>Подтвержденные случаи</b></p>
+
+    <p>Здесь показано изменение числа подтвержденных случаев со временем. Золотистые столбцы отражают <a href="/asia/.ru/">Азию</a>. Синие — <a href="/europe/.ru/">Европу</a>, фиолетовые — <a href="/north-america/.ru/">Северную Америку</a>.</p>
+    <canvas id="Chart16"></canvas>
+    <p class="left">
+        
+        <label class="toggle-switchy" for="logscale16" data-size="xs" data-style="rounded" data-color="blue">
+            
+            <input type="checkbox" id="logscale16" onclick="log_scale(this, 16)">
+            
+            <span class="toggle">
+                
+                <span class="switch"></span>
+            </span>
+        </label>
+        <label for="logscale16"> Логарифмическая шкала</label>
+    </p>
+    <script>
+        var ctx16 = document.getElementById('Chart16').getContext('2d');
+        chart[16] = new Chart(ctx16, {
+    "type": "bar",
+    "data": {
+        "labels": [ "2020-01-22", "2020-01-23", "2020-01-24", "2020-01-25", "2020-01-26", "2020-01-27", "2020-01-28", "2020-01-29", "2020-01-30", "2020-01-31", "2020-02-01", "2020-02-02", "2020-02-03", "2020-02-04", "2020-02-05", "2020-02-06", "2020-02-07", "2020-02-08", "2020-02-09", "2020-02-10", "2020-02-11", "2020-02-12", "2020-02-13", "2020-02-14", "2020-02-15", "2020-02-16", "2020-02-17", "2020-02-18", "2020-02-19", "2020-02-20", "2020-02-21", "2020-02-22", "2020-02-23", "2020-02-24", "2020-02-25", "2020-02-26", "2020-02-27", "2020-02-28", "2020-02-29", "2020-03-01", "2020-03-02", "2020-03-03", "2020-03-04", "2020-03-05", "2020-03-06", "2020-03-07", "2020-03-08", "2020-03-09", "2020-03-10", "2020-03-11", "2020-03-12", "2020-03-13", "2020-03-14", "2020-03-15", "2020-03-16", "2020-03-17", "2020-03-18", "2020-03-19", "2020-03-20", "2020-03-21", "2020-03-22", "2020-03-23", "2020-03-24", "2020-03-25", "2020-03-26", "2020-03-27", "2020-03-28", "2020-03-29", "2020-03-30", "2020-03-31", "2020-04-01", "2020-04-02", "2020-04-03", "2020-04-04", "2020-04-05", "2020-04-06", "2020-04-07", "2020-04-08", "2020-04-09", "2020-04-10", "2020-04-11", "2020-04-12", "2020-04-13", "2020-04-14", "2020-04-15", "2020-04-16", "2020-04-17", "2020-04-18", "2020-04-19" ],
+        "datasets": [
+            { "backgroundColor" : "#f5494d", "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 8, 11, 21, 24, 43, 43, 83, 91, 104, 118, 134, 181, 259, 320, 411, 499, 610, 789, 994, 1211, 1481, 1793, 2307, 2840, 3401, 3979, 4370, 4867, 5334, 5943, 6565, 7262, 8144, 8815, 9532, 10176, 10816, 11585, 12355, 13046, 13682, 14508, 15253, 16214, 17168, 18339, 19732, 20938, 22119 ], "label" : "Africa" },
+            { "label" : "Asia", "data" : [ 554, 652, 937, 1429, 2105, 2912, 5558, 6143, 8208, 9889, 11991, 16738, 19827, 23836, 27578, 30759, 34266, 36990, 40015, 42551, 44588, 44966, 60112, 66585, 68662, 70786, 72720, 74510, 74934, 75479, 76081, 77792, 78028, 78516, 79255, 80056, 81147, 82219, 83717, 85317, 86693, 88559, 89793, 91070, 93110, 94848, 96069, 96941, 98137, 99915, 101211, 103061, 104982, 106919, 108594, 110707, 112786, 115309, 117672, 120441, 123584, 127049, 131148, 136017, 141751, 149002, 156571, 164192, 171493, 180789, 189773, 199831, 209077, 218610, 228606, 240197, 250841, 261578, 273361, 286483, 300068, 313916, 328318, 342212, 357111, 373302, 390192, 406933, 426007 ], "backgroundColor" : "#c7b53e" },
+            { "label" : "Europe", "data" : [ 0, 0, 2, 3, 3, 3, 8, 10, 10, 16, 21, 23, 25, 26, 26, 26, 29, 34, 36, 41, 43, 44, 44, 44, 45, 45, 45, 45, 45, 45, 62, 104, 197, 275, 379, 539, 803, 1092, 1464, 2201, 2727, 3356, 4335, 5735, 7501, 9638, 12178, 14960, 18362, 23421, 24149, 38239, 46414, 54795, 65522, 76621, 90222, 108533, 128954, 150347, 169063, 194995, 218295, 247807, 282610, 318008, 354297, 383469, 414055, 448701, 484785, 519574, 556078, 610360, 640540, 667963, 703097, 736454, 768854, 808446, 838994, 865634, 889337, 901163, 929080, 968953, 997697, 1016895, 1046366 ], "backgroundColor" : "#477ccc" },
+            { "data" : [ 1, 1, 1, 2, 6, 6, 7, 7, 8, 9, 4, 4, 4, 4, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 10, 11, 11, 13, 15, 24, 30, 33, 36, 42, 46, 61, 68, 86, 102, 998, 1365, 1776, 2397, 2989, 3845, 5201, 7139, 8736, 14887, 20624, 27605, 36434, 46932, 58037, 70851, 90088, 108966, 130163, 150801, 173235, 201314, 227985, 260494, 294134, 328457, 360134, 391192, 422718, 457596, 492579, 530012, 562015, 592880, 620490, 649528, 680373, 715319, 750438, 785604, 814930 ], "backgroundColor" : "#d256d7", "label" : "North America" },
+            { "data" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 8, 8, 11, 16, 22, 34, 45, 67, 74, 96, 129, 148, 298, 368, 428, 653, 938, 1166, 1654, 2274, 2982, 4119, 4898, 5769, 6596, 7716, 8884, 10172, 11225, 12223, 14429, 16802, 19095, 21124, 23474, 25381, 27399, 30274, 35326, 39453, 44821, 47663, 50549, 54620, 57680, 62883, 67235, 72531, 77637, 82150 ], "backgroundColor" : "#35ad38", "label" : "South America" },
+            { "data" : [ 0, 0, 0, 4, 4, 5, 5, 5, 9, 9, 12, 12, 12, 13, 13, 14, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 19, 22, 22, 22, 22, 22, 23, 24, 26, 28, 31, 40, 55, 58, 64, 68, 81, 96, 112, 133, 133, 208, 259, 308, 391, 470, 591, 718, 845, 1144, 1614, 1788, 2239, 2614, 3143, 3562, 4142, 4549, 5007, 5264, 5629, 5976, 6263, 6570, 6798, 6979, 7137, 7306, 7433, 7585, 7702, 7734, 7791, 7872, 7917, 7960, 8028, 8066, 8075 ], "backgroundColor" : "#40d8d3", "label" : "Oceania" }
+        ]
+    },
+    "options": {
+        "animation": false,
+    }
+}
+);
+    </script>
+</div>
+
+
+
+    <a name="countries"></a>
+    <div class="countries">
+        
+
+        
+        
+
+        <a name="continents"></a>
+<h2>Статистика по континентам</h2>
+
+<div class="countries-list">
+    
+    <p class="current"><a href="/.ru/">Весь мир</a></p><p><a href="/africa/.ru/">Африка</a></p><p><a href="/asia/.ru/">Азия</a></p><p><a href="/europe/.ru/">Европа</a></p><p><a href="/north-america/.ru/">Северная Америка</a></p><p><a href="/oceania/.ru/">Океания</a></p><p><a href="/south-america/.ru/">Южная Америка</a></p>
+</div>
+
+
+        <a name="countries"></a>
+        <h2>Статистика по странам</h2>
+        <div class="countries-list">
+            
+            <p><a href="/au/.ru/">Австралия</a> <span class="down">▼</span></p><p><a href="/at/.ru/">Австрия</a> <span class="down">▽</span></p><p><a href="/az/.ru/">Азербайджан</a> <span class="down">▽</span></p><p><a href="/al/.ru/">Албания</a> <span class="up">△</span></p><p><a href="/dz/.ru/">Алжир</a> <span class="down">▽</span></p><p><a href="/ai/.ru/">Ангилья</a></p><p><a href="/ao/.ru/">Ангола</a> <span class="down">▽</span></p><p><a href="/ad/.ru/">Андорра</a> <span class="down">▽</span></p><p><a href="/ag/.ru/">Антигуа и Барбуда</a> <span class="down">▽</span></p><p><a href="/ar/.ru/">Аргентина</a> <span class="down">▽</span></p><p><a href="/am/.ru/">Армения</a> <span class="up">△</span></p><p><a href="/aw/.ru/">Аруба</a> <span class="down">▽</span></p><p><a href="/af/.ru/">Афганистан</a> <span class="up">△</span></p><p><a href="/bs/.ru/">Багамы</a> <span class="down">▼</span></p><p><a href="/bd/.ru/">Бангладеш</a> <span class="up">△</span></p><p><a href="/bb/.ru/">Барбадос</a> <span class="down">▼</span></p><p><a href="/bh/.ru/">Бахрейн</a> <span class="up">▲</span></p><p><a href="/by/.ru/">Беларусь</a> <span class="down">▼</span></p><p><a href="/bz/.ru/">Белиз</a> <span class="down">▽</span></p><p><a href="/be/.ru/">Бельгия</a> <span class="up">△</span></p><p><a href="/bj/.ru/">Бенин</a></p><p><a href="/bm/.ru/">Бермудские острова</a> <span class="down">▽</span></p><p><a href="/bg/.ru/">Болгария</a> <span class="down">▽</span></p><p><a href="/bo/.ru/">Боливия</a> <span class="down">▽</span></p><p><a href="/bq/.ru/">Бонэйр, Синт-Эстатиус и Саба</a> <span class="up">△</span></p><p><a href="/ba/.ru/">Босния и Герцеговина</a> <span class="down">▼</span></p><p><a href="/bw/.ru/">Ботсвана</a> <span class="up">△</span></p><p><a href="/br/.ru/">Бразилия</a> <span class="down">▽</span></p><p><a href="/bn/.ru/">Бруней-Даруссалам</a></p><p><a href="/bf/.ru/">Буркина-Фасо</a> <span class="up">△</span></p><p><a href="/bi/.ru/">Бурунди</a></p><p><a href="/bt/.ru/">Бутан</a></p><p><a href="/va/.ru/">Ватикан</a></p><p><a href="/gb/.ru/">Великобритания</a> <span class="up">△</span></p><p><a href="/hu/.ru/">Венгрия</a> <span class="up">△</span></p><p><a href="/ve/.ru/">Венесуэла</a> <span class="up">▲▲</span></p><p><a href="/vg/.ru/">Виргинские острова (Великобритания)</a> <span class="down">▽</span></p><p><a href="/tl/.ru/">Восточный Тимор</a> <span class="down">▽</span></p><p><a href="/vn/.ru/">Вьетнам</a> <span class="down">▼</span></p><p><a href="/ga/.ru/">Габон</a> <span class="down">▼</span></p><p><a href="/ht/.ru/">Гаити</a> <span class="up">▲</span></p><p><a href="/gy/.ru/">Гайана</a> <span class="down">▽</span></p><p><a href="/gm/.ru/">Гамбия</a></p><p><a href="/gh/.ru/">Гана</a> <span class="up">▲▲</span></p><p><a href="/gp/.ru/">Гваделупа</a> <span class="down">▽</span></p><p><a href="/gt/.ru/">Гватемала</a> <span class="up">▲▲</span></p><p><a href="/gn/.ru/">Гвинея</a> <span class="up">△</span></p><p><a href="/gw/.ru/">Гвинея-Бисау</a> <span class="up">△</span></p><p><a href="/de/.ru/">Германия</a> <span class="down">▽</span></p><p><a href="/gi/.ru/">Гибралтар</a> <span class="down">▽</span></p><p><a href="/hn/.ru/">Гондурас</a> <span class="up">▲▲</span></p><p><a href="/gd/.ru/">Гренада</a></p><p><a href="/gl/.ru/">Гренландия</a></p><p><a href="/gr/.ru/">Греция</a> <span class="down">▼</span></p><p><a href="/ge/.ru/">Джорджия</a> <span class="down">▼</span></p><p><a href="/gu/.ru/">Гуам</a></p><p><a href="/dk/.ru/">Дания</a> <span class="down">▽</span></p><p><a href="/dj/.ru/">Джибути</a> <span class="up">▲</span></p><p><a href="/dm/.ru/">Доминика</a></p><p><a href="/do/.ru/">Доминиканская Республика</a> <span class="up">▲</span></p><p><a href="/eg/.ru/">Египет</a> <span class="down">▽</span></p><p><a href="/zm/.ru/">Замбия</a> <span class="up">△</span></p><p><a href="/eh/.ru/">Западная Сахара</a> <span class="down">▽</span></p><p><a href="/zw/.ru/">Зимбабве</a> <span class="down">▼</span></p><p><a href="/il/.ru/">Израиль</a> <span class="down">▽</span></p><p><a href="/in/.ru/">Индия</a> <span class="up">▲</span></p><p><a href="/id/.ru/">Индонезия</a> <span class="down">▽</span></p><p><a href="/jo/.ru/">Иордания</a> <span class="up">△</span></p><p><a href="/iq/.ru/">Ирак</a> <span class="up">△</span></p><p><a href="/ir/.ru/">Иран</a> <span class="down">▽</span></p><p><a href="/ie/.ru/">Ирландия</a> <span class="down">▽</span></p><p><a href="/is/.ru/">Исландия</a> <span class="up">△</span></p><p><a href="/es/.ru/">Испания</a> <span class="up">▲▲</span></p><p><a href="/it/.ru/">Италия</a> <span class="down">▽</span></p><p><a href="/ye/.ru/">Йемен</a></p><p><a href="/cv/.ru/">Кабостроверде</a> <span class="up">△</span></p><p><a href="/kz/.ru/">Казахстан</a> <span class="down">▽</span></p><p><a href="/kh/.ru/">Камбоджа</a> <span class="down">▽</span></p><p><a href="/cm/.ru/">Камерун</a> <span class="down">▼</span></p><p><a href="/ca/.ru/">Канада</a> <span class="down">▽</span></p><p><a href="/qa/.ru/">Катар</a> <span class="up">▲</span></p><p><a href="/ke/.ru/">Кения</a> <span class="down">▽</span></p><p><a href="/cy/.ru/">Кипр</a> <span class="down">▼</span></p><p><a href="/kg/.ru/">Киргизия</a> <span class="up">▲▲</span></p><p><a href="/cn/.ru/">Китай</a> <span class="down">▼</span></p><p><a href="/co/.ru/">Колумбия</a> <span class="up">▲▲</span></p><p><a href="/cg/.ru/">Конго — Браззавиль</a> <span class="down">▽</span></p><p><a href="/cd/.ru/">Конго — Киншаса</a> <span class="up">▲▲</span></p><p><a href="/xk/.ru/">Косово</a> <span class="down">▼</span></p><p><a href="/cr/.ru/">Коста-Рика</a> <span class="down">▼</span></p><p><a href="/cu/.ru/">Куба</a> <span class="down">▽</span></p><p><a href="/kw/.ru/">Кувейт</a> <span class="up">▲</span></p><p><a href="/cw/.ru/">Кюрасао</a></p><p><a href="/la/.ru/">Лаос</a> <span class="down">▽</span></p><p><a href="/lv/.ru/">Латвия</a> <span class="up">▲▲</span></p><p><a href="/lr/.ru/">Либерия</a> <span class="up">▲</span></p><p><a href="/lb/.ru/">Ливан</a> <span class="down">▼</span></p><p><a href="/ly/.ru/">Ливия</a> <span class="up">△</span></p><p><a href="/lt/.ru/">Литва</a> <span class="up">▲▲</span></p><p><a href="/li/.ru/">Лихтенштейн</a></p><p><a href="/lu/.ru/">Люксембург</a> <span class="down">▽</span></p><p><a href="/mu/.ru/">Маврикий</a> <span class="up">△</span></p><p><a href="/mr/.ru/">Мавритания</a></p><p><a href="/mg/.ru/">Мадагаскар</a> <span class="down">▼</span></p><p><a href="/yt/.ru/">Майотта</a> <span class="up">△</span></p><p><a href="/mw/.ru/">Малави</a> <span class="down">▼</span></p><p><a href="/my/.ru/">Малайзия</a> <span class="down">▽</span></p><p><a href="/ml/.ru/">Мали</a> <span class="down">▽</span></p><p><a href="/mv/.ru/">Мальдивы</a> <span class="up">▲▲</span></p><p><a href="/mt/.ru/">Мальта</a> <span class="down">▼</span></p><p><a href="/ma/.ru/">Марокко</a> <span class="up">△</span></p><p><a href="/mq/.ru/">Мартиника</a> <span class="up">▲</span></p><p><a href="/mx/.ru/">Мексика</a> <span class="up">▲</span></p><p><a href="/mz/.ru/">Мозамбик</a> <span class="up">▲</span></p><p><a href="/md/.ru/">Молдова</a> <span class="down">▽</span></p><p><a href="/mc/.ru/">Монако</a> <span class="down">▽</span></p><p><a href="/mn/.ru/">Монголия</a> <span class="down">▽</span></p><p><a href="/ms/.ru/">Монтсеррат</a> <span class="down">▽</span></p><p><a href="/mm/.ru/">Мьянма (Бирме)</a> <span class="up">▲▲</span></p><p><a href="/na/.ru/">Намибия</a></p><p><a href="/np/.ru/">Непал</a> <span class="down">▼</span></p><p><a href="/ne/.ru/">Нигер</a> <span class="down">▽</span></p><p><a href="/ng/.ru/">Нигерия</a> <span class="up">▲▲</span></p><p><a href="/nl/.ru/">Нидерланды</a> <span class="up">△</span></p><p><a href="/ni/.ru/">Никарагуа</a></p><p><a href="/nz/.ru/">Новая Зеландия</a> <span class="down">▽</span></p><p><a href="/nc/.ru/">Новая Каледония</a></p><p><a href="/no/.ru/">Норвегия</a> <span class="down">▽</span></p><p><a href="/ae/.ru/">ОАЭ</a> <span class="up">△</span></p><p><a href="/om/.ru/">Оман</a> <span class="up">△</span></p><p><a href="/im/.ru/">Остров Мэн</a> <span class="down">▼</span></p><p><a href="/ky/.ru/">Острова Кайман</a> <span class="down">▼</span></p><p><a href="/tc/.ru/">Острова Тёркс и Кайкос</a> <span class="down">▼</span></p><p><a href="/pk/.ru/">Пакистан</a> <span class="up">▲▲</span></p><p><a href="/ps/.ru/">Палестинские территории</a></p><p><a href="/pa/.ru/">Панама</a> <span class="down">▼</span></p><p><a href="/pg/.ru/">Папуа — Новая Гвинея</a> <span class="down">▽</span></p><p><a href="/py/.ru/">Парагвай</a> <span class="up">△</span></p><p><a href="/pe/.ru/">Перу</a> <span class="up">△</span></p><p><a href="/pl/.ru/">Польша</a> <span class="up">▲</span></p><p><a href="/pt/.ru/">Португалия</a> <span class="up">△</span></p><p><a href="/pr/.ru/">Пуэрто-Рико</a></p><p><a href="/kr/.ru/">Республика Корея</a> <span class="down">▼</span></p><p><a href="/re/.ru/">Реюньон</a> <span class="down">▽</span></p><p><a href="/ru/.ru/">Россия</a> <span class="up">△</span></p><p><a href="/rw/.ru/">Руанда</a> <span class="up">▲</span></p><p><a href="/ro/.ru/">Румыния</a> <span class="down">▽</span></p><p><a href="/sv/.ru/">Сальвадор</a> <span class="up">△</span></p><p><a href="/sm/.ru/">Сан-Марино</a> <span class="up">△</span></p><p><a href="/st/.ru/">Сан-Томе и Принсипи</a></p><p><a href="/sa/.ru/">Саудовская Аравия</a> <span class="up">▲</span></p><p><a href="/mk/.ru/">Северная Македония</a> <span class="down">▽</span></p><p><a href="/sc/.ru/">Сейшельские Острова</a></p><p><a href="/bl/.ru/">Сен-Бартелеми</a></p><p><a href="/pm/.ru/">Сен-Пьер и Микелон</a></p><p><a href="/sn/.ru/">Сенегал</a> <span class="up">▲▲</span></p><p><a href="/kn/.ru/">Сент-Китс и Невис</a> <span class="down">▽</span></p><p><a href="/lc/.ru/">Сент-Люсия</a></p><p><a href="/rs/.ru/">Сербия</a> <span class="down">▽</span></p><p><a href="/sg/.ru/">Сингапур</a> <span class="up">△</span></p><p><a href="/sx/.ru/">Синт-Мартен</a> <span class="down">▽</span></p><p><a href="/sy/.ru/">Сирия</a> <span class="down">▽</span></p><p><a href="/sk/.ru/">Словакия</a> <span class="up">▲</span></p><p><a href="/si/.ru/">Словения</a> <span class="down">▽</span></p><p><a href="/us/.ru/">Соединенные Штаты Америки</a> <span class="down">▽</span></p><p><a href="/so/.ru/">Сомали</a> <span class="up">▲</span></p><p><a href="/sd/.ru/">Судан</a> <span class="down">▼</span></p><p><a href="/sr/.ru/">Суринам</a></p><p><a href="/sl/.ru/">Сьерра-Леоне</a> <span class="up">▲</span></p><p><a href="/th/.ru/">Таиланд</a> <span class="up">△</span></p><p><a href="/tw/.ru/">Тайвань</a> <span class="up">▲▲</span></p><p><a href="/tz/.ru/">Танзания</a> <span class="up">▲</span></p><p><a href="/tg/.ru/">Того</a> <span class="down">▼</span></p><p><a href="/tt/.ru/">Тринидад и Тобаго</a> <span class="down">▽</span></p><p><a href="/tn/.ru/">Тунис</a> <span class="down">▽</span></p><p><a href="/tr/.ru/">Турция</a> <span class="down">▽</span></p><p><a href="/ug/.ru/">Уганда</a> <span class="down">▼</span></p><p><a href="/uz/.ru/">Узбекистан</a> <span class="down">▽</span></p><p><a href="/ua/.ru/">Украина</a> <span class="down">▽</span></p><p><a href="/uy/.ru/">Уругвай</a> <span class="up">△</span></p><p><a href="/fo/.ru/">Фарерские острова</a></p><p><a href="/fj/.ru/">Фиджи</a> <span class="down">▽</span></p><p><a href="/ph/.ru/">Филиппины</a> <span class="down">▽</span></p><p><a href="/fi/.ru/">Финляндия</a> <span class="up">△</span></p><p><a href="/fk/.ru/">Фолклендские острова</a> <span class="down">▽</span></p><p><a href="/fr/.ru/">Франция</a> <span class="up">△</span></p><p><a href="/gf/.ru/">Французская Гвиана</a> <span class="down">▽</span></p><p><a href="/pf/.ru/">Французская Полинезия</a> <span class="down">▽</span></p><p><a href="/hr/.ru/">Хорватия</a> <span class="up">△</span></p><p><a href="/cf/.ru/">Центрально-Африканская Республика</a> <span class="down">▽</span></p><p><a href="/td/.ru/">Чад</a> <span class="down">▼</span></p><p><a href="/me/.ru/">Черногория</a> <span class="down">▼</span></p><p><a href="/cz/.ru/">Чехия</a> <span class="up">▲</span></p><p><a href="/cl/.ru/">Чили</a> <span class="down">▽</span></p><p><a href="/ch/.ru/">Швейцария</a> <span class="up">△</span></p><p><a href="/se/.ru/">Швеция</a> <span class="up">△</span></p><p><a href="/lk/.ru/">Шри-Ланка</a> <span class="up">▲</span></p><p><a href="/ec/.ru/">Эквадор</a> <span class="up">▲▲</span></p><p><a href="/gq/.ru/">Экваториальная Гвинея</a> <span class="down">▼</span></p><p><a href="/er/.ru/">Эритрея</a> <span class="down">▽</span></p><p><a href="/sz/.ru/">Эсватини</a> <span class="down">▼</span></p><p><a href="/ee/.ru/">Эстония</a> <span class="down">▽</span></p><p><a href="/et/.ru/">Эфиопия</a> <span class="down">▽</span></p><p><a href="/za/.ru/">Южно-Африканская Республика</a> <span class="down">▽</span></p><p><a href="/ss/.ru/">Южный Судан</a></p><p><a href="/jm/.ru/">Ямайка</a> <span class="up">△</span></p><p><a href="/jp/.ru/">Япония</a> <span class="down">▽</span></p>
+        </div>
+        <p>Зеленые и красные стрелки рядом с названием стран отражают тренд по новым подтвержденным случаям за последнюю неделю.</p>
+    </div>
+
+
+
+
+
+    <div id="about">
+        
+        <div class="likely" style="min-height: 50px">
+            
+            <div class="twitter">Твитнуть</div>
+            <div class="facebook">Расшарить</div>
+            <div class="linkedin">Сослаться</div>
+            <div class="telegram">Отправить</div>
+            <div class="whatsapp">Отправить</div>
+        </div>
+        <p>Основано на <a href="https://github.com/CSSEGISandData/COVID-19">данных</a>, собранных Университетским центром системной науки и техники имени Джонса Хопкинса.</p>
+        <p>На этом сайте те же самые общеизвестные данные показаны в менее драматическом свете, чем на <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">оригинальном дашборде</a> университета Джонса Хопкинса. Обновляется около 9-10 утра по московскому времени.</p>
+        <p>Читайте <a href="https://andrewshitov.com/category/covid-19/">технический блог</a> (англ.). Искходный код: <a href="https://github.com/ash/covid.observer">GitHub</a>. Язык программирования <a href="https://raku.org">Raku</a>.</p>
+        <p>Сайт создан <a href="https://new.shitov.ru/">Андреем Шитовым</a>. Твиттер: <a href="https://twitter.com/andrewshitov">@andrewshitov</a>. Связь <a href="mailto:andy@shitov.ru">по электронной почте</a>.</p>
+    </div>
+</body>
+</html>
+

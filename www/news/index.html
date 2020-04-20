@@ -16,8 +16,8 @@
 
 
     <script src="/Chart.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/main.css?v=33">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/main.css?v=1587404916">
     <style>
         
     </style>
@@ -37,7 +37,7 @@ function log_scale_horizontal(input, n) {
 
     </script>
 
-    <script src="/countries.js?v=2020-04-13T02:00:00+02:00" type="text/javascript"></script>
+    <script src="/countries.js?v=2020-04-20T23:00:00+02:00" type="text/javascript"></script>
     <script src="/autocomplete.js?v=2" type="text/javascript"></script>
 
     <link rel="stylesheet" type="text/css" href="/likely.css">
@@ -50,7 +50,6 @@ function log_scale_horizontal(input, n) {
     <div class="menu" id="mainmenu">
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/map">Map</a></li>
 
             <li class="dropdown">
                 <a href="javascript: void(0)" class="dropbtn" style="cursor: normal">Statistics</a>
@@ -63,31 +62,32 @@ function log_scale_horizontal(input, n) {
                     <a href="/#per-capita">Per capita values</a>
                     <a href="/#table">Table data</a>
                     
-                    <a href="/vs-age">Cases vs life expectancy</a>
-                    <!--a href="/vs-density">Cases vs population density</a-->
+                    
+                    <a href="/vs-age/">Cases vs life expectancy</a>
+                    <!--a href="/vs-density/">Cases vs population density</a-->
                 </div>
             </li>
 
             <li class="dropdown">
                 <a href="javascript: void(0)" class="dropbtn">World</a>
                 <div class="dropdown-content">
+                    <a href="/map/">World Map</a>
                     <a href="/">World numbers</a>
-                    <a href="/overview">Overview</a>
-                    <a href="/map">World map</a>
-                    <a href="/-cn">World excluding China</a>
+                    <a href="/overview/">Overview</a>
+                    <a href="/-cn/">World excluding China</a>
                 </div>
             </li>
 
             <li class="dropdown">
                 <a href="javascript: void(0)" class="dropbtn">Continents</a>
                 <div class="dropdown-content">
-                    <a href="/africa">Africa</a>
-                    <a href="/asia">Asia</a>
-                    <a href="/europe">Europe</a>
-                    <a href="/north-america">North America</a>
-                    <a href="/south-america">South America</a>
-                    <a href="/oceania">Oceania</a>
-                    <a href="/continents">Spread over the continents</a>
+                    <a href="/africa/">Africa</a>
+                    <a href="/asia/">Asia</a>
+                    <a href="/europe/">Europe</a>
+                    <a href="/north-america/">North America</a>
+                    <a href="/south-america/">South America</a>
+                    <a href="/oceania/">Oceania</a>
+                    <a href="/continents/">Spread over the continents</a>
                 </div>
             </li>
 
@@ -95,42 +95,46 @@ function log_scale_horizontal(input, n) {
                 <a href="javascript: void(0)" class="dropbtn">Countries</a>
                 <div class="dropdown-content">
                     <a href="/#countries">List of countries</a>
-                    <a href="/countries">Affected countries</a>
-                    <a href="/compare">Compare countries</a>
-                    <a href="/per-million">Sorted per million affected</a>
-                    <a href="/vs-china">Countries vs China</a>
+                    <a href="/countries/">Affected countries</a>
+                    <a href="/compare/">Compare countries</a>
+                    <a href="/per-million/">Sorted per million affected</a>
+                    <a href="/vs-china/">Countries vs China</a>
+                    <a href="/pie/">Distribution over the countries</a>
                 </div>
             </li>
 
             <li class="dropdown">
                 <a href="javascript: void(0)" class="dropbtn">China</a>
                 <div class="dropdown-content">
-                    <a href="/cn">Cumulative data</a>
-                    <a href="/cn#regions">China provinces</a>
-                    <a href="/-cn">World excluding China</a>
-                    <a href="/cn/-hb">China excluding Hubei</a>
-                    <a href="/vs-china">Countries vs China</a>
-                    <a href="/cn/compare">Compare provinces</a>
-                    <a href="/per-million/cn">Provinces sorted per capita</a>
+                    <a href="/cn/">Cumulative data</a>
+                    <a href="/cn/#regions">China provinces</a>
+                    <a href="/-cn/">World excluding China</a>
+                    <a href="/cn/-hb/">China excluding Hubei</a>
+                    <a href="/vs-china/">Countries vs China</a>
+                    <a href="/cn/compare/">Compare provinces</a>
+                    <a href="/per-million/cn/">Provinces sorted per capita</a>
+                    <a href="/pie/cn/">Distribution over the regions</a>
                 </div>
             </li>
 
             <li class="dropdown">
                 <a href="javascript: void(0)" class="dropbtn">Russia</a>
                 <div class="dropdown-content">
-                    <a href="/ru">Cumulative data</a>
-                    <a href="/ru#regions">Regions</a>
-                    <a href="/ru/compare">Compare regions</a>
+                    <a href="/ru/">Cumulative data</a>
+                    <a href="/ru/#regions">Regions</a>
+                    <a href="/ru/compare/">Compare regions</a>
+                    <a href="/pie/ru/">Distribution over the regions</a>
                 </div>
             </li>
 
             <li class="dropdown">
                 <a href="javascript: void(0)" class="dropbtn">US</a>
                 <div class="dropdown-content">
-                    <a href="/us">Cumulative data</a>
-                    <a href="/us#states">US states</a>
-                    <a href="/us/compare">Compare the states</a>
-                    <a href="/per-million/us">States sorted per capita</a>
+                    <a href="/us/">Cumulative data</a>
+                    <a href="/us/#states">US states</a>
+                    <a href="/us/compare/">Compare the states</a>
+                    <a href="/per-million/us/">States sorted per capita</a>
+                    <a href="/pie/us/">Distribution over the states</a>
                 </div>
             </li>
 
@@ -141,6 +145,14 @@ function log_scale_horizontal(input, n) {
                     <a href="/about">About the project</a>
                     <a href="/sources">Data sources</a>
                     <a href="https://andrewshitov.com/category/covid-19/" target="_blank">Tech blog</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="javascript: void(0)" class="dropbtn">Language</a>
+                <div class="dropdown-content">
+                    <a href="/">English</a>
+                    <a href="/.ru/">Russian (beta)</a>
                 </div>
             </li>
 
@@ -157,7 +169,7 @@ function log_scale_horizontal(input, n) {
     </script>
 
         <div>
-        <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/compare/">Compare countries</a></span></p>
+        <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/pie/">Compare the countries on a pie diagram</a></span></p>
     </div>
 
 
@@ -201,8 +213,27 @@ function log_scale_horizontal(input, n) {
 </style>
 
 <div style="padding-bottom: 3em">
+    <h3><br/>April 20, 2020</h3>
+    <p>A new set of pages available on the site: pie charts to compare the number of confirmed coronavirus cases and fatal cases across different <a href="/pie/">countries</a>, states or regions (for the <a href="/pie/us/">US</a>, <a href="/pie/ru/">Russia</a> and <a href="/pie/cn/">China</a>).</p>
+    <p>
+        <a href="/pie/"><img src="/i/pie.png"/></a>
+    </p>
+
+    <h3><br/>April 19, 2020</h3>
+    <p>The Covid Observer is now available <a href="/.ru/">in Russian</a>.</p>
+
+    <h3><br/>April 14, 2020</h3>
+    <p>A <a href="https://andrewshitov.com/2020/04/14/one-month-later/">post overviewing the new features</a> that appeared during the last month is published in the blog.</p>
+
     <h3><br/>April 13, 2020</h3>
     <p>The Russian Federation got separate pages for each of its <a href="/ru/#regions">regions</a>. The data is collected from a separate <a href="/sources/">official data source</a>, and it may include more recent data than those of the JHU. To compare the situation in different regions, visit the <a href="/ru/compare/">comparison page</a>.</p>
+
+    <p>For the USA, the number of recovered cases is now available on the state level (starting from today).</p>
+
+    <p>The pages for the <a href="/us/#tests">USA</a> (since April 12<sup>th</sup>), <a href="/ru/#tests">Russian Federation</a> (since March 25<sup>th</sup>) and <a href="/ua/#tests">Ukraine</a> (since April 8<sup>th</sup>) contain the number of tests performed on a country-level. For the USA, this data is detalised on a <a href="/us/#states">state level</a>.</p>
+    <p>
+        <a href="/ru/#tests"><img src="/i/tests.png"/></a>
+    </p>
 
     <h3><br/>April 11, 2020</h3>
     <p><a href="/#countries">The red and green arrows</a> displaying the trend in the change of the new confirmed daily cases is more granual now and includes five different indicator levels. Instead of taking the last two days only, the trend checker looks at the values during the recent seven days.</p>

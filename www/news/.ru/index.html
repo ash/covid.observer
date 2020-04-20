@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Covid.observer news and updates | Coronavirus COVID-19 Observer</title>
+    <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon">
+
+    
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160707541-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-160707541-1');
+</script>
+
+
+    <script src="/Chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" type="text/css" href="/main.css?v=1587237723">
+    
+    <style>
+        
+    
+        
+    </style>
+
+    <script>
+        var chart = new Array();
+function log_scale(input, n) {
+    chart[n].options.scales.yAxes[0].type = input.checked ? 'logarithmic' : 'linear';
+    chart[n].update();
+    input.blur();
+}
+function log_scale_horizontal(input, n) {
+    chart[n].options.scales.xAxes[0].type = input.checked ? 'logarithmic' : 'linear';
+    chart[n].update();
+    input.blur();
+}
+
+    </script>
+
+    <script src="/countries.js?v=2020-04-19T02:00:00+02:00" type="text/javascript"></script>
+    <script src="/autocomplete.js?v=2" type="text/javascript"></script>
+
+    <link rel="stylesheet" type="text/css" href="/likely.css">
+    
+    <script src="/likely.js" type="text/javascript"></script>
+
+    
+</head>
+<body lang="ru">
+
+    
+
+    <div class="menu" id="mainmenu">
+        
+        <ul>
+            
+            <li><a href="/.ru/">Начало</a></li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn" style="cursor: normal">Статистика</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/.ru/#recovery">Диаграмма восстановления</a>
+                    <a href="/.ru/#raw">Показатели</a>
+                    <a href="/.ru/#new">Новые случаи по дням</a>
+                    <a href="/.ru/#daily">Данные по дням</a>
+                    <a href="/.ru/#speed">Скорость прироста по дням</a>
+                    <a href="/.ru/#per-capita">Значения на душу населения</a>
+                    <a href="/.ru/#table">Таблица</a>
+                    
+                    
+                    <a href="/vs-age/.ru/">Зависимость от продолжительности жизни</a>
+                    <!--a href="/vs-density/.ru/">Cases vs population density</a-->
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Мир</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/map/.ru/">Карта мира</a>
+                    <a href="/.ru/">Числа по миру</a>
+                    <a href="/overview/.ru/">Обзор</a>
+                    <a href="/-cn/.ru/">Мир без учета Китай</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Континенты</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/africa/.ru/">Африка</a>
+                    <a href="/asia/.ru/">Азия</a>
+                    <a href="/europe/.ru/">Европа</a>
+                    <a href="/north-america/.ru/">Северная Америка</a>
+                    <a href="/south-america/.ru/">Южная Америка</a>
+                    <a href="/oceania/.ru/">Океания</a>
+                    <a href="/continents/.ru/">Распределение по континентам</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Страны</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/.ru/#countries">Список стран</a>
+                    <a href="/countries/.ru/">Охват по странам</a>
+                    <a href="/compare/.ru/">Сравнение стран</a>
+                    <a href="/per-million/.ru/">Страны по охвату на душу населения</a>
+                    <a href="/vs-china/.ru/">Страны в сравнении с Китаем</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Китай</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/cn/.ru/">Суммарные данные</a>
+                    <a href="/cn/.ru/#regions">Провинции Китая</a>
+                    <a href="/-cn/.ru/">Мир без учета Китай</a>
+                    <a href="/cn/-hb/.ru/">Китай без учета Хубэй</a>
+                    <a href="/vs-china/.ru/">Страны в сравнении с Китаем</a>
+                    <a href="/cn/compare/.ru/">Сравнение провинций</a>
+                    <a href="/per-million/cn/.ru/">Отсортированные провинции</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Россия</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/ru/.ru/">Суммарные данные</a>
+                    <a href="/ru/.ru/#regions">Регионы</a>
+                    <a href="/ru/compare/.ru/">Сравнение регионов</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">США</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/us/.ru/">Суммарные данные</a>
+                    <a href="/us/.ru/#states">Штаты США</a>
+                    <a href="/us/compare/.ru/">Сравнение штатов</a>
+                    <a href="/per-million/us/.ru/">Штаты США по охвату на душу населения</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Проект</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/news/.ru/">Новости проекта</a>
+                    <a href="/about/.ru/">Информация о проекте</a>
+                    <a href="/sources/.ru/">Источники данных</a>
+                    <a href="https://andrewshitov.com/category/covid-19/" target="_blank">Технический блог</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                
+                <a href="javascript: void(0)" class="dropbtn">Язык</a>
+                <div class="dropdown-content">
+                    
+                    <a href="/">Английский</a>
+                    <a href="/.ru/">Русский</a>
+                </div>
+            </li>
+
+            <li class="searchbox">
+                
+                <div class="autocomplete">
+                    
+                    <input id="SearchBox" type="text" name="myCountry" placeholder="Find a country or region">
+                
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        autocomplete(document.getElementById("SearchBox"), countries);
+    </script>
+
+    
+
+    <h1>Новости проекта</h1>
+
+<style>
+    h3 { text-align: left; padding-left: 20%; margin-bottom: 0; padding-bottom: 0; } span.date { color: gray; } ol { list-style-type: decimal; text-align: left; margin-left: 20%; } ol li { line-height: 140%; } p > img { text-align: center; } p img { width: 100%; height: auto; } @media screen and (max-width: 850px) { h3 { padding-left: 10%; } ol { margin-left: 10%; padding-right: 10%; } }
+</style>
+
+<div style="padding-bottom: 3em">
+    
+    <h3><br/>April 14, 2020</h3>
+    <p>A <a href="https://andrewshitov.com/2020/04/14/one-month-later/">post overviewing the new features</a> that appeared during the last month is published in the blog.</p>
+
+    <h3><br/>April 13, 2020</h3>
+    <p>The Russian Federation got separate pages for each of its <a href="/ru/#regions">regions</a>. The data is collected from a separate <a href="/sources/">official data source</a>, and it may include more recent data than those of the JHU. To compare the situation in different regions, visit the <a href="/ru/compare/">comparison page</a>.</p>
+
+    <p>For the USA, the number of recovered cases is now available on the state level (starting from today).</p>
+
+    <p>The pages for the <a href="/us/#tests">USA</a> (since April 12<sup>th</sup>), <a href="/ru/#tests">Россия</a> (since March 25<sup>th</sup>) and <a href="/ua/#tests">Украина</a> (since April 8<sup>th</sup>) contain the number of tests performed on a country-level. For the USA, this data is detalised on a <a href="/us/#states">state level</a>.</p>
+    <p>
+        
+        <a href="/ru/#tests"><img src="/i/tests.png"/></a>
+    </p>
+
+    <h3><br/>April 11, 2020</h3>
+    <p><a href="/#countries">The red and green arrows</a> displaying the trend in the change of the new confirmed daily cases is more granual now and includes five different indicator levels. Instead of taking the last two days only, the trend checker looks at the values during the recent seven days.</p>
+    <p>
+        
+        <a href="/#countries"><img src="/i/trend.png"/></a>
+    </p>
+
+    <h3><br/>April 10, 2020</h3>
+    <p>A new set of pages published on the site where you can <a href="/compare/">compare the countries</a> affected by coronavirus. For each country, there are a brief overview of the current numbers together with a couple of graphs: the absolute numbers of the confirmed, recovered, and fatal cases and the graph depicting the amount of new cases per day. Separate pages are dedicated to the <a href="/us/compare/">Штаты США</a> and <a href="/cn/compare/">Провинции Китая</a>.</p>
+    <p>
+        
+        <a href="/compare/"><img src="/i/compare.png"/></a>
+    </p>
+
+    <!-- <h3><br/>April 9, 2020</h3>
+    <p>A <a href="/vs-density">scattered graph</a> showning the number of confirmed and fatal cases against the density of population in each country has been added to the site. It sesms that there is no instant and obvious correlation between these numbers.</p>
+    <p>
+        
+        <a href="/vs-density"><img src="/i/vs-density.png"/></a>
+    </p> -->
+
+    <h3><br/>April 9, 2020</h3>
+    <p>The per-million per capita values are replaces with per-thousand values. This change helps to avoid the weird-looking huge numbers for smaller countries where there are fewer than a million people. With this change, the numbers are displayed in the same scale as the <a href="/jp/#crude">crude country-level graphs</a>.</p>
+
+    <h3><br/>April 8, 2020</h3>
+    <p>Per capita (in fact, per-million) data are added at all levels of the site: World, continents, countries, and regions. These are the numbers of confirmed and fatal cases per each million of population (of the World, or country, etc.). For the countries that have fewer than a million of population, the same scale is used so that you can compare different countires without the need to re-normalise the numbers. The per capita values are also added to the top block of data on the corresponding pages, to the table representation (including the CSV and XLS exports), and as a <a href="/#per-capita">separate graph</a> on each page. Don’t forget that there is a separate <a href="/per-million">set of pages</a> to compare the countries based on per-capita values.</p>
+    <p>
+        For example, <a href="/it/#per-capita">per-million timeline in Italy</a>:<br/>
+        
+        <a href="/it/#per-capita"><img src="/i/per-capita-graph.png"/></a>
+    </p>
+
+    <h3><br/>April 7, 2020</h3>
+    <p>Table data on all pages (World, continents, countries, and regions) are now available for downloading in the CSV and XLS formats.</p>
+
+    <h3><br/>April 6, 2020</h3>
+    <p>The main numbers are equipped with the changes happend since yesterday.</p>
+    <p>
+        
+        <img src="/i/plus-minus.png"/>
+    
+    </p>
+
+    <h3><br/>April 5, 2020</h3>
+    <p>New feature on the site: an overview of the World <a href="/map">on the map</a>. Move the mouse over the country to see a brief COVID-19 statistics. Click on the country to get a more detailed overview on a country-level page. The colour indication follows the same principle as on the <a href="/overview/">World overview</a> page: the greener the colour, the fewer new cases have been registered in the given country during the last day comparing to the day before (that’s why China is greenish).</p>
+    <p>
+        
+        <a href="/map"><img src="/i/map.png"/></a>
+    </p>
+
+    <br/>
+    
+    <p>Per capita bar graphs are split into four groups with two graphs in each:</p>
+    <ol>
+        
+        <li><a href="/per-million/">Countries only</a> sorted by the number of <a href="/per-million/#confirmed">подтверждено</a> or <a href="/per-million/#failed">failed</a> cases</li>
+        <li><a href="/per-million/us/">Штаты США</a>&nbsp;— <a href="/per-million/us/#confirmed">подтверждено</a> or <a href="/per-million/us/#failed">failed</a></li>
+        <li><a href="/per-million/cn/">Провинции Китая</a>&nbsp;— <a href="/per-million/cn/#confirmed">подтверждено</a> or <a href="/per-million/cn/#failed">failed</a></li>
+        <li><a href="/per-million/combined/">Вместе</a>&nbsp;— <a href="/per-million/combined/#confirmed">подтверждено</a> or <a href="/per-million/us/#failed">failed</a>&nbsp;— these charts may include both countries and country regions whenever they match the sort criteria</li>
+    </ol>
+
+    <h3><br/>April 4, 2020</h3>
+    <p>A few new data blocks:</p>
+    <ol>
+        
+        <li>Monthly mortality rates for the previous years compared with COVID-19</li>
+        <li>Current weekly death rates</li>
+        <li>Crude death rates vs COVID-19</li>
+    </ol>
+    <p>See, for example <a href="https://covid.observer/es/#crude">Crude rates for Spain</a> and other country-level pages.</p>
+    <p>
+        
+        <a href="/us/#mortality">Mortality rates in the US</a>:<br/>
+        
+        <a href="/us/#mortality"><img src="/i/us-rates.png"/></a>
+    </p>
+    <p>
+        
+        <a href="/it/#crude">Crude rates in Italy</a>:<br/>
+        
+        <a href="/it/#crude"><img src="/i/it-crude.png"/></a>
+    </p>
+
+    <h3><br/>April 2, 2020</h3>
+    <p>An article ‘<a href="https://www.perl.com/article/observing-coronavirus-with-raku/">Observing Coronavirus Pandemic with Raku</a>’ covering some of the internals of the website published on <a href="https://perl.com/">perl.com</a>.</p>
+
+    <h3><br/>March 31, 2020</h3>
+    <p>The ’stock market arrows‘ have been added to the <a href="/#countries">list of countries</a>. You can now immediately see if the country is recovering. One of a few cases when the down arrow can be green and that‘s good. Also available for the US states and China provinces.</p>
+    <p>
+        
+        <a href="/#countries"><img src="/i/arrows.png"/></a>
+    </p>
+
+    <h3><br/>March 29, 2020</h3>
+    <p>A blog post ‘<a href="https://andrewshitov.com/2020/03/29/on-computing-the-number-of-recoveries/">On computing the number of recoveries</a>’ published in the Tech blog.</p>
+
+    <br/>
+    
+    <p>The graph comparing per capita cases in different countries <a href="/per-million/">is more visible now</a> in the site structure. Also, it now comes together with a co-graph sorted by <a href="/per-million/#failed">failures per capita</a>.</p>
+    <p>
+        
+        <a href="/per-million/"><img src="/i/per-capita.png"/></a>
+    </p>
+
+    <h3><br/>March 25, 2020</h3>
+    <p>New features:</p>
+        <ol>
+            
+            <li><a href="/overview/">World overview</a></li>
+            <li><a href="/#table">Table views</a> for the data of the World, every country, region, and continent</li>
+        </ol>
+    </p>
+    <p>
+        
+        <a href="/overview/">World overview</a>:<br />
+        
+        <a href="/overview/"><img src="/i/overview.png"/></a>
+    </p>
+
+    <h3><br/>March 22, 2020</h3>
+    <p>New pages and features:</p>
+    <ol>
+        
+        <li><a href="/-cn/">Мир без учета Китай</a></li>
+        <li><a href="/cn/#regions">Провинции и регионы Китая</a></li>
+        <li><a href="/cn/-hb/">Китай без учета Хубэй</a></li>
+        <li><a href="/#raw">Показатели</a> of the confirmed, failed, recovered, and active cases on all levels: World, continents, contries, regions</li>
+        <li><a href="/vs-age/">Зависимость от продолжительности жизни</a> on the graph</li>
+    </ol>
+    <p>
+        
+        <a href="/vs-age/">Зависимость от продолжительности жизни</a>:<br />
+        
+        <a href="/vs-age/"><img src="/i/vs-age.png"/></a>
+    </p>
+
+    <br/>
+    
+    <p>Using the logarithmic scale switches, you can see the details of all charts. For example, you can notice that China numbers outside of Hubei are growing, e.g., <a href="/cn/bj/">в Пекие</a>. See also: <a href="/cn/#speed">Daily speed in China</a>.</p>
+    <p>
+        
+        <img src="/i/china-outside-hubei.png"/>
+    
+    </p>
+
+    <h3><br/>March 21, 2020</h3>
+    <p>New data blocks:</p>
+    <ol>
+        
+        <li><a href="/#raw">The most recent World raw numbers</a></li>
+        <li>The graphs with the <a href="/#new">number of new cases per day</a> for the World, continents, countries, and regions</li>
+    </ol>
+
+    <h3><br/>March 19, 2020</h3>
+    <p>A new <a href="/continents/">graph comparing the number of active cases per continent</a>. Notably, Eurasia, being a single continent, suffers most.</p>
+    <p>And some new pages with the <a href="/#continents">stats per continent</a>.</p>
+    <p>
+        
+        <img src="/i/active-cases.png"/>
+    
+    </p>
+
+    <h3><br/>March 18, 2020</h3>
+    <p>A couple of updates:</p>
+    <ol>
+        
+        <li><a href="/us#states">US states on separate pages</a></li>
+        <li><a href="/#speed">Worldwide and per-country growth speed graphs</a></li>
+    </ol>
+    <p>
+        
+        <a href="/#speed">Скорость прироста по дням</a>:<br />
+        
+        <a href="/#speed"><img src="/i/speed.png"/></a>
+    </p>
+
+    <h3><br/>March 17, 2020</h3>
+    <p>New graph: how (currently mostly European) countries <a href="/vs-china/">overpass China</a> by the number of confirmed infected population.</p>
+    <p>
+        
+        <a href="/vs-china/"><img src="/i/vs-china.jpg"/></a>
+    </p>
+
+    <h3><br/>March 16, 2020</h3>
+    <p>A new graph with the <a href="/countries/">number of affected countries</a> published.</p>
+    <p>You can also see there which country appeared on the given date in this Coronavirus story. Central African Republic, Equatorial Guinea, and Uzbekistan entered the chart yesterday with 1 confirmed cases in each.</p>
+    <p>
+        
+        <a href="/countries/"><img src="/i/countries.png"/></a>
+    </p>
+
+    <h3><br/>March 14, 2020</h3>
+    <p>Website <a href="/">covid.observer</a> launched. Read what this is <a href="/about">about</a>.</p>
+    <p>
+        
+        <a href="/"><img src="/i/covid-observer.png"/></a>
+    </p>
+</div>
+
+
+    <div id="about">
+        
+        <div class="likely" style="min-height: 50px">
+            
+            <div class="twitter">Твитнуть</div>
+            <div class="facebook">Расшарить</div>
+            <div class="linkedin">Сослаться</div>
+            <div class="telegram">Отправить</div>
+            <div class="whatsapp">Отправить</div>
+        </div>
+        <p>Основано на <a href="https://github.com/CSSEGISandData/COVID-19">данных</a>, собранных Университетским центром системной науки и техники имени Джонса Хопкинса.</p>
+        <p>На этом сайте те же самые общеизвестные данные показаны в менее драматическом свете, чем на <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">оригинальном дашборде</a> университета Джонса Хопкинса. Обновляется около 9-10 утра по московскому времени.</p>
+        <p>Читайте <a href="https://andrewshitov.com/category/covid-19/">технический блог</a> (англ.). Искходный код: <a href="https://github.com/ash/covid.observer">GitHub</a>. Язык программирования <a href="https://raku.org">Raku</a>.</p>
+        <p>Сайт создан <a href="https://new.shitov.ru/">Андреем Шитовым</a>. Твиттер: <a href="https://twitter.com/andrewshitov">@andrewshitov</a>. Связь <a href="mailto:andy@shitov.ru">по электронной почте</a>.</p>
+    </div>
+</body>
+</html>
+
