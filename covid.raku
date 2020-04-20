@@ -143,6 +143,11 @@ multi sub MAIN('generate', Bool :$skip-excel = False) {
     generate-world-stats(%CO, :$skip-excel);
     generate-world-stats(%CO, exclude => 'CN', :$skip-excel);
 
+    generate-pie-diagrams(%CO);
+    generate-pie-diagrams(%CO, cc => 'US');
+    generate-pie-diagrams(%CO, cc => 'CN');
+    generate-pie-diagrams(%CO, cc => 'RU');
+
     generate-countries-stats(%CO);
 
     generate-per-capita-stats(%CO);

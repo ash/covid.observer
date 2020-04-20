@@ -26,6 +26,12 @@ See https://covid.observer/sources/ for the list of data sources used in the pro
 
 # Third-party code
 
-Likely buttons https://github.com/ilyabirman/Likely (c) Ilya Birman
+Listed in the order of appearance in the project.
 
-svgMap https://github.com/StephanWagner/svgMap (c) Stephan Wagner
+[Chart.js](https://www.chartjs.org)
+
+[Likely buttons](https://github.com/ilyabirman/Likely) (c) Ilya Birman
+
+[svgMap](https://github.com/StephanWagner/svgMap) (c) Stephan Wagner
+
+[ChartJS piechart outlabels plugin](https://github.com/Neckster/chartjs-plugin-piechart-outlabels)
