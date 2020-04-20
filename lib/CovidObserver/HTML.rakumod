@@ -50,13 +50,13 @@ sub html-template($path, $title, $content, $header = '') is export {
     #         <p class="center">Compare the COVID-19 influence with the previous years.</p>
     #     </div>
     #     BLOCK
-    # my $new-block = qq:to/BLOCK/;
-    #     <div>
-    #         <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/compare/">Compare countries</a></span></p>
-    #     </div>
-    # BLOCK
-    # $new-block = '' if $path ~~ /compare/;
-    my $new-block = '';
+    my $new-block = qq:to/BLOCK/;
+        <div>
+            <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/pie/">Compare the countries on a pie diagram</a></span></p>
+        </div>
+    BLOCK
+    # my $new-block = '';
+    $new-block = '' if $path ~~ /pie/;
 
     my $css-version = 'www/main.css'.IO.modified.round;
     my $timestamp = DateTime.now.truncated-to('hour');
@@ -158,6 +158,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                             <a href="/compare/LNG">Compare countries</a>
                             <a href="/per-million/LNG">Sorted per million affected</a>
                             <a href="/vs-china/LNG">Countries vs China</a>
+                            <a href="/pie/LNG">Distribution over the countries</a>
                         </div>
                     </li>
 
@@ -171,6 +172,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                             <a href="/vs-china/LNG">Countries vs China</a>
                             <a href="/cn/compare/LNG">Compare provinces</a>
                             <a href="/per-million/cn/LNG">Provinces sorted per capita</a>
+                            <a href="/pie/cn/LNG">Distribution over the regions</a>
                         </div>
                     </li>
 
@@ -180,6 +182,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                             <a href="/ru/LNG">Cumulative data</a>
                             <a href="/ru/LNG#regions">Regions</a>
                             <a href="/ru/compare/LNG">Compare regions</a>
+                            <a href="/pie/ru/LNG">Distribution over the regions</a>
                         </div>
                     </li>
 
@@ -190,6 +193,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                             <a href="/us/LNG#states">US states</a>
                             <a href="/us/compare/LNG">Compare the states</a>
                             <a href="/per-million/us/LNG">States sorted per capita</a>
+                            <a href="/pie/us/LNG">Distribution over the states</a>
                         </div>
                     </li>
 
@@ -249,9 +253,9 @@ sub html-template($path, $title, $content, $header = '') is export {
     $html ~~ s:g/ '｢' | '｣' //;
     $html ~~ s:g/ '[*' ('/'? <alpha>+ .*? ) '*]' /<$0>/;
 
-    $html ~~ s/ '<LANGUAGE lang="ru">' .*? '</LANGUAGE>'//;
+    $html ~~ s/ '<LANGUAGE lang="ru">' .*? '</LANGUAGE lang="ru">'//;
     $html ~~ s/'<LANGUAGE' .*? '>'//;
-    $html ~~ s/'</LANGUAGE>'//;
+    $html ~~ s/'</LANGUAGE' .*? '>'//;
 
     $html ~~ s:g! '/LNG' !/!;
 
@@ -281,7 +285,6 @@ sub arrow(%countries, $cc-code) is export {
 
 sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
     my $is_current = !$cc && !$cont ?? ' class="current"' !! '';
-    my $html = qq{<a name="countries"></a><p$is_current><a href="/LNG">Whole world</a></p>};
 
     sub current-country($cc-code) {
         if $cc {
@@ -299,6 +302,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
 
     my $combined-html = '';
     for 'en', 'ru' -> $lang {
+        my $html = '';
         my $regions-html = '';
         my $known-countries = get-known-countries($lang);
 
@@ -360,7 +364,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
                 $regions-html = qq:to/USHTML/;
                     <a name="states"></a>
                     <h2>Coronavirus in the USA</h2>
-                    <p class="center"><a href="/us/LNG#">Cumulative USA statistics</a></p>
+                    <p class="center"><a href="/us/LNG#">Cumulative USA statistics</a> | <a href="/pie/us/LNG#">Distribution over the states</a> | <a href="/us/compare/LNG#">Compare the states</a></p>
                     <div class="countries-list">
                         $regions-html
                     </div>
@@ -370,7 +374,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
                 $regions-html = qq:to/CNHTML/;
                     <a name="regions"></a>
                     <h2>Coronavirus in China</h2>
-                    <p class="center"><a href="/cn/LNG#">Cumulative China statistics</a></p>
+                    <p class="center"><a href="/cn/LNG#">Cumulative China statistics</a> | <a href="/pie/cn/LNG#">Distribution over the provinces</a> | <a href="/cn/compare/LNG#">Compare the provinces</a></p>
                     <p class="center"><a href="/cn/-hb/LNG">China excluding Hubei</a></p>
                     <div class="countries-list">
                         $regions-html
@@ -381,7 +385,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
                 $regions-html = qq:to/RUHTML/;
                     <a name="regions"></a>
                     <h2>Coronavirus in Russia</h2>
-                    <p class="center"><a href="/ru/LNG#">Cumulative Russian statistics</a></p>
+                    <p class="center"><a href="/ru/LNG#">Cumulative Russian statistics</a> | <a href="/pie/ru/LNG#">Distribution over the regions</a> | <a href="/ru/compare/LNG#">Compare the regions</a></p>
                     <div class="countries-list">
                         $regions-html
                     </div>
@@ -393,6 +397,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
 
         $combined-html ~= qq:to/HTML/;
             <LANGUAGE lang="$lang">
+                <a name="countries"></a>
                 <div class="countries">
                     $regions-html
 
@@ -405,7 +410,7 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
                     </div>
                     <p>The green and red arrows next to the country name display the trend of the new confirmed cases during the last week.</p>
                 </div>
-            </LANGUAGE>
+            </LANGUAGE lang="$lang">
             HTML
     }
 

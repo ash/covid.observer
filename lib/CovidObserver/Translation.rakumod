@@ -6,14 +6,14 @@ constant %languages is export =
     ru => 'Russian';
 
 sub translate($path, $html is copy) is export {
-    $html ~~ s/ '<LANGUAGE lang="en">' .*? '</LANGUAGE>'//;
+    $html ~~ s/ '<LANGUAGE lang="en">' .*? '</LANGUAGE lang="en">'//;
     $html ~~ s/'<LANGUAGE' .*? '>'//;
-    $html ~~ s/'</LANGUAGE>'//;
+    $html ~~ s/'</LANGUAGE' .*? '>'//;
 
     my @phrases = find-strings($html);
 
-    # state %t;
-    my %t;
+    state %t;
+    # my %t;
 
     for %languages.keys -> $language {
         if %t{$language}:!exists {
@@ -62,6 +62,7 @@ sub translate($path, $html is copy) is export {
 
         my $translated = substitute-translations($html, %t{$language});
 
+        $translated ~~ s/ '<html lang="en"' /<html lang="$language"/;
         $translated ~~ s/ '<body' /<body lang="$language"/;
         $translated ~~ s:g! '/LNG' !/.ru/!;
 

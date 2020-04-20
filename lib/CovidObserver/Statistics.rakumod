@@ -1976,3 +1976,167 @@ sub daily-tests(%CO, :$cc) is export {
         tests => @tests[*-1],
     };
 }
+
+sub world-pie-diagrams(%CO, :$cc?) is export {
+    my $total-confirmed = 0;
+    my %cc-confirmed;
+
+    for %CO<totals>.keys -> $cc-code {
+        next if $cc && $cc-code !~~ / ^ $cc '/' /;
+        next if !$cc && $cc-code ~~ / '/' /;
+
+        my $confirmed = %CO<totals>{$cc-code}<confirmed>;
+        %cc-confirmed{$cc-code} = $confirmed;
+        $total-confirmed += $confirmed;
+    }
+
+    my $N = 20;
+    my @labels;
+    my @data;
+    my $c = 0;
+    my $shown-total = 0;
+    for %cc-confirmed.sort: -*.value -> $kv {
+        my ($cc, $confirmed) = $kv.kv;
+        next unless %CO<countries>{$cc}<country>;
+
+        @labels.push(%CO<countries>{$cc}<country>);
+        @data.push($confirmed);
+
+        $shown-total += $confirmed;
+        # last if !$cc && ++$c == $N;
+        last if ++$c == $N;
+    }
+
+    @labels.push('Others');
+    @data.push($total-confirmed - $shown-total);
+
+    my %dataset =
+        label => 'Confirmed cases in different countries',
+        data => @data,
+        backgroundColor => qw<#eb503c #54b1e9 #c2e14e #867ad7 #2e5786 #5db240 #a24336 #7ab8a6 #b454ef #4ea7a6
+                              #497f35 #3433a6 #a7299e #1b4827 #d1529d #70249b #88c7a5 #4c8bb1 #461c2b #b2a1b1
+                              #497f35 #3433a6 #a7299e #1b4827 #d1529d #70249b #88c7a5 #4c8bb1 #461c2b #b2a1b1
+                              #c6d1e6>;
+        #backgroundColor => 'RANDOMCOLOR' xx ($N + 1);
+    my $dataset = to-json(%dataset);
+    my $labels = to-json(@labels);
+
+    my $json = q:to/JSON/;
+        {
+            "type": "outlabeledPie",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET
+                ]
+            },
+            "options": {
+                "animation": false,
+                legend: {
+                    display: false
+                },
+                plugins: {
+                    legend: false,
+                    outlabels: {
+                        text: '%l %p',
+                        color: 'white',
+                        stretch: 35,
+                        font: {
+                            resizable: true,
+                            minSize: 8,
+                            maxSize: 14
+                        }
+                    }
+                }
+            }
+        }
+        JSON
+
+    $json ~~ s/DATASET/$dataset/;
+    $json ~~ s/LABELS/$labels/;
+    $json ~~ s:g/\"RANDOMCOLOR\"/randomColorGenerator()/; #"
+
+    return $json;
+}
+
+sub world-fatal-diagrams(%CO, :$cc?) is export {
+    my $total-failed = 0;
+    my %cc-failed;
+
+    for %CO<totals>.keys -> $cc-code {
+        next if $cc && $cc-code !~~ / ^ $cc '/' /;
+        next if !$cc && $cc-code ~~ / '/' /;
+
+        my $failed = %CO<totals>{$cc-code}<failed>;
+        %cc-failed{$cc-code} = $failed;
+        $total-failed += $failed;
+    }
+
+    my $N = 20;
+    my @labels;
+    my @data;
+    my $c = 0;
+    my $shown-total = 0;
+    for %cc-failed.sort: -*.value -> $kv {
+        my ($cc, $failed) = $kv.kv;
+        next unless %CO<countries>{$cc}<country>;
+
+        @labels.push(%CO<countries>{$cc}<country>);
+        @data.push($failed);
+
+        $shown-total += $failed;
+        # last if !$cc && ++$c == $N;
+        last if ++$c == $N;
+    }
+
+    @labels.push('Others');
+    @data.push($total-failed - $shown-total);
+
+    my %dataset =
+        label => 'Fatal cases in different countries',
+        data => @data,
+        backgroundColor => qw<#eb503c #54b1e9 #c2e14e #867ad7 #2e5786 #5db240 #a24336 #7ab8a6 #b454ef #4ea7a6
+                              #497f35 #3433a6 #a7299e #1b4827 #d1529d #70249b #88c7a5 #4c8bb1 #461c2b #b2a1b1
+                              #497f35 #3433a6 #a7299e #1b4827 #d1529d #70249b #88c7a5 #4c8bb1 #461c2b #b2a1b1
+                              #c6d1e6>;
+        #backgroundColor => 'RANDOMCOLOR' xx ($N + 1);
+    my $dataset = to-json(%dataset);
+    my $labels = to-json(@labels);
+
+    my $json = q:to/JSON/;
+        {
+            "type": "outlabeledPie",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET
+                ]
+            },
+            "options": {
+                "animation": false,
+                legend: {
+                    display: false
+                },
+                plugins: {
+                    legend: false,
+                    outlabels: {
+                        text: '%l %p',
+                        color: 'white',
+                        stretch: 35,
+                        font: {
+                            resizable: true,
+                            minSize: 8,
+                            maxSize: 14
+                        }
+                    }
+                }
+            }
+        }
+        JSON
+
+    $json ~~ s/DATASET/$dataset/;
+    $json ~~ s/LABELS/$labels/;
+    $json ~~ s:g/\"RANDOMCOLOR\"/randomColorGenerator()/; #"
+
+    return $json;
+}

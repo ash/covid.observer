@@ -228,7 +228,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
     my $per-region-link = per-region(%CO, $cc);
     if $cc eq 'NL' {
         $per-region-link ~= q:to/LINKS/;
-            <p>Note: The numbers for [*a href="/aw/LNG"*]Aruba[*/a], [*a href="/cw/LNG"*]Curaçao[*/a*], and [*a href="/sx/LNG"*]Sint Maarten[*/a*] are not included in the statistics for the Netherlands.</p>
+            <p class="center">Note: The numbers for [*a href="/aw/LNG"*]Aruba[*/a*], [*a href="/cw/LNG"*]Curaçao[*/a*], and [*a href="/sx/LNG"*]Sint Maarten[*/a*] are not included in the statistics for the Netherlands.</p>
             LINKS
     }
 
@@ -1412,6 +1412,9 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
                 |
                 {$path eq '/ru/compare' ?? '<b>Russia’s regions</b>' !! '<a href="/ru/compare/LNG">Russia’s regions</a>'}
             </p>
+            {'<p class="center"><a href="/pie/us/LNG">Compare the states on a pie diagram</a></p>' if $path eq '/us/compare'}
+            {'<p class="center"><a href="/pie/cn/LNG">Compare the provinces on a pie diagram</a></p>' if $path eq '/cn/compare'}
+            {'<p class="center"><a href="/pie/ru/LNG">Compare the regions on a pie diagram</a></p>' if $path eq '/ru/compare'}
 
             {qq[<p>On this page, the most affected ｢$limit｣ countries are listed sorted by the number of confirmed cases. You can click on the country name to see more details about the country. The numbers below the name of the country are the numbers of confirmed (black), recovered (green, if known), and fatal cases (red). These numbers are displayed on the graph in the middle column. The graphs on the right draw the number of new cases a day. Move the mouse over the graphs to see the dates and the numbers. Note that the scale of the vertical axis differs per country.</p><p>Visit [*a href="/compare/all/LNG"*]a separate page[*/a*] to see the comparison of all countries. The green and red arrows next to the country name display the trend of the new confirmed cases during the last week.</p>] if $path eq '/compare'}
 
@@ -1464,7 +1467,7 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
             <tr>
                 <td class="h3">
                     <h4>
-                        <a href="/{$cc.lc}">{$country-or-region-name}</a>
+                        <a href="/{$cc.lc}/LNG">{$country-or-region-name}</a>
                         {arrow(%countries, $cc)}
                     </h4>
                     <p>
@@ -1486,7 +1489,6 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
             HTML
     }
 
-
     $content ~= qq:to/HTML/;
             </tbody>
         </table>
@@ -1494,4 +1496,78 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
         HTML
 
     html-template($path, 'Compare the countries with coronavirus', $content);
+}
+
+sub generate-pie-diagrams(%CO, :$cc?) is export {
+    say "Generating pie diagrams{ qq{ in $cc} if $cc }...";
+
+    my $chart22data = world-pie-diagrams(%CO, :$cc);
+    my $chart23data = world-fatal-diagrams(%CO, :$cc);
+
+    my $title;
+    my $h2a;
+    my $h2b;
+    my $where;
+    if $cc {
+        if $cc eq 'US' {
+            $title = 'Coronavirus distribution over the US states';
+            $h2a = 'Confirmed cases in the US states';
+            $h2b = 'Fatal cases in the US states';
+            $where = 'in the US';
+        }
+        elsif $cc eq 'CN' {
+            $title = 'Coronavirus distribution over the China’s regions';
+            $h2a = 'Confirmed cases in China’s regions';
+            $h2b = 'Fatal cases in China’s regions';
+            $where = 'in China';
+        }
+        elsif $cc eq 'RU' {
+            $title = 'Coronavirus distribution over the regions of Russia';
+            $h2a = 'Confirmed cases in Russia’s regions';
+            $h2b = 'Fatal cases in Russia’s regions';
+            $where = 'in Russia';
+        }
+    }
+    else {
+        $title = 'Coronavirus distribution over different countries';
+        $h2a = 'Confirmed cases worldwide';
+        $h2b = 'Fatal cases worldwide';
+        $where = 'in the whole world';
+    }
+
+    my $content = qq:to/HTML/;
+        <h1>{$title}</h1>
+
+        <div id="block22">
+            <a name="confirmed"></a>
+            <h2>{$h2a}</h2>
+            <p class="center"><b>Confirmed cases</b> | <a href="#failed">Fatal cases</a></p>
+            <p class="center">The whole pie reflects the total number of the confirmed cases {$where}.</p>
+            <canvas id="Chart22"></canvas>
+            <script>
+                var ctx22 = document.getElementById('Chart22').getContext('2d');
+                chart[22] = new Chart(ctx22, $chart22data);
+            </script>
+        </div>
+
+        <div id="block23">
+            <a name="failed"></a>
+            <h2>{$h2b}</h2>
+            <p class="center"><a href="#confirmed">Confirmed cases</a> | <b>Fatal cases</b></p>
+            <p class="center">The whole pie reflects the total number of fatal cases {$where}.</p>
+            <canvas id="Chart23"></canvas>
+            <script>
+                var ctx23 = document.getElementById('Chart23').getContext('2d');
+                chart[23] = new Chart(ctx23, $chart23data);
+            </script>
+        </div>
+
+        {country-list(%CO<countries>, :$cc)}
+
+        HTML
+
+    my $path = '/pie';
+    $path ~= '/' ~ $cc.lc if $cc;
+
+    html-template("$path", $title, $content, '<script src="/outlabels.js"></script>');
 }
