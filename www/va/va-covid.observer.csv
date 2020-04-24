@@ -1,4 +1,7 @@
 "Date","Confirmed cases","Daily growth, %","Recovered cases","Fatal cases","Active cases","Recovery rate, %","Mortality rate, %","Affected population, %","1 confirmed per every","1 died per every","Confirmed per 1000","Died per 1000"
+2020-04-23,9,0,2,0,7,22.222222,0,1.125,89,,11.25,0
+2020-04-22,9,0,2,0,7,22.222222,0,1.125,89,,11.25,0
+2020-04-21,9,0,2,0,7,22.222222,0,1.125,89,,11.25,0
 2020-04-20,9,12.5,2,0,7,22.222222,0,1.125,89,,11.25,0
 2020-04-19,8,0,2,0,6,25,0,1,100,,10,0
 2020-04-18,8,0,2,0,6,25,0,1,100,,10,0
