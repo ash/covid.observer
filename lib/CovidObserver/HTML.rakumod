@@ -443,15 +443,15 @@ sub continent-list($cont?) is export {
 sub per-region(%CO, $cc) is export {
     state %links =
         CN => {
-            link => '/cn/#regions',
+            link => '/cn/LNG#regions',
             title => 'China provinces and regions'
         },
         US => {
-            link => '/us/#states',
+            link => '/us/LNG#states',
             title => 'US states'
         },
         RU => {
-                link => '/ru/#regions',
+                link => '/ru/LNG#regions',
                 title => 'Regions of the Russian Federation'
             },
             # {

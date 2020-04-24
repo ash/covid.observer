@@ -2030,10 +2030,19 @@ sub world-pie-diagrams(%CO, :$cc?) is export {
                     DATASET
                 ]
             },
+            
             "options": {
                 "animation": false,
                 legend: {
                     display: false
+                },
+                layout: {
+                    padding: {
+                        left: 50,
+                        right: 50,
+                        top: 150,
+                        bottom: 50
+                    }
                 },
                 plugins: {
                     legend: false,
@@ -2116,6 +2125,14 @@ sub world-fatal-diagrams(%CO, :$cc?) is export {
                 "animation": false,
                 legend: {
                     display: false
+                },
+                layout: {
+                    padding: {
+                        left: 50,
+                        right: 50,
+                        top: 150,
+                        bottom: 50
+                    }
                 },
                 plugins: {
                     legend: false,

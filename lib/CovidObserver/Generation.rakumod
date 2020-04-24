@@ -1319,6 +1319,9 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
     $path = '/' ~ $prefix.lc ~ $path if $prefix;
     $path ~= '/all' if !$limit && !$prefix;
 
+    my $x-range = '';
+    $x-range = ", min: '2020-03-15'" if $prefix && $prefix eq 'RU';
+
     my $content = q:to/HTML/;
             <script>
                 var smallOptionsA = {
@@ -1332,6 +1335,7 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
                             stacked: true,
                             ticks: {
                                 display: false
+                                XRANGE
                             },
                             gridLines: {
                                 display: false,
@@ -1363,6 +1367,7 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
                         xAxes: [{
                             ticks: {
                                 display: false
+                                XRANGE
                             },
                             gridLines: {
                                 display: false,
@@ -1384,8 +1389,9 @@ sub generate-countries-compare(%country-stats, %countries, :$prefix?, :$limit?) 
                     }
                 }
             </script>
-
         HTML
+
+        $content ~~ s:g/XRANGE/$x-range/;
 
         $content ~= qq:to/HTML/;
             <h1>
