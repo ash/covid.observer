@@ -45,8 +45,6 @@ sub read-jhu-data(%stats) is export {
                 else {
                     $country = @row[1] || '';
                     $region  = @row[0] || '';
-
-                    ($confirmed, $failed, $recovered) = @row[5..7];
                 }
             }
             else {
@@ -155,6 +153,11 @@ sub read-jhu-data(%stats) is export {
             my $failed = $item<Deaths> || 0;
             my $tests = $item<People_Tested> || 0;
 
+            # if !$recovered && $item<Active> {
+            #     $recovered = $confirmed - $item<Active> - $failed;
+            #     $recovered = 0 if $recovered < 0;
+            # }
+
             my $cc = 'US';
             my $region-cc = state2code($region);
             unless $region-cc {
@@ -229,7 +232,19 @@ sub read-ru-data(%stats) is export {
 
         my $cc = 'RU'; # Should replaces JHU's data
         while my @row = $csv.getline($fh) {
-            my ($region, $confirmed, $recovered, $failed) = @row;
+            my ($region, $confirmed, $recovered, $failed);
+
+            if $date lt '04/29/20' {
+                ($region, $confirmed, $recovered, $failed) = @row;
+            }
+            else {
+                my $new-confirmed;
+                my $active;
+                ($region, $confirmed, $new-confirmed, $active, $recovered, $failed) = @row;
+                $confirmed ~~ s:g/\s//;
+                $recovered ~~ s:g/\s//;
+                $failed ~~ s:g/\s//;
+            }
 
             my $region-cc = ru-region-to-code($region);
             $region-cc = "RU/$region-cc";
