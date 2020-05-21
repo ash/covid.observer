@@ -1587,7 +1587,7 @@ sub genrate-impact-timeline(%CO) is export {
         <h1>Countries Impact Timeline</h1>
 
         <div id="block24">
-            <p class="center">Here, you can see the impact from different countries over the timespan of the coronavirus pandemic. The number of the new daily confirmed cases is shown.</p>
+            <p class="center">Here, you can see the impact from different countries over the timespan of the coronavirus pandemic. The number of the new daily confirmed cases is shown averaged by 7 days.</p>
             <canvas id="Chart24"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale24" data-size="xs" data-style="rounded" data-color="blue">
