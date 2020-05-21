@@ -52,11 +52,11 @@ sub html-template($path, $title, $content, $header = '') is export {
     #     BLOCK
     my $new-block = qq:to/BLOCK/;
         <div>
-            <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/pie/">Compare the countries on a pie diagram</a></span></p>
+            <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/impact/LNG">Impact by different countries over time</a></span></p>
         </div>
     BLOCK
     # my $new-block = '';
-    $new-block = '' if $path ~~ /pie/;
+    $new-block = '' if $path ~~ /impact/;
 
     my $css-version = 'www/main.css'.IO.modified.round;
     my $timestamp = DateTime.now.truncated-to('hour');
@@ -159,6 +159,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                             <a href="/per-million/LNG">Sorted per million affected</a>
                             <a href="/vs-china/LNG">Countries vs China</a>
                             <a href="/pie/LNG">Distribution over the countries</a>
+                            <a href="/impact/LNG">Impact timeline</a>
                         </div>
                     </li>
 
@@ -477,6 +478,10 @@ sub per-region(%CO, $cc) is export {
         FR => {
             link => 'https://dashboard.covid19.data.gouv.fr',
             title => 'L’information officielle sur la progression de l’épidémie en France'
+        },
+        JP => {
+            link => 'https://covid19japan.com',
+            title => '日本国内の新型コロナウイルス (COVID-19) 感染状況追跡 | Japan Coronavirus Tracker'
         }
         ;
 

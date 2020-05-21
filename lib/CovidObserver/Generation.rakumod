@@ -1577,3 +1577,36 @@ sub generate-pie-diagrams(%CO, :$cc?) is export {
 
     html-template("$path", $title, $content, '<script src="/outlabels.js"></script>');
 }
+
+sub genrate-impact-timeline(%CO) is export {
+    say "Generating impact timeline...";
+
+    my $chart24data = impact-timeline(%CO);
+
+    my $content = qq:to/HTML/;
+        <h1>Countries Impact Timeline</h1>
+
+        <div id="block24">
+            <p class="center">Here, you can see the impact from different countries over the timespan of the coronavirus pandemic. The number of the new daily confirmed cases is shown.</p>
+            <canvas id="Chart24"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale24" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale24" onclick="log_scale(this, 24)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale24"> Logarithmic scale</label>
+            </p>
+            <script>
+                var ctx24 = document.getElementById('Chart24').getContext('2d');
+                chart[24] = new Chart(ctx24, $chart24data);
+            </script>
+        </div>
+
+        {country-list(%CO<countries>)}
+
+        HTML
+
+    html-template('/impact', 'Countries impact timeline', $content);
+}

@@ -2157,3 +2157,125 @@ sub world-fatal-diagrams(%CO, :$cc?) is export {
 
     return $json;
 }
+
+sub impact-timeline(%CO) is export {
+    my $top-size = 15;
+    my %top-cc;
+    my $position = 0;
+    my @top-cc;
+    for %CO<totals>.sort: -*.value<confirmed> -> $data {
+        my $cc = $data.key;
+        next if $cc ~~ / '/' /;
+        my $confirmed = $data.value<confirmed>;
+
+        %top-cc{$cc} = ++$position;
+        @top-cc.push(%CO<countries>{$cc}<country>);
+        last if $position == $top-size;
+    }
+
+    my @data;
+    my @labels;
+    my %others;
+    my %prev;
+    for %CO<per-day>.keys -> $cc {
+        next if $cc ~~ / '/' /;
+
+        for %CO<per-day>{$cc}.keys.sort[1 .. *] -> $date {
+            if %top-cc{$cc}:exists {
+                my $position = %top-cc{$cc};
+                @labels.push($date) if $position == 1;
+
+                my $curr = %CO<per-day>{$cc}{$date}<confirmed>;
+                my $prev = %prev{$cc} // 0;
+                my $delta = $curr - $prev;
+                %prev{$cc} = $curr;
+
+                @data[$position - 1].push($delta);
+            }
+            else {
+                %others{$date} += %CO<per-day>{$cc}{$date}<confirmed>;
+            }
+        }
+    }
+
+    my $prev = 0;
+    my @others;
+    for %others.keys.sort[1..*] -> $date {
+        my $curr = %others{$date};
+        my $delta = $curr - $prev;
+        $prev = $curr;
+        @others.push($delta);
+    }
+    @data.push(@others);
+    @top-cc.push('Other countries');
+
+    # Moving average
+    my $half-width = 3;
+    my $n = $half-width * 2 + 1;
+    my @avgdata;
+    for 0 ..^ @data.elems -> $index {
+        my @avg;
+        for 0 ..^ @data[$index].elems -> $i {
+            if $i <= $half-width {
+                @avg.push(0);
+            }
+            elsif $i >= @data[$index].elems - $half-width {
+                @avg.push(@data[$index][$i]);
+            }
+            else {
+                my $avg = [+] @data[$index][$i - $half-width .. $i + $half-width];
+                @avg.push(($avg / $n).round);
+            }
+        }
+
+        @avgdata.push(@avg);
+    }
+
+    my $labels = to-json(@labels);
+
+    my @color = '#eb503c', '#54b1e9', '#c2e14e', '#867ad7', '#2e5786', '#5db240', '#a24336', '#7ab8a6', '#b454ef', '#4ea7a6', '#497f35', '#3433a6', '#a7299e', '#1b4827', '#d1529d', '#70249b', '#88c7a5', '#4c8bb1', '#461c2b', '#b2a1b1', '#497f35', '#3433a6', '#a7299e', '#1b4827', '#d1529d', '#70249b', '#88c7a5', '#4c8bb1', '#461c2b', '#b2a1b1', '#c6d1e6';
+
+    my @datasets;
+    for 0 ..^ @data.elems -> $index {
+        my %dataset =
+            label => @top-cc[$index],
+            data => @avgdata[$index],
+            fill => False,
+            borderColor => @color[$index],
+            tension => 0,
+            radius => 0,
+            borderWidth => 2;
+
+        @datasets.push(to-json(%dataset));
+    }
+    my $datasets = @datasets.join(', '); #'
+
+    my $json = q:to/JSON/;
+        {
+            type: "line",
+            data: {
+                labels: LABELS,
+                datasets: [
+                    DATASETS
+                ]
+            },
+            options: {
+                animation: false,
+                scales: {
+                    yAxes: [
+                        {
+                            ticks: {
+                                min: 0
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+        JSON
+
+    $json ~~ s/DATASETS/$datasets/;
+    $json ~~ s/LABELS/$labels/;
+
+    return $json;
+}
