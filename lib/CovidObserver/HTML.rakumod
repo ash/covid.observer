@@ -50,13 +50,13 @@ sub html-template($path, $title, $content, $header = '') is export {
     #         <p class="center">Compare the COVID-19 influence with the previous years.</p>
     #     </div>
     #     BLOCK
-    my $new-block = qq:to/BLOCK/;
-        <div>
-            <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/impact/LNG">Impact by different countries over time</a></span></p>
-        </div>
-    BLOCK
-    # my $new-block = '';
-    $new-block = '' if $path ~~ /impact/;
+    # my $new-block = qq:to/BLOCK/;
+    #     <div>
+    #         <p class="center"><span style="padding: 4px 10px; border-radius: 16px; background: #1d7cf8; color: white;">New: <a style="color: white" href="/impact/LNG">Impact by different countries over time</a></span></p>
+    #     </div>
+    # BLOCK
+    my $new-block = '';
+    # $new-block = '' if $path ~~ /impact/;
 
     my $css-version = 'www/main.css'.IO.modified.round;
     my $timestamp = DateTime.now.truncated-to('hour');
