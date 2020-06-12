@@ -5,7 +5,6 @@
   ],
   "build-depends" : [ ],
   "depends" : [
-    "HTTP::UserAgent",
     "Locale::Codes::Country",
     "Locale::US",
     "DBIish",

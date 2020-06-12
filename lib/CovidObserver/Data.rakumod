@@ -1,6 +1,5 @@
 unit module CovidObserver::Data;
 
-use HTTP::UserAgent;
 use Text::CSV;
 use IO::String;
 
