@@ -1578,7 +1578,7 @@ sub generate-pie-diagrams(%CO, :$cc?) is export {
     html-template("$path", $title, $content, '<script src="/outlabels.js"></script>');
 }
 
-sub genrate-impact-timeline(%CO) is export {
+sub generate-impact-timeline(%CO) is export {
     say "Generating impact timeline...";
 
     my $chart24data = impact-timeline(%CO);

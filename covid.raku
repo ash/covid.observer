@@ -140,7 +140,7 @@ multi sub MAIN('generate', Bool :$skip-excel = False) {
         tests        => %tests,
     ;
 
-    genrate-impact-timeline(%CO);
+    generate-impact-timeline(%CO);
 # exit;
 
     generate-world-stats(%CO, :$skip-excel);
