@@ -67,6 +67,9 @@ sub read-jhu-data(%stats) is export {
                 if $region eq 'Channel Islands' {
                     $region = '';
                 }
+                if $region ~~ / England | 'Northern Ireland' | Scotland | Unknown | Wales / {
+                    $region = '';
+                }
                 else {
                     $country = $region;
                 }
