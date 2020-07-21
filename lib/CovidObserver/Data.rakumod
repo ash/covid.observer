@@ -54,7 +54,12 @@ sub read-jhu-data(%stats) is export {
             }
 
             if $country eq 'Netherlands' && $region {
-                $country = $region;
+                if $region ~~ / Drenthe | Flevoland | Friesland | Gelderland | Groningen | Limburg | 'Noord-Brabant' | 'Noord-Holland' | Overijssel | Unknown | Unknown | Zeeland | 'Zuid-Holland' / {
+                    $region = '';
+                }
+                else {
+                    $country = $region;
+                }
             }
             elsif $country eq 'France' && $region {
                 $country = $region if $date ne "03/23/20"; # Wrongly mixed with French Polynesia data for this date
