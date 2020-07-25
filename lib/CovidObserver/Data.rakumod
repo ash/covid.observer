@@ -54,7 +54,7 @@ sub read-jhu-data(%stats) is export {
             }
 
             if $country eq 'Netherlands' && $region {
-                if $region ~~ / Drenthe | Flevoland | Friesland | Gelderland | Groningen | Limburg | 'Noord-Brabant' | 'Noord-Holland' | Overijssel | Unknown | Unknown | Zeeland | 'Zuid-Holland' / {
+                if $region ~~ / Drenthe | Flevoland | Friesland | Gelderland | Groningen | Limburg | 'Noord-Brabant' | 'Noord-Holland' | Overijssel | Unknown | Utrecht | Unknown | Zeeland | 'Zuid-Holland' / {
                     $region = '';
                 }
                 else {
