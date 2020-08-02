@@ -186,6 +186,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
     my $chart3 = number-percent(%CO, :$cc, :$exclude);
 
     my $chart7data = daily-speed(%CO, :$cc, :$exclude);
+    my $chart25data = two-week-index(%CO, :$cc);
 
     my $chart21data = daily-tests(%CO, :$cc);
 
@@ -437,6 +438,26 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
                 chart[7] = new Chart(ctx7, $chart7data);
             </script>
             <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that fewer cases registered today than yesterday.</p>
+        </div>
+
+        <div id="block25">
+            <a name="index14"></a>
+            <h2>Cumulative 14-day index</h2>
+            <p>This graph shows the index that some countries use to estimate how safe travelling is. The value is the number of new confirmed cases for the last 14 days per 100,000 of population.</p>
+            <canvas id="Chart25"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale25" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale25" onclick="log_scale(this, 25)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale7"> Logarithmic scale</label>
+            </p>
+            <script>
+                var ctx25 = document.getElementById('Chart25').getContext('2d');
+                chart[25] = new Chart(ctx25, $chart25data);
+            </script>
         </div>
 
         {
