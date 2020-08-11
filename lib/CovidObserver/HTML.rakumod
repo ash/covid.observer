@@ -109,6 +109,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                             {
                                 if $path.chars == 3 {
                                     q:to/LINKS/;
+                                        <a href="#index14">Cumulative 14-day index</a>
                                         <a href="#mortality">Mortality level</a>
                                         <a href="#weekly">Weekly levels</a>
                                         <a href="#crude">Crude deaths</a>

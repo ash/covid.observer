@@ -1185,6 +1185,77 @@ sub daily-speed(%CO, :$cc?, :$cont?, :$exclude?) is export {
     return $json;
 }
 
+sub two-week-index(%CO, :$cc) is export {
+    my @labels;
+    my @index;
+
+    my $stop-date = $cc && $cc ~~ /RU/ ?? %CO<calendar><RU> !! %CO<calendar><World>;
+
+    for %CO<per-day>{$cc}.keys.sort -> $date {
+        @labels.push: $date;
+
+        my $dt-prev = Date.new($date) - 14;
+
+        if %CO<per-day>{$cc}{$dt-prev.yyyy-mm-dd}:exists {
+            my $confirmed-curr = %CO<per-day>{$cc}{$date}<confirmed> || 0;
+            my $confirmed-prev = %CO<per-day>{$cc}{$dt-prev.yyyy-mm-dd}<confirmed> || 0;
+
+            my $index = ($confirmed-curr - $confirmed-prev) * 100_000 / (1_000_000 * %CO<countries>{$cc}<population>);
+            @index.push: $index.round(0.01);
+        }
+        else {
+            @index.push: 0;
+        }
+
+        last if $date eq $stop-date;
+    }
+
+    my $trim-left = 3;
+
+    my $labels = to-json(@labels);
+
+    my %dataset0 =
+        label => 'Cumulative 14-day index',
+        data => @index,
+        fill => False,
+        lineTension => 0,
+        borderColor => 'orange';
+    my $dataset0 = to-json(%dataset0);
+
+
+    my $json = q:to/JSON/;
+        {
+            "type": "line",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET0
+                ]
+            },
+            "options": {
+                "animation": false,
+                "scales": {
+                    "yAxes": [{
+                        "type": "linear",
+                        "ticks": {
+                            callback: function(value, index, values) {
+                                value = value.toString();
+                                if (value.length > 10) return '';
+                                return value;
+                            }
+                        }
+                    }],
+                }
+            }
+        }
+        JSON
+
+    $json ~~ s/DATASET0/$dataset0/;
+    $json ~~ s/LABELS/$labels/;
+
+    return $json;
+}
+
 sub moving-average(@in, $width = 3) {
     return @in;
 
