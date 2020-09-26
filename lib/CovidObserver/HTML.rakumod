@@ -461,8 +461,8 @@ sub per-region(%CO, $cc) is export {
             #     title => 'Official data: стопкоронавирус.рф'
             # }
         NL => {
-            link => 'https://www.rivm.nl/coronavirus-kaart-van-nederland-per-gemeente',
-            title => 'Official data: Coronavirus kaart van Nederland per gemeente'
+            link => 'https://www.rivm.nl/coronavirus-covid-19/actueel',
+            title => 'Official data: Actuele informatie over het nieuwe coronavirus'
         },
         IN => {
             link => 'https://www.mohfw.gov.in/',
