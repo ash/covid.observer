@@ -1,4 +1,4 @@
-# covid.observer
+# covid.observer - An Accurate and Precise Website To Track COVID-19
 
 A website that presents the very same data but from a less-panic perspective.
 
