@@ -1,4 +1,4 @@
-# covid.observer
+# covid.observer-An  amazing project
 
 A website that presents the very same data but from a less-panic perspective.
 
