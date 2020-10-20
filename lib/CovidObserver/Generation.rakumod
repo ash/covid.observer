@@ -443,7 +443,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
         <div id="block25">
             <a name="index14"></a>
             <h2>Cumulative 14-day index</h2>
-            <p>This graph shows the index that some countries use to estimate how safe travelling is. The value is the number of new confirmed cases for the last 14 days per 100,000 of population.</p>
+            <p>This graph shows the index that some countries use for setting travel restrictions. The value is the number of new confirmed cases for the last 14 days per 100,000 of population.</p>
             <canvas id="Chart25"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale25" data-size="xs" data-style="rounded" data-color="blue">
