@@ -163,10 +163,8 @@ multi sub MAIN('generate', Bool :$skip-excel = False) {
     generate-china-level-stats(%CO);
     ## generate-common-start-stats(%countries, %per-day, %totals, %daily-totals);
 
-    my %country-stats;
-    my $known-countries = get-known-countries();
-    for @$known-countries -> $cc {
-        %country-stats{$cc} = generate-country-stats($cc, %CO, :%mortality, :%crude, :$skip-excel);
+    my %country-stats = get-known-countries<>.race(:1batch,:8degree).map: -> $cc {
+        $cc => generate-country-stats($cc, %CO, :%mortality, :%crude, :$skip-excel)
     }
 
     generate-countries-compare(%country-stats, %countries, limit => 100);
@@ -180,7 +178,7 @@ multi sub MAIN('generate', Bool :$skip-excel = False) {
 
     generate-continent-graph(%CO);
 
-    for %continents.keys -> $cont {
+    for %continents.keys.race(:1batch,:8degree) -> $cont {
         generate-continent-stats($cont, %CO, :$skip-excel);
     }
 
