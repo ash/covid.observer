@@ -1863,10 +1863,10 @@ sub per-capita-data($chartdata, $population-n) is export {
     for +$chartdata<table><dates> -1 ... 0 -> $index  {
         last unless $confirmed[$index];
 
-        my $c = $confirmed[$index] // 0;
-        my $f = $failed[$index] // 0;
-        my $r = $recovered[$index] // 0;
-        my $a = $active[$index] // 0;
+        my int $c = $confirmed[$index] // 0;
+        my int $f = $failed[$index] // 0;
+        my int $r = $recovered[$index] // 0;
+        my int $a = $active[$index] // 0;
 
         my $date-str = fmtdate($dates[$index]);
         $date-str ~~ s/^(\w\w\w)\S+/$0/;
