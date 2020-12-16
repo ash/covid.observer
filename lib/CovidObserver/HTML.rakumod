@@ -41,11 +41,11 @@ sub html-template($path, $title, $content, $header = '') is export {
     #     <div class="new">
     #         <p class="center">New data on country-level pages. {'E.g., for Italy:' if $new-prefix eq '/it'}</p>
     #         <p class="center">
-    #             <a href="{$new-prefix}#mortality">Mortality level</a>
+    #             <a href="$new-prefix#mortality">Mortality level</a>
     #             |
-    #             <a href="{$new-prefix}#weekly">Weekly levels</a>
+    #             <a href="$new-prefix#weekly">Weekly levels</a>
     #             |
-    #             <a href="{$new-prefix}#crude">Crude death rates</a>
+    #             <a href="$new-prefix#crude">Crude death rates</a>
     #         </p>
     #         <p class="center">Compare the COVID-19 influence with the previous years.</p>
     #     </div>
@@ -99,13 +99,13 @@ sub html-template($path, $title, $content, $header = '') is export {
                     <li class="dropdown">
                         <a href="javascript: void(0)" class="dropbtn" style="cursor: normal">Statistics</a>
                         <div class="dropdown-content">
-                            <a href="{$anchor-prefix}#recovery">Recovery pie</a>
-                            <a href="{$anchor-prefix}#raw">Raw numbers</a>
-                            <a href="{$anchor-prefix}#new">New daily cases</a>
-                            <a href="{$anchor-prefix}#daily">Daily flow</a>
-                            <a href="{$anchor-prefix}#speed">Daily speed</a>
-                            <a href="{$anchor-prefix}#per-capita">Per capita values</a>
-                            <a href="{$anchor-prefix}#table">Table data</a>
+                            <a href="$anchor-prefix#recovery">Recovery pie</a>
+                            <a href="$anchor-prefix#raw">Raw numbers</a>
+                            <a href="$anchor-prefix#new">New daily cases</a>
+                            <a href="$anchor-prefix#daily">Daily flow</a>
+                            <a href="$anchor-prefix#speed">Daily speed</a>
+                            <a href="$anchor-prefix#per-capita">Per capita values</a>
+                            <a href="$anchor-prefix#table">Table data</a>
                             {
                                 if $path.chars == 3 {
                                     q:to/LINKS/;
@@ -154,7 +154,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                     <li class="dropdown">
                         <a href="javascript: void(0)" class="dropbtn">Countries</a>
                         <div class="dropdown-content">
-                            <a href="{$anchor-prefix}#countries">List of countries</a>
+                            <a href="$anchor-prefix#countries">List of countries</a>
                             <a href="/countries/LNG">Affected countries</a>
                             <a href="/compare/LNG">Compare countries</a>
                             <a href="/per-million/LNG">Sorted per million affected</a>

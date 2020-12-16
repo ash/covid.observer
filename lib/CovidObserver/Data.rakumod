@@ -1,7 +1,7 @@
 unit module CovidObserver::Data;
 
 use Text::CSV;
-use IO::String;
+#use IO::String;
 
 use CovidObserver::Population;
 use CovidObserver::Geo;
@@ -177,23 +177,27 @@ sub read-jhu-data(%stats) is export {
             %cc{$region-cc} = 1;
 
             # Only regions are updates, as the global US data have been read already
-            %raw{$cc}{$region-cc}{$date}<confirmed> = $confirmed;
-            %raw{$cc}{$region-cc}{$date}<failed>    = $failed;
-            %raw{$cc}{$region-cc}{$date}<recovered> = $recovered;
+            given %raw{$cc}{$region-cc}{$date} {
+                .<confirmed> = $confirmed;
+                .<failed>    = $failed;
+                .<recovered> = $recovered;
+            }
 
             # Aggregating tests for the whole US too, as they only come from the *_us files.
-            %stats<tests>{$cc}{$date} += $tests;
-            %stats<tests>{$region-cc}{$date} = $tests;
+            given %stats<tests> {
+                .{$cc}{$date}       += $tests;
+                .{$region-cc}{$date} = $tests;
+            }
         }
     }
 
     # Count per-day data
-    for %raw.keys -> $cc { # only countries
-        for %raw{$cc}.keys -> $region-cc { # regions or '' for countries without them
-            for %raw{$cc}{$region-cc}.keys -> $date {
-                my $confirmed = %raw{$cc}{$region-cc}{$date}<confirmed>;
-                my $failed    = %raw{$cc}{$region-cc}{$date}<failed>;
-                my $recovered = %raw{$cc}{$region-cc}{$date}<recovered>;
+    for %raw.kv -> $cc, %cc-data { # only countries
+        for %cc-data.kv -> $region-cc, %region-cc-data { # regions or '' for countries without them
+            for %region-cc-data.kv -> $date, %date-data {
+                my $confirmed = %date-data<confirmed>;
+                my $failed    = %date-data<failed>;
+                my $recovered = %date-data<recovered>;
 
                 if $region-cc {
                     %stats<confirmed><per-day>{$region-cc}{$date} = $confirmed;
@@ -209,11 +213,12 @@ sub read-jhu-data(%stats) is export {
         }
     }
 
-    for %us-recovered.keys -> $date {
-        %stats<recovered><per-day><US>{$date} = %us-recovered{$date};
+    my %us-stats := %stats<recovered><per-day><US> //= {};
+    for %us-recovered.kv -> $date, $data {
+        %us-stats{$date} = $data;
     }
 
-    return %dates.keys.sort[*-1];
+    return %dates.keys.sort[*-1]
 }
 
 sub read-ru-data(%stats) is export {
@@ -259,19 +264,21 @@ sub read-ru-data(%stats) is export {
             %cc{$cc} = 1;
             %cc{$region-cc} = 1;
 
-            %raw{$cc}{$region-cc}{$date}<confirmed> = $confirmed // 0;
-            %raw{$cc}{$region-cc}{$date}<failed>    = $failed // 0;
-            %raw{$cc}{$region-cc}{$date}<recovered> = $recovered // 0;
+            given %raw{$cc}{$region-cc}{$date} {
+                .<confirmed> = $confirmed // 0;
+                .<failed>    = $failed    // 0;
+                .<recovered> = $recovered // 0;
+            }
         }
     }
 
     # Count per-day data
-    for %raw.keys -> $cc { # only countries
-        for %raw{$cc}.keys -> $region-cc { # regions or '' for countries without them
-            for %raw{$cc}{$region-cc}.keys -> $date {
-                my $confirmed = %raw{$cc}{$region-cc}{$date}<confirmed>;
-                my $failed    = %raw{$cc}{$region-cc}{$date}<failed>;
-                my $recovered = %raw{$cc}{$region-cc}{$date}<recovered>;
+    for %raw.kv -> $cc, %cc-data { # only countries
+        for %cc-data.kv -> $region-cc, %region-cc-data { # regions or '' for countries without them
+            for %region-cc-data.kv -> $date, %date-data {
+                my $confirmed = %date-data<confirmed>;
+                my $failed    = %date-data<failed>;
+                my $recovered = %date-data<recovered>;
 
                 if $region-cc {
                     %stats<confirmed><per-day>{$region-cc}{$date} = $confirmed;
@@ -295,8 +302,9 @@ sub read-tests(%stats) is export {
 
     for <RU UA> -> $cc {
         my @tests = csv(in => "series/$cc/{$cc}-tests.csv".lc);
+        my %cc-data := %stats<tests>{$cc} //= {};
         for @tests -> ($date, $tests) {
-            %stats<tests>{$cc}{$date} = $tests;
+            %cc-data{$date} = $tests;
         }
     }
 }
@@ -357,9 +365,9 @@ sub data-count-totals(%stats, %stop-date) is export {
 }
 
 sub import-stats-data(%stats) is export {
-    for %stats<confirmed><per-day>.keys -> $cc {
+    for %stats<confirmed><per-day>.kv -> $cc, %cc-data {
         my @values;
-        for %stats<confirmed><per-day>{$cc}.keys -> $date {
+        for %cc-data.keys -> $date {
             my $confirmed = %stats<confirmed><per-day>{$cc}{$date} || 0;
             my $failed = %stats<failed><per-day>{$cc}{$date} || 0;
             my $recovered = %stats<recovered><per-day>{$cc}{$date} || 0;
