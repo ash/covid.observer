@@ -396,23 +396,29 @@ sub chart-pie(%CO, :$cc?, :$cont?, :$exclude?) is export {
     my $recovered = 0;
 
     if $cc {
-        $confirmed = %CO<totals>{$cc}<confirmed>;
-        $failed    = %CO<totals>{$cc}<failed>;
-        $recovered = %CO<totals>{$cc}<recovered>;
+        given %CO<totals>{$cc} {
+            $confirmed = .<confirmed>;
+            $failed    = .<failed>;
+            $recovered = .<recovered>;
+        }
 
         if $exclude {
-            $confirmed -= %CO<totals>{$exclude}<confirmed>;
-            $failed    -= %CO<totals>{$exclude}<failed>;
-            $recovered -= %CO<totals>{$exclude}<recovered>;
+            given %CO<totals>{$exclude} {
+                $confirmed -= .<confirmed>;
+                $failed    -= .<failed>;
+                $recovered -= .<recovered>;
+            }
         }
     }
     elsif $cont {
         for %CO<totals>.keys -> $cc-code {
             next unless %CO<countries>{$cc-code} && %CO<countries>{$cc-code}<continent> eq $cont;
 
-            $confirmed += %CO<totals>{$cc-code}<confirmed>;
-            $failed    += %CO<totals>{$cc-code}<failed>;
-            $recovered += %CO<totals>{$cc-code}<recovered>;
+            given %CO<totals>{$cc-code} {
+                $confirmed += .<confirmed>;
+                $failed    += .<failed>;
+                $recovered += .<recovered>;
+            }
         }
     }
     else {
@@ -420,9 +426,11 @@ sub chart-pie(%CO, :$cc?, :$cont?, :$exclude?) is export {
             next if $cc-code ~~ /'/'/;
             next if $exclude && $exclude eq $cc-code;
 
-            $confirmed += %CO<totals>{$cc-code}<confirmed>;
-            $failed    += %CO<totals>{$cc-code}<failed>;
-            $recovered += %CO<totals>{$cc-code}<recovered>;
+            given %CO<totals>{$cc-code} {
+                $confirmed += .<confirmed>;
+                $failed    += .<failed>;
+                $recovered += .<recovered>;
+            }
         }
     }
 
@@ -486,25 +494,31 @@ sub chart-daily(%CO, :$cc?, :$cont?, :$exclude?) is export {
                 next if $cc-code ~~ /'/'/;
                 next unless %CO<countries>{$cc-code} && %CO<countries>{$cc-code}<continent> eq $cont;
 
-                %data<confirmed> += %CO<per-day>{$cc-code}{$date}<confirmed>;
-                %data<failed>    += %CO<per-day>{$cc-code}{$date}<failed>;
-                %data<recovered> += %CO<per-day>{$cc-code}{$date}<recovered>;
+                given %CO<per-day>{$cc-code}{$date} {
+                    %data<confirmed> += .<confirmed>;
+                    %data<failed>    += .<failed>;
+                    %data<recovered> += .<recovered>;
+                }
             }
         }
         else {
             for %CO<totals>.keys -> $cc-code {
                 next if $cc-code ~~ /'/'/;
 
-                %data<confirmed> += %CO<per-day>{$cc-code}{$date}<confirmed>;
-                %data<failed>    += %CO<per-day>{$cc-code}{$date}<failed>;
-                %data<recovered> += %CO<per-day>{$cc-code}{$date}<recovered>;
+                given %CO<per-day>{$cc-code}{$date} {
+                    %data<confirmed> += .<confirmed>;
+                    %data<failed>    += .<failed>;
+                    %data<recovered> += .<recovered>;
+                }
             }
         }
 
         if $exclude {
-            %data<confirmed> -= %CO<per-day>{$exclude}{$date}<confirmed>;
-            %data<failed>    -= %CO<per-day>{$exclude}{$date}<failed>;
-            %data<recovered> -= %CO<per-day>{$exclude}{$date}<recovered>;
+            given %CO<per-day>{$exclude}{$date} {
+                %data<confirmed> -= .<confirmed>;
+                %data<failed>    -= .<failed>;
+                %data<recovered> -= .<recovered>;
+            }
         }
 
         @confirmed.push(%data<confirmed>);
@@ -983,11 +997,11 @@ sub daily-speed(%CO, :$cc?, :$cont?, :$exclude?) is export {
 
     my $stop-date = $cc && $cc ~~ /RU/ ?? %CO<calendar><RU> !! %CO<calendar><World>;
 
-    if $cc {
-        for %CO<per-day>{$cc}.keys.sort -> $date {
-            my $confirmed = %CO<per-day>{$cc}{$date}<confirmed> || 0;
-            my $failed    = %CO<per-day>{$cc}{$date}<failed>    || 0;
-            my $recovered = %CO<per-day>{$cc}{$date}<recovered> || 0;
+    if $cc && %CO<per-day>{$cc} -> %cc-data {
+        for %cc-data.sort(*.key) -> (:key($date),:value(%cc-date-data)) {
+            my $confirmed = %cc-date-data<confirmed> || 0;
+            my $failed    = %cc-date-data<failed>    || 0;
+            my $recovered = %cc-date-data<recovered> || 0;
 
             %data{$date} = {
                 confirmed => $confirmed,
@@ -998,58 +1012,60 @@ sub daily-speed(%CO, :$cc?, :$cont?, :$exclude?) is export {
             last if $date eq $stop-date;
         }
 
-        if $exclude {
-            for %CO<per-day>{$exclude}.keys.sort -> $date {
-                %data{$date}<confirmed> -= %CO<per-day>{$exclude}{$date}<confirmed>;
-                %data{$date}<failed>    -= %CO<per-day>{$exclude}{$date}<failed>;
-                %data{$date}<recovered> -= %CO<per-day>{$exclude}{$date}<recovered>;
+        if $exclude && %CO<per-day>{$exclude} -> %exclude-data {
+            for %exclude-data.sort(*.key) -> (:key($date), :value(%exclude-date-data)) {
+                given %data{$date} {
+                    .<confirmed> -= %exclude-date-data<confirmed>;
+                    .<failed>    -= %exclude-date-data<failed>;
+                    .<recovered> -= %exclude-date-data<recovered>;
+                }
 
                 last if $date eq $stop-date;
             }
         }
     }
     elsif $cont {
-        for %CO<per-day>.keys -> $cc-code {
+        for %CO<per-day>.kv -> $cc-code, %cc-data {
             next if $cc-code ~~ /'/'/;
             next unless %CO<countries>{$cc-code} && %CO<countries>{$cc-code}<continent> eq $cont;
 
-            for %CO<per-day>{$cc-code}.keys.sort -> $date {
-                %data{$date} = Hash.new unless %data{$date};
-
-                %data{$date}<confirmed> += %CO<per-day>{$cc-code}{$date}<confirmed>;
-                %data{$date}<failed>    += %CO<per-day>{$cc-code}{$date}<failed>;
-                %data{$date}<recovered> += %CO<per-day>{$cc-code}{$date}<recovered>;
+            for %cc-data.sort(*.key) -> (:key($date), :value(%date-data)) {
+                given %data{$date} //= { } {
+                    .<confirmed> += %date-data<confirmed>;
+                    .<failed>    += %date-data<failed>;
+                    .<recovered> += %date-data<recovered>;
+                }
 
                 last if $date eq $stop-date;
             }
         }
     }
     elsif $exclude {
-        for %CO<per-day>.keys -> $cc-code {
+        for %CO<per-day>.kv -> $cc-code, %cc-data {
             next if $cc-code ~~ /'/'/;
             next if $cc-code eq $exclude;
 
-            for %CO<per-day>{$cc-code}.keys.sort -> $date {
-                %data{$date} = Hash.new unless %data{$date};
-
-                %data{$date}<confirmed> += %CO<per-day>{$cc-code}{$date}<confirmed>;
-                %data{$date}<failed>    += %CO<per-day>{$cc-code}{$date}<failed>;
-                %data{$date}<recovered> += %CO<per-day>{$cc-code}{$date}<recovered>;
+            for %cc-data.sort(*.key) -> (:key($date), :value(%date-data)) {
+                given %data{$date} //= { } {
+                    .<confirmed> += %date-data<confirmed>;
+                    .<failed>    += %date-data<failed>;
+                    .<recovered> += %date-data<recovered>;
+                }
 
                 last if $date eq $stop-date;
             }
         }
     }
     else {
-        for %CO<per-day>.keys -> $cc-code {
+        for %CO<per-day>.kv -> $cc-code, %cc-data {
             next if $cc-code ~~ /'/'/;
 
-            for %CO<per-day>{$cc-code}.keys.sort -> $date {
-                %data{$date} = Hash.new unless %data{$date};
-
-                %data{$date}<confirmed> += %CO<per-day>{$cc-code}{$date}<confirmed>;
-                %data{$date}<failed>    += %CO<per-day>{$cc-code}{$date}<failed>;
-                %data{$date}<recovered> += %CO<per-day>{$cc-code}{$date}<recovered>;
+            for %cc-data.sort(*.key) -> (:key($date), :value(%date-data)) {
+                given %data{$date} //= { } {
+                    .<confirmed> += %date-data<confirmed>;
+                    .<failed>    += %date-data<failed>;
+                    .<recovered> += %date-data<recovered>;
+                }
 
                 last if $date eq $stop-date;
             }
@@ -1069,45 +1085,45 @@ sub daily-speed(%CO, :$cc?, :$cont?, :$exclude?) is export {
     for $avg-width ..^ @dates -> $index {
         @labels.push(@dates[$index]);
 
-        my $day0 = @dates[$index];
-        my $day1 = @dates[$index - 1];
-        # my $day2 = @dates[$index - 2];
-        # my $day3 = @dates[$index - 3];
+        my %day0 := %data{@dates[$index]};
+        my %day1 := %data{@dates[$index - 1]};
+        # my %day2 := %data{@dates[$index - 2]};
+        # my %day3 := %data{@dates[$index - 3]};
 
         # Skip the first days in the graph to avoid a huge peak after first data appeared;
-        $skip-days-confirmed-- if %data{$day0}<confirmed> && $skip-days-confirmed;
-        $skip-days-failed--    if %data{$day0}<failed> && $skip-days-failed;
-        $skip-days-recovered-- if %data{$day0}<recovered> && $skip-days-recovered;
-        $skip-days-active--    if [-] %data{$day0}<confirmed failed recovered> && $skip-days-active;
+        $skip-days-confirmed-- if %day0<confirmed> && $skip-days-confirmed;
+        $skip-days-failed--    if %day0<failed> && $skip-days-failed;
+        $skip-days-recovered-- if %day0<recovered> && $skip-days-recovered;
+        $skip-days-active--    if [-] %day0<confirmed failed recovered> && $skip-days-active;
 
-        # my $r = (%data{$day0}<confirmed> + %data{$day1}<confirmed> + %data{$day2}<confirmed>) / 3;
-        # my $l = (%data{$day1}<confirmed> + %data{$day2}<confirmed> + %data{$day3}<confirmed>) / 3;
-        my $r = %data{$day0}<confirmed>;
-        my $l = %data{$day1}<confirmed>;
+        # my $r = (%day0<confirmed> + %day1<confirmed> + %day2<confirmed>) / 3;
+        # my $l = (%day1<confirmed> + %day2<confirmed> + %day3<confirmed>) / 3;
+        my $r = %day0<confirmed>;
+        my $l = %day1<confirmed>;
         my $delta = $r - $l;
         my $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
         @confirmed.push($skip-days-confirmed ?? 0 !! $speed);
 
-        # $r = (%data{$day0}<failed> + %data{$day1}<failed> + %data{$day2}<failed>) / 3;
-        # $l = (%data{$day1}<failed> + %data{$day2}<failed> + %data{$day3}<failed>) / 3;
-        $r = %data{$day0}<failed>;
-        $l = %data{$day1}<failed>;
+        # $r = (%day0<failed> + %day1<failed> + %day2<failed>) / 3;
+        # $l = (%day1<failed> + %day2<failed> + %day3<failed>) / 3;
+        $r = %day0<failed>;
+        $l = %day1<failed>;
         $delta = $r - $l;
         $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
         @failed.push($skip-days-failed ?? 0 !! $speed);
 
-        # $r = (%data{$day0}<recovered> + %data{$day1}<recovered> + %data{$day2}<recovered>) / 3;
-        # $l = (%data{$day1}<recovered> + %data{$day2}<recovered> + %data{$day3}<recovered>) / 3;
-        $r = %data{$day0}<recovered>;
-        $l = %data{$day1}<recovered>;
+        # $r = (%day0<recovered> + %day1<recovered> + %day2<recovered>) / 3;
+        # $l = (%day1<recovered> + %day2<recovered> + %day3<recovered>) / 3;
+        $r = %day0<recovered>;
+        $l = %day1<recovered>;
         $delta = $r - $l;
         $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
         @recovered.push($skip-days-recovered ?? 0 !! $speed);
 
-        # $r = ([-] %data{$day0}<confirmed failed recovered> + [-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered>) / 3;
-        # $l = ([-] %data{$day1}<confirmed failed recovered> + [-] %data{$day2}<confirmed failed recovered> + [-] %data{$day3}<confirmed failed recovered>) / 3;
-        $r = [-] %data{$day0}<confirmed failed recovered>;
-        $l = [-] %data{$day1}<confirmed failed recovered>;
+        # $r = ([-] %day0<confirmed failed recovered> + [-] %day1<confirmed failed recovered> + [-] %day2<confirmed failed recovered>) / 3;
+        # $l = ([-] %day1<confirmed failed recovered> + [-] %day2<confirmed failed recovered> + [-] %day3<confirmed failed recovered>) / 3;
+        $r = [-] %day0<confirmed failed recovered>;
+        $l = [-] %day1<confirmed failed recovered>;
         $delta = $r - $l;
         $speed = $l ?? sprintf('%.2f', 100 * $delta / $l) !! 0;
         @active.push($skip-days-active ?? 0 !! $speed);
@@ -1191,14 +1207,14 @@ sub two-week-index(%CO, :$cc) is export {
 
     my $stop-date = $cc && $cc ~~ /RU/ ?? %CO<calendar><RU> !! %CO<calendar><World>;
 
-    for %CO<per-day>{$cc}.keys.sort -> $date {
+    for %CO<per-day>{$cc}.sort(*.key) -> (:key($date), :value(%cc-data)) {
         @labels.push: $date;
 
         my $dt-prev = Date.new($date) - 14;
 
-        if %CO<per-day>{$cc}{$dt-prev.yyyy-mm-dd}:exists {
-            my $confirmed-curr = %CO<per-day>{$cc}{$date}<confirmed> || 0;
-            my $confirmed-prev = %CO<per-day>{$cc}{$dt-prev.yyyy-mm-dd}<confirmed> || 0;
+        if %cc-data{$dt-prev.yyyy-mm-dd}:exists {
+            my $confirmed-curr = %cc-data{$date}<confirmed> || 0;
+            my $confirmed-prev = %cc-data{$dt-prev.yyyy-mm-dd}<confirmed> || 0;
 
             my $index = ($confirmed-curr - $confirmed-prev) * 100_000 / (1_000_000 * %CO<countries>{$cc}<population>);
             @index.push: $index.round(0.01);
@@ -1280,19 +1296,23 @@ sub scattered-age-graph(%CO) is export {
     my @dataset-failed;
 
     my $max = 0;
-    for %CO<countries>.keys -> $cc {
-        my $confirmed = %CO<totals>{$cc}<confirmed>;
+    for %CO<countries>.kv -> $cc, %country {
+
+        my %totals := %CO<totals>{$cc} //= {};
+        my $confirmed = %totals<confirmed>;
         next unless $confirmed;
 
-        my $age = %CO<countries>{$cc}<age>;
+        my $age = %country<age>;
         next unless $age;
 
-        my $failed = %CO<totals>{$cc}<failed>;
+        my $failed = %totals<failed>;
 
-        my $country = %CO<countries>{$cc}<country>;
+        my $country = %country<country>;
 
-        $confirmed /= 1_000_000 * %CO<countries>{$cc}<population> / 100;
-        $failed    /= 1_000_000 * %CO<countries>{$cc}<population> / 100;
+        given %country<population> {
+            $confirmed /= 1_000_000 * $_ / 100;
+            $failed    /= 1_000_000 * $_ / 100;
+        }
 
         $max = $confirmed if $max < $confirmed;
 
@@ -1395,23 +1415,27 @@ sub scattered-density-graph(%CO) is export {
     my @dataset-failed;
 
     my $max = 0;
-    for %CO<countries>.keys -> $cc {
-        my $confirmed = %CO<totals>{$cc}<confirmed>;
+    for %CO<countries>.kv -> $cc, %country {
+
+        my %totals := %CO<totals>{$cc} //= {};
+        my $confirmed = %totals<confirmed>;
         next unless $confirmed;
 
-        next if %CO<countries>{$cc}<population> < 1;
+        next if %country<population> < 1;
 
-        my $area = %CO<countries>{$cc}<area>;
+        my $area = %country<area>;
         next unless $area;
 
-        my $density = 1_000_000 * %CO<countries>{$cc}<population> / $area;
+        my $density = 1_000_000 * %country<population> / $area;
 
-        my $failed = %CO<totals>{$cc}<failed>;
+        my $failed = %totals<failed>;
 
-        my $country = %CO<countries>{$cc}<country>;
+        my $country = %country<country>;
 
-        # $confirmed /= 1_000_000 * %CO<countries>{$cc}<population> / 100;
-        # $failed    /= 1_000_000 * %CO<countries>{$cc}<population> / 100;
+        # given %country<population> {
+        #     $confirmed /= 1_000_000 * $_ / 100;
+        #     $failed    /= 1_000_000 * $_ / 100;
+        # }
 
         $max = $confirmed if $max < $confirmed;
 
