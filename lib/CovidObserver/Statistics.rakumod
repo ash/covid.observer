@@ -1207,14 +1207,16 @@ sub two-week-index(%CO, :$cc) is export {
 
     my $stop-date = $cc && $cc ~~ /RU/ ?? %CO<calendar><RU> !! %CO<calendar><World>;
 
+    my %cc-history := %CO<per-day>{$cc};
+
     for %CO<per-day>{$cc}.sort(*.key) -> (:key($date), :value(%cc-data)) {
         @labels.push: $date;
 
         my $dt-prev = Date.new($date) - 14;
 
-        if %cc-data{$dt-prev.yyyy-mm-dd}:exists {
-            my $confirmed-curr = %cc-data{$date}<confirmed> || 0;
-            my $confirmed-prev = %cc-data{$dt-prev.yyyy-mm-dd}<confirmed> || 0;
+        if %cc-history{$dt-prev.yyyy-mm-dd}:exists {
+            my $confirmed-curr = %cc-history{$date}<confirmed> || 0;
+            my $confirmed-prev = %cc-history{$dt-prev.yyyy-mm-dd}<confirmed> || 0;
 
             my $index = ($confirmed-curr - $confirmed-prev) * 100_000 / (1_000_000 * %CO<countries>{$cc}<population>);
             @index.push: $index.round(0.01);
@@ -1237,7 +1239,6 @@ sub two-week-index(%CO, :$cc) is export {
         lineTension => 0,
         borderColor => 'orange';
     my $dataset0 = to-json(%dataset0);
-
 
     my $json = q:to/JSON/;
         {

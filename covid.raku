@@ -142,7 +142,7 @@ multi sub MAIN('generate', Bool :$skip-excel = False) {
 
     generate-impact-timeline(%CO);
 
-# generate-country-stats('NL', %CO);
+# generate-country-stats('RU', %CO);
 # exit;
 
     generate-world-stats(%CO, :$skip-excel);
