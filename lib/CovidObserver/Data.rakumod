@@ -16,12 +16,14 @@ sub read-jhu-data(%stats) is export {
     my %us-recovered;
 
     # csse_covid_19_data files
+    my $dt-switch-format = Date.new(2020, 4, 12);
     for dir('COVID-19/csse_covid_19_data/csse_covid_19_daily_reports', test => /'.csv'$/).sort(~*.path) -> $path {
         $path.path ~~ / (\d\d) '-' (\d\d) '-' \d\d(\d\d) '.csv' /;
         my $month = ~$/[0];
         my $day   = ~$/[1];
         my $year  = ~$/[2];
         my $date = "$month/$day/$year"; # TODO
+        my $dt = Date.new(2000 + $year, $month, $day);
         %dates{$date} = 1;
 
         my $data = $path.slurp;
@@ -35,7 +37,7 @@ sub read-jhu-data(%stats) is export {
             my $region = '';
 
             if @headers[0] ne 'FIPS' {
-                if $date lt '04/12/20' { # TODO switch to column names (if that helps)
+                if $dt < $dt-switch-format { # TODO switch to column names (if that helps)
                     $country = @row[1] || '';
                     $region  = @row[0] || '';
 
@@ -139,13 +141,16 @@ sub read-jhu-data(%stats) is export {
     # Read separate files for the US (since April 12, 2020)
     # These numbers will override those from the files in 'csse_covid_19_daily_reports'.
     say 'Reading US data...';
+    my $dt-switch-recoveries = Date.new(2020, 12, 14);
     for dir('COVID-19/csse_covid_19_data/csse_covid_19_daily_reports_us', test => /'.csv'$/).sort(~*.path) -> $path {
         $path.path ~~ / (\d\d) '-' (\d\d) '-' \d\d(\d\d) '.csv' /;
         my $month = ~$/[0];
         my $day   = ~$/[1];
         my $year  = ~$/[2];
         my $date = "$month/$day/$year"; # TODO
+        my $dt = Date.new(2000 + $year, $month, $day);
         %dates{$date} = 1;
+        my $recovered-us = 0;
 
         for csv(in => $path.path, headers => 'auto') -> $item {
             my $country = $item<Country_Region>;
@@ -158,7 +163,7 @@ sub read-jhu-data(%stats) is export {
             my $confirmed = $item<Confirmed> || 0;
             my $recovered = $item<Recovered> || 0;
             my $failed = $item<Deaths> || 0;
-            my $tests = $item<People_Tested> || 0;
+            my $tests = $item<People_Tested> || $item<Total_Test_Results> || 0; # Header changed: https://github.com/CSSEGISandData/COVID-19/issues/3334
 
             # if !$recovered && $item<Active> {
             #     $recovered = $confirmed - $item<Active> - $failed;
@@ -176,12 +181,16 @@ sub read-jhu-data(%stats) is export {
             %cc{$cc} = 1;
             %cc{$region-cc} = 1;
 
-            # Only regions are updates, as the global US data have been read already
+            # Only regions are updates, as the global US data have been read already.
             given %raw{$cc}{$region-cc}{$date} {
                 .<confirmed> = $confirmed;
                 .<failed>    = $failed;
                 .<recovered> = $recovered;
             }
+
+            # No global recoveries data for US: https://github.com/CSSEGISandData/COVID-19/issues/3464,
+            # so let’s add up state data while we have them.
+            $recovered-us += $recovered;
 
             # Aggregating tests for the whole US too, as they only come from the *_us files.
             given %stats<tests> {
@@ -189,15 +198,19 @@ sub read-jhu-data(%stats) is export {
                 .{$region-cc}{$date} = $tests;
             }
         }
+
+        if $dt > $dt-switch-recoveries {
+            %raw<US>{''}{$date}<recovered> = $recovered-us;
+        }
     }
 
     # Count per-day data
     for %raw.kv -> $cc, %cc-data { # only countries
         for %cc-data.kv -> $region-cc, %region-cc-data { # regions or '' for countries without them
             for %region-cc-data.kv -> $date, %date-data {
-                my $confirmed = %date-data<confirmed>;
-                my $failed    = %date-data<failed>;
-                my $recovered = %date-data<recovered>;
+                my $confirmed = %date-data<confirmed> // 0;
+                my $failed    = %date-data<failed> // 0;
+                my $recovered = %date-data<recovered> // 0;
 
                 if $region-cc {
                     %stats<confirmed><per-day>{$region-cc}{$date} = $confirmed;
@@ -218,7 +231,15 @@ sub read-jhu-data(%stats) is export {
         %us-stats{$date} = $data;
     }
 
-    return %dates.keys.sort[*-1]
+    # A fix for global recoveries in the US. It is applied for all dates, but is actually important since $dt-switch-recoveries
+    # Note that we only reach this point of code if there is a $region-cc, so the below assignments of "recovered" will only
+    # be added for dates after $dt-switch-recoveries. Probably we can switch to this method of adding up state data
+    # for all dates and thus skip the Recovered rows for US as a whole even before the date.
+    for %raw<US>{''}.kv -> $date, %date-data {
+        %stats<recovered><per-day><US>{$date} = %date-data<recovered>;
+    }
+
+    return %dates.keys.sort[*-1];
 }
 
 sub read-ru-data(%stats) is export {
@@ -227,6 +248,7 @@ sub read-ru-data(%stats) is export {
 
     my %raw;
     my %us-recovered;
+    my $dt-switch-format = Date.new(2020, 4, 29);
     for dir('series/ru', test => /'.csv'$/).sort(~*.path) -> $path {
         next if $path ~~ /tests/;
 
@@ -235,6 +257,7 @@ sub read-ru-data(%stats) is export {
         my $month = ~$/[1];
         my $day   = ~$/[2];
         my $date = "$month/$day/$year"; # TODO
+        my $dt = Date.new(2000 + $year, $month, $day);
         %dates{$date} = 1;
 
         my $data = $path.slurp;
@@ -246,7 +269,7 @@ sub read-ru-data(%stats) is export {
         while my @row = $csv.getline($fh) {
             my ($region, $confirmed, $recovered, $failed);
 
-            if $date lt '04/29/20' {
+            if $dt < $dt-switch-format {
                 ($region, $confirmed, $recovered, $failed) = @row;
             }
             else {
