@@ -1209,7 +1209,7 @@ sub two-week-index(%CO, :$cc) is export {
 
     my %cc-history := %CO<per-day>{$cc};
 
-    for %CO<per-day>{$cc}.keys.sort -> $date) {
+    for %CO<per-day>{$cc}.keys.sort -> $date {
         @labels.push: $date;
 
         my $dt-prev = Date.new($date) - 14;
