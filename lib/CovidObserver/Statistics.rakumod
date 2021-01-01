@@ -487,12 +487,13 @@ sub chart-daily(%CO, :$cc?, :$cont?, :$exclude?) is export {
             recovered => 0;
 
         if $cc {
-            %data = %CO<per-day>{$cc}{$date};
+            %data = %CO<per-day>{$cc}{$date} if %CO<per-day>{$cc}{$date};
         }
         elsif $cont {
             for %CO<totals>.keys -> $cc-code {
                 next if $cc-code ~~ /'/'/;
                 next unless %CO<countries>{$cc-code} && %CO<countries>{$cc-code}<continent> eq $cont;
+                next unless %CO<per-day>{$cc-code}{$date};
 
                 given %CO<per-day>{$cc-code}{$date} {
                     %data<confirmed> += .<confirmed>;
@@ -504,6 +505,7 @@ sub chart-daily(%CO, :$cc?, :$cont?, :$exclude?) is export {
         else {
             for %CO<totals>.keys -> $cc-code {
                 next if $cc-code ~~ /'/'/;
+                next unless %CO<per-day>{$cc-code}{$date};
 
                 given %CO<per-day>{$cc-code}{$date} {
                     %data<confirmed> += .<confirmed>;
@@ -1684,15 +1686,15 @@ sub mortality-graph($cc, %CO, %mortality, %crude) is export {
     my @current = 0 xx 24; # YEARLOOPFIX
     my @weekly = 0 xx 104; # YEARLOOPFIX
     for %CO<per-day>{$cc}.keys.sort -> $date {
-        my ($year, $month, $day) = $date.split('-');
-        $month = $year == 2020 ?? $month !! $month + 12; # YEARLOOPFIX
+        my ($year, $month-orig, $day) = $date.split('-');
+        my $month = $year == 2020 ?? $month-orig !! $month-orig + 12; # YEARLOOPFIX
         @current[$month - 1] = %CO<per-day>{$cc}{$date}<failed>;
         @current[$month - 1] -= [+] @current[0 ..^ $month - 1];
 
         my $value = @current[$month - 1];
         $max-current = $value if $value > $max-current;
 
-        my $week-number = DateTime.new(year => $year, month => $month, day => $day).week-number;
+        my $week-number = DateTime.new(year => $year, month => $month-orig, day => $day).week-number;
         $week-number = $year == 2020 ?? $week-number !! $week-number + 52; # YEARLOOPFIX
         @weekly[$week-number - 1] = %CO<per-day>{$cc}{$date}<failed>;
 
@@ -1780,7 +1782,7 @@ sub mortality-graph($cc, %CO, %mortality, %crude) is export {
         }
         JSON
 
-    my $labels-weekly = to-json(1 .. $current-week-number); # YEARLOOPFIX
+    my $labels-weekly = to-json((1 .. $current-week-number).map: * % 52); # YEARLOOPFIX
     my %dataset-weekly =
         label => "Deaths from COVID-19 by weeks",
         data => @weekly[^$current-week-number], # YEARLOOPFIX

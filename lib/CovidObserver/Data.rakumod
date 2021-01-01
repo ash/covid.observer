@@ -258,7 +258,7 @@ sub read-ru-data(%stats) is export {
         my $day   = ~$/[2];
         my $date = "$month/$day/$year"; # TODO
         my $dt = Date.new(2000 + $year, $month, $day);
-        %dates{$date} = 1;
+        %dates{$dt} = $date;
 
         my $data = $path.slurp;
         my $fh = IO::String.new($data);
@@ -317,7 +317,8 @@ sub read-ru-data(%stats) is export {
         }
     }
 
-    return %dates.keys.sort[*-1];
+    return (%dates.sort: *.key)[*-1].value;
+    # return %dates.keys.sort[*-1];
 }
 
 sub read-tests(%stats) is export {
