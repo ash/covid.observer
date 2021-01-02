@@ -24,7 +24,7 @@ sub read-jhu-data(%stats) is export {
         my $year  = ~$/[2];
         my $date = "$month/$day/$year"; # TODO
         my $dt = Date.new(2000 + $year, $month, $day);
-        %dates{$date} = 1;
+        %dates{$dt} = $date;
 
         my $data = $path.slurp;
         my $fh = IO::String.new($data);
@@ -149,7 +149,7 @@ sub read-jhu-data(%stats) is export {
         my $year  = ~$/[2];
         my $date = "$month/$day/$year"; # TODO
         my $dt = Date.new(2000 + $year, $month, $day);
-        %dates{$date} = 1;
+        %dates{$dt} = $date;
         my $recovered-us = 0;
 
         for csv(in => $path.path, headers => 'auto') -> $item {
@@ -239,6 +239,7 @@ sub read-jhu-data(%stats) is export {
         %stats<recovered><per-day><US>{$date} = %date-data<recovered>;
     }
 
+    return (%dates.sort: *.key)[*-1].value;
     return %dates.keys.sort[*-1];
 }
 
