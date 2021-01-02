@@ -16,15 +16,14 @@ sub read-jhu-data(%stats) is export {
     my %us-recovered;
 
     # csse_covid_19_data files
-    my $dt-switch-format = Date.new(2020, 4, 12);
+    my $date-switch-format = Date.new(2020, 4, 12);
     for dir('COVID-19/csse_covid_19_data/csse_covid_19_daily_reports', test => /'.csv'$/).sort(~*.path) -> $path {
         $path.path ~~ / (\d\d) '-' (\d\d) '-' \d\d(\d\d) '.csv' /;
         my $month = ~$/[0];
         my $day   = ~$/[1];
         my $year  = ~$/[2];
-        my $date = "$month/$day/$year"; # TODO
-        my $dt = Date.new(2000 + $year, $month, $day);
-        %dates{$dt} = $date;
+        my $date = Date.new(2000 + $year, $month, $day);
+        %dates{$date} = 1;
 
         my $data = $path.slurp;
         my $fh = IO::String.new($data);
@@ -37,7 +36,7 @@ sub read-jhu-data(%stats) is export {
             my $region = '';
 
             if @headers[0] ne 'FIPS' {
-                if $dt < $dt-switch-format { # TODO switch to column names (if that helps)
+                if $date < $date-switch-format { # TODO switch to column names (if that helps)
                     $country = @row[1] || '';
                     $region  = @row[0] || '';
 
@@ -64,7 +63,7 @@ sub read-jhu-data(%stats) is export {
                 }
             }
             elsif $country eq 'France' && $region {
-                $country = $region if $date ne "03/23/20"; # Wrongly mixed with French Polynesia data for this date
+                $country = $region if $date != Date.new(2020, 3, 23); # Wrongly mixed with French Polynesia data for this date
             }
             elsif $country eq 'Channel Islands' {
                 $country = 'United Kingdom';
@@ -141,15 +140,14 @@ sub read-jhu-data(%stats) is export {
     # Read separate files for the US (since April 12, 2020)
     # These numbers will override those from the files in 'csse_covid_19_daily_reports'.
     say 'Reading US data...';
-    my $dt-switch-recoveries = Date.new(2020, 12, 14);
+    my $date-switch-recoveries = Date.new(2020, 12, 14);
     for dir('COVID-19/csse_covid_19_data/csse_covid_19_daily_reports_us', test => /'.csv'$/).sort(~*.path) -> $path {
         $path.path ~~ / (\d\d) '-' (\d\d) '-' \d\d(\d\d) '.csv' /;
         my $month = ~$/[0];
         my $day   = ~$/[1];
         my $year  = ~$/[2];
-        my $date = "$month/$day/$year"; # TODO
-        my $dt = Date.new(2000 + $year, $month, $day);
-        %dates{$dt} = $date;
+        my $date = Date.new(2000 + $year, $month, $day);
+        %dates{$date} = 1;
         my $recovered-us = 0;
 
         for csv(in => $path.path, headers => 'auto') -> $item {
@@ -199,7 +197,7 @@ sub read-jhu-data(%stats) is export {
             }
         }
 
-        if $dt > $dt-switch-recoveries {
+        if $date > $date-switch-recoveries {
             %raw<US>{''}{$date}<recovered> = $recovered-us;
         }
     }
@@ -239,7 +237,7 @@ sub read-jhu-data(%stats) is export {
         %stats<recovered><per-day><US>{$date} = %date-data<recovered>;
     }
 
-    return (%dates.sort: *.key)[*-1].value;
+    # return (%dates.sort: *.key)[*-1].value;
     return %dates.keys.sort[*-1];
 }
 
@@ -249,7 +247,7 @@ sub read-ru-data(%stats) is export {
 
     my %raw;
     my %us-recovered;
-    my $dt-switch-format = Date.new(2020, 4, 29);
+    my $date-switch-format = Date.new(2020, 4, 29);
     for dir('series/ru', test => /'.csv'$/).sort(~*.path) -> $path {
         next if $path ~~ /tests/;
 
@@ -257,9 +255,8 @@ sub read-ru-data(%stats) is export {
         my $year  = ~$/[0];
         my $month = ~$/[1];
         my $day   = ~$/[2];
-        my $date = "$month/$day/$year"; # TODO
-        my $dt = Date.new(2000 + $year, $month, $day);
-        %dates{$dt} = $date;
+        my $date = Date.new(2000 + $year, $month, $day);
+        %dates{$date} = 1;
 
         my $data = $path.slurp;
         my $fh = IO::String.new($data);
@@ -270,7 +267,7 @@ sub read-ru-data(%stats) is export {
         while my @row = $csv.getline($fh) {
             my ($region, $confirmed, $recovered, $failed);
 
-            if $dt < $dt-switch-format {
+            if $date < $date-switch-format {
                 ($region, $confirmed, $recovered, $failed) = @row;
             }
             else {
@@ -318,8 +315,8 @@ sub read-ru-data(%stats) is export {
         }
     }
 
-    return (%dates.sort: *.key)[*-1].value;
-    # return %dates.keys.sort[*-1];
+    # return (%dates.sort: *.key)[*-1].value;
+    return %dates.keys.sort[*-1];
 }
 
 sub read-tests(%stats) is export {
@@ -328,7 +325,9 @@ sub read-tests(%stats) is export {
     for <RU UA> -> $cc {
         my @tests = csv(in => "series/$cc/{$cc}-tests.csv".lc);
         my %cc-data := %stats<tests>{$cc} //= {};
-        for @tests -> ($date, $tests) {
+        for @tests -> ($date-str, $tests) {
+            $date-str ~~ / (\d\d) '/' (\d\d) '/' (\d\d) /;
+            my $date = Date.new(2000 + $/[2], ~$/[0], ~$/[1]);
             %cc-data{$date} = $tests;
         }
     }
@@ -397,7 +396,7 @@ sub import-stats-data(%stats) is export {
             my $failed = %stats<failed><per-day>{$cc}{$date} || 0;
             my $recovered = %stats<recovered><per-day>{$cc}{$date} || 0;
 
-            @values.push("('$cc','{date2yyyymmdd($date)}',$confirmed,$failed,$recovered)");  # Safe here
+            @values.push("('$cc','{$date}',$confirmed,$failed,$recovered)");  # Safe here
         }
 
         my $values-sql = join ',', @values;
@@ -416,7 +415,7 @@ sub import-stats-data(%stats) is export {
         my $recovered = %stats<recovered><daily-total>{$date} || 0;
 
         my $sth = dbh.prepare('insert into daily_totals (date, confirmed, failed, recovered) values (?, ?, ?, ?)');
-        $sth.execute(date2yyyymmdd($date), $confirmed, $failed, $recovered);
+        $sth.execute($date, $confirmed, $failed, $recovered);
         $sth.finish();
     }
 }
@@ -427,7 +426,7 @@ sub import-tests-data(%stats) is export {
     my $sth = dbh.prepare('insert into tests (cc, date, tests) values (?, ?, ?)');
     for %stats<tests>.keys -> $cc {
         for %stats<tests>{$cc}.keys -> $date {
-            $sth.execute($cc, date2yyyymmdd($date), %stats<tests>{$cc}{$date});
+            $sth.execute($cc, $date, %stats<tests>{$cc}{$date});
         }
     }
     $sth.finish();
