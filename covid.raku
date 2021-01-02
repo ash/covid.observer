@@ -108,8 +108,8 @@ multi sub MAIN('fetch') {
 
     dbh.execute('delete from calendar');
     my $sth = dbh.prepare('insert into calendar (cc, date) values (?, ?)');
-    $sth.execute('World', date2yyyymmdd($latest-jhu-date));
-    $sth.execute('RU', date2yyyymmdd($latest-ru-date));
+    $sth.execute('World', $latest-jhu-date);
+    $sth.execute('RU', $latest-ru-date);
     $sth.finish();
 
     say "Latest JHU data on $latest-jhu-date";
