@@ -186,7 +186,8 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
     my $chart3 = number-percent(%CO, :$cc, :$exclude);
 
     my $chart7data = daily-speed(%CO, :$cc, :$exclude);
-    my $chart25data = two-week-index(%CO, :$cc);
+    my $chart250data = n-day-index(7, %CO, :$cc);
+    my $chart25data = n-day-index(14, %CO, :$cc);
 
     my $chart21data = daily-tests(%CO, :$cc);
 
@@ -431,10 +432,30 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
             <p>Note. When the speed is positive, the number of cases grows every day. The line going down means that the speed decreases, and while there may be more cases the next day, the disease spread is slowing down. If the speed goes below zero, that means that fewer cases registered today than yesterday.</p>
         </div>
 
+        <div id="block250">
+            <a name="index7"></a>
+            <h2>Cumulative 7-day index</h2>
+            <p>This and the following graph show the indices that some countries use for setting travel restrictions. The value is the number of new confirmed cases for the last 7 days per 100,000 of population.</p>
+            <canvas id="Chart250"></canvas>
+            <p class="left">
+                <label class="toggle-switchy" for="logscale250" data-size="xs" data-style="rounded" data-color="blue">
+                    <input type="checkbox" id="logscale250" onclick="log_scale(this, 250)">
+                    <span class="toggle">
+                        <span class="switch"></span>
+                    </span>
+                </label>
+                <label for="logscale250"> Logarithmic scale</label>
+            </p>
+            <script>
+                var ctx250 = document.getElementById('Chart250').getContext('2d');
+                chart[250] = new Chart(ctx250, $chart250data);
+            </script>
+        </div>
+
         <div id="block25">
             <a name="index14"></a>
             <h2>Cumulative 14-day index</h2>
-            <p>This graph shows the index that some countries use for setting travel restrictions. The value is the number of new confirmed cases for the last 14 days per 100,000 of population.</p>
+            <p>The value is the number of new confirmed cases for the last 14 days per 100,000 of population.</p>
             <canvas id="Chart25"></canvas>
             <p class="left">
                 <label class="toggle-switchy" for="logscale25" data-size="xs" data-style="rounded" data-color="blue">
@@ -443,7 +464,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
                         <span class="switch"></span>
                     </span>
                 </label>
-                <label for="logscale7"> Logarithmic scale</label>
+                <label for="logscale25"> Logarithmic scale</label>
             </p>
             <script>
                 var ctx25 = document.getElementById('Chart25').getContext('2d');

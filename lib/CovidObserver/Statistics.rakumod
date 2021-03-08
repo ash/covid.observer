@@ -1203,7 +1203,7 @@ sub daily-speed(%CO, :$cc?, :$cont?, :$exclude?) is export {
     return $json;
 }
 
-sub two-week-index(%CO, :$cc) is export {
+sub n-day-index($ndays, %CO, :$cc) is export {
     my @labels;
     my @index;
 
@@ -1214,7 +1214,7 @@ sub two-week-index(%CO, :$cc) is export {
     for %CO<per-day>{$cc}.keys.sort -> $date {
         @labels.push: $date;
 
-        my $dt-prev = Date.new($date) - 14;
+        my $dt-prev = Date.new($date) - $ndays;
 
         if %cc-history{$dt-prev.yyyy-mm-dd}:exists {
             my $confirmed-curr = %cc-history{$date}<confirmed> || 0;
@@ -1235,7 +1235,7 @@ sub two-week-index(%CO, :$cc) is export {
     my $labels = to-json(@labels);
 
     my %dataset0 =
-        label => 'Cumulative 14-day index',
+        label => "Cumulative {$ndays}-day index",
         data => @index,
         fill => False,
         lineTension => 0,
