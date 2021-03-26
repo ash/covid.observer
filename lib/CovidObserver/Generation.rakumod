@@ -190,6 +190,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
     my $chart25data = n-day-index(14, %CO, :$cc);
 
     my $chart21data = daily-tests(%CO, :$cc);
+    my $chart251data = vaccination-flow(%CO, :$cc);
 
     my $country-name = %CO<countries>{$cc}<country>;
     my $population = +%CO<countries>{$cc}<population>;
@@ -492,6 +493,32 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
                         <script>
                             var ctx21 = document.getElementById('Chart21').getContext('2d');
                             chart[21] = new Chart(ctx21, $chart21data<json>);
+                        </script>
+                    </div>
+                ]
+            }
+        }
+
+        {
+            if $chart251data {
+                qq[
+                    <div id="block251">
+                        <a name="vaccinations"></a>
+                        <h2>｢{fmtnum($chart251data<vaccinations>)}｣ vaccinated people</h2>
+                        <p>This graph shows the total number of vaccinated population in ｢{$proper-country-name}{$without-str}｣. The values reflect the number of vaccinations reported by the given date.</p>
+                        <canvas id="Chart251"></canvas>
+                        <p class="left">
+                            <label class="toggle-switchy" for="logscale251" data-size="xs" data-style="rounded" data-color="blue">
+                                <input type="checkbox" id="logscale251" onclick="log_scale(this, 251)">
+                                <span class="toggle">
+                                    <span class="switch"></span>
+                                </span>
+                            </label>
+                            <label for="logscale251"> Logarithmic scale</label>
+                        </p>
+                        <script>
+                            var ctx251 = document.getElementById('Chart251').getContext('2d');
+                            chart[251] = new Chart(ctx251, $chart251data<json>);
                         </script>
                     </div>
                 ]

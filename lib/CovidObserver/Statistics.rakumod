@@ -170,6 +170,19 @@ sub get-tests() is export {
     return %tests;
 }
 
+sub get-vaccinations() is export {
+    my $sth = dbh.prepare('select cc, date, vaccinated from per_day');
+    $sth.execute();
+
+    my %vaccinations;
+    for $sth.allrows(:array-of-hash) -> %row {
+        %vaccinations{%row<cc>}{%row<date>} = %row<vaccinated>;
+    }
+    $sth.finish();
+
+    return %vaccinations;
+}
+
 sub countries-vs-china(%CO) is export {
     my %date-cc;
     for %CO<per-day>.keys -> $cc {
@@ -2080,6 +2093,52 @@ sub daily-tests(%CO, :$cc) is export {
     return {
         json => $json,
         tests => @tests[*-1],
+    };
+}
+
+sub vaccination-flow(%CO, :$cc) is export {
+    return Nil unless %CO<vaccinations>{$cc}:exists;
+
+    my @dates;
+    my @vaccinations;
+    my $value = 0;
+    for %CO<vaccinations>{$cc}.keys.sort -> $date {
+        @dates.push($date);
+        my $vaccinated = %CO<vaccinations>{$cc}{$date};
+        $value = $vaccinated if $vaccinated > $value;
+        @vaccinations.push($value);
+    }
+
+    my $json = q:to/JSON/;
+        {
+            "type": "line",
+            "data": {
+                "labels": LABELS,
+                "datasets": [
+                    DATASET
+                ]
+            },
+            "options": {
+                "animation": false
+            }
+        }
+        JSON
+
+    my %dataset =
+        label => "Vaccinated popolation",
+        data => @vaccinations,
+        fill => False,
+        borderColor => '#00ef00';
+
+    my $dataset = to-json(%dataset);
+    my $labels = to-json(@dates);
+
+    $json ~~ s/DATASET/$dataset/;
+    $json ~~ s/LABELS/$labels/;
+
+    return {
+        json => $json,
+        vaccinations => @vaccinations.max,
     };
 }
 

@@ -88,6 +88,11 @@ multi sub MAIN('fetch') {
             per-day     => {},
             total       => {},
             daily-total => {},
+        },
+        vaccinated => {
+            per-day     => {},
+            total       => {},
+            daily-total => {},
         }
     ;
 
@@ -100,10 +105,14 @@ multi sub MAIN('fetch') {
     say 'Importing tests...';
     read-tests(%stats);
 
+    say "Importing vaccination data...";
+    read-vaccination-data(%stats); # modifies %stats
+
     say 'Computing aggregates...';
     data-count-totals(%stats, {World => $latest-jhu-date, RU => $latest-ru-date});
     import-stats-data(%stats);
     import-tests-data(%stats);
+    # import-vaccination-data(%stats);
 
 
     dbh.execute('delete from calendar');
@@ -129,7 +138,9 @@ multi sub MAIN('generate', Bool :$skip-excel = False) {
     my %crude = get-crude-data();
 
     my %calendar = get-calendar();
+
     my %tests = get-tests();
+    my %vaccinations = get-vaccinations();
 
     my %CO =
         countries    => %countries,
@@ -138,12 +149,10 @@ multi sub MAIN('generate', Bool :$skip-excel = False) {
         daily-totals => %daily-totals,
         calendar     => %calendar,
         tests        => %tests,
+        vaccinations => %vaccinations,
     ;
 
     generate-impact-timeline(%CO);
-
-# generate-country-stats('RU', %CO);
-# exit;
 
     generate-world-stats(%CO, :$skip-excel);
     generate-world-stats(%CO, exclude => 'CN', :$skip-excel);

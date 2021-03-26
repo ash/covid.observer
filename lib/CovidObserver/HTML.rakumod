@@ -111,6 +111,7 @@ sub html-template($path, $title, $content, $header = '') is export {
                                     q:to/LINKS/;
                                         <a href="#index7">Cumulative 7-day index</a>
                                         <a href="#index14">Cumulative 14-day index</a>
+                                        <a href="#vaccinations">Vaccinated population</a>
                                         <a href="#mortality">Mortality level</a>
                                         <a href="#weekly">Weekly levels</a>
                                         <a href="#crude">Crude deaths</a>
@@ -400,7 +401,6 @@ sub country-list(%countries, :$cc?, :$cont?, :$exclude?) is export {
 
         $combined-html ~= qq:to/HTML/;
             <LANGUAGE lang="$lang">
-                <a name="countries"></a>
                 <div class="countries">
                     $regions-html
 

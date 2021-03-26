@@ -333,6 +333,36 @@ sub read-tests(%stats) is export {
     }
 }
 
+sub read-vaccination-data(%stats) is export {
+    for dir('covid-19-data/public/data/vaccinations/country_data', test => /'.csv'$/).sort(~*.path) -> $path {
+        $path.path ~~ / (<-[/]>+) '.csv' $ /;
+
+        my $country = ~$/[0];
+        $country = 'Great Britain' if $country eq 'England' | 'Northern Ireland' | 'Scotland' | 'Wales';
+        my $cc = country2cc($country);
+        next unless $cc;
+
+        my @vaccinations = csv(in => $path.path);
+        @vaccinations.shift;
+        for @vaccinations -> ($location, $date, $vaccine, $source_url, $total_vaccinations, $people_vaccinated, $people_fully_vaccinated) {
+            %stats<vaccinated><per-day>{$cc}{$date} += $total_vaccinations;
+        }
+    }
+}
+
+# sub read-vaccination-by-vaccine-data(%stats) is export {
+#     my @vaccinations = csv(in => 'covid-19-data/public/data/vaccinations/vaccinations-by-manufacturer.csv');
+#     for @vaccinations -> ($country, $date-str is rw, $vaccine, $total) { 
+#         my $cc = country2cc($country);
+#         next unless $cc;
+
+#         $date-str ~~ s:g/_/-/;
+#         my $date = Date.new($date-str);
+
+#         %stats<vaccinated><per-day>{$cc}{$date}{$vaccine} = $total;
+#     }    
+# }
+
 sub data-count-totals(%stats, %stop-date) is export {
     my %dates;
     my %cc;
@@ -358,6 +388,8 @@ sub data-count-totals(%stats, %stop-date) is export {
             %stats<failed><per-day>{$cc}{$date}    //= 0;
             %stats<recovered><per-day>{$cc}{$date} //= 0;
 
+            %stats<vaccinated><per-day>{$cc}{$date} //= 0;
+
             last if $date eq $stop-date;
         }
     }
@@ -369,6 +401,8 @@ sub data-count-totals(%stats, %stop-date) is export {
         %stats<confirmed><total>{$cc} = %stats<confirmed><per-day>{$cc}{$date};
         %stats<failed><total>{$cc}    = %stats<failed><per-day>{$cc}{$date};
         %stats<recovered><total>{$cc} = %stats<recovered><per-day>{$cc}{$date};
+
+        %stats<vaccinated><total>{$cc} = %stats<vaccinated><per-day>{$cc}.values.max;
     }
 
     # Count totals per day
@@ -383,6 +417,8 @@ sub data-count-totals(%stats, %stop-date) is export {
             %stats<failed><daily-total>{$date}    += %stats<failed><per-day>{$cc}{$date};
             %stats<recovered><daily-total>{$date} += %stats<recovered><per-day>{$cc}{$date};
 
+            %stats<vaccinated><daily-total>{$date} += %stats<vaccinated><per-day>{$cc}{$date};
+
             last if $date eq $stop-date;
         }
     }
@@ -396,16 +432,18 @@ sub import-stats-data(%stats) is export {
             my $failed = %stats<failed><per-day>{$cc}{$date} || 0;
             my $recovered = %stats<recovered><per-day>{$cc}{$date} || 0;
 
-            @values.push("('$cc','{$date}',$confirmed,$failed,$recovered)");  # Safe here
+            my $vaccinated = %stats<vaccinated><per-day>{$cc}{$date} || 0;
+
+            @values.push("('$cc','{$date}',$confirmed,$failed,$recovered,$vaccinated)");  # Safe here
         }
 
         my $values-sql = join ',', @values;
-        my $sth = dbh.prepare("insert into per_day (cc, date, confirmed, failed, recovered) values $values-sql");
+        my $sth = dbh.prepare("insert into per_day (cc, date, confirmed, failed, recovered, vaccinated) values $values-sql");
         $sth.execute();
         $sth.finish();
 
-        $sth = dbh.prepare('insert into totals (cc, confirmed, failed, recovered) values (?, ?, ?, ?)');
-        $sth.execute($cc, %stats<confirmed><total>{$cc}, %stats<failed><total>{$cc}, %stats<recovered><total>{$cc});
+        $sth = dbh.prepare('insert into totals (cc, confirmed, failed, recovered, vaccinated) values (?, ?, ?, ?, ?)');
+        $sth.execute($cc, %stats<confirmed><total>{$cc}, %stats<failed><total>{$cc}, %stats<recovered><total>{$cc}, %stats<vaccinated><total>{$cc});
         $sth.finish();
     }
 
@@ -414,8 +452,10 @@ sub import-stats-data(%stats) is export {
         my $failed = %stats<failed><daily-total>{$date} || 0;
         my $recovered = %stats<recovered><daily-total>{$date} || 0;
 
-        my $sth = dbh.prepare('insert into daily_totals (date, confirmed, failed, recovered) values (?, ?, ?, ?)');
-        $sth.execute($date, $confirmed, $failed, $recovered);
+        my $vaccinated = %stats<vaccinated><daily-total>{$date} || 0;
+
+        my $sth = dbh.prepare('insert into daily_totals (date, confirmed, failed, recovered, vaccinated) values (?, ?, ?, ?, ?)');
+        $sth.execute($date, $confirmed, $failed, $recovered, $vaccinated);
         $sth.finish();
     }
 }
@@ -431,3 +471,14 @@ sub import-tests-data(%stats) is export {
     }
     $sth.finish();
 }
+
+# sub import-vaccination-data(%stats) is export {
+#     dbh.execute('delete from vaccination');    
+
+#     my $sth = dbh.prepare('insert into vaccination (cc, date, number) values (?, ?, ?)');
+#     for %stats<vaccinated><per-day>.keys -> $cc {
+#         for %stats<vaccinated><per-day>{$cc}.keys -> $date {
+#             $sth.execute($cc, $date, %stats<vaccinated><per-day>{$cc}{$date});
+#         }
+#     }
+# }
