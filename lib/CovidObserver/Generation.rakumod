@@ -500,7 +500,7 @@ sub generate-country-stats($cc, %CO, :$exclude?, :%mortality?, :%crude?, :$skip-
         }
 
         {
-            if $chart251data {
+            if $chart251data && $chart251data<vaccinations> {
                 qq[
                     <div id="block251">
                         <a name="vaccinations"></a>

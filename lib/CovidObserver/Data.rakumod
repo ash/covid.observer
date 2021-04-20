@@ -345,7 +345,7 @@ sub read-vaccination-data(%stats) is export {
         my @vaccinations = csv(in => $path.path);
         @vaccinations.shift;
         for @vaccinations -> ($location, $date, $vaccine, $source_url, $total_vaccinations, $people_vaccinated, $people_fully_vaccinated) {
-            %stats<vaccinated><per-day>{$cc}{$date} += $total_vaccinations;
+            %stats<vaccinated><per-day>{$cc}{$date} += $people_vaccinated;
         }
     }
 }
