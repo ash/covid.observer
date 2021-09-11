@@ -247,7 +247,10 @@ sub read-ru-data(%stats) is export {
 
     my %raw;
     my %us-recovered;
+
     my $date-switch-format = Date.new(2020, 4, 29);
+    my $date-switch-format2 = Date.new(2021, 7, 9);
+
     for dir('series/ru', test => /'.csv'$/).sort(~*.path) -> $path {
         next if $path ~~ /tests/;
 
@@ -269,6 +272,19 @@ sub read-ru-data(%stats) is export {
 
             if $date < $date-switch-format {
                 ($region, $confirmed, $recovered, $failed) = @row;
+            }
+            elsif $date >= $date-switch-format2 {
+                # Before 09.07.21:
+                # Москва	 1411491	6040	 180663	 1207500	 23328
+                #
+                # Since 09.07.21:
+                # Москва	 1418134	6643	         1214731	 23430
+
+                my $new-confirmed;
+                ($region, $confirmed, $new-confirmed, $recovered, $failed) = @row;
+                $confirmed ~~ s:g/\s//;
+                $recovered ~~ s:g/\s//;
+                $failed ~~ s:g/\s//;
             }
             else {
                 my $new-confirmed;
@@ -326,6 +342,7 @@ sub read-tests(%stats) is export {
         my @tests = csv(in => "series/$cc/{$cc}-tests.csv".lc);
         my %cc-data := %stats<tests>{$cc} //= {};
         for @tests -> ($date-str, $tests) {
+say "$date-str : $tests";
             $date-str ~~ / (\d\d) '/' (\d\d) '/' (\d\d) /;
             my $date = Date.new(2000 + $/[2], ~$/[0], ~$/[1]);
             %cc-data{$date} = $tests;
@@ -342,9 +359,12 @@ sub read-vaccination-data(%stats) is export {
         my $cc = country2cc($country);
         next unless $cc;
 
-        my @vaccinations = csv(in => $path.path);
-        @vaccinations.shift;
-        for @vaccinations -> ($location, $date, $vaccine, $source_url, $total_vaccinations, $people_vaccinated, $people_fully_vaccinated) {
+
+        for csv(in => $path.path, headers => 'auto') -> $item {
+            # location,date,vaccine,source_url,total_vaccinations,people_vaccinated,people_fully_vaccinated,total_boosters
+            # ($location, $date, $vaccine, $source_url, $total_vaccinations, $people_vaccinated, $people_fully_vaccinated, $people_partly_vaccinated)
+            my $date = $item<date>;
+            my $people_vaccinated = $item<people_accinated>;
             %stats<vaccinated><per-day>{$cc}{$date} += $people_vaccinated;
         }
     }
