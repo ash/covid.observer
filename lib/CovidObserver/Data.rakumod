@@ -250,6 +250,11 @@ sub read-ru-data(%stats) is export {
 
     my $date-switch-format = Date.new(2020, 4, 29);
     my $date-switch-format2 = Date.new(2021, 7, 9);
+    my $date-switch-format3 = Date.new(2022, 1, 25);
+
+    my $region;
+    my ($confirmed, $recovered, $failed) = (0, 0, 0);
+    my $prev-date;
 
     for dir('series/ru', test => /'.csv'$/).sort(~*.path) -> $path {
         next if $path ~~ /tests/;
@@ -268,10 +273,20 @@ sub read-ru-data(%stats) is export {
 
         my $cc = 'RU'; # Should replaces JHU's data
         while my @row = $csv.getline($fh) {
-            my ($region, $confirmed, $recovered, $failed);
-
             if $date < $date-switch-format {
                 ($region, $confirmed, $recovered, $failed) = @row;
+            }
+            elsif $date >= $date-switch-format3 {
+                # Before 25.01.22:
+                # Москва	 2194045	19509	 1927017	 38439
+                #
+                # Since 25.01.22:
+                # Москва	 1188	 4338	 19856	 74
+
+                # Now they publish deltas instead of absolute values; see lines 313-317 below.
+
+                my $new-hospitalized;
+                ($region, $new-hospitalized, $recovered, $confirmed, $failed) = @row;
             }
             elsif $date >= $date-switch-format2 {
                 # Before 09.07.21:
@@ -282,30 +297,36 @@ sub read-ru-data(%stats) is export {
 
                 my $new-confirmed;
                 ($region, $confirmed, $new-confirmed, $recovered, $failed) = @row;
-                $confirmed ~~ s:g/\s//;
-                $recovered ~~ s:g/\s//;
-                $failed ~~ s:g/\s//;
             }
             else {
-                my $new-confirmed;
-                my $active;
+                my ($new-confirmed, $active);
                 ($region, $confirmed, $new-confirmed, $active, $recovered, $failed) = @row;
-                $confirmed ~~ s:g/\s//;
-                $recovered ~~ s:g/\s//;
-                $failed ~~ s:g/\s//;
             }
+
+            $confirmed ~~ s:g/\s//;
+            $recovered ~~ s:g/\s//;
+            $failed ~~ s:g/\s//;
 
             my $region-cc = ru-region-to-code($region);
             $region-cc = "RU/$region-cc";
 
+            if $date >= $date-switch-format3 {
+                $confirmed += %raw{$cc}{$region-cc}{$prev-date}<confirmed> // 0;
+                $recovered += %raw{$cc}{$region-cc}{$prev-date}<recovered> // 0;
+                $failed    += %raw{$cc}{$region-cc}{$prev-date}<failed> // 0;
+            }
+
             %cc{$cc} = 1;
             %cc{$region-cc} = 1;
+
 
             given %raw{$cc}{$region-cc}{$date} {
                 .<confirmed> = $confirmed // 0;
                 .<failed>    = $failed    // 0;
                 .<recovered> = $recovered // 0;
             }
+
+            $prev-date = $date;
         }
     }
 
@@ -342,7 +363,6 @@ sub read-tests(%stats) is export {
         my @tests = csv(in => "series/$cc/{$cc}-tests.csv".lc);
         my %cc-data := %stats<tests>{$cc} //= {};
         for @tests -> ($date-str, $tests) {
-say "$date-str : $tests";
             $date-str ~~ / (\d\d) '/' (\d\d) '/' (\d\d) /;
             my $date = Date.new(2000 + $/[2], ~$/[0], ~$/[1]);
             %cc-data{$date} = $tests;
