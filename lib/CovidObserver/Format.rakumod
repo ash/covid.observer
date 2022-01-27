@@ -37,6 +37,7 @@ sub pm($n) is export {
 }
 
 sub smart-round($n) is export {
+    $n ~~ s:g/','/./;
     $n ~~ /'0.' ('0'*)/;
 
     if $/[0] {

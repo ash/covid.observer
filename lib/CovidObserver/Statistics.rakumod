@@ -1663,8 +1663,9 @@ sub mortality-graph($cc, %CO, %mortality, %crude) is export {
     # return Nil unless %mortality{$cc}:exists;
 
     constant @months = # YEARLOOPFIX
-        'Jan 2020', 'Feb 2020', 'Ma 2020', 'Apr 2020', 'May 2020', 'Jun 2020', 'Jul 2020', 'Aug 2020', 'Sep 2020', 'Oct 2020', 'Nov 2020', 'Dec 2020',
-        'Jan 2021', 'Feb 2021', 'Ma 2021', 'Apr 2021', 'May 2021', 'Jun 2021', 'Jul 2021', 'Aug 2021', 'Sep 2021', 'Oct 2021', 'Nov 2021', 'Dec 2021'
+        'Jan 2020', 'Feb 2020', 'Mar 2020', 'Apr 2020', 'May 2020', 'Jun 2020', 'Jul 2020', 'Aug 2020', 'Sep 2020', 'Oct 2020', 'Nov 2020', 'Dec 2020',
+        'Jan 2021', 'Feb 2021', 'Mar 2021', 'Apr 2021', 'May 2021', 'Jun 2021', 'Jul 2021', 'Aug 2021', 'Sep 2021', 'Oct 2021', 'Nov 2021', 'Dec 2021',
+        'Jan 2022', 'Feb 2022', 'Mar 2022', 'Apr 2022', 'May 2022', 'Jun 2022', 'Jul 2022', 'Aug 2022', 'Sep 2022', 'Oct 2022', 'Nov 2022', 'Dec 2022'
     ;
 
     my @years = %mortality{$cc}.keys.sort; # 5 last non-empty years in the db
@@ -1696,11 +1697,14 @@ sub mortality-graph($cc, %CO, %mortality, %crude) is export {
     my $stop-date = $cc && $cc ~~ /RU/ ?? %CO<calendar><RU> !! %CO<calendar><World>;
 
     my $max-current = 0;
-    my @current = 0 xx 24; # YEARLOOPFIX
-    my @weekly = 0 xx 104; # YEARLOOPFIX
+    my @current = 0 xx 36; # YEARLOOPFIX
+    my @weekly = 0 xx 156; # YEARLOOPFIX
     for %CO<per-day>{$cc}.keys.sort -> $date {
         my ($year, $month-orig, $day) = $date.split('-');
-        my $month = $year == 2020 ?? $month-orig !! $month-orig + 12; # YEARLOOPFIX
+        # my $month = $year == 2020 ?? $month-orig !! $month-orig + 12; # YEARLOOPFIX
+        my $month = $month-orig + ($year - 2020) * 12; # YEARLOOPFIX
+
+
         @current[$month - 1] = %CO<per-day>{$cc}{$date}<failed>;
         @current[$month - 1] -= [+] @current[0 ..^ $month - 1];
 
@@ -1708,7 +1712,8 @@ sub mortality-graph($cc, %CO, %mortality, %crude) is export {
         $max-current = $value if $value > $max-current;
 
         my $week-number = DateTime.new(year => $year, month => $month-orig, day => $day).week-number;
-        $week-number = $year == 2020 ?? $week-number !! $week-number + 52; # YEARLOOPFIX
+        # $week-number = $year == 2020 ?? $week-number !! $week-number + 52; # YEARLOOPFIX
+        $week-number = $week-number + ($year - 2020) * 52; # YEARLOOPFIX
         @weekly[$week-number - 1] = %CO<per-day>{$cc}{$date}<failed>;
 
         last if $date eq $stop-date;
@@ -1724,8 +1729,8 @@ sub mortality-graph($cc, %CO, %mortality, %crude) is export {
     }
 
     my $today = Date.today;
-    my $current-week-number = $today.week-number + ($today.year == 2020 ?? 0 !! 52); # YEARLOOPFIX
-    my $current-month-number = $today.month + ($today.year == 2020 ?? 0 !! 12); # YEARLOOPFIX
+    my $current-week-number = $today.week-number + ($today.year - 2020) * 52; # YEARLOOPFIX
+    my $current-month-number = $today.month + ($today.year - 2020) * 12; # YEARLOOPFIX
 
     my $json-monthly = q:to/JSON/;
         {
