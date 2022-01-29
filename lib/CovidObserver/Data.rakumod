@@ -254,7 +254,9 @@ sub read-ru-data(%stats) is export {
 
     my $region;
     my ($confirmed, $recovered, $failed) = (0, 0, 0);
-    my $prev-date;
+
+    my %cumulative;
+
 
     for dir('series/ru', test => /'.csv'$/).sort(~*.path) -> $path {
         next if $path ~~ /tests/;
@@ -311,14 +313,13 @@ sub read-ru-data(%stats) is export {
             $region-cc = "RU/$region-cc";
 
             if $date >= $date-switch-format3 {
-                $confirmed += %raw{$cc}{$region-cc}{$prev-date}<confirmed> // 0;
-                $recovered += %raw{$cc}{$region-cc}{$prev-date}<recovered> // 0;
-                $failed    += %raw{$cc}{$region-cc}{$prev-date}<failed> // 0;
+                $confirmed += %cumulative{$region-cc}<confirmed> // 0;
+                $recovered += %cumulative{$region-cc}<recovered> // 0;
+                $failed    += %cumulative{$region-cc}<failed> // 0;
             }
 
             %cc{$cc} = 1;
             %cc{$region-cc} = 1;
-
 
             given %raw{$cc}{$region-cc}{$date} {
                 .<confirmed> = $confirmed // 0;
@@ -326,7 +327,11 @@ sub read-ru-data(%stats) is export {
                 .<recovered> = $recovered // 0;
             }
 
-            $prev-date = $date;
+            given %cumulative{$region-cc} {
+                .<confirmed> = $confirmed // 0;
+                .<failed>    = $failed    // 0;
+                .<recovered> = $recovered // 0;
+            }
         }
     }
 
